@@ -1,0 +1,32 @@
+{
+  "run_id": "fixture_synth__dsm_slot__base__s0",
+  "dataset": "fixture_synth",
+  "manifest": "runs/_fixture_synth/manifest.json",
+  "task": "synth",
+  "model": {"name": "dsm_slot", "hidden": 64, "cfg": {"n_slots": 6, "slot_dim": 16}},
+  "heads": {
+    "state": {"kind": "mse", "dim": 64},
+    "class": {"kind": "ce", "dim": 6, "ignore": -1}
+  },
+  "loss": {
+    "task": {"state": 1.0, "class": 1.0},
+    "aux_num_scale": 0.1,
+    "aux": {"retrieval": 0.1, "crosstalk": 0.05, "time_consistency": 0.05,
+            "write_budget": 0.01, "long_horizon": 0.1},
+    "aux_cfg": {"crosstalk": {"w_shared": 1.0, "w_balance": 0.1},
+                "long_horizon": {"horizon": 5}}
+  },
+  "train": {
+    "epochs": 4, "batch": 16, "lr": 0.003, "wd": 0.0001, "amp": true,
+    "grad_clip": 1.0, "patience": 4, "aug": "none", "T_max": 48,
+    "val_every": 1, "warmup_epochs": 1, "num_workers": 0, "preload": true
+  },
+  "eval": {
+    "batch": 16,
+    "robustness": ["dense", "stride2", "drop50", "jitter", "mixed", "shuffled"],
+    "latency": true, "flops": true
+  },
+  "main_metric": "r2",
+  "seed": 0,
+  "notes": "slot-memory integration check: route/slot_read aux tensors -> crosstalk loss + crosstalk matrix"
+}

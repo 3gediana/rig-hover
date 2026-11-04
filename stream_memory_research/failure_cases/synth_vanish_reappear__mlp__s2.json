@@ -1,0 +1,439 @@
+{
+  "run_id": "synth_vanish_reappear__mlp__s2",
+  "generated_at": "2026-11-04 00:22:52",
+  "split": "test",
+  "main_metric": "acc",
+  "higher_is_better": true,
+  "n_sequences": 20,
+  "global": {
+    "acc": 0.06357388316151202,
+    "f1": 0.02313262845858744,
+    "f1_macro": 0.02313262845858744,
+    "precision": 0.018664477284587123,
+    "recall": 0.08695652173622317,
+    "n": 582,
+    "main_metric": "acc",
+    "main_head": "class"
+  },
+  "head": "class",
+  "worst": [
+    {
+      "rank": 1,
+      "seq_id": "synth_vanish_reappear_test_001000",
+      "source_id": "ep001000",
+      "value": 0.0,
+      "T": 35,
+      "diagnosis": "below_majority_baseline",
+      "details": {
+        "T": 35,
+        "dt_cv": 0.0,
+        "dt_mean": 0.1,
+        "n_valid": 25,
+        "pred_top_class": 7,
+        "pred_top_share": 0.8,
+        "n_true_classes": 1,
+        "true_top_class": 0,
+        "seq_majority_baseline": 1.0,
+        "acc": 0.0
+      }
+    },
+    {
+      "rank": 2,
+      "seq_id": "synth_vanish_reappear_test_001001",
+      "source_id": "ep001001",
+      "value": 0.0,
+      "T": 48,
+      "diagnosis": "below_majority_baseline",
+      "details": {
+        "T": 48,
+        "dt_cv": 0.0,
+        "dt_mean": 0.1,
+        "n_valid": 38,
+        "pred_top_class": 7,
+        "pred_top_share": 0.8684,
+        "n_true_classes": 1,
+        "true_top_class": 5,
+        "seq_majority_baseline": 1.0,
+        "acc": 0.0
+      }
+    },
+    {
+      "rank": 3,
+      "seq_id": "synth_vanish_reappear_test_001002",
+      "source_id": "ep001002",
+      "value": 0.0,
+      "T": 47,
+      "diagnosis": "below_majority_baseline",
+      "details": {
+        "T": 47,
+        "dt_cv": 0.0,
+        "dt_mean": 0.1,
+        "n_valid": 37,
+        "pred_top_class": 7,
+        "pred_top_share": 0.8649,
+        "n_true_classes": 1,
+        "true_top_class": 13,
+        "seq_majority_baseline": 1.0,
+        "acc": 0.0
+      }
+    },
+    {
+      "rank": 4,
+      "seq_id": "synth_vanish_reappear_test_001003",
+      "source_id": "ep001003",
+      "value": 0.0,
+      "T": 43,
+      "diagnosis": "below_majority_baseline",
+      "details": {
+        "T": 43,
+        "dt_cv": 0.0,
+        "dt_mean": 0.1,
+        "n_valid": 33,
+        "pred_top_class": 7,
+        "pred_top_share": 0.8485,
+        "n_true_classes": 1,
+        "true_top_class": 2,
+        "seq_majority_baseline": 1.0,
+        "acc": 0.0
+      }
+    },
+    {
+      "rank": 5,
+      "seq_id": "synth_vanish_reappear_test_001004",
+      "source_id": "ep001004",
+      "value": 0.0,
+      "T": 33,
+      "diagnosis": "collapsed_prediction;below_majority_baseline",
+      "details": {
+        "T": 33,
+        "dt_cv": 0.0,
+        "dt_mean": 0.1,
+        "n_valid": 23,
+        "pred_top_class": 7,
+        "pred_top_share": 1.0,
+        "n_true_classes": 1,
+        "true_top_class": 15,
+        "seq_majority_baseline": 1.0,
+        "acc": 0.0
+      }
+    },
+    {
+      "rank": 6,
+      "seq_id": "synth_vanish_reappear_test_001005",
+      "source_id": "ep001005",
+      "value": 0.0,
+      "T": 46,
+      "diagnosis": "below_majority_baseline",
+      "details": {
+        "T": 46,
+        "dt_cv": 0.0,
+        "dt_mean": 0.1,
+        "n_valid": 36,
+        "pred_top_class": 7,
+        "pred_top_share": 0.8611,
+        "n_true_classes": 1,
+        "true_top_class": 13,
+        "seq_majority_baseline": 1.0,
+        "acc": 0.0
+      }
+    },
+    {
+      "rank": 7,
+      "seq_id": "synth_vanish_reappear_test_001006",
+      "source_id": "ep001006",
+      "value": 0.0,
+      "T": 27,
+      "diagnosis": "short_sequence;collapsed_prediction;below_majority_baseline",
+      "details": {
+        "T": 27,
+        "dt_cv": 0.0,
+        "dt_mean": 0.1,
+        "n_valid": 17,
+        "pred_top_class": 7,
+        "pred_top_share": 1.0,
+        "n_true_classes": 1,
+        "true_top_class": 3,
+        "seq_majority_baseline": 1.0,
+        "acc": 0.0
+      }
+    },
+    {
+      "rank": 8,
+      "seq_id": "synth_vanish_reappear_test_001007",
+      "source_id": "ep001007",
+      "value": 0.0,
+      "T": 49,
+      "diagnosis": "collapsed_prediction;below_majority_baseline",
+      "details": {
+        "T": 49,
+        "dt_cv": 0.0,
+        "dt_mean": 0.1,
+        "n_valid": 39,
+        "pred_top_class": 7,
+        "pred_top_share": 1.0,
+        "n_true_classes": 1,
+        "true_top_class": 10,
+        "seq_majority_baseline": 1.0,
+        "acc": 0.0
+      }
+    },
+    {
+      "rank": 9,
+      "seq_id": "synth_vanish_reappear_test_001008",
+      "source_id": "ep001008",
+      "value": 0.0,
+      "T": 44,
+      "diagnosis": "below_majority_baseline",
+      "details": {
+        "T": 44,
+        "dt_cv": 0.0,
+        "dt_mean": 0.1,
+        "n_valid": 34,
+        "pred_top_class": 7,
+        "pred_top_share": 0.8529,
+        "n_true_classes": 1,
+        "true_top_class": 14,
+        "seq_majority_baseline": 1.0,
+        "acc": 0.0
+      }
+    },
+    {
+      "rank": 10,
+      "seq_id": "synth_vanish_reappear_test_001009",
+      "source_id": "ep001009",
+      "value": 0.0,
+      "T": 46,
+      "diagnosis": "below_majority_baseline",
+      "details": {
+        "T": 46,
+        "dt_cv": 0.0,
+        "dt_mean": 0.1,
+        "n_valid": 36,
+        "pred_top_class": 7,
+        "pred_top_share": 0.8611,
+        "n_true_classes": 1,
+        "true_top_class": 14,
+        "seq_majority_baseline": 1.0,
+        "acc": 0.0
+      }
+    }
+  ],
+  "best": [
+    {
+      "rank": 1,
+      "seq_id": "synth_vanish_reappear_test_001017",
+      "source_id": "ep001017",
+      "value": 1.0,
+      "T": 42,
+      "diagnosis": "collapsed_prediction",
+      "details": {
+        "T": 42,
+        "dt_cv": 0.0,
+        "dt_mean": 0.1,
+        "n_valid": 32,
+        "pred_top_class": 7,
+        "pred_top_share": 1.0,
+        "n_true_classes": 1,
+        "true_top_class": 7,
+        "seq_majority_baseline": 1.0,
+        "acc": 1.0
+      }
+    },
+    {
+      "rank": 2,
+      "seq_id": "synth_vanish_reappear_test_001010",
+      "source_id": "ep001010",
+      "value": 0.217391,
+      "T": 33,
+      "diagnosis": "below_majority_baseline",
+      "details": {
+        "T": 33,
+        "dt_cv": 0.0,
+        "dt_mean": 0.1,
+        "n_valid": 23,
+        "pred_top_class": 7,
+        "pred_top_share": 0.7826,
+        "n_true_classes": 1,
+        "true_top_class": 12,
+        "seq_majority_baseline": 1.0,
+        "acc": 0.2174
+      }
+    },
+    {
+      "rank": 3,
+      "seq_id": "synth_vanish_reappear_test_001000",
+      "source_id": "ep001000",
+      "value": 0.0,
+      "T": 35,
+      "diagnosis": "below_majority_baseline",
+      "details": {
+        "T": 35,
+        "dt_cv": 0.0,
+        "dt_mean": 0.1,
+        "n_valid": 25,
+        "pred_top_class": 7,
+        "pred_top_share": 0.8,
+        "n_true_classes": 1,
+        "true_top_class": 0,
+        "seq_majority_baseline": 1.0,
+        "acc": 0.0
+      }
+    },
+    {
+      "rank": 4,
+      "seq_id": "synth_vanish_reappear_test_001001",
+      "source_id": "ep001001",
+      "value": 0.0,
+      "T": 48,
+      "diagnosis": "below_majority_baseline",
+      "details": {
+        "T": 48,
+        "dt_cv": 0.0,
+        "dt_mean": 0.1,
+        "n_valid": 38,
+        "pred_top_class": 7,
+        "pred_top_share": 0.8684,
+        "n_true_classes": 1,
+        "true_top_class": 5,
+        "seq_majority_baseline": 1.0,
+        "acc": 0.0
+      }
+    },
+    {
+      "rank": 5,
+      "seq_id": "synth_vanish_reappear_test_001002",
+      "source_id": "ep001002",
+      "value": 0.0,
+      "T": 47,
+      "diagnosis": "below_majority_baseline",
+      "details": {
+        "T": 47,
+        "dt_cv": 0.0,
+        "dt_mean": 0.1,
+        "n_valid": 37,
+        "pred_top_class": 7,
+        "pred_top_share": 0.8649,
+        "n_true_classes": 1,
+        "true_top_class": 13,
+        "seq_majority_baseline": 1.0,
+        "acc": 0.0
+      }
+    },
+    {
+      "rank": 6,
+      "seq_id": "synth_vanish_reappear_test_001003",
+      "source_id": "ep001003",
+      "value": 0.0,
+      "T": 43,
+      "diagnosis": "below_majority_baseline",
+      "details": {
+        "T": 43,
+        "dt_cv": 0.0,
+        "dt_mean": 0.1,
+        "n_valid": 33,
+        "pred_top_class": 7,
+        "pred_top_share": 0.8485,
+        "n_true_classes": 1,
+        "true_top_class": 2,
+        "seq_majority_baseline": 1.0,
+        "acc": 0.0
+      }
+    },
+    {
+      "rank": 7,
+      "seq_id": "synth_vanish_reappear_test_001004",
+      "source_id": "ep001004",
+      "value": 0.0,
+      "T": 33,
+      "diagnosis": "collapsed_prediction;below_majority_baseline",
+      "details": {
+        "T": 33,
+        "dt_cv": 0.0,
+        "dt_mean": 0.1,
+        "n_valid": 23,
+        "pred_top_class": 7,
+        "pred_top_share": 1.0,
+        "n_true_classes": 1,
+        "true_top_class": 15,
+        "seq_majority_baseline": 1.0,
+        "acc": 0.0
+      }
+    },
+    {
+      "rank": 8,
+      "seq_id": "synth_vanish_reappear_test_001005",
+      "source_id": "ep001005",
+      "value": 0.0,
+      "T": 46,
+      "diagnosis": "below_majority_baseline",
+      "details": {
+        "T": 46,
+        "dt_cv": 0.0,
+        "dt_mean": 0.1,
+        "n_valid": 36,
+        "pred_top_class": 7,
+        "pred_top_share": 0.8611,
+        "n_true_classes": 1,
+        "true_top_class": 13,
+        "seq_majority_baseline": 1.0,
+        "acc": 0.0
+      }
+    },
+    {
+      "rank": 9,
+      "seq_id": "synth_vanish_reappear_test_001006",
+      "source_id": "ep001006",
+      "value": 0.0,
+      "T": 27,
+      "diagnosis": "short_sequence;collapsed_prediction;below_majority_baseline",
+      "details": {
+        "T": 27,
+        "dt_cv": 0.0,
+        "dt_mean": 0.1,
+        "n_valid": 17,
+        "pred_top_class": 7,
+        "pred_top_share": 1.0,
+        "n_true_classes": 1,
+        "true_top_class": 3,
+        "seq_majority_baseline": 1.0,
+        "acc": 0.0
+      }
+    },
+    {
+      "rank": 10,
+      "seq_id": "synth_vanish_reappear_test_001007",
+      "source_id": "ep001007",
+      "value": 0.0,
+      "T": 49,
+      "diagnosis": "collapsed_prediction;below_majority_baseline",
+      "details": {
+        "T": 49,
+        "dt_cv": 0.0,
+        "dt_mean": 0.1,
+        "n_valid": 39,
+        "pred_top_class": 7,
+        "pred_top_share": 1.0,
+        "n_true_classes": 1,
+        "true_top_class": 10,
+        "seq_majority_baseline": 1.0,
+        "acc": 0.0
+      }
+    }
+  ],
+  "diagnosis_counts": {
+    "below_majority_baseline": 19,
+    "collapsed_prediction": 7,
+    "short_sequence": 2
+  },
+  "extra": {
+    "split": "test",
+    "head": "class"
+  },
+  "kind": "ce",
+  "value_stats": {
+    "mean": 0.06086956521739131,
+    "p10": 0.0,
+    "p90": 0.021739130434782917
+  },
+  "path": "failure_cases/synth_vanish_reappear__mlp__s2.json"
+}

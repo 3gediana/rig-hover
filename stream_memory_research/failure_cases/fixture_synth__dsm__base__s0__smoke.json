@@ -1,0 +1,147 @@
+{
+  "run_id": "fixture_synth__dsm__base__s0__smoke",
+  "generated_at": "2026-11-03 23:46:15",
+  "split": "test",
+  "main_metric": "r2",
+  "higher_is_better": true,
+  "n_sequences": 3,
+  "global": {
+    "mae": 0.7983652693870606,
+    "mse": 0.9641794585722725,
+    "rmse": 0.9819264018103763,
+    "n": 3136,
+    "r2": -0.007481112914286732,
+    "cos": 0.041551942726738476,
+    "mae_macro": 0.8068359694918913,
+    "class_acc": 0.32432432432432434,
+    "class_f1": 0.3920454540987772,
+    "class_f1_macro": 0.3920454540987772,
+    "class_precision": 0.45913461533537503,
+    "class_recall": 0.23914835163860712,
+    "class_n": 74,
+    "main_metric": "r2",
+    "main_head": "state"
+  },
+  "head": "state",
+  "worst": [
+    {
+      "rank": 1,
+      "seq_id": "fixture_synth_014",
+      "source_id": "src_014",
+      "value": -0.011773,
+      "T": 46,
+      "diagnosis": "no_rule_triggered",
+      "details": {
+        "T": 46,
+        "dt_cv": 0.0928,
+        "dt_mean": 0.049912,
+        "n_valid": 1152,
+        "mae": 0.754346,
+        "err_p95": 1.73288,
+        "target_std": 0.936346
+      }
+    },
+    {
+      "rank": 2,
+      "seq_id": "fixture_synth_015",
+      "source_id": "src_015",
+      "value": -0.010308,
+      "T": 44,
+      "diagnosis": "no_rule_triggered",
+      "details": {
+        "T": 44,
+        "dt_cv": 0.0699,
+        "dt_mean": 0.050837,
+        "n_valid": 1152,
+        "mae": 0.776313,
+        "err_p95": 1.798765,
+        "target_std": 0.945268
+      }
+    },
+    {
+      "rank": 3,
+      "seq_id": "fixture_synth_013",
+      "source_id": "src_013",
+      "value": -0.000362,
+      "T": 33,
+      "diagnosis": "short_sequence",
+      "details": {
+        "T": 33,
+        "dt_cv": 0.0758,
+        "dt_mean": 0.050382,
+        "n_valid": 832,
+        "mae": 0.889849,
+        "err_p95": 1.777577,
+        "target_std": 1.074989
+      }
+    }
+  ],
+  "best": [
+    {
+      "rank": 1,
+      "seq_id": "fixture_synth_013",
+      "source_id": "src_013",
+      "value": -0.000362,
+      "T": 33,
+      "diagnosis": "short_sequence",
+      "details": {
+        "T": 33,
+        "dt_cv": 0.0758,
+        "dt_mean": 0.050382,
+        "n_valid": 832,
+        "mae": 0.889849,
+        "err_p95": 1.777577,
+        "target_std": 1.074989
+      }
+    },
+    {
+      "rank": 2,
+      "seq_id": "fixture_synth_015",
+      "source_id": "src_015",
+      "value": -0.010308,
+      "T": 44,
+      "diagnosis": "no_rule_triggered",
+      "details": {
+        "T": 44,
+        "dt_cv": 0.0699,
+        "dt_mean": 0.050837,
+        "n_valid": 1152,
+        "mae": 0.776313,
+        "err_p95": 1.798765,
+        "target_std": 0.945268
+      }
+    },
+    {
+      "rank": 3,
+      "seq_id": "fixture_synth_014",
+      "source_id": "src_014",
+      "value": -0.011773,
+      "T": 46,
+      "diagnosis": "no_rule_triggered",
+      "details": {
+        "T": 46,
+        "dt_cv": 0.0928,
+        "dt_mean": 0.049912,
+        "n_valid": 1152,
+        "mae": 0.754346,
+        "err_p95": 1.73288,
+        "target_std": 0.936346
+      }
+    }
+  ],
+  "diagnosis_counts": {
+    "no_rule_triggered": 4,
+    "short_sequence": 2
+  },
+  "extra": {
+    "split": "test",
+    "head": "state"
+  },
+  "kind": "mse",
+  "value_stats": {
+    "mean": -0.007481112914286732,
+    "p10": -0.011480392752826817,
+    "p90": -0.0023509760077928816
+  },
+  "path": "failure_cases/fixture_synth__dsm__base__s0__smoke.json"
+}

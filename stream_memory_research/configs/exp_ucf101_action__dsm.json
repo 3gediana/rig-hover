@@ -1,0 +1,28 @@
+{
+  "run_id": "ucf101_action__dsm__base__s0",
+  "dataset": "ucf101_action",
+  "manifest": "data_manifests/ucf101_action.json",
+  "task": "action",
+  "model": {"name": "dsm", "hidden": 192, "cfg": {"mem_dim": 64, "n_decay_groups": 4}},
+  "heads": {"action": {"kind": "ce", "dim": 101, "ignore": -1}},
+  "loss": {
+    "task": {"action": 1.0},
+    "aux_num_scale": 0.1,
+    "aux": {"retrieval": 0.1, "crosstalk": 0.05, "time_consistency": 0.05, "write_budget": 0.01, "long_horizon": 0.1}
+  },
+  "train": {
+    "epochs": 30, "batch": 64, "lr": 0.002, "wd": 0.0001, "amp": true,
+    "grad_clip": 1.0, "patience": 6, "aug": "medium", "T_max": 96,
+    "val_every": 1, "warmup_epochs": 2, "num_workers": 0, "preload": true,
+    "preload_max_gb": 6.0, "sched": "cosine", "min_lr_ratio": 0.01
+  },
+  "eval": {
+    "batch": 32,
+    "robustness": ["dense", "stride2", "stride4", "drop30", "drop50", "drop70",
+                   "burst", "repeat", "jitter", "mixed", "shuffled"],
+    "latency": true, "flops": true, "failure_topk": 10
+  },
+  "main_metric": "acc",
+  "seed": 0,
+  "notes": "template: UCF101 action recognition, full DSM (slow state + matrix fast memory)"
+}

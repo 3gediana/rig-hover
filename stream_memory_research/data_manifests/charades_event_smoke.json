@@ -1,0 +1,824 @@
+{
+  "dataset": "charades_event_smoke",
+  "task": "event",
+  "feature_dim": 768,
+  "tok_dim": 768,
+  "roi_dim": 0,
+  "n_roi": 0,
+  "encoder": {
+    "name": "openai/clip-vit-base-patch16",
+    "tag": "clip-vit-base-p16-224-f16-2x2tok-v1",
+    "input": 224,
+    "pool": "2x2",
+    "n_tok": 4,
+    "dtype": "float16",
+    "frozen": true,
+    "preprocess": "CLIPImageProcessor"
+  },
+  "split_key": "source_id",
+  "label_specs": {
+    "lab_event": {
+      "kind": "bce",
+      "n_classes": 50,
+      "dim": 50
+    },
+    "lab_seg": {
+      "kind": "ce",
+      "n_classes": 2,
+      "ignore": -1,
+      "dim": 1
+    }
+  },
+  "extra": {
+    "selection_rule": "from the 7811 official-train clips that carry at least one action segment, pick 1400 with an even stride over the lexicographically sorted video ids (idx_i=floor(i*N/n)); split into 70/15/15 by contiguous blocks of that sorted selection (Charades ids are random 5-char strings so id order is effectively random; the split unit is the video id)",
+    "class_rule": "the 50 most frequent action classes among the selected clips, each with >= 60 annotated segments",
+    "classes": [
+      "c000",
+      "c001",
+      "c002",
+      "c006",
+      "c008",
+      "c009",
+      "c011",
+      "c015",
+      "c016",
+      "c020",
+      "c021",
+      "c026",
+      "c032",
+      "c033",
+      "c040",
+      "c052",
+      "c059",
+      "c061",
+      "c062",
+      "c063",
+      "c065",
+      "c067",
+      "c070",
+      "c076",
+      "c081",
+      "c096",
+      "c097",
+      "c098",
+      "c106",
+      "c107",
+      "c109",
+      "c110",
+      "c112",
+      "c113",
+      "c118",
+      "c119",
+      "c123",
+      "c125",
+      "c126",
+      "c127",
+      "c141",
+      "c148",
+      "c149",
+      "c150",
+      "c151",
+      "c152",
+      "c153",
+      "c154",
+      "c155",
+      "c156"
+    ],
+    "class_index_map": {
+      "c000": 0,
+      "c001": 1,
+      "c002": 2,
+      "c006": 3,
+      "c008": 4,
+      "c009": 5,
+      "c011": 6,
+      "c015": 7,
+      "c016": 8,
+      "c020": 9,
+      "c021": 10,
+      "c026": 11,
+      "c032": 12,
+      "c033": 13,
+      "c040": 14,
+      "c052": 15,
+      "c059": 16,
+      "c061": 17,
+      "c062": 18,
+      "c063": 19,
+      "c065": 20,
+      "c067": 21,
+      "c070": 22,
+      "c076": 23,
+      "c081": 24,
+      "c096": 25,
+      "c097": 26,
+      "c098": 27,
+      "c106": 28,
+      "c107": 29,
+      "c109": 30,
+      "c110": 31,
+      "c112": 32,
+      "c113": 33,
+      "c118": 34,
+      "c119": 35,
+      "c123": 36,
+      "c125": 37,
+      "c126": 38,
+      "c127": 39,
+      "c141": 40,
+      "c148": 41,
+      "c149": 42,
+      "c150": 43,
+      "c151": 44,
+      "c152": 45,
+      "c153": 46,
+      "c154": 47,
+      "c155": 48,
+      "c156": 49
+    },
+    "class_names": {
+      "c000": "Holding some clothes",
+      "c001": "Putting clothes somewhere",
+      "c002": "Taking some clothes from somewhere",
+      "c006": "Closing a door",
+      "c008": "Opening a door",
+      "c009": "Putting something on a table",
+      "c011": "Sitting at a table",
+      "c015": "Holding a phone/camera",
+      "c016": "Playing with a phone/camera",
+      "c020": "Holding a bag",
+      "c021": "Opening a bag",
+      "c026": "Holding a book",
+      "c032": "Watching/Reading/Looking at a book",
+      "c033": "Holding a towel/s",
+      "c040": "Holding a box",
+      "c052": "Working/Playing on a laptop",
+      "c059": "Sitting in a chair",
+      "c061": "Holding some food",
+      "c062": "Putting some food somewhere",
+      "c063": "Taking food from somewhere",
+      "c065": "Eating a sandwich",
+      "c067": "Holding a sandwich",
+      "c070": "Holding a blanket",
+      "c076": "Holding a pillow",
+      "c081": "Putting something on a shelf",
+      "c096": "Watching something/someone/themselves in a mirror",
+      "c097": "Walking through a doorway",
+      "c098": "Holding a broom",
+      "c106": "Drinking from a cup/glass/bottle",
+      "c107": "Holding a cup/glass/bottle of something",
+      "c109": "Putting a cup/glass/bottle somewhere",
+      "c110": "Taking a cup/glass/bottle from somewhere",
+      "c112": "Closing a closet/cabinet",
+      "c113": "Opening a closet/cabinet",
+      "c118": "Holding a dish",
+      "c119": "Putting a dish/es somewhere",
+      "c123": "Sitting on sofa/couch",
+      "c125": "Sitting on the floor",
+      "c126": "Throwing something on the floor",
+      "c127": "Tidying something on the floor",
+      "c141": "Grasping onto a doorknob",
+      "c148": "Someone is dressing",
+      "c149": "Someone is laughing",
+      "c150": "Someone is running somewhere",
+      "c151": "Someone is going from standing to sitting",
+      "c152": "Someone is smiling",
+      "c153": "Someone is sneezing",
+      "c154": "Someone is standing up from somewhere",
+      "c155": "Someone is undressing",
+      "c156": "Someone is eating something"
+    },
+    "sampling": "128 uniformly spaced frame indices per clip over the container frame count (endpoints inclusive); shorter clips keep all frames",
+    "timestamp_rule": "t = frame_index / container average_rate",
+    "labels": {
+      "lab_event": "[T,C] float32 multi-label: class c is 1 at frame t iff t lies in an annotated [onset, offset) segment of class c (real temporal boundaries from the CSV)",
+      "lab_seg": "[T] int64 onset indicator: 1 if any annotated segment starts in (t_{f-1}, t_f]"
+    },
+    "event_stats": {
+      "n_segments_kept": 5716,
+      "positive_fraction": 1.7418247767857142,
+      "n_classes": 50
+    },
+    "source_urls": [
+      "https://ai2-public-datasets.s3.amazonaws.com/charades/Charades_v1_480.zip (16,339,546,533 B; 0.60 MB/s single conn -> 5.73 MB/s with 16 range conns)",
+      "https://ai2-public-datasets.s3.amazonaws.com/charades/Charades.zip (3.5 MB annotations: Charades_v1_train.csv, Charades_v1_classes.txt)",
+      "HF linxxx3/Charades_v1_480 holds the same 16.3 GB zip (fallback)",
+      "HF jinyoungkim/Charades holds the 9848 clips as 1920x1080 individual files (~32 MB each -> 45 GB for 1400 clips, not used)"
+    ],
+    "encoder_config": {
+      "model": "openai/clip-vit-base-patch16",
+      "input_size": 224,
+      "dtype": "float16",
+      "device": "cuda"
+    },
+    "seed": 0,
+    "deterministic": true,
+    "rng_used": false,
+    "n_planned": 1400,
+    "n_extracted": 1400,
+    "skipped": {},
+    "fixture": "tiny smoke fixture: first {'train': 20, 'val': 5, 'test': 5} of each split"
+  },
+  "seqs": [
+    {
+      "seq_id": "001YG",
+      "source_id": "001YG",
+      "split": "train",
+      "T": 128,
+      "path": "G:/stream_memory_data/features/charades_event/001YG.npz",
+      "labels": [
+        "event",
+        "seg"
+      ],
+      "meta": {
+        "scene": "Bedroom",
+        "subject": "2RTW",
+        "fps": 29.97002997002997,
+        "n_frames_total": 919,
+        "n_frames_kept": 128,
+        "n_segments": 6,
+        "csv_length": 30.62
+      }
+    },
+    {
+      "seq_id": "00NN7",
+      "source_id": "00NN7",
+      "split": "train",
+      "T": 128,
+      "path": "G:/stream_memory_data/features/charades_event/00NN7.npz",
+      "labels": [
+        "event",
+        "seg"
+      ],
+      "meta": {
+        "scene": "Pantry",
+        "subject": "ZAWX",
+        "fps": 29.97002997002997,
+        "n_frames_total": 919,
+        "n_frames_kept": 128,
+        "n_segments": 9,
+        "csv_length": 30.62
+      }
+    },
+    {
+      "seq_id": "013SD",
+      "source_id": "013SD",
+      "split": "train",
+      "T": 128,
+      "path": "G:/stream_memory_data/features/charades_event/013SD.npz",
+      "labels": [
+        "event",
+        "seg"
+      ],
+      "meta": {
+        "scene": "Bedroom",
+        "subject": "Z755",
+        "fps": 20.183,
+        "n_frames_total": 190,
+        "n_frames_kept": 128,
+        "n_segments": 4,
+        "csv_length": 9.38
+      }
+    },
+    {
+      "seq_id": "01ZWG",
+      "source_id": "01ZWG",
+      "split": "train",
+      "T": 128,
+      "path": "G:/stream_memory_data/features/charades_event/01ZWG.npz",
+      "labels": [
+        "event",
+        "seg"
+      ],
+      "meta": {
+        "scene": "Recreation room / Man cave",
+        "subject": "6RE8",
+        "fps": 14.263,
+        "n_frames_total": 468,
+        "n_frames_kept": 128,
+        "n_segments": 8,
+        "csv_length": 32.75
+      }
+    },
+    {
+      "seq_id": "02V54",
+      "source_id": "02V54",
+      "split": "train",
+      "T": 128,
+      "path": "G:/stream_memory_data/features/charades_event/02V54.npz",
+      "labels": [
+        "event",
+        "seg"
+      ],
+      "meta": {
+        "scene": "Stairs",
+        "subject": "1TZV",
+        "fps": 25.0,
+        "n_frames_total": 459,
+        "n_frames_kept": 128,
+        "n_segments": 3,
+        "csv_length": 18.33
+      }
+    },
+    {
+      "seq_id": "03EW0",
+      "source_id": "03EW0",
+      "split": "train",
+      "T": 128,
+      "path": "G:/stream_memory_data/features/charades_event/03EW0.npz",
+      "labels": [
+        "event",
+        "seg"
+      ],
+      "meta": {
+        "scene": "Recreation room / Man cave",
+        "subject": "XXN8",
+        "fps": 24.0,
+        "n_frames_total": 748,
+        "n_frames_kept": 128,
+        "n_segments": 2,
+        "csv_length": 31.12
+      }
+    },
+    {
+      "seq_id": "04MTP",
+      "source_id": "04MTP",
+      "split": "train",
+      "T": 128,
+      "path": "G:/stream_memory_data/features/charades_event/04MTP.npz",
+      "labels": [
+        "event",
+        "seg"
+      ],
+      "meta": {
+        "scene": "Recreation room / Man cave",
+        "subject": "1OHU",
+        "fps": 29.97002997002997,
+        "n_frames_total": 941,
+        "n_frames_kept": 128,
+        "n_segments": 7,
+        "csv_length": 31.38
+      }
+    },
+    {
+      "seq_id": "06CKN",
+      "source_id": "06CKN",
+      "split": "train",
+      "T": 128,
+      "path": "G:/stream_memory_data/features/charades_event/06CKN.npz",
+      "labels": [
+        "event",
+        "seg"
+      ],
+      "meta": {
+        "scene": "Closet / Walk-in closet / Spear closet",
+        "subject": "25TD",
+        "fps": 24.016,
+        "n_frames_total": 611,
+        "n_frames_kept": 128,
+        "n_segments": 8,
+        "csv_length": 25.42
+      }
+    },
+    {
+      "seq_id": "06OKE",
+      "source_id": "06OKE",
+      "split": "train",
+      "T": 128,
+      "path": "G:/stream_memory_data/features/charades_event/06OKE.npz",
+      "labels": [
+        "event",
+        "seg"
+      ],
+      "meta": {
+        "scene": "Living room",
+        "subject": "PKND",
+        "fps": 30.0,
+        "n_frames_total": 933,
+        "n_frames_kept": 128,
+        "n_segments": 8,
+        "csv_length": 31.08
+      }
+    },
+    {
+      "seq_id": "081WM",
+      "source_id": "081WM",
+      "split": "train",
+      "T": 128,
+      "path": "G:/stream_memory_data/features/charades_event/081WM.npz",
+      "labels": [
+        "event",
+        "seg"
+      ],
+      "meta": {
+        "scene": "Laundry room",
+        "subject": "LTAC",
+        "fps": 30.0,
+        "n_frames_total": 910,
+        "n_frames_kept": 128,
+        "n_segments": 4,
+        "csv_length": 30.29
+      }
+    },
+    {
+      "seq_id": "08QQS",
+      "source_id": "08QQS",
+      "split": "train",
+      "T": 128,
+      "path": "G:/stream_memory_data/features/charades_event/08QQS.npz",
+      "labels": [
+        "event",
+        "seg"
+      ],
+      "meta": {
+        "scene": "Bedroom",
+        "subject": "R1OT",
+        "fps": 30.0,
+        "n_frames_total": 900,
+        "n_frames_kept": 128,
+        "n_segments": 4,
+        "csv_length": 29.96
+      }
+    },
+    {
+      "seq_id": "09KVK",
+      "source_id": "09KVK",
+      "split": "train",
+      "T": 128,
+      "path": "G:/stream_memory_data/features/charades_event/09KVK.npz",
+      "labels": [
+        "event",
+        "seg"
+      ],
+      "meta": {
+        "scene": "Kitchen",
+        "subject": "T7C3",
+        "fps": 29.97002997002997,
+        "n_frames_total": 816,
+        "n_frames_kept": 128,
+        "n_segments": 2,
+        "csv_length": 27.21
+      }
+    },
+    {
+      "seq_id": "0AGCS",
+      "source_id": "0AGCS",
+      "split": "train",
+      "T": 128,
+      "path": "G:/stream_memory_data/features/charades_event/0AGCS.npz",
+      "labels": [
+        "event",
+        "seg"
+      ],
+      "meta": {
+        "scene": "Closet / Walk-in closet / Spear closet",
+        "subject": "HR43",
+        "fps": 24.0,
+        "n_frames_total": 657,
+        "n_frames_kept": 128,
+        "n_segments": 3,
+        "csv_length": 27.33
+      }
+    },
+    {
+      "seq_id": "0BWYH",
+      "source_id": "0BWYH",
+      "split": "train",
+      "T": 128,
+      "path": "G:/stream_memory_data/features/charades_event/0BWYH.npz",
+      "labels": [
+        "event",
+        "seg"
+      ],
+      "meta": {
+        "scene": "Kitchen",
+        "subject": "T7C3",
+        "fps": 29.97002997002997,
+        "n_frames_total": 710,
+        "n_frames_kept": 128,
+        "n_segments": 5,
+        "csv_length": 23.67
+      }
+    },
+    {
+      "seq_id": "0CFQV",
+      "source_id": "0CFQV",
+      "split": "train",
+      "T": 128,
+      "path": "G:/stream_memory_data/features/charades_event/0CFQV.npz",
+      "labels": [
+        "event",
+        "seg"
+      ],
+      "meta": {
+        "scene": "Bedroom",
+        "subject": "0KZ7",
+        "fps": 25.0,
+        "n_frames_total": 522,
+        "n_frames_kept": 128,
+        "n_segments": 3,
+        "csv_length": 20.83
+      }
+    },
+    {
+      "seq_id": "0CX32",
+      "source_id": "0CX32",
+      "split": "train",
+      "T": 128,
+      "path": "G:/stream_memory_data/features/charades_event/0CX32.npz",
+      "labels": [
+        "event",
+        "seg"
+      ],
+      "meta": {
+        "scene": "Living room",
+        "subject": "C7O9",
+        "fps": 29.97002997002997,
+        "n_frames_total": 995,
+        "n_frames_kept": 128,
+        "n_segments": 12,
+        "csv_length": 33.17
+      }
+    },
+    {
+      "seq_id": "0DJ6R",
+      "source_id": "0DJ6R",
+      "split": "train",
+      "T": 128,
+      "path": "G:/stream_memory_data/features/charades_event/0DJ6R.npz",
+      "labels": [
+        "event",
+        "seg"
+      ],
+      "meta": {
+        "scene": "Living room",
+        "subject": "UO0Z",
+        "fps": 59.94005994005994,
+        "n_frames_total": 1011,
+        "n_frames_kept": 128,
+        "n_segments": 2,
+        "csv_length": 16.83
+      }
+    },
+    {
+      "seq_id": "0ET8W",
+      "source_id": "0ET8W",
+      "split": "train",
+      "T": 128,
+      "path": "G:/stream_memory_data/features/charades_event/0ET8W.npz",
+      "labels": [
+        "event",
+        "seg"
+      ],
+      "meta": {
+        "scene": "Living room",
+        "subject": "D0RU",
+        "fps": 30.0,
+        "n_frames_total": 923,
+        "n_frames_kept": 128,
+        "n_segments": 4,
+        "csv_length": 30.75
+      }
+    },
+    {
+      "seq_id": "0FJSU",
+      "source_id": "0FJSU",
+      "split": "train",
+      "T": 128,
+      "path": "G:/stream_memory_data/features/charades_event/0FJSU.npz",
+      "labels": [
+        "event",
+        "seg"
+      ],
+      "meta": {
+        "scene": "Home Office / Study (A room in a house used for work)",
+        "subject": "PO5L",
+        "fps": 15.0,
+        "n_frames_total": 268,
+        "n_frames_kept": 128,
+        "n_segments": 4,
+        "csv_length": 17.79
+      }
+    },
+    {
+      "seq_id": "0GH5O",
+      "source_id": "0GH5O",
+      "split": "train",
+      "T": 128,
+      "path": "G:/stream_memory_data/features/charades_event/0GH5O.npz",
+      "labels": [
+        "event",
+        "seg"
+      ],
+      "meta": {
+        "scene": "Entryway (A hall that is generally located at the entrance of a house)",
+        "subject": "2RTW",
+        "fps": 29.97002997002997,
+        "n_frames_total": 914,
+        "n_frames_kept": 128,
+        "n_segments": 9,
+        "csv_length": 30.46
+      }
+    },
+    {
+      "seq_id": "P36YW",
+      "source_id": "P36YW",
+      "split": "val",
+      "T": 128,
+      "path": "G:/stream_memory_data/features/charades_event/P36YW.npz",
+      "labels": [
+        "event",
+        "seg"
+      ],
+      "meta": {
+        "scene": "Living room",
+        "subject": "3H6W",
+        "fps": 29.97002997002997,
+        "n_frames_total": 817,
+        "n_frames_kept": 128,
+        "n_segments": 12,
+        "csv_length": 27.21
+      }
+    },
+    {
+      "seq_id": "P4AEF",
+      "source_id": "P4AEF",
+      "split": "val",
+      "T": 128,
+      "path": "G:/stream_memory_data/features/charades_event/P4AEF.npz",
+      "labels": [
+        "event",
+        "seg"
+      ],
+      "meta": {
+        "scene": "Bedroom",
+        "subject": "2Q9D",
+        "fps": 29.833333333333332,
+        "n_frames_total": 874,
+        "n_frames_kept": 128,
+        "n_segments": 8,
+        "csv_length": 29.25
+      }
+    },
+    {
+      "seq_id": "P4MBS",
+      "source_id": "P4MBS",
+      "split": "val",
+      "T": 128,
+      "path": "G:/stream_memory_data/features/charades_event/P4MBS.npz",
+      "labels": [
+        "event",
+        "seg"
+      ],
+      "meta": {
+        "scene": "Living room",
+        "subject": "IK1O",
+        "fps": 29.916666666666668,
+        "n_frames_total": 896,
+        "n_frames_kept": 128,
+        "n_segments": 8,
+        "csv_length": 29.92
+      }
+    },
+    {
+      "seq_id": "P64DQ",
+      "source_id": "P64DQ",
+      "split": "val",
+      "T": 128,
+      "path": "G:/stream_memory_data/features/charades_event/P64DQ.npz",
+      "labels": [
+        "event",
+        "seg"
+      ],
+      "meta": {
+        "scene": "Bedroom",
+        "subject": "Z755",
+        "fps": 20.229,
+        "n_frames_total": 133,
+        "n_frames_kept": 128,
+        "n_segments": 2,
+        "csv_length": 6.54
+      }
+    },
+    {
+      "seq_id": "P73KX",
+      "source_id": "P73KX",
+      "split": "val",
+      "T": 128,
+      "path": "G:/stream_memory_data/features/charades_event/P73KX.npz",
+      "labels": [
+        "event",
+        "seg"
+      ],
+      "meta": {
+        "scene": "Home Office / Study (A room in a house used for work)",
+        "subject": "6RE8",
+        "fps": 25.0,
+        "n_frames_total": 919,
+        "n_frames_kept": 128,
+        "n_segments": 5,
+        "csv_length": 36.71
+      }
+    },
+    {
+      "seq_id": "UK5AT",
+      "source_id": "UK5AT",
+      "split": "test",
+      "T": 128,
+      "path": "G:/stream_memory_data/features/charades_event/UK5AT.npz",
+      "labels": [
+        "event",
+        "seg"
+      ],
+      "meta": {
+        "scene": "Kitchen",
+        "subject": "5LWB",
+        "fps": 30.0,
+        "n_frames_total": 1099,
+        "n_frames_kept": 128,
+        "n_segments": 7,
+        "csv_length": 36.58
+      }
+    },
+    {
+      "seq_id": "UKLQ1",
+      "source_id": "UKLQ1",
+      "split": "test",
+      "T": 128,
+      "path": "G:/stream_memory_data/features/charades_event/UKLQ1.npz",
+      "labels": [
+        "event",
+        "seg"
+      ],
+      "meta": {
+        "scene": "Hallway",
+        "subject": "T7C3",
+        "fps": 29.97002997002997,
+        "n_frames_total": 987,
+        "n_frames_kept": 128,
+        "n_segments": 7,
+        "csv_length": 32.92
+      }
+    },
+    {
+      "seq_id": "ULAWO",
+      "source_id": "ULAWO",
+      "split": "test",
+      "T": 128,
+      "path": "G:/stream_memory_data/features/charades_event/ULAWO.npz",
+      "labels": [
+        "event",
+        "seg"
+      ],
+      "meta": {
+        "scene": "Stairs",
+        "subject": "D0RU",
+        "fps": 30.0,
+        "n_frames_total": 937,
+        "n_frames_kept": 128,
+        "n_segments": 3,
+        "csv_length": 31.21
+      }
+    },
+    {
+      "seq_id": "UN6O9",
+      "source_id": "UN6O9",
+      "split": "test",
+      "T": 128,
+      "path": "G:/stream_memory_data/features/charades_event/UN6O9.npz",
+      "labels": [
+        "event",
+        "seg"
+      ],
+      "meta": {
+        "scene": "Kitchen",
+        "subject": "0KZ7",
+        "fps": 25.0,
+        "n_frames_total": 684,
+        "n_frames_kept": 128,
+        "n_segments": 4,
+        "csv_length": 27.33
+      }
+    },
+    {
+      "seq_id": "UNQD7",
+      "source_id": "UNQD7",
+      "split": "test",
+      "T": 128,
+      "path": "G:/stream_memory_data/features/charades_event/UNQD7.npz",
+      "labels": [
+        "event",
+        "seg"
+      ],
+      "meta": {
+        "scene": "Bedroom",
+        "subject": "YMXV",
+        "fps": 16.666666666666668,
+        "n_frames_total": 534,
+        "n_frames_kept": 128,
+        "n_segments": 3,
+        "csv_length": 31.96
+      }
+    }
+  ]
+}

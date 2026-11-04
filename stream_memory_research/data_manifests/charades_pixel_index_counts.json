@@ -1,0 +1,293 @@
+{
+  "dataset": "charades_pixel",
+  "n_seqs": 700,
+  "classes": [
+    "c000",
+    "c001",
+    "c002",
+    "c008",
+    "c009",
+    "c011",
+    "c015",
+    "c020",
+    "c026",
+    "c033",
+    "c059",
+    "c061",
+    "c062",
+    "c063",
+    "c065",
+    "c097",
+    "c106",
+    "c107",
+    "c113",
+    "c118",
+    "c151",
+    "c152",
+    "c153",
+    "c154",
+    "c156"
+  ],
+  "description": "per-class supervision statistics on the cached frame grid. n_positive_frames = number of cached frames (T=96, video id as split unit) whose event label is 1 for this class (from the npz event array). n_videos_with_event = videos with >=1 such frame. n_segments = raw annotated segments of this class in the 700 cached videos (Charades_v1_train.csv actions column). n_segments_labeled_effective = segments with offset > onset, i.e. the ones frame_labels can actually mark. n_videos_with_segment / n_videos_with_2plus_segments = videos with >=1 / >=2 such segments (count-task supervision availability).",
+  "class_rule": "charades.choose_classes(selected rows, n_classes=25, min_segments=50); class ids are the literal 'cXYZ' strings from Charades_v1_train.csv",
+  "per_class": [
+    {
+      "class_id": "c000",
+      "class_index": 0,
+      "n_positive_frames": 2916,
+      "n_videos_with_event": 67,
+      "n_segments": 72,
+      "n_segments_labeled_effective": 72,
+      "n_videos_with_segment": 67,
+      "n_videos_with_2plus_segments": 4
+    },
+    {
+      "class_id": "c001",
+      "class_index": 1,
+      "n_positive_frames": 2089,
+      "n_videos_with_event": 61,
+      "n_segments": 65,
+      "n_segments_labeled_effective": 65,
+      "n_videos_with_segment": 61,
+      "n_videos_with_2plus_segments": 3
+    },
+    {
+      "class_id": "c002",
+      "class_index": 2,
+      "n_positive_frames": 1467,
+      "n_videos_with_event": 50,
+      "n_segments": 54,
+      "n_segments_labeled_effective": 54,
+      "n_videos_with_segment": 50,
+      "n_videos_with_2plus_segments": 3
+    },
+    {
+      "class_id": "c008",
+      "class_index": 3,
+      "n_positive_frames": 1872,
+      "n_videos_with_event": 76,
+      "n_segments": 76,
+      "n_segments_labeled_effective": 76,
+      "n_videos_with_segment": 76,
+      "n_videos_with_2plus_segments": 0
+    },
+    {
+      "class_id": "c009",
+      "class_index": 4,
+      "n_positive_frames": 1975,
+      "n_videos_with_event": 85,
+      "n_segments": 87,
+      "n_segments_labeled_effective": 87,
+      "n_videos_with_segment": 85,
+      "n_videos_with_2plus_segments": 2
+    },
+    {
+      "class_id": "c011",
+      "class_index": 5,
+      "n_positive_frames": 4911,
+      "n_videos_with_event": 68,
+      "n_segments": 69,
+      "n_segments_labeled_effective": 69,
+      "n_videos_with_segment": 68,
+      "n_videos_with_2plus_segments": 1
+    },
+    {
+      "class_id": "c015",
+      "class_index": 6,
+      "n_positive_frames": 5337,
+      "n_videos_with_event": 88,
+      "n_segments": 88,
+      "n_segments_labeled_effective": 88,
+      "n_videos_with_segment": 88,
+      "n_videos_with_2plus_segments": 0
+    },
+    {
+      "class_id": "c020",
+      "class_index": 7,
+      "n_positive_frames": 3472,
+      "n_videos_with_event": 60,
+      "n_segments": 61,
+      "n_segments_labeled_effective": 61,
+      "n_videos_with_segment": 60,
+      "n_videos_with_2plus_segments": 1
+    },
+    {
+      "class_id": "c026",
+      "class_index": 8,
+      "n_positive_frames": 3490,
+      "n_videos_with_event": 52,
+      "n_segments": 52,
+      "n_segments_labeled_effective": 52,
+      "n_videos_with_segment": 52,
+      "n_videos_with_2plus_segments": 0
+    },
+    {
+      "class_id": "c033",
+      "class_index": 9,
+      "n_positive_frames": 3156,
+      "n_videos_with_event": 56,
+      "n_segments": 56,
+      "n_segments_labeled_effective": 56,
+      "n_videos_with_segment": 56,
+      "n_videos_with_2plus_segments": 0
+    },
+    {
+      "class_id": "c059",
+      "class_index": 10,
+      "n_positive_frames": 8194,
+      "n_videos_with_event": 124,
+      "n_segments": 124,
+      "n_segments_labeled_effective": 124,
+      "n_videos_with_segment": 124,
+      "n_videos_with_2plus_segments": 0
+    },
+    {
+      "class_id": "c061",
+      "class_index": 11,
+      "n_positive_frames": 5906,
+      "n_videos_with_event": 105,
+      "n_segments": 108,
+      "n_segments_labeled_effective": 108,
+      "n_videos_with_segment": 105,
+      "n_videos_with_2plus_segments": 3
+    },
+    {
+      "class_id": "c062",
+      "class_index": 12,
+      "n_positive_frames": 1600,
+      "n_videos_with_event": 49,
+      "n_segments": 52,
+      "n_segments_labeled_effective": 52,
+      "n_videos_with_segment": 49,
+      "n_videos_with_2plus_segments": 2
+    },
+    {
+      "class_id": "c063",
+      "class_index": 13,
+      "n_positive_frames": 2006,
+      "n_videos_with_event": 60,
+      "n_segments": 63,
+      "n_segments_labeled_effective": 63,
+      "n_videos_with_segment": 60,
+      "n_videos_with_2plus_segments": 2
+    },
+    {
+      "class_id": "c065",
+      "class_index": 14,
+      "n_positive_frames": 2502,
+      "n_videos_with_event": 52,
+      "n_segments": 53,
+      "n_segments_labeled_effective": 53,
+      "n_videos_with_segment": 52,
+      "n_videos_with_2plus_segments": 1
+    },
+    {
+      "class_id": "c097",
+      "class_index": 15,
+      "n_positive_frames": 2694,
+      "n_videos_with_event": 126,
+      "n_segments": 132,
+      "n_segments_labeled_effective": 132,
+      "n_videos_with_segment": 126,
+      "n_videos_with_2plus_segments": 3
+    },
+    {
+      "class_id": "c106",
+      "class_index": 16,
+      "n_positive_frames": 3545,
+      "n_videos_with_event": 97,
+      "n_segments": 99,
+      "n_segments_labeled_effective": 99,
+      "n_videos_with_segment": 97,
+      "n_videos_with_2plus_segments": 2
+    },
+    {
+      "class_id": "c107",
+      "class_index": 17,
+      "n_positive_frames": 4363,
+      "n_videos_with_event": 78,
+      "n_segments": 80,
+      "n_segments_labeled_effective": 80,
+      "n_videos_with_segment": 78,
+      "n_videos_with_2plus_segments": 2
+    },
+    {
+      "class_id": "c113",
+      "class_index": 18,
+      "n_positive_frames": 1529,
+      "n_videos_with_event": 54,
+      "n_segments": 54,
+      "n_segments_labeled_effective": 54,
+      "n_videos_with_segment": 54,
+      "n_videos_with_2plus_segments": 0
+    },
+    {
+      "class_id": "c118",
+      "class_index": 19,
+      "n_positive_frames": 3447,
+      "n_videos_with_event": 67,
+      "n_segments": 68,
+      "n_segments_labeled_effective": 68,
+      "n_videos_with_segment": 67,
+      "n_videos_with_2plus_segments": 1
+    },
+    {
+      "class_id": "c151",
+      "class_index": 20,
+      "n_positive_frames": 1688,
+      "n_videos_with_event": 82,
+      "n_segments": 84,
+      "n_segments_labeled_effective": 84,
+      "n_videos_with_segment": 82,
+      "n_videos_with_2plus_segments": 2
+    },
+    {
+      "class_id": "c152",
+      "class_index": 21,
+      "n_positive_frames": 4029,
+      "n_videos_with_event": 99,
+      "n_segments": 101,
+      "n_segments_labeled_effective": 101,
+      "n_videos_with_segment": 99,
+      "n_videos_with_2plus_segments": 2
+    },
+    {
+      "class_id": "c153",
+      "class_index": 22,
+      "n_positive_frames": 1862,
+      "n_videos_with_event": 57,
+      "n_segments": 61,
+      "n_segments_labeled_effective": 61,
+      "n_videos_with_segment": 57,
+      "n_videos_with_2plus_segments": 4
+    },
+    {
+      "class_id": "c154",
+      "class_index": 23,
+      "n_positive_frames": 2939,
+      "n_videos_with_event": 125,
+      "n_segments": 125,
+      "n_segments_labeled_effective": 125,
+      "n_videos_with_segment": 125,
+      "n_videos_with_2plus_segments": 0
+    },
+    {
+      "class_id": "c156",
+      "class_index": 24,
+      "n_positive_frames": 4593,
+      "n_videos_with_event": 101,
+      "n_segments": 102,
+      "n_segments_labeled_effective": 102,
+      "n_videos_with_segment": 101,
+      "n_videos_with_2plus_segments": 1
+    }
+  ],
+  "totals": {
+    "n_positive_frames": 81582,
+    "n_videos_with_event": 1939,
+    "n_segments": 1986,
+    "n_segments_labeled_effective": 1986,
+    "n_videos_with_segment": 1939,
+    "n_videos_with_2plus_segments": 39
+  }
+}

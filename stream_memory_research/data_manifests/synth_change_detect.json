@@ -1,0 +1,8371 @@
+{
+  "dataset": "synth_change_detect",
+  "task": "synth_mem",
+  "feature_dim": 64,
+  "tok_dim": 17,
+  "roi_dim": 0,
+  "n_roi": 0,
+  "encoder": {
+    "name": "synthetic_controlled",
+    "version": "synth-suite-v1",
+    "task": "change_detect"
+  },
+  "split_key": "source_id",
+  "label_specs": {
+    "state": {
+      "kind": "mse",
+      "dim": 256
+    },
+    "class": {
+      "kind": "ce",
+      "dim": 1,
+      "n_classes": 16,
+      "ignore": -1
+    },
+    "event": {
+      "kind": "bce",
+      "dim": 1,
+      "n_classes": 1
+    }
+  },
+  "extra": {
+    "generator": "src/synth",
+    "suite_format": "synth-suite-v1",
+    "task_id": "change_detect",
+    "seed_base": 20261103,
+    "split_policy": "split by episode generator seed group: train=[0,800), val=[800,1000), test=[1000,1200); source_id = 'ep<index>' (never split by frame); test episodes are generated independently",
+    "split_ranges": {
+      "train": [
+        0,
+        800
+      ],
+      "val": [
+        800,
+        1000
+      ],
+      "test": [
+        1000,
+        1200
+      ]
+    },
+    "nominal_dt": 0.1,
+    "layout": {
+      "layout_version": 1,
+      "KMAX": 16,
+      "V": 16,
+      "VC": 8,
+      "VA": 8,
+      "N_CODES": 16,
+      "tok_dim": 17,
+      "feat_dim": 64,
+      "feat_summary_dim": 16,
+      "C_EVENT": 4
+    },
+    "channel_layout": {
+      "feat": {
+        "shape": "[T, 64] float16",
+        "summary_channels": [
+          {
+            "idx": 0,
+            "name": "bias",
+            "meaning": "constant 1.0"
+          },
+          {
+            "idx": 1,
+            "name": "vis_frac",
+            "meaning": "number of currently observed object tokens / 16"
+          },
+          {
+            "idx": 2,
+            "name": "any_hidden",
+            "meaning": "1.0 if at least one existing object is currently hidden"
+          },
+          {
+            "idx": 3,
+            "name": "query",
+            "meaning": "1.0 on steps flagged as a recall query"
+          },
+          {
+            "idx": 4,
+            "name": "event_pulse",
+            "meaning": "1.0 on an event step (knock/wave impulse)"
+          },
+          {
+            "idx": 5,
+            "name": "event_type_norm",
+            "meaning": "event type / (C_EVENT-1) in [0,1]; 0 when no event"
+          },
+          {
+            "idx": 6,
+            "name": "elapsed_s_60",
+            "meaning": "physical elapsed time / 60 s (causal clock)"
+          },
+          {
+            "idx": 7,
+            "name": "event_age_s_60",
+            "meaning": "seconds since the last event / 60 s (0 if none yet)"
+          },
+          {
+            "idx": 8,
+            "name": "since_change_s_60",
+            "meaning": "seconds since any visible token value last changed / 60 s"
+          },
+          {
+            "idx": 9,
+            "name": "hidden_asked_frac",
+            "meaning": "number of object-slots that are existing+hidden / 16"
+          },
+          {
+            "idx": 10,
+            "name": "mean_vis_norm",
+            "meaning": "mean L2 norm of the currently observed token values"
+          },
+          {
+            "idx": 11,
+            "name": "n_existing_frac",
+            "meaning": "number of existing object slots / 16"
+          },
+          {
+            "idx": 12,
+            "name": "reserved",
+            "meaning": "0.0"
+          },
+          {
+            "idx": 13,
+            "name": "reserved",
+            "meaning": "0.0"
+          },
+          {
+            "idx": 14,
+            "name": "reserved",
+            "meaning": "0.0"
+          },
+          {
+            "idx": 15,
+            "name": "reserved",
+            "meaning": "0.0"
+          }
+        ],
+        "reserved": "channels 16..63 are always 0.0 (reserved)"
+      },
+      "tok": {
+        "shape": "[T, 16, 17] float16",
+        "channels_0_15": "that object's current 16-dim value (identity dims zeroed when visible-but-not-identifiable)",
+        "channel_16": "visibility flag: 1.0 iff the object is observed now; when not observed the entire token is 0"
+      },
+      "labels": {
+        "lab_state": "[T, 256] float32 = 16 slots x 16 state dims; true state scaled by lab_mask-independent knowability (0 where the slot is unused or its value is unknowable)",
+        "lab_mask": "[T, 16] float32 = 1.0 iff the slot is asked for (knowable but absent from the current observation); all metrics are computed on lab_mask==1",
+        "lab_class": "[T] int64 = -1 ignore; identity id (vanish_reappear) or event type (event_seq)",
+        "lab_event": "[T] float32 0/1 event indicator"
+      },
+      "identity_code": "state dims 0..7: signed one-hot (16 identities); dims 8..15: N(0,1) analogue"
+    },
+    "phases": {
+      "pre": 0,
+      "write": 1,
+      "hold": 2,
+      "change": 3,
+      "post_hold": 4
+    },
+    "main_metric": "cos",
+    "task_params": {
+      "pre_frames": 2,
+      "write_frames": 4,
+      "hold_steps": [
+        12,
+        30
+      ],
+      "change_frames": 2,
+      "post_steps": [
+        10,
+        20
+      ]
+    },
+    "eval_only": false,
+    "base_dataset": null,
+    "base_task": "change_detect",
+    "sweep_gap_s": null,
+    "gap_s": null,
+    "capacity_k": null,
+    "sweep_role": "",
+    "layout_signature": "2b2bdc7b2b7c6a54",
+    "irregular": null,
+    "irregular_params": {},
+    "control": null,
+    "eval_manifests": [
+      "synth_change_detect_shuffled"
+    ],
+    "eval_manifest_paths": [
+      "G:\\stream_memory_data\\synth\\manifests\\synth_change_detect_shuffled.json"
+    ],
+    "notes": "base change_detect dataset (train/val/test, split by episode group); eval-only companions: synth_change_detect_shuffled",
+    "oracle_reference_definition": {
+      "perfect": "unbounded faithful memory reading only the observation (PerfectMemoryOracle) -> sanity upper bound 1.0",
+      "memoryless": "outputs the current observation only (ZeroMemoryOracle) -> memoryless bound",
+      "chance": "random read-out (RandomOracle) -> theoretical chance"
+    }
+  },
+  "seqs": [
+    {
+      "seq_id": "synth_change_detect_train_000000",
+      "source_id": "ep000000",
+      "split": "train",
+      "T": 46,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000000.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 0,
+        "seed": [
+          20261103,
+          1701374976,
+          0
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.3000000000000003,
+        "K": 1,
+        "T": 46,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 23,
+        "post_steps": 15,
+        "v1_code": 14
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000001",
+      "source_id": "ep000001",
+      "split": "train",
+      "T": 47,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000001.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1,
+        "seed": [
+          20261103,
+          1701374976,
+          1
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.5,
+        "K": 1,
+        "T": 47,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 25,
+        "post_steps": 14,
+        "v1_code": 11
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000002",
+      "source_id": "ep000002",
+      "split": "train",
+      "T": 34,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000002.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 2,
+        "seed": [
+          20261103,
+          1701374976,
+          2
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.3,
+        "K": 1,
+        "T": 34,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 13,
+        "post_steps": 13,
+        "v1_code": 6
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000003",
+      "source_id": "ep000003",
+      "split": "train",
+      "T": 45,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000003.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 3,
+        "seed": [
+          20261103,
+          1701374976,
+          3
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.7000000000000002,
+        "K": 1,
+        "T": 45,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 17,
+        "post_steps": 20,
+        "v1_code": 4
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000004",
+      "source_id": "ep000004",
+      "split": "train",
+      "T": 57,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000004.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 4,
+        "seed": [
+          20261103,
+          1701374976,
+          4
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.9000000000000004,
+        "K": 1,
+        "T": 57,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 29,
+        "post_steps": 20,
+        "v1_code": 4
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000005",
+      "source_id": "ep000005",
+      "split": "train",
+      "T": 50,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000005.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 5,
+        "seed": [
+          20261103,
+          1701374976,
+          5
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.6,
+        "K": 1,
+        "T": 50,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 26,
+        "post_steps": 16,
+        "v1_code": 2
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000006",
+      "source_id": "ep000006",
+      "split": "train",
+      "T": 50,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000006.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 6,
+        "seed": [
+          20261103,
+          1701374976,
+          6
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.6,
+        "K": 1,
+        "T": 50,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 26,
+        "post_steps": 16,
+        "v1_code": 12
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000007",
+      "source_id": "ep000007",
+      "split": "train",
+      "T": 46,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000007.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 7,
+        "seed": [
+          20261103,
+          1701374976,
+          7
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.9000000000000001,
+        "K": 1,
+        "T": 46,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 19,
+        "post_steps": 19,
+        "v1_code": 15
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000008",
+      "source_id": "ep000008",
+      "split": "train",
+      "T": 39,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000008.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 8,
+        "seed": [
+          20261103,
+          1701374976,
+          8
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.1,
+        "K": 1,
+        "T": 39,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 21,
+        "post_steps": 10,
+        "v1_code": 15
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000009",
+      "source_id": "ep000009",
+      "split": "train",
+      "T": 38,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000009.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 9,
+        "seed": [
+          20261103,
+          1701374976,
+          9
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.9000000000000001,
+        "K": 1,
+        "T": 38,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 19,
+        "post_steps": 11,
+        "v1_code": 4
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000010",
+      "source_id": "ep000010",
+      "split": "train",
+      "T": 55,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000010.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 10,
+        "seed": [
+          20261103,
+          1701374976,
+          10
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.9000000000000004,
+        "K": 1,
+        "T": 55,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 29,
+        "post_steps": 18,
+        "v1_code": 15
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000011",
+      "source_id": "ep000011",
+      "split": "train",
+      "T": 50,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000011.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 11,
+        "seed": [
+          20261103,
+          1701374976,
+          11
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.9000000000000004,
+        "K": 1,
+        "T": 50,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 29,
+        "post_steps": 13,
+        "v1_code": 0
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000012",
+      "source_id": "ep000012",
+      "split": "train",
+      "T": 48,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000012.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 12,
+        "seed": [
+          20261103,
+          1701374976,
+          12
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.5,
+        "K": 1,
+        "T": 48,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 25,
+        "post_steps": 15,
+        "v1_code": 4
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000013",
+      "source_id": "ep000013",
+      "split": "train",
+      "T": 39,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000013.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 13,
+        "seed": [
+          20261103,
+          1701374976,
+          13
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.7000000000000002,
+        "K": 1,
+        "T": 39,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 17,
+        "post_steps": 14,
+        "v1_code": 2
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000014",
+      "source_id": "ep000014",
+      "split": "train",
+      "T": 39,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000014.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 14,
+        "seed": [
+          20261103,
+          1701374976,
+          14
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.2000000000000002,
+        "K": 1,
+        "T": 39,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 12,
+        "post_steps": 19,
+        "v1_code": 1
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000015",
+      "source_id": "ep000015",
+      "split": "train",
+      "T": 41,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000015.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 15,
+        "seed": [
+          20261103,
+          1701374976,
+          15
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.5,
+        "K": 1,
+        "T": 41,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 15,
+        "post_steps": 18,
+        "v1_code": 2
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000016",
+      "source_id": "ep000016",
+      "split": "train",
+      "T": 36,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000016.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 16,
+        "seed": [
+          20261103,
+          1701374976,
+          16
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.6,
+        "K": 1,
+        "T": 36,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 16,
+        "post_steps": 12,
+        "v1_code": 11
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000017",
+      "source_id": "ep000017",
+      "split": "train",
+      "T": 51,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000017.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 17,
+        "seed": [
+          20261103,
+          1701374976,
+          17
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.3000000000000003,
+        "K": 1,
+        "T": 51,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 23,
+        "post_steps": 20,
+        "v1_code": 4
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000018",
+      "source_id": "ep000018",
+      "split": "train",
+      "T": 43,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000018.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 18,
+        "seed": [
+          20261103,
+          1701374976,
+          18
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.6,
+        "K": 1,
+        "T": 43,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 16,
+        "post_steps": 19,
+        "v1_code": 15
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000019",
+      "source_id": "ep000019",
+      "split": "train",
+      "T": 37,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000019.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 19,
+        "seed": [
+          20261103,
+          1701374976,
+          19
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.8,
+        "K": 1,
+        "T": 37,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 18,
+        "post_steps": 11,
+        "v1_code": 10
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000020",
+      "source_id": "ep000020",
+      "split": "train",
+      "T": 39,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000020.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 20,
+        "seed": [
+          20261103,
+          1701374976,
+          20
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.5,
+        "K": 1,
+        "T": 39,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 15,
+        "post_steps": 16,
+        "v1_code": 4
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000021",
+      "source_id": "ep000021",
+      "split": "train",
+      "T": 37,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000021.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 21,
+        "seed": [
+          20261103,
+          1701374976,
+          21
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.9000000000000001,
+        "K": 1,
+        "T": 37,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 19,
+        "post_steps": 10,
+        "v1_code": 9
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000022",
+      "source_id": "ep000022",
+      "split": "train",
+      "T": 53,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000022.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 22,
+        "seed": [
+          20261103,
+          1701374976,
+          22
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.8000000000000003,
+        "K": 1,
+        "T": 53,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 28,
+        "post_steps": 17,
+        "v1_code": 0
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000023",
+      "source_id": "ep000023",
+      "split": "train",
+      "T": 42,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000023.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 23,
+        "seed": [
+          20261103,
+          1701374976,
+          23
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.2,
+        "K": 1,
+        "T": 42,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 22,
+        "post_steps": 12,
+        "v1_code": 6
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000024",
+      "source_id": "ep000024",
+      "split": "train",
+      "T": 42,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000024.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 24,
+        "seed": [
+          20261103,
+          1701374976,
+          24
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.8,
+        "K": 1,
+        "T": 42,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 18,
+        "post_steps": 16,
+        "v1_code": 14
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000025",
+      "source_id": "ep000025",
+      "split": "train",
+      "T": 53,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000025.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 25,
+        "seed": [
+          20261103,
+          1701374976,
+          25
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.6,
+        "K": 1,
+        "T": 53,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 26,
+        "post_steps": 19,
+        "v1_code": 6
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000026",
+      "source_id": "ep000026",
+      "split": "train",
+      "T": 36,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000026.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 26,
+        "seed": [
+          20261103,
+          1701374976,
+          26
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.8,
+        "K": 1,
+        "T": 36,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 18,
+        "post_steps": 10,
+        "v1_code": 6
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000027",
+      "source_id": "ep000027",
+      "split": "train",
+      "T": 53,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000027.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 27,
+        "seed": [
+          20261103,
+          1701374976,
+          27
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.9000000000000004,
+        "K": 1,
+        "T": 53,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 29,
+        "post_steps": 16,
+        "v1_code": 5
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000028",
+      "source_id": "ep000028",
+      "split": "train",
+      "T": 51,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000028.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 28,
+        "seed": [
+          20261103,
+          1701374976,
+          28
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 3.0,
+        "K": 1,
+        "T": 51,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 30,
+        "post_steps": 13,
+        "v1_code": 10
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000029",
+      "source_id": "ep000029",
+      "split": "train",
+      "T": 52,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000029.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 29,
+        "seed": [
+          20261103,
+          1701374976,
+          29
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 3.0,
+        "K": 1,
+        "T": 52,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 30,
+        "post_steps": 14,
+        "v1_code": 0
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000030",
+      "source_id": "ep000030",
+      "split": "train",
+      "T": 40,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000030.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 30,
+        "seed": [
+          20261103,
+          1701374976,
+          30
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.5,
+        "K": 1,
+        "T": 40,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 15,
+        "post_steps": 17,
+        "v1_code": 1
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000031",
+      "source_id": "ep000031",
+      "split": "train",
+      "T": 45,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000031.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 31,
+        "seed": [
+          20261103,
+          1701374976,
+          31
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.3000000000000003,
+        "K": 1,
+        "T": 45,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 23,
+        "post_steps": 14,
+        "v1_code": 7
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000032",
+      "source_id": "ep000032",
+      "split": "train",
+      "T": 35,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000032.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 32,
+        "seed": [
+          20261103,
+          1701374976,
+          32
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.5,
+        "K": 1,
+        "T": 35,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 15,
+        "post_steps": 12,
+        "v1_code": 14
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000033",
+      "source_id": "ep000033",
+      "split": "train",
+      "T": 50,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000033.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 33,
+        "seed": [
+          20261103,
+          1701374976,
+          33
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.5,
+        "K": 1,
+        "T": 50,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 25,
+        "post_steps": 17,
+        "v1_code": 7
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000034",
+      "source_id": "ep000034",
+      "split": "train",
+      "T": 47,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000034.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 34,
+        "seed": [
+          20261103,
+          1701374976,
+          34
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.3000000000000003,
+        "K": 1,
+        "T": 47,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 23,
+        "post_steps": 16,
+        "v1_code": 8
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000035",
+      "source_id": "ep000035",
+      "split": "train",
+      "T": 54,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000035.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 35,
+        "seed": [
+          20261103,
+          1701374976,
+          35
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.6,
+        "K": 1,
+        "T": 54,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 26,
+        "post_steps": 20,
+        "v1_code": 13
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000036",
+      "source_id": "ep000036",
+      "split": "train",
+      "T": 45,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000036.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 36,
+        "seed": [
+          20261103,
+          1701374976,
+          36
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.8,
+        "K": 1,
+        "T": 45,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 18,
+        "post_steps": 19,
+        "v1_code": 10
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000037",
+      "source_id": "ep000037",
+      "split": "train",
+      "T": 34,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000037.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 37,
+        "seed": [
+          20261103,
+          1701374976,
+          37
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.5,
+        "K": 1,
+        "T": 34,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 15,
+        "post_steps": 11,
+        "v1_code": 5
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000038",
+      "source_id": "ep000038",
+      "split": "train",
+      "T": 39,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000038.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 38,
+        "seed": [
+          20261103,
+          1701374976,
+          38
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.8,
+        "K": 1,
+        "T": 39,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 18,
+        "post_steps": 13,
+        "v1_code": 7
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000039",
+      "source_id": "ep000039",
+      "split": "train",
+      "T": 44,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000039.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 39,
+        "seed": [
+          20261103,
+          1701374976,
+          39
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.1,
+        "K": 1,
+        "T": 44,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 21,
+        "post_steps": 15,
+        "v1_code": 0
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000040",
+      "source_id": "ep000040",
+      "split": "train",
+      "T": 34,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000040.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 40,
+        "seed": [
+          20261103,
+          1701374976,
+          40
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.3,
+        "K": 1,
+        "T": 34,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 13,
+        "post_steps": 13,
+        "v1_code": 8
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000041",
+      "source_id": "ep000041",
+      "split": "train",
+      "T": 36,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000041.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 41,
+        "seed": [
+          20261103,
+          1701374976,
+          41
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.6,
+        "K": 1,
+        "T": 36,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 16,
+        "post_steps": 12,
+        "v1_code": 4
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000042",
+      "source_id": "ep000042",
+      "split": "train",
+      "T": 34,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000042.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 42,
+        "seed": [
+          20261103,
+          1701374976,
+          42
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.2000000000000002,
+        "K": 1,
+        "T": 34,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 12,
+        "post_steps": 14,
+        "v1_code": 8
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000043",
+      "source_id": "ep000043",
+      "split": "train",
+      "T": 45,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000043.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 43,
+        "seed": [
+          20261103,
+          1701374976,
+          43
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.2,
+        "K": 1,
+        "T": 45,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 22,
+        "post_steps": 15,
+        "v1_code": 15
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000044",
+      "source_id": "ep000044",
+      "split": "train",
+      "T": 46,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000044.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 44,
+        "seed": [
+          20261103,
+          1701374976,
+          44
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.0,
+        "K": 1,
+        "T": 46,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 20,
+        "post_steps": 18,
+        "v1_code": 11
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000045",
+      "source_id": "ep000045",
+      "split": "train",
+      "T": 32,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000045.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 45,
+        "seed": [
+          20261103,
+          1701374976,
+          45
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.2000000000000002,
+        "K": 1,
+        "T": 32,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 12,
+        "post_steps": 12,
+        "v1_code": 9
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000046",
+      "source_id": "ep000046",
+      "split": "train",
+      "T": 39,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000046.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 46,
+        "seed": [
+          20261103,
+          1701374976,
+          46
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.6,
+        "K": 1,
+        "T": 39,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 16,
+        "post_steps": 15,
+        "v1_code": 13
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000047",
+      "source_id": "ep000047",
+      "split": "train",
+      "T": 37,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000047.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 47,
+        "seed": [
+          20261103,
+          1701374976,
+          47
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.6,
+        "K": 1,
+        "T": 37,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 16,
+        "post_steps": 13,
+        "v1_code": 2
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000048",
+      "source_id": "ep000048",
+      "split": "train",
+      "T": 41,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000048.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 48,
+        "seed": [
+          20261103,
+          1701374976,
+          48
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.3,
+        "K": 1,
+        "T": 41,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 13,
+        "post_steps": 20,
+        "v1_code": 3
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000049",
+      "source_id": "ep000049",
+      "split": "train",
+      "T": 45,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000049.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 49,
+        "seed": [
+          20261103,
+          1701374976,
+          49
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.0,
+        "K": 1,
+        "T": 45,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 20,
+        "post_steps": 17,
+        "v1_code": 1
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000050",
+      "source_id": "ep000050",
+      "split": "train",
+      "T": 34,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000050.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 50,
+        "seed": [
+          20261103,
+          1701374976,
+          50
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.6,
+        "K": 1,
+        "T": 34,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 16,
+        "post_steps": 10,
+        "v1_code": 8
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000051",
+      "source_id": "ep000051",
+      "split": "train",
+      "T": 35,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000051.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 51,
+        "seed": [
+          20261103,
+          1701374976,
+          51
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.4000000000000001,
+        "K": 1,
+        "T": 35,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 14,
+        "post_steps": 13,
+        "v1_code": 15
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000052",
+      "source_id": "ep000052",
+      "split": "train",
+      "T": 41,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000052.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 52,
+        "seed": [
+          20261103,
+          1701374976,
+          52
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.3,
+        "K": 1,
+        "T": 41,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 13,
+        "post_steps": 20,
+        "v1_code": 10
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000053",
+      "source_id": "ep000053",
+      "split": "train",
+      "T": 43,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000053.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 53,
+        "seed": [
+          20261103,
+          1701374976,
+          53
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.8,
+        "K": 1,
+        "T": 43,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 18,
+        "post_steps": 17,
+        "v1_code": 9
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000054",
+      "source_id": "ep000054",
+      "split": "train",
+      "T": 42,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000054.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 54,
+        "seed": [
+          20261103,
+          1701374976,
+          54
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.8,
+        "K": 1,
+        "T": 42,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 18,
+        "post_steps": 16,
+        "v1_code": 4
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000055",
+      "source_id": "ep000055",
+      "split": "train",
+      "T": 47,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000055.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 55,
+        "seed": [
+          20261103,
+          1701374976,
+          55
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.1,
+        "K": 1,
+        "T": 47,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 21,
+        "post_steps": 18,
+        "v1_code": 13
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000056",
+      "source_id": "ep000056",
+      "split": "train",
+      "T": 36,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000056.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 56,
+        "seed": [
+          20261103,
+          1701374976,
+          56
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.6,
+        "K": 1,
+        "T": 36,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 16,
+        "post_steps": 12,
+        "v1_code": 7
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000057",
+      "source_id": "ep000057",
+      "split": "train",
+      "T": 47,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000057.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 57,
+        "seed": [
+          20261103,
+          1701374976,
+          57
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.6,
+        "K": 1,
+        "T": 47,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 26,
+        "post_steps": 13,
+        "v1_code": 7
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000058",
+      "source_id": "ep000058",
+      "split": "train",
+      "T": 39,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000058.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 58,
+        "seed": [
+          20261103,
+          1701374976,
+          58
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.2000000000000002,
+        "K": 1,
+        "T": 39,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 12,
+        "post_steps": 19,
+        "v1_code": 1
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000059",
+      "source_id": "ep000059",
+      "split": "train",
+      "T": 52,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000059.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 59,
+        "seed": [
+          20261103,
+          1701374976,
+          59
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.8000000000000003,
+        "K": 1,
+        "T": 52,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 28,
+        "post_steps": 16,
+        "v1_code": 8
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000060",
+      "source_id": "ep000060",
+      "split": "train",
+      "T": 43,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000060.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 60,
+        "seed": [
+          20261103,
+          1701374976,
+          60
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.5,
+        "K": 1,
+        "T": 43,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 15,
+        "post_steps": 20,
+        "v1_code": 2
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000061",
+      "source_id": "ep000061",
+      "split": "train",
+      "T": 42,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000061.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 61,
+        "seed": [
+          20261103,
+          1701374976,
+          61
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.5,
+        "K": 1,
+        "T": 42,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 15,
+        "post_steps": 19,
+        "v1_code": 15
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000062",
+      "source_id": "ep000062",
+      "split": "train",
+      "T": 42,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000062.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 62,
+        "seed": [
+          20261103,
+          1701374976,
+          62
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.2,
+        "K": 1,
+        "T": 42,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 22,
+        "post_steps": 12,
+        "v1_code": 12
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000063",
+      "source_id": "ep000063",
+      "split": "train",
+      "T": 46,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000063.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 63,
+        "seed": [
+          20261103,
+          1701374976,
+          63
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.7,
+        "K": 1,
+        "T": 46,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 27,
+        "post_steps": 11,
+        "v1_code": 4
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000064",
+      "source_id": "ep000064",
+      "split": "train",
+      "T": 46,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000064.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 64,
+        "seed": [
+          20261103,
+          1701374976,
+          64
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.3000000000000003,
+        "K": 1,
+        "T": 46,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 23,
+        "post_steps": 15,
+        "v1_code": 2
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000065",
+      "source_id": "ep000065",
+      "split": "train",
+      "T": 35,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000065.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 65,
+        "seed": [
+          20261103,
+          1701374976,
+          65
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.7000000000000002,
+        "K": 1,
+        "T": 35,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 17,
+        "post_steps": 10,
+        "v1_code": 8
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000066",
+      "source_id": "ep000066",
+      "split": "train",
+      "T": 34,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000066.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 66,
+        "seed": [
+          20261103,
+          1701374976,
+          66
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.4000000000000001,
+        "K": 1,
+        "T": 34,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 14,
+        "post_steps": 12,
+        "v1_code": 10
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000067",
+      "source_id": "ep000067",
+      "split": "train",
+      "T": 47,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000067.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 67,
+        "seed": [
+          20261103,
+          1701374976,
+          67
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.1,
+        "K": 1,
+        "T": 47,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 21,
+        "post_steps": 18,
+        "v1_code": 6
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000068",
+      "source_id": "ep000068",
+      "split": "train",
+      "T": 34,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000068.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 68,
+        "seed": [
+          20261103,
+          1701374976,
+          68
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.2000000000000002,
+        "K": 1,
+        "T": 34,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 12,
+        "post_steps": 14,
+        "v1_code": 9
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000069",
+      "source_id": "ep000069",
+      "split": "train",
+      "T": 48,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000069.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 69,
+        "seed": [
+          20261103,
+          1701374976,
+          69
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.2,
+        "K": 1,
+        "T": 48,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 22,
+        "post_steps": 18,
+        "v1_code": 9
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000070",
+      "source_id": "ep000070",
+      "split": "train",
+      "T": 45,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000070.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 70,
+        "seed": [
+          20261103,
+          1701374976,
+          70
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.7,
+        "K": 1,
+        "T": 45,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 27,
+        "post_steps": 10,
+        "v1_code": 14
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000071",
+      "source_id": "ep000071",
+      "split": "train",
+      "T": 50,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000071.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 71,
+        "seed": [
+          20261103,
+          1701374976,
+          71
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.2,
+        "K": 1,
+        "T": 50,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 22,
+        "post_steps": 20,
+        "v1_code": 12
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000072",
+      "source_id": "ep000072",
+      "split": "train",
+      "T": 55,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000072.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 72,
+        "seed": [
+          20261103,
+          1701374976,
+          72
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.8000000000000003,
+        "K": 1,
+        "T": 55,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 28,
+        "post_steps": 19,
+        "v1_code": 11
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000073",
+      "source_id": "ep000073",
+      "split": "train",
+      "T": 46,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000073.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 73,
+        "seed": [
+          20261103,
+          1701374976,
+          73
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.7,
+        "K": 1,
+        "T": 46,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 27,
+        "post_steps": 11,
+        "v1_code": 15
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000074",
+      "source_id": "ep000074",
+      "split": "train",
+      "T": 36,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000074.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 74,
+        "seed": [
+          20261103,
+          1701374976,
+          74
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.2000000000000002,
+        "K": 1,
+        "T": 36,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 12,
+        "post_steps": 16,
+        "v1_code": 8
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000075",
+      "source_id": "ep000075",
+      "split": "train",
+      "T": 54,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000075.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 75,
+        "seed": [
+          20261103,
+          1701374976,
+          75
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.7,
+        "K": 1,
+        "T": 54,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 27,
+        "post_steps": 19,
+        "v1_code": 8
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000076",
+      "source_id": "ep000076",
+      "split": "train",
+      "T": 31,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000076.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 76,
+        "seed": [
+          20261103,
+          1701374976,
+          76
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.3,
+        "K": 1,
+        "T": 31,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 13,
+        "post_steps": 10,
+        "v1_code": 0
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000077",
+      "source_id": "ep000077",
+      "split": "train",
+      "T": 50,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000077.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 77,
+        "seed": [
+          20261103,
+          1701374976,
+          77
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.5,
+        "K": 1,
+        "T": 50,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 25,
+        "post_steps": 17,
+        "v1_code": 1
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000078",
+      "source_id": "ep000078",
+      "split": "train",
+      "T": 39,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000078.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 78,
+        "seed": [
+          20261103,
+          1701374976,
+          78
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.8,
+        "K": 1,
+        "T": 39,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 18,
+        "post_steps": 13,
+        "v1_code": 13
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000079",
+      "source_id": "ep000079",
+      "split": "train",
+      "T": 34,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000079.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 79,
+        "seed": [
+          20261103,
+          1701374976,
+          79
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.2000000000000002,
+        "K": 1,
+        "T": 34,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 12,
+        "post_steps": 14,
+        "v1_code": 8
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000080",
+      "source_id": "ep000080",
+      "split": "train",
+      "T": 46,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000080.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 80,
+        "seed": [
+          20261103,
+          1701374976,
+          80
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.9000000000000001,
+        "K": 1,
+        "T": 46,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 19,
+        "post_steps": 19,
+        "v1_code": 4
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000081",
+      "source_id": "ep000081",
+      "split": "train",
+      "T": 35,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000081.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 81,
+        "seed": [
+          20261103,
+          1701374976,
+          81
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.6,
+        "K": 1,
+        "T": 35,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 16,
+        "post_steps": 11,
+        "v1_code": 13
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000082",
+      "source_id": "ep000082",
+      "split": "train",
+      "T": 42,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000082.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 82,
+        "seed": [
+          20261103,
+          1701374976,
+          82
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.2,
+        "K": 1,
+        "T": 42,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 22,
+        "post_steps": 12,
+        "v1_code": 5
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000083",
+      "source_id": "ep000083",
+      "split": "train",
+      "T": 39,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000083.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 83,
+        "seed": [
+          20261103,
+          1701374976,
+          83
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.7000000000000002,
+        "K": 1,
+        "T": 39,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 17,
+        "post_steps": 14,
+        "v1_code": 4
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000084",
+      "source_id": "ep000084",
+      "split": "train",
+      "T": 47,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000084.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 84,
+        "seed": [
+          20261103,
+          1701374976,
+          84
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.1,
+        "K": 1,
+        "T": 47,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 21,
+        "post_steps": 18,
+        "v1_code": 8
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000085",
+      "source_id": "ep000085",
+      "split": "train",
+      "T": 50,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000085.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 85,
+        "seed": [
+          20261103,
+          1701374976,
+          85
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.5,
+        "K": 1,
+        "T": 50,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 25,
+        "post_steps": 17,
+        "v1_code": 14
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000086",
+      "source_id": "ep000086",
+      "split": "train",
+      "T": 46,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000086.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 86,
+        "seed": [
+          20261103,
+          1701374976,
+          86
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.8,
+        "K": 1,
+        "T": 46,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 18,
+        "post_steps": 20,
+        "v1_code": 9
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000087",
+      "source_id": "ep000087",
+      "split": "train",
+      "T": 57,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000087.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 87,
+        "seed": [
+          20261103,
+          1701374976,
+          87
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.9000000000000004,
+        "K": 1,
+        "T": 57,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 29,
+        "post_steps": 20,
+        "v1_code": 14
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000088",
+      "source_id": "ep000088",
+      "split": "train",
+      "T": 47,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000088.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 88,
+        "seed": [
+          20261103,
+          1701374976,
+          88
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.2,
+        "K": 1,
+        "T": 47,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 22,
+        "post_steps": 17,
+        "v1_code": 0
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000089",
+      "source_id": "ep000089",
+      "split": "train",
+      "T": 35,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000089.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 89,
+        "seed": [
+          20261103,
+          1701374976,
+          89
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.6,
+        "K": 1,
+        "T": 35,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 16,
+        "post_steps": 11,
+        "v1_code": 2
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000090",
+      "source_id": "ep000090",
+      "split": "train",
+      "T": 34,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000090.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 90,
+        "seed": [
+          20261103,
+          1701374976,
+          90
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.2000000000000002,
+        "K": 1,
+        "T": 34,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 12,
+        "post_steps": 14,
+        "v1_code": 15
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000091",
+      "source_id": "ep000091",
+      "split": "train",
+      "T": 45,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000091.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 91,
+        "seed": [
+          20261103,
+          1701374976,
+          91
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.8,
+        "K": 1,
+        "T": 45,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 18,
+        "post_steps": 19,
+        "v1_code": 11
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000092",
+      "source_id": "ep000092",
+      "split": "train",
+      "T": 52,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000092.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 92,
+        "seed": [
+          20261103,
+          1701374976,
+          92
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.5,
+        "K": 1,
+        "T": 52,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 25,
+        "post_steps": 19,
+        "v1_code": 9
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000093",
+      "source_id": "ep000093",
+      "split": "train",
+      "T": 37,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000093.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 93,
+        "seed": [
+          20261103,
+          1701374976,
+          93
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.6,
+        "K": 1,
+        "T": 37,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 16,
+        "post_steps": 13,
+        "v1_code": 2
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000094",
+      "source_id": "ep000094",
+      "split": "train",
+      "T": 32,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000094.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 94,
+        "seed": [
+          20261103,
+          1701374976,
+          94
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.3,
+        "K": 1,
+        "T": 32,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 13,
+        "post_steps": 11,
+        "v1_code": 9
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000095",
+      "source_id": "ep000095",
+      "split": "train",
+      "T": 52,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000095.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 95,
+        "seed": [
+          20261103,
+          1701374976,
+          95
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.4000000000000004,
+        "K": 1,
+        "T": 52,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 24,
+        "post_steps": 20,
+        "v1_code": 13
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000096",
+      "source_id": "ep000096",
+      "split": "train",
+      "T": 46,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000096.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 96,
+        "seed": [
+          20261103,
+          1701374976,
+          96
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.8000000000000003,
+        "K": 1,
+        "T": 46,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 28,
+        "post_steps": 10,
+        "v1_code": 11
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000097",
+      "source_id": "ep000097",
+      "split": "train",
+      "T": 50,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000097.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 97,
+        "seed": [
+          20261103,
+          1701374976,
+          97
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.5,
+        "K": 1,
+        "T": 50,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 25,
+        "post_steps": 17,
+        "v1_code": 4
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000098",
+      "source_id": "ep000098",
+      "split": "train",
+      "T": 41,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000098.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 98,
+        "seed": [
+          20261103,
+          1701374976,
+          98
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.9000000000000001,
+        "K": 1,
+        "T": 41,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 19,
+        "post_steps": 14,
+        "v1_code": 4
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000099",
+      "source_id": "ep000099",
+      "split": "train",
+      "T": 42,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000099.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 99,
+        "seed": [
+          20261103,
+          1701374976,
+          99
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.4000000000000004,
+        "K": 1,
+        "T": 42,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 24,
+        "post_steps": 10,
+        "v1_code": 2
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000100",
+      "source_id": "ep000100",
+      "split": "train",
+      "T": 54,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000100.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 100,
+        "seed": [
+          20261103,
+          1701374976,
+          100
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.6,
+        "K": 1,
+        "T": 54,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 26,
+        "post_steps": 20,
+        "v1_code": 12
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000101",
+      "source_id": "ep000101",
+      "split": "train",
+      "T": 45,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000101.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 101,
+        "seed": [
+          20261103,
+          1701374976,
+          101
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.7000000000000002,
+        "K": 1,
+        "T": 45,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 17,
+        "post_steps": 20,
+        "v1_code": 5
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000102",
+      "source_id": "ep000102",
+      "split": "train",
+      "T": 43,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000102.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 102,
+        "seed": [
+          20261103,
+          1701374976,
+          102
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.5,
+        "K": 1,
+        "T": 43,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 15,
+        "post_steps": 20,
+        "v1_code": 9
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000103",
+      "source_id": "ep000103",
+      "split": "train",
+      "T": 50,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000103.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 103,
+        "seed": [
+          20261103,
+          1701374976,
+          103
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.4000000000000004,
+        "K": 1,
+        "T": 50,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 24,
+        "post_steps": 18,
+        "v1_code": 5
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000104",
+      "source_id": "ep000104",
+      "split": "train",
+      "T": 56,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000104.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 104,
+        "seed": [
+          20261103,
+          1701374976,
+          104
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.8000000000000003,
+        "K": 1,
+        "T": 56,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 28,
+        "post_steps": 20,
+        "v1_code": 4
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000105",
+      "source_id": "ep000105",
+      "split": "train",
+      "T": 32,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000105.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 105,
+        "seed": [
+          20261103,
+          1701374976,
+          105
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.4000000000000001,
+        "K": 1,
+        "T": 32,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 14,
+        "post_steps": 10,
+        "v1_code": 8
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000106",
+      "source_id": "ep000106",
+      "split": "train",
+      "T": 41,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000106.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 106,
+        "seed": [
+          20261103,
+          1701374976,
+          106
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.3,
+        "K": 1,
+        "T": 41,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 13,
+        "post_steps": 20,
+        "v1_code": 14
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000107",
+      "source_id": "ep000107",
+      "split": "train",
+      "T": 44,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000107.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 107,
+        "seed": [
+          20261103,
+          1701374976,
+          107
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.8,
+        "K": 1,
+        "T": 44,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 18,
+        "post_steps": 18,
+        "v1_code": 8
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000108",
+      "source_id": "ep000108",
+      "split": "train",
+      "T": 51,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000108.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 108,
+        "seed": [
+          20261103,
+          1701374976,
+          108
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 3.0,
+        "K": 1,
+        "T": 51,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 30,
+        "post_steps": 13,
+        "v1_code": 15
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000109",
+      "source_id": "ep000109",
+      "split": "train",
+      "T": 42,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000109.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 109,
+        "seed": [
+          20261103,
+          1701374976,
+          109
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.6,
+        "K": 1,
+        "T": 42,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 16,
+        "post_steps": 18,
+        "v1_code": 11
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000110",
+      "source_id": "ep000110",
+      "split": "train",
+      "T": 43,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000110.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 110,
+        "seed": [
+          20261103,
+          1701374976,
+          110
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.5,
+        "K": 1,
+        "T": 43,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 15,
+        "post_steps": 20,
+        "v1_code": 8
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000111",
+      "source_id": "ep000111",
+      "split": "train",
+      "T": 40,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000111.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 111,
+        "seed": [
+          20261103,
+          1701374976,
+          111
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.2000000000000002,
+        "K": 1,
+        "T": 40,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 12,
+        "post_steps": 20,
+        "v1_code": 11
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000112",
+      "source_id": "ep000112",
+      "split": "train",
+      "T": 51,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000112.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 112,
+        "seed": [
+          20261103,
+          1701374976,
+          112
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.9000000000000004,
+        "K": 1,
+        "T": 51,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 29,
+        "post_steps": 14,
+        "v1_code": 4
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000113",
+      "source_id": "ep000113",
+      "split": "train",
+      "T": 39,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000113.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 113,
+        "seed": [
+          20261103,
+          1701374976,
+          113
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.4000000000000001,
+        "K": 1,
+        "T": 39,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 14,
+        "post_steps": 17,
+        "v1_code": 3
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000114",
+      "source_id": "ep000114",
+      "split": "train",
+      "T": 37,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000114.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 114,
+        "seed": [
+          20261103,
+          1701374976,
+          114
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.7000000000000002,
+        "K": 1,
+        "T": 37,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 17,
+        "post_steps": 12,
+        "v1_code": 2
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000115",
+      "source_id": "ep000115",
+      "split": "train",
+      "T": 43,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000115.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 115,
+        "seed": [
+          20261103,
+          1701374976,
+          115
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.5,
+        "K": 1,
+        "T": 43,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 25,
+        "post_steps": 10,
+        "v1_code": 15
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000116",
+      "source_id": "ep000116",
+      "split": "train",
+      "T": 46,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000116.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 116,
+        "seed": [
+          20261103,
+          1701374976,
+          116
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.4000000000000004,
+        "K": 1,
+        "T": 46,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 24,
+        "post_steps": 14,
+        "v1_code": 3
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000117",
+      "source_id": "ep000117",
+      "split": "train",
+      "T": 45,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000117.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 117,
+        "seed": [
+          20261103,
+          1701374976,
+          117
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.3000000000000003,
+        "K": 1,
+        "T": 45,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 23,
+        "post_steps": 14,
+        "v1_code": 7
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000118",
+      "source_id": "ep000118",
+      "split": "train",
+      "T": 36,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000118.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 118,
+        "seed": [
+          20261103,
+          1701374976,
+          118
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.5,
+        "K": 1,
+        "T": 36,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 15,
+        "post_steps": 13,
+        "v1_code": 10
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000119",
+      "source_id": "ep000119",
+      "split": "train",
+      "T": 44,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000119.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 119,
+        "seed": [
+          20261103,
+          1701374976,
+          119
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.1,
+        "K": 1,
+        "T": 44,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 21,
+        "post_steps": 15,
+        "v1_code": 4
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000120",
+      "source_id": "ep000120",
+      "split": "train",
+      "T": 42,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000120.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 120,
+        "seed": [
+          20261103,
+          1701374976,
+          120
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.3000000000000003,
+        "K": 1,
+        "T": 42,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 23,
+        "post_steps": 11,
+        "v1_code": 0
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000121",
+      "source_id": "ep000121",
+      "split": "train",
+      "T": 48,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000121.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 121,
+        "seed": [
+          20261103,
+          1701374976,
+          121
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.5,
+        "K": 1,
+        "T": 48,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 25,
+        "post_steps": 15,
+        "v1_code": 12
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000122",
+      "source_id": "ep000122",
+      "split": "train",
+      "T": 37,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000122.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 122,
+        "seed": [
+          20261103,
+          1701374976,
+          122
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.6,
+        "K": 1,
+        "T": 37,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 16,
+        "post_steps": 13,
+        "v1_code": 14
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000123",
+      "source_id": "ep000123",
+      "split": "train",
+      "T": 36,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000123.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 123,
+        "seed": [
+          20261103,
+          1701374976,
+          123
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.5,
+        "K": 1,
+        "T": 36,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 15,
+        "post_steps": 13,
+        "v1_code": 7
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000124",
+      "source_id": "ep000124",
+      "split": "train",
+      "T": 51,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000124.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 124,
+        "seed": [
+          20261103,
+          1701374976,
+          124
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 3.0,
+        "K": 1,
+        "T": 51,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 30,
+        "post_steps": 13,
+        "v1_code": 4
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000125",
+      "source_id": "ep000125",
+      "split": "train",
+      "T": 34,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000125.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 125,
+        "seed": [
+          20261103,
+          1701374976,
+          125
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.4000000000000001,
+        "K": 1,
+        "T": 34,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 14,
+        "post_steps": 12,
+        "v1_code": 13
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000126",
+      "source_id": "ep000126",
+      "split": "train",
+      "T": 43,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000126.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 126,
+        "seed": [
+          20261103,
+          1701374976,
+          126
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.6,
+        "K": 1,
+        "T": 43,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 16,
+        "post_steps": 19,
+        "v1_code": 13
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000127",
+      "source_id": "ep000127",
+      "split": "train",
+      "T": 43,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000127.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 127,
+        "seed": [
+          20261103,
+          1701374976,
+          127
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.7000000000000002,
+        "K": 1,
+        "T": 43,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 17,
+        "post_steps": 18,
+        "v1_code": 12
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000128",
+      "source_id": "ep000128",
+      "split": "train",
+      "T": 38,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000128.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 128,
+        "seed": [
+          20261103,
+          1701374976,
+          128
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.2000000000000002,
+        "K": 1,
+        "T": 38,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 12,
+        "post_steps": 18,
+        "v1_code": 1
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000129",
+      "source_id": "ep000129",
+      "split": "train",
+      "T": 43,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000129.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 129,
+        "seed": [
+          20261103,
+          1701374976,
+          129
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.6,
+        "K": 1,
+        "T": 43,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 16,
+        "post_steps": 19,
+        "v1_code": 2
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000130",
+      "source_id": "ep000130",
+      "split": "train",
+      "T": 43,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000130.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 130,
+        "seed": [
+          20261103,
+          1701374976,
+          130
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.0,
+        "K": 1,
+        "T": 43,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 20,
+        "post_steps": 15,
+        "v1_code": 12
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000131",
+      "source_id": "ep000131",
+      "split": "train",
+      "T": 48,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000131.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 131,
+        "seed": [
+          20261103,
+          1701374976,
+          131
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.7,
+        "K": 1,
+        "T": 48,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 27,
+        "post_steps": 13,
+        "v1_code": 14
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000132",
+      "source_id": "ep000132",
+      "split": "train",
+      "T": 45,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000132.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 132,
+        "seed": [
+          20261103,
+          1701374976,
+          132
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.5,
+        "K": 1,
+        "T": 45,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 25,
+        "post_steps": 12,
+        "v1_code": 14
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000133",
+      "source_id": "ep000133",
+      "split": "train",
+      "T": 49,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000133.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 133,
+        "seed": [
+          20261103,
+          1701374976,
+          133
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.2,
+        "K": 1,
+        "T": 49,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 22,
+        "post_steps": 19,
+        "v1_code": 6
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000134",
+      "source_id": "ep000134",
+      "split": "train",
+      "T": 46,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000134.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 134,
+        "seed": [
+          20261103,
+          1701374976,
+          134
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.6,
+        "K": 1,
+        "T": 46,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 26,
+        "post_steps": 12,
+        "v1_code": 14
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000135",
+      "source_id": "ep000135",
+      "split": "train",
+      "T": 43,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000135.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 135,
+        "seed": [
+          20261103,
+          1701374976,
+          135
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.5,
+        "K": 1,
+        "T": 43,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 25,
+        "post_steps": 10,
+        "v1_code": 13
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000136",
+      "source_id": "ep000136",
+      "split": "train",
+      "T": 49,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000136.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 136,
+        "seed": [
+          20261103,
+          1701374976,
+          136
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.7,
+        "K": 1,
+        "T": 49,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 27,
+        "post_steps": 14,
+        "v1_code": 9
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000137",
+      "source_id": "ep000137",
+      "split": "train",
+      "T": 45,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000137.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 137,
+        "seed": [
+          20261103,
+          1701374976,
+          137
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.7,
+        "K": 1,
+        "T": 45,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 27,
+        "post_steps": 10,
+        "v1_code": 6
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000138",
+      "source_id": "ep000138",
+      "split": "train",
+      "T": 40,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000138.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 138,
+        "seed": [
+          20261103,
+          1701374976,
+          138
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.9000000000000001,
+        "K": 1,
+        "T": 40,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 19,
+        "post_steps": 13,
+        "v1_code": 12
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000139",
+      "source_id": "ep000139",
+      "split": "train",
+      "T": 54,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000139.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 139,
+        "seed": [
+          20261103,
+          1701374976,
+          139
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.9000000000000004,
+        "K": 1,
+        "T": 54,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 29,
+        "post_steps": 17,
+        "v1_code": 12
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000140",
+      "source_id": "ep000140",
+      "split": "train",
+      "T": 42,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000140.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 140,
+        "seed": [
+          20261103,
+          1701374976,
+          140
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.1,
+        "K": 1,
+        "T": 42,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 21,
+        "post_steps": 13,
+        "v1_code": 6
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000141",
+      "source_id": "ep000141",
+      "split": "train",
+      "T": 40,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000141.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 141,
+        "seed": [
+          20261103,
+          1701374976,
+          141
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.1,
+        "K": 1,
+        "T": 40,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 21,
+        "post_steps": 11,
+        "v1_code": 5
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000142",
+      "source_id": "ep000142",
+      "split": "train",
+      "T": 45,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000142.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 142,
+        "seed": [
+          20261103,
+          1701374976,
+          142
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.3000000000000003,
+        "K": 1,
+        "T": 45,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 23,
+        "post_steps": 14,
+        "v1_code": 0
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000143",
+      "source_id": "ep000143",
+      "split": "train",
+      "T": 45,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000143.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 143,
+        "seed": [
+          20261103,
+          1701374976,
+          143
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.3000000000000003,
+        "K": 1,
+        "T": 45,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 23,
+        "post_steps": 14,
+        "v1_code": 12
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000144",
+      "source_id": "ep000144",
+      "split": "train",
+      "T": 45,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000144.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 144,
+        "seed": [
+          20261103,
+          1701374976,
+          144
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.7,
+        "K": 1,
+        "T": 45,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 27,
+        "post_steps": 10,
+        "v1_code": 13
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000145",
+      "source_id": "ep000145",
+      "split": "train",
+      "T": 41,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000145.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 145,
+        "seed": [
+          20261103,
+          1701374976,
+          145
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.1,
+        "K": 1,
+        "T": 41,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 21,
+        "post_steps": 12,
+        "v1_code": 15
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000146",
+      "source_id": "ep000146",
+      "split": "train",
+      "T": 44,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000146.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 146,
+        "seed": [
+          20261103,
+          1701374976,
+          146
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.2,
+        "K": 1,
+        "T": 44,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 22,
+        "post_steps": 14,
+        "v1_code": 8
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000147",
+      "source_id": "ep000147",
+      "split": "train",
+      "T": 37,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000147.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 147,
+        "seed": [
+          20261103,
+          1701374976,
+          147
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.5,
+        "K": 1,
+        "T": 37,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 15,
+        "post_steps": 14,
+        "v1_code": 6
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000148",
+      "source_id": "ep000148",
+      "split": "train",
+      "T": 38,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000148.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 148,
+        "seed": [
+          20261103,
+          1701374976,
+          148
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.4000000000000001,
+        "K": 1,
+        "T": 38,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 14,
+        "post_steps": 16,
+        "v1_code": 0
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000149",
+      "source_id": "ep000149",
+      "split": "train",
+      "T": 35,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000149.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 149,
+        "seed": [
+          20261103,
+          1701374976,
+          149
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.2000000000000002,
+        "K": 1,
+        "T": 35,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 12,
+        "post_steps": 15,
+        "v1_code": 9
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000150",
+      "source_id": "ep000150",
+      "split": "train",
+      "T": 45,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000150.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 150,
+        "seed": [
+          20261103,
+          1701374976,
+          150
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.2,
+        "K": 1,
+        "T": 45,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 22,
+        "post_steps": 15,
+        "v1_code": 11
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000151",
+      "source_id": "ep000151",
+      "split": "train",
+      "T": 41,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000151.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 151,
+        "seed": [
+          20261103,
+          1701374976,
+          151
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.4000000000000001,
+        "K": 1,
+        "T": 41,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 14,
+        "post_steps": 19,
+        "v1_code": 12
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000152",
+      "source_id": "ep000152",
+      "split": "train",
+      "T": 43,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000152.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 152,
+        "seed": [
+          20261103,
+          1701374976,
+          152
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.8,
+        "K": 1,
+        "T": 43,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 18,
+        "post_steps": 17,
+        "v1_code": 4
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000153",
+      "source_id": "ep000153",
+      "split": "train",
+      "T": 44,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000153.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 153,
+        "seed": [
+          20261103,
+          1701374976,
+          153
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.6,
+        "K": 1,
+        "T": 44,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 26,
+        "post_steps": 10,
+        "v1_code": 4
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000154",
+      "source_id": "ep000154",
+      "split": "train",
+      "T": 51,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000154.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 154,
+        "seed": [
+          20261103,
+          1701374976,
+          154
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.5,
+        "K": 1,
+        "T": 51,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 25,
+        "post_steps": 18,
+        "v1_code": 7
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000155",
+      "source_id": "ep000155",
+      "split": "train",
+      "T": 43,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000155.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 155,
+        "seed": [
+          20261103,
+          1701374976,
+          155
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.4000000000000004,
+        "K": 1,
+        "T": 43,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 24,
+        "post_steps": 11,
+        "v1_code": 14
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000156",
+      "source_id": "ep000156",
+      "split": "train",
+      "T": 40,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000156.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 156,
+        "seed": [
+          20261103,
+          1701374976,
+          156
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.1,
+        "K": 1,
+        "T": 40,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 21,
+        "post_steps": 11,
+        "v1_code": 11
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000157",
+      "source_id": "ep000157",
+      "split": "train",
+      "T": 47,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000157.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 157,
+        "seed": [
+          20261103,
+          1701374976,
+          157
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.3000000000000003,
+        "K": 1,
+        "T": 47,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 23,
+        "post_steps": 16,
+        "v1_code": 5
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000158",
+      "source_id": "ep000158",
+      "split": "train",
+      "T": 37,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000158.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 158,
+        "seed": [
+          20261103,
+          1701374976,
+          158
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.2000000000000002,
+        "K": 1,
+        "T": 37,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 12,
+        "post_steps": 17,
+        "v1_code": 5
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000159",
+      "source_id": "ep000159",
+      "split": "train",
+      "T": 45,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000159.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 159,
+        "seed": [
+          20261103,
+          1701374976,
+          159
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.6,
+        "K": 1,
+        "T": 45,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 26,
+        "post_steps": 11,
+        "v1_code": 15
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000160",
+      "source_id": "ep000160",
+      "split": "train",
+      "T": 42,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000160.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 160,
+        "seed": [
+          20261103,
+          1701374976,
+          160
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.9000000000000001,
+        "K": 1,
+        "T": 42,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 19,
+        "post_steps": 15,
+        "v1_code": 12
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000161",
+      "source_id": "ep000161",
+      "split": "train",
+      "T": 46,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000161.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 161,
+        "seed": [
+          20261103,
+          1701374976,
+          161
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.6,
+        "K": 1,
+        "T": 46,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 26,
+        "post_steps": 12,
+        "v1_code": 9
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000162",
+      "source_id": "ep000162",
+      "split": "train",
+      "T": 38,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000162.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 162,
+        "seed": [
+          20261103,
+          1701374976,
+          162
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.3,
+        "K": 1,
+        "T": 38,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 13,
+        "post_steps": 17,
+        "v1_code": 4
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000163",
+      "source_id": "ep000163",
+      "split": "train",
+      "T": 44,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000163.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 163,
+        "seed": [
+          20261103,
+          1701374976,
+          163
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.5,
+        "K": 1,
+        "T": 44,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 25,
+        "post_steps": 11,
+        "v1_code": 7
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000164",
+      "source_id": "ep000164",
+      "split": "train",
+      "T": 53,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000164.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 164,
+        "seed": [
+          20261103,
+          1701374976,
+          164
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.5,
+        "K": 1,
+        "T": 53,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 25,
+        "post_steps": 20,
+        "v1_code": 7
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000165",
+      "source_id": "ep000165",
+      "split": "train",
+      "T": 44,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000165.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 165,
+        "seed": [
+          20261103,
+          1701374976,
+          165
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.1,
+        "K": 1,
+        "T": 44,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 21,
+        "post_steps": 15,
+        "v1_code": 11
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000166",
+      "source_id": "ep000166",
+      "split": "train",
+      "T": 38,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000166.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 166,
+        "seed": [
+          20261103,
+          1701374976,
+          166
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.5,
+        "K": 1,
+        "T": 38,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 15,
+        "post_steps": 15,
+        "v1_code": 7
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000167",
+      "source_id": "ep000167",
+      "split": "train",
+      "T": 46,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000167.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 167,
+        "seed": [
+          20261103,
+          1701374976,
+          167
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.9000000000000001,
+        "K": 1,
+        "T": 46,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 19,
+        "post_steps": 19,
+        "v1_code": 3
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000168",
+      "source_id": "ep000168",
+      "split": "train",
+      "T": 35,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000168.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 168,
+        "seed": [
+          20261103,
+          1701374976,
+          168
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.5,
+        "K": 1,
+        "T": 35,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 15,
+        "post_steps": 12,
+        "v1_code": 5
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000169",
+      "source_id": "ep000169",
+      "split": "train",
+      "T": 42,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000169.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 169,
+        "seed": [
+          20261103,
+          1701374976,
+          169
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.3000000000000003,
+        "K": 1,
+        "T": 42,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 23,
+        "post_steps": 11,
+        "v1_code": 13
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000170",
+      "source_id": "ep000170",
+      "split": "train",
+      "T": 45,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000170.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 170,
+        "seed": [
+          20261103,
+          1701374976,
+          170
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.1,
+        "K": 1,
+        "T": 45,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 21,
+        "post_steps": 16,
+        "v1_code": 1
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000171",
+      "source_id": "ep000171",
+      "split": "train",
+      "T": 39,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000171.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 171,
+        "seed": [
+          20261103,
+          1701374976,
+          171
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.9000000000000001,
+        "K": 1,
+        "T": 39,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 19,
+        "post_steps": 12,
+        "v1_code": 5
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000172",
+      "source_id": "ep000172",
+      "split": "train",
+      "T": 37,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000172.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 172,
+        "seed": [
+          20261103,
+          1701374976,
+          172
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.9000000000000001,
+        "K": 1,
+        "T": 37,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 19,
+        "post_steps": 10,
+        "v1_code": 13
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000173",
+      "source_id": "ep000173",
+      "split": "train",
+      "T": 38,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000173.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 173,
+        "seed": [
+          20261103,
+          1701374976,
+          173
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.9000000000000001,
+        "K": 1,
+        "T": 38,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 19,
+        "post_steps": 11,
+        "v1_code": 13
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000174",
+      "source_id": "ep000174",
+      "split": "train",
+      "T": 35,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000174.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 174,
+        "seed": [
+          20261103,
+          1701374976,
+          174
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.6,
+        "K": 1,
+        "T": 35,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 16,
+        "post_steps": 11,
+        "v1_code": 2
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000175",
+      "source_id": "ep000175",
+      "split": "train",
+      "T": 35,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000175.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 175,
+        "seed": [
+          20261103,
+          1701374976,
+          175
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.4000000000000001,
+        "K": 1,
+        "T": 35,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 14,
+        "post_steps": 13,
+        "v1_code": 13
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000176",
+      "source_id": "ep000176",
+      "split": "train",
+      "T": 31,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000176.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 176,
+        "seed": [
+          20261103,
+          1701374976,
+          176
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.2000000000000002,
+        "K": 1,
+        "T": 31,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 12,
+        "post_steps": 11,
+        "v1_code": 10
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000177",
+      "source_id": "ep000177",
+      "split": "train",
+      "T": 36,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000177.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 177,
+        "seed": [
+          20261103,
+          1701374976,
+          177
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.6,
+        "K": 1,
+        "T": 36,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 16,
+        "post_steps": 12,
+        "v1_code": 3
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000178",
+      "source_id": "ep000178",
+      "split": "train",
+      "T": 55,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000178.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 178,
+        "seed": [
+          20261103,
+          1701374976,
+          178
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 3.0,
+        "K": 1,
+        "T": 55,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 30,
+        "post_steps": 17,
+        "v1_code": 7
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000179",
+      "source_id": "ep000179",
+      "split": "train",
+      "T": 37,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000179.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 179,
+        "seed": [
+          20261103,
+          1701374976,
+          179
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.5,
+        "K": 1,
+        "T": 37,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 15,
+        "post_steps": 14,
+        "v1_code": 12
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000180",
+      "source_id": "ep000180",
+      "split": "train",
+      "T": 51,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000180.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 180,
+        "seed": [
+          20261103,
+          1701374976,
+          180
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.6,
+        "K": 1,
+        "T": 51,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 26,
+        "post_steps": 17,
+        "v1_code": 10
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000181",
+      "source_id": "ep000181",
+      "split": "train",
+      "T": 56,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000181.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 181,
+        "seed": [
+          20261103,
+          1701374976,
+          181
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 3.0,
+        "K": 1,
+        "T": 56,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 30,
+        "post_steps": 18,
+        "v1_code": 1
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000182",
+      "source_id": "ep000182",
+      "split": "train",
+      "T": 42,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000182.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 182,
+        "seed": [
+          20261103,
+          1701374976,
+          182
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.9000000000000001,
+        "K": 1,
+        "T": 42,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 19,
+        "post_steps": 15,
+        "v1_code": 10
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000183",
+      "source_id": "ep000183",
+      "split": "train",
+      "T": 42,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000183.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 183,
+        "seed": [
+          20261103,
+          1701374976,
+          183
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.6,
+        "K": 1,
+        "T": 42,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 16,
+        "post_steps": 18,
+        "v1_code": 3
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000184",
+      "source_id": "ep000184",
+      "split": "train",
+      "T": 46,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000184.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 184,
+        "seed": [
+          20261103,
+          1701374976,
+          184
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.8,
+        "K": 1,
+        "T": 46,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 18,
+        "post_steps": 20,
+        "v1_code": 12
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000185",
+      "source_id": "ep000185",
+      "split": "train",
+      "T": 34,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000185.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 185,
+        "seed": [
+          20261103,
+          1701374976,
+          185
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.6,
+        "K": 1,
+        "T": 34,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 16,
+        "post_steps": 10,
+        "v1_code": 15
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000186",
+      "source_id": "ep000186",
+      "split": "train",
+      "T": 39,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000186.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 186,
+        "seed": [
+          20261103,
+          1701374976,
+          186
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.0,
+        "K": 1,
+        "T": 39,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 20,
+        "post_steps": 11,
+        "v1_code": 0
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000187",
+      "source_id": "ep000187",
+      "split": "train",
+      "T": 43,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000187.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 187,
+        "seed": [
+          20261103,
+          1701374976,
+          187
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.5,
+        "K": 1,
+        "T": 43,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 25,
+        "post_steps": 10,
+        "v1_code": 7
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000188",
+      "source_id": "ep000188",
+      "split": "train",
+      "T": 50,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000188.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 188,
+        "seed": [
+          20261103,
+          1701374976,
+          188
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.3000000000000003,
+        "K": 1,
+        "T": 50,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 23,
+        "post_steps": 19,
+        "v1_code": 11
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000189",
+      "source_id": "ep000189",
+      "split": "train",
+      "T": 49,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000189.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 189,
+        "seed": [
+          20261103,
+          1701374976,
+          189
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.9000000000000004,
+        "K": 1,
+        "T": 49,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 29,
+        "post_steps": 12,
+        "v1_code": 8
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000190",
+      "source_id": "ep000190",
+      "split": "train",
+      "T": 45,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000190.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 190,
+        "seed": [
+          20261103,
+          1701374976,
+          190
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.3000000000000003,
+        "K": 1,
+        "T": 45,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 23,
+        "post_steps": 14,
+        "v1_code": 4
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000191",
+      "source_id": "ep000191",
+      "split": "train",
+      "T": 37,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000191.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 191,
+        "seed": [
+          20261103,
+          1701374976,
+          191
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.7000000000000002,
+        "K": 1,
+        "T": 37,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 17,
+        "post_steps": 12,
+        "v1_code": 6
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000192",
+      "source_id": "ep000192",
+      "split": "train",
+      "T": 42,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000192.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 192,
+        "seed": [
+          20261103,
+          1701374976,
+          192
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.4000000000000004,
+        "K": 1,
+        "T": 42,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 24,
+        "post_steps": 10,
+        "v1_code": 8
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000193",
+      "source_id": "ep000193",
+      "split": "train",
+      "T": 41,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000193.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 193,
+        "seed": [
+          20261103,
+          1701374976,
+          193
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.9000000000000001,
+        "K": 1,
+        "T": 41,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 19,
+        "post_steps": 14,
+        "v1_code": 12
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000194",
+      "source_id": "ep000194",
+      "split": "train",
+      "T": 44,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000194.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 194,
+        "seed": [
+          20261103,
+          1701374976,
+          194
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.1,
+        "K": 1,
+        "T": 44,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 21,
+        "post_steps": 15,
+        "v1_code": 7
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000195",
+      "source_id": "ep000195",
+      "split": "train",
+      "T": 46,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000195.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 195,
+        "seed": [
+          20261103,
+          1701374976,
+          195
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.5,
+        "K": 1,
+        "T": 46,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 25,
+        "post_steps": 13,
+        "v1_code": 8
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000196",
+      "source_id": "ep000196",
+      "split": "train",
+      "T": 36,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000196.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 196,
+        "seed": [
+          20261103,
+          1701374976,
+          196
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.8,
+        "K": 1,
+        "T": 36,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 18,
+        "post_steps": 10,
+        "v1_code": 0
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000197",
+      "source_id": "ep000197",
+      "split": "train",
+      "T": 44,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000197.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 197,
+        "seed": [
+          20261103,
+          1701374976,
+          197
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.6,
+        "K": 1,
+        "T": 44,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 16,
+        "post_steps": 20,
+        "v1_code": 8
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000198",
+      "source_id": "ep000198",
+      "split": "train",
+      "T": 32,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000198.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 198,
+        "seed": [
+          20261103,
+          1701374976,
+          198
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.3,
+        "K": 1,
+        "T": 32,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 13,
+        "post_steps": 11,
+        "v1_code": 3
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_train_000199",
+      "source_id": "ep000199",
+      "split": "train",
+      "T": 51,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_train_000199.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 199,
+        "seed": [
+          20261103,
+          1701374976,
+          199
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.3000000000000003,
+        "K": 1,
+        "T": 51,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 23,
+        "post_steps": 20,
+        "v1_code": 7
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_val_000800",
+      "source_id": "ep000800",
+      "split": "val",
+      "T": 48,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_val_000800.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 800,
+        "seed": [
+          20261103,
+          1701374976,
+          800
+        ],
+        "split_group": [
+          800,
+          1000
+        ],
+        "gap_s": 2.5,
+        "K": 1,
+        "T": 48,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 25,
+        "post_steps": 15,
+        "v1_code": 15
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_val_000801",
+      "source_id": "ep000801",
+      "split": "val",
+      "T": 54,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_val_000801.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 801,
+        "seed": [
+          20261103,
+          1701374976,
+          801
+        ],
+        "split_group": [
+          800,
+          1000
+        ],
+        "gap_s": 2.7,
+        "K": 1,
+        "T": 54,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 27,
+        "post_steps": 19,
+        "v1_code": 9
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_val_000802",
+      "source_id": "ep000802",
+      "split": "val",
+      "T": 50,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_val_000802.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 802,
+        "seed": [
+          20261103,
+          1701374976,
+          802
+        ],
+        "split_group": [
+          800,
+          1000
+        ],
+        "gap_s": 2.3000000000000003,
+        "K": 1,
+        "T": 50,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 23,
+        "post_steps": 19,
+        "v1_code": 0
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_val_000803",
+      "source_id": "ep000803",
+      "split": "val",
+      "T": 42,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_val_000803.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 803,
+        "seed": [
+          20261103,
+          1701374976,
+          803
+        ],
+        "split_group": [
+          800,
+          1000
+        ],
+        "gap_s": 2.1,
+        "K": 1,
+        "T": 42,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 21,
+        "post_steps": 13,
+        "v1_code": 10
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_val_000804",
+      "source_id": "ep000804",
+      "split": "val",
+      "T": 46,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_val_000804.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 804,
+        "seed": [
+          20261103,
+          1701374976,
+          804
+        ],
+        "split_group": [
+          800,
+          1000
+        ],
+        "gap_s": 2.5,
+        "K": 1,
+        "T": 46,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 25,
+        "post_steps": 13,
+        "v1_code": 12
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_val_000805",
+      "source_id": "ep000805",
+      "split": "val",
+      "T": 41,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_val_000805.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 805,
+        "seed": [
+          20261103,
+          1701374976,
+          805
+        ],
+        "split_group": [
+          800,
+          1000
+        ],
+        "gap_s": 1.8,
+        "K": 1,
+        "T": 41,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 18,
+        "post_steps": 15,
+        "v1_code": 10
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_val_000806",
+      "source_id": "ep000806",
+      "split": "val",
+      "T": 45,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_val_000806.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 806,
+        "seed": [
+          20261103,
+          1701374976,
+          806
+        ],
+        "split_group": [
+          800,
+          1000
+        ],
+        "gap_s": 2.1,
+        "K": 1,
+        "T": 45,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 21,
+        "post_steps": 16,
+        "v1_code": 5
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_val_000807",
+      "source_id": "ep000807",
+      "split": "val",
+      "T": 45,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_val_000807.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 807,
+        "seed": [
+          20261103,
+          1701374976,
+          807
+        ],
+        "split_group": [
+          800,
+          1000
+        ],
+        "gap_s": 1.7000000000000002,
+        "K": 1,
+        "T": 45,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 17,
+        "post_steps": 20,
+        "v1_code": 12
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_val_000808",
+      "source_id": "ep000808",
+      "split": "val",
+      "T": 54,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_val_000808.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 808,
+        "seed": [
+          20261103,
+          1701374976,
+          808
+        ],
+        "split_group": [
+          800,
+          1000
+        ],
+        "gap_s": 3.0,
+        "K": 1,
+        "T": 54,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 30,
+        "post_steps": 16,
+        "v1_code": 12
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_val_000809",
+      "source_id": "ep000809",
+      "split": "val",
+      "T": 33,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_val_000809.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 809,
+        "seed": [
+          20261103,
+          1701374976,
+          809
+        ],
+        "split_group": [
+          800,
+          1000
+        ],
+        "gap_s": 1.3,
+        "K": 1,
+        "T": 33,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 13,
+        "post_steps": 12,
+        "v1_code": 0
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_val_000810",
+      "source_id": "ep000810",
+      "split": "val",
+      "T": 44,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_val_000810.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 810,
+        "seed": [
+          20261103,
+          1701374976,
+          810
+        ],
+        "split_group": [
+          800,
+          1000
+        ],
+        "gap_s": 2.2,
+        "K": 1,
+        "T": 44,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 22,
+        "post_steps": 14,
+        "v1_code": 11
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_val_000811",
+      "source_id": "ep000811",
+      "split": "val",
+      "T": 41,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_val_000811.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 811,
+        "seed": [
+          20261103,
+          1701374976,
+          811
+        ],
+        "split_group": [
+          800,
+          1000
+        ],
+        "gap_s": 1.6,
+        "K": 1,
+        "T": 41,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 16,
+        "post_steps": 17,
+        "v1_code": 13
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_val_000812",
+      "source_id": "ep000812",
+      "split": "val",
+      "T": 41,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_val_000812.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 812,
+        "seed": [
+          20261103,
+          1701374976,
+          812
+        ],
+        "split_group": [
+          800,
+          1000
+        ],
+        "gap_s": 1.5,
+        "K": 1,
+        "T": 41,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 15,
+        "post_steps": 18,
+        "v1_code": 9
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_val_000813",
+      "source_id": "ep000813",
+      "split": "val",
+      "T": 54,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_val_000813.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 813,
+        "seed": [
+          20261103,
+          1701374976,
+          813
+        ],
+        "split_group": [
+          800,
+          1000
+        ],
+        "gap_s": 2.8000000000000003,
+        "K": 1,
+        "T": 54,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 28,
+        "post_steps": 18,
+        "v1_code": 2
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_val_000814",
+      "source_id": "ep000814",
+      "split": "val",
+      "T": 48,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_val_000814.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 814,
+        "seed": [
+          20261103,
+          1701374976,
+          814
+        ],
+        "split_group": [
+          800,
+          1000
+        ],
+        "gap_s": 2.7,
+        "K": 1,
+        "T": 48,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 27,
+        "post_steps": 13,
+        "v1_code": 14
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_val_000815",
+      "source_id": "ep000815",
+      "split": "val",
+      "T": 48,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_val_000815.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 815,
+        "seed": [
+          20261103,
+          1701374976,
+          815
+        ],
+        "split_group": [
+          800,
+          1000
+        ],
+        "gap_s": 2.1,
+        "K": 1,
+        "T": 48,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 21,
+        "post_steps": 19,
+        "v1_code": 8
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_val_000816",
+      "source_id": "ep000816",
+      "split": "val",
+      "T": 47,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_val_000816.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 816,
+        "seed": [
+          20261103,
+          1701374976,
+          816
+        ],
+        "split_group": [
+          800,
+          1000
+        ],
+        "gap_s": 1.9000000000000001,
+        "K": 1,
+        "T": 47,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 19,
+        "post_steps": 20,
+        "v1_code": 2
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_val_000817",
+      "source_id": "ep000817",
+      "split": "val",
+      "T": 52,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_val_000817.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 817,
+        "seed": [
+          20261103,
+          1701374976,
+          817
+        ],
+        "split_group": [
+          800,
+          1000
+        ],
+        "gap_s": 2.9000000000000004,
+        "K": 1,
+        "T": 52,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 29,
+        "post_steps": 15,
+        "v1_code": 9
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_val_000818",
+      "source_id": "ep000818",
+      "split": "val",
+      "T": 35,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_val_000818.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 818,
+        "seed": [
+          20261103,
+          1701374976,
+          818
+        ],
+        "split_group": [
+          800,
+          1000
+        ],
+        "gap_s": 1.5,
+        "K": 1,
+        "T": 35,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 15,
+        "post_steps": 12,
+        "v1_code": 8
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_val_000819",
+      "source_id": "ep000819",
+      "split": "val",
+      "T": 32,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_val_000819.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 819,
+        "seed": [
+          20261103,
+          1701374976,
+          819
+        ],
+        "split_group": [
+          800,
+          1000
+        ],
+        "gap_s": 1.2000000000000002,
+        "K": 1,
+        "T": 32,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 12,
+        "post_steps": 12,
+        "v1_code": 11
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_test_001000",
+      "source_id": "ep001000",
+      "split": "test",
+      "T": 39,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_test_001000.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1000,
+        "seed": [
+          20261103,
+          1701374976,
+          1000
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 1.2000000000000002,
+        "K": 1,
+        "T": 39,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 12,
+        "post_steps": 19,
+        "v1_code": 3
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_test_001001",
+      "source_id": "ep001001",
+      "split": "test",
+      "T": 46,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_test_001001.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1001,
+        "seed": [
+          20261103,
+          1701374976,
+          1001
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 2.7,
+        "K": 1,
+        "T": 46,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 27,
+        "post_steps": 11,
+        "v1_code": 0
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_test_001002",
+      "source_id": "ep001002",
+      "split": "test",
+      "T": 48,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_test_001002.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1002,
+        "seed": [
+          20261103,
+          1701374976,
+          1002
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 2.0,
+        "K": 1,
+        "T": 48,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 20,
+        "post_steps": 20,
+        "v1_code": 4
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_test_001003",
+      "source_id": "ep001003",
+      "split": "test",
+      "T": 45,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_test_001003.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1003,
+        "seed": [
+          20261103,
+          1701374976,
+          1003
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 2.3000000000000003,
+        "K": 1,
+        "T": 45,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 23,
+        "post_steps": 14,
+        "v1_code": 15
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_test_001004",
+      "source_id": "ep001004",
+      "split": "test",
+      "T": 43,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_test_001004.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1004,
+        "seed": [
+          20261103,
+          1701374976,
+          1004
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 2.3000000000000003,
+        "K": 1,
+        "T": 43,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 23,
+        "post_steps": 12,
+        "v1_code": 14
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_test_001005",
+      "source_id": "ep001005",
+      "split": "test",
+      "T": 47,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_test_001005.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1005,
+        "seed": [
+          20261103,
+          1701374976,
+          1005
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 2.8000000000000003,
+        "K": 1,
+        "T": 47,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 28,
+        "post_steps": 11,
+        "v1_code": 3
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_test_001006",
+      "source_id": "ep001006",
+      "split": "test",
+      "T": 39,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_test_001006.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1006,
+        "seed": [
+          20261103,
+          1701374976,
+          1006
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 2.1,
+        "K": 1,
+        "T": 39,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 21,
+        "post_steps": 10,
+        "v1_code": 7
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_test_001007",
+      "source_id": "ep001007",
+      "split": "test",
+      "T": 40,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_test_001007.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1007,
+        "seed": [
+          20261103,
+          1701374976,
+          1007
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 1.8,
+        "K": 1,
+        "T": 40,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 18,
+        "post_steps": 14,
+        "v1_code": 0
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_test_001008",
+      "source_id": "ep001008",
+      "split": "test",
+      "T": 39,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_test_001008.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1008,
+        "seed": [
+          20261103,
+          1701374976,
+          1008
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 2.1,
+        "K": 1,
+        "T": 39,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 21,
+        "post_steps": 10,
+        "v1_code": 4
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_test_001009",
+      "source_id": "ep001009",
+      "split": "test",
+      "T": 54,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_test_001009.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1009,
+        "seed": [
+          20261103,
+          1701374976,
+          1009
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 2.9000000000000004,
+        "K": 1,
+        "T": 54,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 29,
+        "post_steps": 17,
+        "v1_code": 7
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_test_001010",
+      "source_id": "ep001010",
+      "split": "test",
+      "T": 52,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_test_001010.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1010,
+        "seed": [
+          20261103,
+          1701374976,
+          1010
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 2.5,
+        "K": 1,
+        "T": 52,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 25,
+        "post_steps": 19,
+        "v1_code": 12
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_test_001011",
+      "source_id": "ep001011",
+      "split": "test",
+      "T": 56,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_test_001011.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1011,
+        "seed": [
+          20261103,
+          1701374976,
+          1011
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 2.8000000000000003,
+        "K": 1,
+        "T": 56,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 28,
+        "post_steps": 20,
+        "v1_code": 0
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_test_001012",
+      "source_id": "ep001012",
+      "split": "test",
+      "T": 45,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_test_001012.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1012,
+        "seed": [
+          20261103,
+          1701374976,
+          1012
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 1.8,
+        "K": 1,
+        "T": 45,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 18,
+        "post_steps": 19,
+        "v1_code": 4
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_test_001013",
+      "source_id": "ep001013",
+      "split": "test",
+      "T": 41,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_test_001013.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1013,
+        "seed": [
+          20261103,
+          1701374976,
+          1013
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 2.1,
+        "K": 1,
+        "T": 41,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 21,
+        "post_steps": 12,
+        "v1_code": 11
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_test_001014",
+      "source_id": "ep001014",
+      "split": "test",
+      "T": 46,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_test_001014.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1014,
+        "seed": [
+          20261103,
+          1701374976,
+          1014
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 1.9000000000000001,
+        "K": 1,
+        "T": 46,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 19,
+        "post_steps": 19,
+        "v1_code": 4
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_test_001015",
+      "source_id": "ep001015",
+      "split": "test",
+      "T": 47,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_test_001015.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1015,
+        "seed": [
+          20261103,
+          1701374976,
+          1015
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 2.6,
+        "K": 1,
+        "T": 47,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 26,
+        "post_steps": 13,
+        "v1_code": 4
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_test_001016",
+      "source_id": "ep001016",
+      "split": "test",
+      "T": 35,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_test_001016.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1016,
+        "seed": [
+          20261103,
+          1701374976,
+          1016
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 1.7000000000000002,
+        "K": 1,
+        "T": 35,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 17,
+        "post_steps": 10,
+        "v1_code": 9
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_test_001017",
+      "source_id": "ep001017",
+      "split": "test",
+      "T": 36,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_test_001017.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1017,
+        "seed": [
+          20261103,
+          1701374976,
+          1017
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 1.6,
+        "K": 1,
+        "T": 36,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 16,
+        "post_steps": 12,
+        "v1_code": 11
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_test_001018",
+      "source_id": "ep001018",
+      "split": "test",
+      "T": 49,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_test_001018.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1018,
+        "seed": [
+          20261103,
+          1701374976,
+          1018
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 2.9000000000000004,
+        "K": 1,
+        "T": 49,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 29,
+        "post_steps": 12,
+        "v1_code": 12
+      }
+    },
+    {
+      "seq_id": "synth_change_detect_test_001019",
+      "source_id": "ep001019",
+      "split": "test",
+      "T": 48,
+      "path": "G:\\stream_memory_data\\synth\\synth_change_detect\\synth_change_detect_test_001019.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1019,
+        "seed": [
+          20261103,
+          1701374976,
+          1019
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 2.4000000000000004,
+        "K": 1,
+        "T": 48,
+        "same_raw_as": "synth_change_detect",
+        "hold_steps": 24,
+        "post_steps": 16,
+        "v1_code": 13
+      }
+    }
+  ]
+}

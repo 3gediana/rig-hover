@@ -1,0 +1,176 @@
+{
+  "run_id": "synth_recall_single__cfc__s0",
+  "generated_at": "2026-11-03 23:42:29",
+  "split": "test",
+  "main_metric": "r2",
+  "higher_is_better": true,
+  "n_sequences": 4,
+  "global": {
+    "mae": 0.5782013098982538,
+    "mse": 0.9145418699932745,
+    "rmse": 0.9563168251125118,
+    "n": 576,
+    "r2": -0.0964859763672345,
+    "cos": 0.18178678400630094,
+    "mae_macro": 0.49618821894889287,
+    "main_metric": "r2",
+    "main_head": "state"
+  },
+  "head": "state",
+  "worst": [
+    {
+      "rank": 1,
+      "seq_id": "synth_recall_single_test_001002",
+      "source_id": "ep001002",
+      "value": -0.306808,
+      "T": 13,
+      "diagnosis": "short_sequence",
+      "details": {
+        "T": 13,
+        "dt_cv": 0.0,
+        "dt_mean": 0.1,
+        "n_valid": 64,
+        "mae": 0.530705,
+        "err_p95": 2.196968,
+        "target_std": 0.716727
+      }
+    },
+    {
+      "rank": 2,
+      "seq_id": "synth_recall_single_test_001003",
+      "source_id": "ep001003",
+      "value": -0.072181,
+      "T": 14,
+      "diagnosis": "heavy_tail_errors",
+      "details": {
+        "T": 14,
+        "dt_cv": 0.0,
+        "dt_mean": 0.1,
+        "n_valid": 80,
+        "mae": 0.364754,
+        "err_p95": 2.063999,
+        "target_std": 0.64702
+      }
+    },
+    {
+      "rank": 3,
+      "seq_id": "synth_recall_single_test_001001",
+      "source_id": "ep001001",
+      "value": -0.017749,
+      "T": 16,
+      "diagnosis": "no_rule_triggered",
+      "details": {
+        "T": 16,
+        "dt_cv": 0.0,
+        "dt_mean": 0.1,
+        "n_valid": 112,
+        "mae": 0.378247,
+        "err_p95": 1.624785,
+        "target_std": 0.573709
+      }
+    },
+    {
+      "rank": 4,
+      "seq_id": "synth_recall_single_test_001000",
+      "source_id": "ep001000",
+      "value": 0.010795,
+      "T": 29,
+      "diagnosis": "no_rule_triggered",
+      "details": {
+        "T": 29,
+        "dt_cv": 0.0,
+        "dt_mean": 0.1,
+        "n_valid": 320,
+        "mae": 0.711046,
+        "err_p95": 2.840575,
+        "target_std": 1.138619
+      }
+    }
+  ],
+  "best": [
+    {
+      "rank": 1,
+      "seq_id": "synth_recall_single_test_001000",
+      "source_id": "ep001000",
+      "value": 0.010795,
+      "T": 29,
+      "diagnosis": "no_rule_triggered",
+      "details": {
+        "T": 29,
+        "dt_cv": 0.0,
+        "dt_mean": 0.1,
+        "n_valid": 320,
+        "mae": 0.711046,
+        "err_p95": 2.840575,
+        "target_std": 1.138619
+      }
+    },
+    {
+      "rank": 2,
+      "seq_id": "synth_recall_single_test_001001",
+      "source_id": "ep001001",
+      "value": -0.017749,
+      "T": 16,
+      "diagnosis": "no_rule_triggered",
+      "details": {
+        "T": 16,
+        "dt_cv": 0.0,
+        "dt_mean": 0.1,
+        "n_valid": 112,
+        "mae": 0.378247,
+        "err_p95": 1.624785,
+        "target_std": 0.573709
+      }
+    },
+    {
+      "rank": 3,
+      "seq_id": "synth_recall_single_test_001003",
+      "source_id": "ep001003",
+      "value": -0.072181,
+      "T": 14,
+      "diagnosis": "heavy_tail_errors",
+      "details": {
+        "T": 14,
+        "dt_cv": 0.0,
+        "dt_mean": 0.1,
+        "n_valid": 80,
+        "mae": 0.364754,
+        "err_p95": 2.063999,
+        "target_std": 0.64702
+      }
+    },
+    {
+      "rank": 4,
+      "seq_id": "synth_recall_single_test_001002",
+      "source_id": "ep001002",
+      "value": -0.306808,
+      "T": 13,
+      "diagnosis": "short_sequence",
+      "details": {
+        "T": 13,
+        "dt_cv": 0.0,
+        "dt_mean": 0.1,
+        "n_valid": 64,
+        "mae": 0.530705,
+        "err_p95": 2.196968,
+        "target_std": 0.716727
+      }
+    }
+  ],
+  "diagnosis_counts": {
+    "no_rule_triggered": 4,
+    "short_sequence": 2,
+    "heavy_tail_errors": 2
+  },
+  "extra": {
+    "split": "test",
+    "head": "state"
+  },
+  "kind": "mse",
+  "value_stats": {
+    "mean": -0.0964859763672345,
+    "p10": -0.2364200586765581,
+    "p90": 0.002231599790701871
+  },
+  "path": "failure_cases/synth_recall_single__cfc__s0.json"
+}

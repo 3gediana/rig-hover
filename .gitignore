@@ -1,0 +1,64 @@
+# ===== Python =====
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+
+# ===== Node =====
+node_modules/
+
+# ===== ESP-IDF 构建产物与第三方组件（idf.py 会重新拉取/生成） =====
+rig_omni/build/
+rig_omni/managed_components/
+rig_omni/sdkconfig.old
+rig_omni/build_log/
+
+# ===== PC 训练产物与本地数据（可由录制/训练重新生成） =====
+pc/train/build/
+pc/train/out_*/
+pc/train/data/
+pc/train/data_*/
+pc/gesture/data/
+pc/escalate/data/
+# 253 MB，超 GitHub 100 MB 硬限制；需要时单独向用户取
+pc/bench/mobileclip2_b.ts
+
+# ===== 流式记忆研究的大产物（权重已搬 G:，报告与源码入库） =====
+stream_memory_research/runs/
+stream_memory_research/runs_pc/
+stream_memory_research/runs_pixel/
+stream_memory_research/best_model/
+stream_memory_research/logs/
+stream_memory_research/_bench/
+
+# ===== 用户图像/采集数据一律不入库（隐私） =====
+data/
+labelstudio/data/
+video_annotation_data/
+video_annotator_current.png
+stream_memory_research/agent_feature_probe/contact_sheets/
+pc/agent_bridge/screen.png
+
+# ===== 本机/隐私：采集帧、会话、备份、日志 =====
+evidence/
+_tmp_sessions/
+_damaged/
+.tavily-state.json
+_rig_omni_git_backup/
+_fw_backup_*.bin
+_nvs.bin
+*.bin.log
+# 录制视频是派生封装（训练用 videos/*_source/ 原图帧，见 VIDEO-ANNOTATOR.md）
+video_annotation_data/videos/*.mp4
+video_annotation_data/videos/*.webm
+
+# 根目录的一次性日志/抓拍/串口输出
+/*.log
+/_serial_*.txt
+/_robot_status.json
+/_after_flash_capture.jpg
+/*.jpg
+
+# ===== 系统杂物 =====
+Thumbs.db
+desktop.ini

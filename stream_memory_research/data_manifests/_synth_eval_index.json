@@ -1,0 +1,1114 @@
+{
+  "synth_capacity_K1": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_capacity_K1.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_capacity_K1.json",
+    "task": "synth_mem",
+    "eval_only": true,
+    "base_dataset": "synth_recall_multi",
+    "task_id": "capacity_scan",
+    "main_metric": "cos",
+    "counts": {
+      "test": 40
+    },
+    "n_seqs": 40,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_capacity_K12": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_capacity_K12.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_capacity_K12.json",
+    "task": "synth_mem",
+    "eval_only": true,
+    "base_dataset": "synth_recall_multi",
+    "task_id": "capacity_scan",
+    "main_metric": "cos",
+    "counts": {
+      "test": 40
+    },
+    "n_seqs": 40,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_capacity_K16": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_capacity_K16.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_capacity_K16.json",
+    "task": "synth_mem",
+    "eval_only": true,
+    "base_dataset": "synth_recall_multi",
+    "task_id": "capacity_scan",
+    "main_metric": "cos",
+    "counts": {
+      "test": 40
+    },
+    "n_seqs": 40,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_capacity_K2": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_capacity_K2.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_capacity_K2.json",
+    "task": "synth_mem",
+    "eval_only": true,
+    "base_dataset": "synth_recall_multi",
+    "task_id": "capacity_scan",
+    "main_metric": "cos",
+    "counts": {
+      "test": 40
+    },
+    "n_seqs": 40,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_capacity_K4": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_capacity_K4.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_capacity_K4.json",
+    "task": "synth_mem",
+    "eval_only": true,
+    "base_dataset": "synth_recall_multi",
+    "task_id": "capacity_scan",
+    "main_metric": "cos",
+    "counts": {
+      "test": 40
+    },
+    "n_seqs": 40,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_capacity_K8": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_capacity_K8.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_capacity_K8.json",
+    "task": "synth_mem",
+    "eval_only": true,
+    "base_dataset": "synth_recall_multi",
+    "task_id": "capacity_scan",
+    "main_metric": "cos",
+    "counts": {
+      "test": 40
+    },
+    "n_seqs": 40,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_change_detect": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_change_detect.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_change_detect.json",
+    "task": "synth_mem",
+    "eval_only": false,
+    "base_dataset": null,
+    "task_id": "change_detect",
+    "main_metric": "cos",
+    "counts": {
+      "train": 200,
+      "val": 20,
+      "test": 20
+    },
+    "n_seqs": 240,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_change_detect_shuffled": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_change_detect_shuffled.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_change_detect_shuffled.json",
+    "task": "synth_mem",
+    "eval_only": true,
+    "base_dataset": "synth_change_detect",
+    "task_id": "change_detect",
+    "main_metric": "cos",
+    "counts": {
+      "test": 20
+    },
+    "n_seqs": 20,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_event_seq": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_event_seq.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_event_seq.json",
+    "task": "synth_mem",
+    "eval_only": false,
+    "base_dataset": null,
+    "task_id": "event_seq",
+    "main_metric": "f1",
+    "counts": {
+      "train": 200,
+      "val": 20,
+      "test": 20
+    },
+    "n_seqs": 240,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_event_seq_gap0.2s": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_event_seq_gap0.2s.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_event_seq_gap0.2s.json",
+    "task": "synth_mem",
+    "eval_only": true,
+    "base_dataset": "synth_event_seq",
+    "task_id": "event_seq",
+    "main_metric": "f1",
+    "counts": {
+      "test": 40
+    },
+    "n_seqs": 40,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_event_seq_gap0.4s": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_event_seq_gap0.4s.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_event_seq_gap0.4s.json",
+    "task": "synth_mem",
+    "eval_only": true,
+    "base_dataset": "synth_event_seq",
+    "task_id": "event_seq",
+    "main_metric": "f1",
+    "counts": {
+      "test": 40
+    },
+    "n_seqs": 40,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_event_seq_gap0.8s": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_event_seq_gap0.8s.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_event_seq_gap0.8s.json",
+    "task": "synth_mem",
+    "eval_only": true,
+    "base_dataset": "synth_event_seq",
+    "task_id": "event_seq",
+    "main_metric": "f1",
+    "counts": {
+      "test": 40
+    },
+    "n_seqs": 40,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_event_seq_gap1.6s": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_event_seq_gap1.6s.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_event_seq_gap1.6s.json",
+    "task": "synth_mem",
+    "eval_only": true,
+    "base_dataset": "synth_event_seq",
+    "task_id": "event_seq",
+    "main_metric": "f1",
+    "counts": {
+      "test": 40
+    },
+    "n_seqs": 40,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_event_seq_gap3.2s": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_event_seq_gap3.2s.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_event_seq_gap3.2s.json",
+    "task": "synth_mem",
+    "eval_only": true,
+    "base_dataset": "synth_event_seq",
+    "task_id": "event_seq",
+    "main_metric": "f1",
+    "counts": {
+      "test": 40
+    },
+    "n_seqs": 40,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_event_seq_gap6.4s": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_event_seq_gap6.4s.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_event_seq_gap6.4s.json",
+    "task": "synth_mem",
+    "eval_only": true,
+    "base_dataset": "synth_event_seq",
+    "task_id": "event_seq",
+    "main_metric": "f1",
+    "counts": {
+      "test": 40
+    },
+    "n_seqs": 40,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_event_seq_shuffled": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_event_seq_shuffled.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_event_seq_shuffled.json",
+    "task": "synth_mem",
+    "eval_only": true,
+    "base_dataset": "synth_event_seq",
+    "task_id": "event_seq",
+    "main_metric": "f1",
+    "counts": {
+      "test": 20
+    },
+    "n_seqs": 20,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_irregular_recall_multi_burst": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_irregular_recall_multi_burst.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_irregular_recall_multi_burst.json",
+    "task": "synth_mem",
+    "eval_only": false,
+    "base_dataset": "synth_recall_multi",
+    "task_id": "recall_multi",
+    "main_metric": "cos",
+    "counts": {
+      "train": 60,
+      "val": 8,
+      "test": 8
+    },
+    "n_seqs": 76,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_irregular_recall_multi_drop30": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_irregular_recall_multi_drop30.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_irregular_recall_multi_drop30.json",
+    "task": "synth_mem",
+    "eval_only": false,
+    "base_dataset": "synth_recall_multi",
+    "task_id": "recall_multi",
+    "main_metric": "cos",
+    "counts": {
+      "train": 60,
+      "val": 8,
+      "test": 8
+    },
+    "n_seqs": 76,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_irregular_recall_multi_drop50": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_irregular_recall_multi_drop50.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_irregular_recall_multi_drop50.json",
+    "task": "synth_mem",
+    "eval_only": false,
+    "base_dataset": "synth_recall_multi",
+    "task_id": "recall_multi",
+    "main_metric": "cos",
+    "counts": {
+      "train": 60,
+      "val": 8,
+      "test": 8
+    },
+    "n_seqs": 76,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_irregular_recall_multi_drop70": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_irregular_recall_multi_drop70.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_irregular_recall_multi_drop70.json",
+    "task": "synth_mem",
+    "eval_only": false,
+    "base_dataset": "synth_recall_multi",
+    "task_id": "recall_multi",
+    "main_metric": "cos",
+    "counts": {
+      "train": 60,
+      "val": 8,
+      "test": 8
+    },
+    "n_seqs": 76,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_irregular_recall_multi_logdt": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_irregular_recall_multi_logdt.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_irregular_recall_multi_logdt.json",
+    "task": "synth_mem",
+    "eval_only": false,
+    "base_dataset": "synth_recall_multi",
+    "task_id": "recall_multi",
+    "main_metric": "cos",
+    "counts": {
+      "train": 60,
+      "val": 8,
+      "test": 8
+    },
+    "n_seqs": 76,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_irregular_recall_multi_mixed": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_irregular_recall_multi_mixed.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_irregular_recall_multi_mixed.json",
+    "task": "synth_mem",
+    "eval_only": false,
+    "base_dataset": "synth_recall_multi",
+    "task_id": "recall_multi",
+    "main_metric": "cos",
+    "counts": {
+      "train": 60,
+      "val": 8,
+      "test": 8
+    },
+    "n_seqs": 76,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_irregular_recall_multi_repeat": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_irregular_recall_multi_repeat.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_irregular_recall_multi_repeat.json",
+    "task": "synth_mem",
+    "eval_only": false,
+    "base_dataset": "synth_recall_multi",
+    "task_id": "recall_multi",
+    "main_metric": "cos",
+    "counts": {
+      "train": 60,
+      "val": 8,
+      "test": 8
+    },
+    "n_seqs": 76,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_irregular_recall_multi_stretch2": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_irregular_recall_multi_stretch2.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_irregular_recall_multi_stretch2.json",
+    "task": "synth_mem",
+    "eval_only": false,
+    "base_dataset": "synth_recall_multi",
+    "task_id": "recall_multi",
+    "main_metric": "cos",
+    "counts": {
+      "train": 60,
+      "val": 8,
+      "test": 8
+    },
+    "n_seqs": 76,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_irregular_recall_multi_stretch4": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_irregular_recall_multi_stretch4.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_irregular_recall_multi_stretch4.json",
+    "task": "synth_mem",
+    "eval_only": false,
+    "base_dataset": "synth_recall_multi",
+    "task_id": "recall_multi",
+    "main_metric": "cos",
+    "counts": {
+      "train": 60,
+      "val": 8,
+      "test": 8
+    },
+    "n_seqs": 76,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_irregular_recall_multi_stretch8": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_irregular_recall_multi_stretch8.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_irregular_recall_multi_stretch8.json",
+    "task": "synth_mem",
+    "eval_only": false,
+    "base_dataset": "synth_recall_multi",
+    "task_id": "recall_multi",
+    "main_metric": "cos",
+    "counts": {
+      "train": 60,
+      "val": 8,
+      "test": 8
+    },
+    "n_seqs": 76,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_irregular_recall_single_burst": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_irregular_recall_single_burst.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_irregular_recall_single_burst.json",
+    "task": "synth_mem",
+    "eval_only": false,
+    "base_dataset": "synth_recall_single",
+    "task_id": "recall_single",
+    "main_metric": "cos",
+    "counts": {
+      "train": 60,
+      "val": 8,
+      "test": 8
+    },
+    "n_seqs": 76,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_irregular_recall_single_drop30": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_irregular_recall_single_drop30.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_irregular_recall_single_drop30.json",
+    "task": "synth_mem",
+    "eval_only": false,
+    "base_dataset": "synth_recall_single",
+    "task_id": "recall_single",
+    "main_metric": "cos",
+    "counts": {
+      "train": 60,
+      "val": 8,
+      "test": 8
+    },
+    "n_seqs": 76,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_irregular_recall_single_drop50": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_irregular_recall_single_drop50.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_irregular_recall_single_drop50.json",
+    "task": "synth_mem",
+    "eval_only": false,
+    "base_dataset": "synth_recall_single",
+    "task_id": "recall_single",
+    "main_metric": "cos",
+    "counts": {
+      "train": 60,
+      "val": 8,
+      "test": 8
+    },
+    "n_seqs": 76,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_irregular_recall_single_drop70": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_irregular_recall_single_drop70.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_irregular_recall_single_drop70.json",
+    "task": "synth_mem",
+    "eval_only": false,
+    "base_dataset": "synth_recall_single",
+    "task_id": "recall_single",
+    "main_metric": "cos",
+    "counts": {
+      "train": 60,
+      "val": 8,
+      "test": 8
+    },
+    "n_seqs": 76,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_irregular_recall_single_logdt": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_irregular_recall_single_logdt.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_irregular_recall_single_logdt.json",
+    "task": "synth_mem",
+    "eval_only": false,
+    "base_dataset": "synth_recall_single",
+    "task_id": "recall_single",
+    "main_metric": "cos",
+    "counts": {
+      "train": 60,
+      "val": 8,
+      "test": 8
+    },
+    "n_seqs": 76,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_irregular_recall_single_mixed": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_irregular_recall_single_mixed.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_irregular_recall_single_mixed.json",
+    "task": "synth_mem",
+    "eval_only": false,
+    "base_dataset": "synth_recall_single",
+    "task_id": "recall_single",
+    "main_metric": "cos",
+    "counts": {
+      "train": 60,
+      "val": 8,
+      "test": 8
+    },
+    "n_seqs": 76,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_irregular_recall_single_repeat": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_irregular_recall_single_repeat.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_irregular_recall_single_repeat.json",
+    "task": "synth_mem",
+    "eval_only": false,
+    "base_dataset": "synth_recall_single",
+    "task_id": "recall_single",
+    "main_metric": "cos",
+    "counts": {
+      "train": 60,
+      "val": 8,
+      "test": 8
+    },
+    "n_seqs": 76,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_irregular_recall_single_stretch2": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_irregular_recall_single_stretch2.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_irregular_recall_single_stretch2.json",
+    "task": "synth_mem",
+    "eval_only": false,
+    "base_dataset": "synth_recall_single",
+    "task_id": "recall_single",
+    "main_metric": "cos",
+    "counts": {
+      "train": 60,
+      "val": 8,
+      "test": 8
+    },
+    "n_seqs": 76,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_irregular_recall_single_stretch4": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_irregular_recall_single_stretch4.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_irregular_recall_single_stretch4.json",
+    "task": "synth_mem",
+    "eval_only": false,
+    "base_dataset": "synth_recall_single",
+    "task_id": "recall_single",
+    "main_metric": "cos",
+    "counts": {
+      "train": 60,
+      "val": 8,
+      "test": 8
+    },
+    "n_seqs": 76,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_irregular_recall_single_stretch8": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_irregular_recall_single_stretch8.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_irregular_recall_single_stretch8.json",
+    "task": "synth_mem",
+    "eval_only": false,
+    "base_dataset": "synth_recall_single",
+    "task_id": "recall_single",
+    "main_metric": "cos",
+    "counts": {
+      "train": 60,
+      "val": 8,
+      "test": 8
+    },
+    "n_seqs": 76,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_overwrite": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_overwrite.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_overwrite.json",
+    "task": "synth_mem",
+    "eval_only": false,
+    "base_dataset": null,
+    "task_id": "overwrite",
+    "main_metric": "cos",
+    "counts": {
+      "train": 200,
+      "val": 20,
+      "test": 20
+    },
+    "n_seqs": 240,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_overwrite_shuffled": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_overwrite_shuffled.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_overwrite_shuffled.json",
+    "task": "synth_mem",
+    "eval_only": true,
+    "base_dataset": "synth_overwrite",
+    "task_id": "overwrite",
+    "main_metric": "cos",
+    "counts": {
+      "test": 20
+    },
+    "n_seqs": 20,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_pattern_count": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_pattern_count.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_pattern_count.json",
+    "task": "synth_mem",
+    "eval_only": false,
+    "base_dataset": null,
+    "task_id": "pattern_count",
+    "main_metric": "acc",
+    "counts": {
+      "train": 201,
+      "val": 21,
+      "test": 21
+    },
+    "n_seqs": 243,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_pattern_count_irregular": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_pattern_count_irregular.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_pattern_count_irregular.json",
+    "task": "synth_mem",
+    "eval_only": false,
+    "base_dataset": null,
+    "task_id": "pattern_count",
+    "main_metric": "acc",
+    "counts": {
+      "train": 201,
+      "val": 21,
+      "test": 21
+    },
+    "n_seqs": 243,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_pattern_count_irregular_shuffled": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_pattern_count_irregular_shuffled.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_pattern_count_irregular_shuffled.json",
+    "task": "synth_mem",
+    "eval_only": true,
+    "base_dataset": "synth_pattern_count_irregular",
+    "task_id": "pattern_count",
+    "main_metric": "acc",
+    "counts": {
+      "test": 20
+    },
+    "n_seqs": 20,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_pattern_count_rate_mixed": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_pattern_count_rate_mixed.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_pattern_count_rate_mixed.json",
+    "task": "synth_mem",
+    "eval_only": false,
+    "base_dataset": null,
+    "task_id": "pattern_count_rate_mixed",
+    "main_metric": "acc",
+    "counts": {
+      "train": 200,
+      "val": 20,
+      "test": 20
+    },
+    "n_seqs": 240,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_pattern_count_rate_mixed_shuffled": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_pattern_count_rate_mixed_shuffled.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_pattern_count_rate_mixed_shuffled.json",
+    "task": "synth_mem",
+    "eval_only": true,
+    "base_dataset": "synth_pattern_count_rate_mixed",
+    "task_id": "pattern_count_rate_mixed",
+    "main_metric": "acc",
+    "counts": {
+      "test": 20
+    },
+    "n_seqs": 20,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_pattern_count_shuffled": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_pattern_count_shuffled.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_pattern_count_shuffled.json",
+    "task": "synth_mem",
+    "eval_only": true,
+    "base_dataset": "synth_pattern_count",
+    "task_id": "pattern_count",
+    "main_metric": "acc",
+    "counts": {
+      "test": 20
+    },
+    "n_seqs": 20,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_pattern_count_stretch2": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_pattern_count_stretch2.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_pattern_count_stretch2.json",
+    "task": "synth_mem",
+    "eval_only": true,
+    "base_dataset": "synth_pattern_count",
+    "task_id": "pattern_count",
+    "main_metric": "acc",
+    "counts": {
+      "test": 21
+    },
+    "n_seqs": 21,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_pattern_count_stretch4": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_pattern_count_stretch4.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_pattern_count_stretch4.json",
+    "task": "synth_mem",
+    "eval_only": true,
+    "base_dataset": "synth_pattern_count",
+    "task_id": "pattern_count",
+    "main_metric": "acc",
+    "counts": {
+      "test": 21
+    },
+    "n_seqs": 21,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_pattern_order": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_pattern_order.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_pattern_order.json",
+    "task": "synth_mem",
+    "eval_only": false,
+    "base_dataset": null,
+    "task_id": "pattern_order",
+    "main_metric": "acc",
+    "counts": {
+      "train": 200,
+      "val": 20,
+      "test": 20
+    },
+    "n_seqs": 240,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_pattern_order_shuffled": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_pattern_order_shuffled.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_pattern_order_shuffled.json",
+    "task": "synth_mem",
+    "eval_only": true,
+    "base_dataset": "synth_pattern_order",
+    "task_id": "pattern_order",
+    "main_metric": "acc",
+    "counts": {
+      "test": 20
+    },
+    "n_seqs": 20,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_pattern_rate": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_pattern_rate.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_pattern_rate.json",
+    "task": "synth_mem",
+    "eval_only": false,
+    "base_dataset": null,
+    "task_id": "pattern_rate",
+    "main_metric": "acc",
+    "counts": {
+      "train": 200,
+      "val": 20,
+      "test": 20
+    },
+    "n_seqs": 240,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_pattern_rate_shuffled": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_pattern_rate_shuffled.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_pattern_rate_shuffled.json",
+    "task": "synth_mem",
+    "eval_only": true,
+    "base_dataset": "synth_pattern_rate",
+    "task_id": "pattern_rate",
+    "main_metric": "acc",
+    "counts": {
+      "test": 20
+    },
+    "n_seqs": 20,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_pattern_rate_stretch2": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_pattern_rate_stretch2.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_pattern_rate_stretch2.json",
+    "task": "synth_mem",
+    "eval_only": true,
+    "base_dataset": "synth_pattern_rate",
+    "task_id": "pattern_rate",
+    "main_metric": "acc",
+    "counts": {
+      "test": 20
+    },
+    "n_seqs": 20,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_pattern_rate_stretch4": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_pattern_rate_stretch4.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_pattern_rate_stretch4.json",
+    "task": "synth_mem",
+    "eval_only": true,
+    "base_dataset": "synth_pattern_rate",
+    "task_id": "pattern_rate",
+    "main_metric": "acc",
+    "counts": {
+      "test": 20
+    },
+    "n_seqs": 20,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_recall_multi": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_recall_multi.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_recall_multi.json",
+    "task": "synth_mem",
+    "eval_only": false,
+    "base_dataset": null,
+    "task_id": "recall_multi",
+    "main_metric": "cos",
+    "counts": {
+      "train": 200,
+      "val": 20,
+      "test": 20
+    },
+    "n_seqs": 240,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_recall_multi_gap0.1s": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_recall_multi_gap0.1s.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_recall_multi_gap0.1s.json",
+    "task": "synth_mem",
+    "eval_only": true,
+    "base_dataset": "synth_recall_multi",
+    "task_id": "recall_multi",
+    "main_metric": "cos",
+    "counts": {
+      "test": 40
+    },
+    "n_seqs": 40,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_recall_multi_gap0.2s": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_recall_multi_gap0.2s.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_recall_multi_gap0.2s.json",
+    "task": "synth_mem",
+    "eval_only": true,
+    "base_dataset": "synth_recall_multi",
+    "task_id": "recall_multi",
+    "main_metric": "cos",
+    "counts": {
+      "test": 40
+    },
+    "n_seqs": 40,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_recall_multi_gap0.4s": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_recall_multi_gap0.4s.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_recall_multi_gap0.4s.json",
+    "task": "synth_mem",
+    "eval_only": true,
+    "base_dataset": "synth_recall_multi",
+    "task_id": "recall_multi",
+    "main_metric": "cos",
+    "counts": {
+      "test": 40
+    },
+    "n_seqs": 40,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_recall_multi_gap0.8s": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_recall_multi_gap0.8s.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_recall_multi_gap0.8s.json",
+    "task": "synth_mem",
+    "eval_only": true,
+    "base_dataset": "synth_recall_multi",
+    "task_id": "recall_multi",
+    "main_metric": "cos",
+    "counts": {
+      "test": 40
+    },
+    "n_seqs": 40,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_recall_multi_gap1.6s": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_recall_multi_gap1.6s.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_recall_multi_gap1.6s.json",
+    "task": "synth_mem",
+    "eval_only": true,
+    "base_dataset": "synth_recall_multi",
+    "task_id": "recall_multi",
+    "main_metric": "cos",
+    "counts": {
+      "test": 40
+    },
+    "n_seqs": 40,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_recall_multi_gap3.2s": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_recall_multi_gap3.2s.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_recall_multi_gap3.2s.json",
+    "task": "synth_mem",
+    "eval_only": true,
+    "base_dataset": "synth_recall_multi",
+    "task_id": "recall_multi",
+    "main_metric": "cos",
+    "counts": {
+      "test": 40
+    },
+    "n_seqs": 40,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_recall_multi_shuffled": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_recall_multi_shuffled.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_recall_multi_shuffled.json",
+    "task": "synth_mem",
+    "eval_only": true,
+    "base_dataset": "synth_recall_multi",
+    "task_id": "recall_multi",
+    "main_metric": "cos",
+    "counts": {
+      "test": 20
+    },
+    "n_seqs": 20,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_recall_single": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_recall_single.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_recall_single.json",
+    "task": "synth_mem",
+    "eval_only": false,
+    "base_dataset": null,
+    "task_id": "recall_single",
+    "main_metric": "cos",
+    "counts": {
+      "train": 200,
+      "val": 20,
+      "test": 20
+    },
+    "n_seqs": 240,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_recall_single_gap0.1s": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_recall_single_gap0.1s.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_recall_single_gap0.1s.json",
+    "task": "synth_mem",
+    "eval_only": true,
+    "base_dataset": "synth_recall_single",
+    "task_id": "recall_single",
+    "main_metric": "cos",
+    "counts": {
+      "test": 40
+    },
+    "n_seqs": 40,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_recall_single_gap0.2s": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_recall_single_gap0.2s.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_recall_single_gap0.2s.json",
+    "task": "synth_mem",
+    "eval_only": true,
+    "base_dataset": "synth_recall_single",
+    "task_id": "recall_single",
+    "main_metric": "cos",
+    "counts": {
+      "test": 40
+    },
+    "n_seqs": 40,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_recall_single_gap0.4s": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_recall_single_gap0.4s.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_recall_single_gap0.4s.json",
+    "task": "synth_mem",
+    "eval_only": true,
+    "base_dataset": "synth_recall_single",
+    "task_id": "recall_single",
+    "main_metric": "cos",
+    "counts": {
+      "test": 40
+    },
+    "n_seqs": 40,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_recall_single_gap0.8s": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_recall_single_gap0.8s.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_recall_single_gap0.8s.json",
+    "task": "synth_mem",
+    "eval_only": true,
+    "base_dataset": "synth_recall_single",
+    "task_id": "recall_single",
+    "main_metric": "cos",
+    "counts": {
+      "test": 40
+    },
+    "n_seqs": 40,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_recall_single_gap1.6s": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_recall_single_gap1.6s.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_recall_single_gap1.6s.json",
+    "task": "synth_mem",
+    "eval_only": true,
+    "base_dataset": "synth_recall_single",
+    "task_id": "recall_single",
+    "main_metric": "cos",
+    "counts": {
+      "test": 40
+    },
+    "n_seqs": 40,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_recall_single_gap3.2s": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_recall_single_gap3.2s.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_recall_single_gap3.2s.json",
+    "task": "synth_mem",
+    "eval_only": true,
+    "base_dataset": "synth_recall_single",
+    "task_id": "recall_single",
+    "main_metric": "cos",
+    "counts": {
+      "test": 40
+    },
+    "n_seqs": 40,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_recall_single_shuffled": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_recall_single_shuffled.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_recall_single_shuffled.json",
+    "task": "synth_mem",
+    "eval_only": true,
+    "base_dataset": "synth_recall_single",
+    "task_id": "recall_single",
+    "main_metric": "cos",
+    "counts": {
+      "test": 20
+    },
+    "n_seqs": 20,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_vanish_reappear": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_vanish_reappear.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_vanish_reappear.json",
+    "task": "synth_mem",
+    "eval_only": false,
+    "base_dataset": null,
+    "task_id": "vanish_reappear",
+    "main_metric": "acc",
+    "counts": {
+      "train": 200,
+      "val": 20,
+      "test": 20
+    },
+    "n_seqs": 240,
+    "feature_dim": 64,
+    "tok_dim": 17
+  },
+  "synth_vanish_reappear_shuffled": {
+    "manifest": "D:/robot_work/stream_memory_research/data_manifests/synth_vanish_reappear_shuffled.json",
+    "source": "G:/stream_memory_data/synth/manifests/synth_vanish_reappear_shuffled.json",
+    "task": "synth_mem",
+    "eval_only": true,
+    "base_dataset": "synth_vanish_reappear",
+    "task_id": "vanish_reappear",
+    "main_metric": "acc",
+    "counts": {
+      "test": 20
+    },
+    "n_seqs": 20,
+    "feature_dim": 64,
+    "tok_dim": 17
+  }
+}

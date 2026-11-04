@@ -1,0 +1,2711 @@
+{
+  "dataset": "synth_irregular_recall_single_stretch2",
+  "task": "synth_mem",
+  "feature_dim": 64,
+  "tok_dim": 17,
+  "roi_dim": 0,
+  "n_roi": 0,
+  "encoder": {
+    "name": "synthetic_controlled",
+    "version": "synth-suite-v1",
+    "task": "recall_single"
+  },
+  "split_key": "source_id",
+  "label_specs": {
+    "state": {
+      "kind": "mse",
+      "dim": 256
+    },
+    "class": {
+      "kind": "ce",
+      "dim": 1,
+      "n_classes": 16,
+      "ignore": -1
+    },
+    "event": {
+      "kind": "bce",
+      "dim": 1,
+      "n_classes": 1
+    }
+  },
+  "extra": {
+    "generator": "src/synth",
+    "suite_format": "synth-suite-v1",
+    "task_id": "recall_single",
+    "seed_base": 20261103,
+    "split_policy": "split by episode generator seed group: train=[0,800), val=[800,1000), test=[1000,1200); source_id = 'ep<index>' (never split by frame); test episodes are generated independently",
+    "split_ranges": {
+      "train": [
+        0,
+        800
+      ],
+      "val": [
+        800,
+        1000
+      ],
+      "test": [
+        1000,
+        1200
+      ]
+    },
+    "nominal_dt": 0.1,
+    "layout": {
+      "layout_version": 1,
+      "KMAX": 16,
+      "V": 16,
+      "VC": 8,
+      "VA": 8,
+      "N_CODES": 16,
+      "tok_dim": 17,
+      "feat_dim": 64,
+      "feat_summary_dim": 16,
+      "C_EVENT": 4
+    },
+    "channel_layout": {
+      "feat": {
+        "shape": "[T, 64] float16",
+        "summary_channels": [
+          {
+            "idx": 0,
+            "name": "bias",
+            "meaning": "constant 1.0"
+          },
+          {
+            "idx": 1,
+            "name": "vis_frac",
+            "meaning": "number of currently observed object tokens / 16"
+          },
+          {
+            "idx": 2,
+            "name": "any_hidden",
+            "meaning": "1.0 if at least one existing object is currently hidden"
+          },
+          {
+            "idx": 3,
+            "name": "query",
+            "meaning": "1.0 on steps flagged as a recall query"
+          },
+          {
+            "idx": 4,
+            "name": "event_pulse",
+            "meaning": "1.0 on an event step (knock/wave impulse)"
+          },
+          {
+            "idx": 5,
+            "name": "event_type_norm",
+            "meaning": "event type / (C_EVENT-1) in [0,1]; 0 when no event"
+          },
+          {
+            "idx": 6,
+            "name": "elapsed_s_60",
+            "meaning": "physical elapsed time / 60 s (causal clock)"
+          },
+          {
+            "idx": 7,
+            "name": "event_age_s_60",
+            "meaning": "seconds since the last event / 60 s (0 if none yet)"
+          },
+          {
+            "idx": 8,
+            "name": "since_change_s_60",
+            "meaning": "seconds since any visible token value last changed / 60 s"
+          },
+          {
+            "idx": 9,
+            "name": "hidden_asked_frac",
+            "meaning": "number of object-slots that are existing+hidden / 16"
+          },
+          {
+            "idx": 10,
+            "name": "mean_vis_norm",
+            "meaning": "mean L2 norm of the currently observed token values"
+          },
+          {
+            "idx": 11,
+            "name": "n_existing_frac",
+            "meaning": "number of existing object slots / 16"
+          },
+          {
+            "idx": 12,
+            "name": "reserved",
+            "meaning": "0.0"
+          },
+          {
+            "idx": 13,
+            "name": "reserved",
+            "meaning": "0.0"
+          },
+          {
+            "idx": 14,
+            "name": "reserved",
+            "meaning": "0.0"
+          },
+          {
+            "idx": 15,
+            "name": "reserved",
+            "meaning": "0.0"
+          }
+        ],
+        "reserved": "channels 16..63 are always 0.0 (reserved)"
+      },
+      "tok": {
+        "shape": "[T, 16, 17] float16",
+        "channels_0_15": "that object's current 16-dim value (identity dims zeroed when visible-but-not-identifiable)",
+        "channel_16": "visibility flag: 1.0 iff the object is observed now; when not observed the entire token is 0"
+      },
+      "labels": {
+        "lab_state": "[T, 256] float32 = 16 slots x 16 state dims; true state scaled by lab_mask-independent knowability (0 where the slot is unused or its value is unknowable)",
+        "lab_mask": "[T, 16] float32 = 1.0 iff the slot is asked for (knowable but absent from the current observation); all metrics are computed on lab_mask==1",
+        "lab_class": "[T] int64 = -1 ignore; identity id (vanish_reappear) or event type (event_seq)",
+        "lab_event": "[T] float32 0/1 event indicator"
+      },
+      "identity_code": "state dims 0..7: signed one-hot (16 identities); dims 8..15: N(0,1) analogue"
+    },
+    "phases": {
+      "pre": 0,
+      "write": 1,
+      "gap": 2,
+      "query": 3,
+      "verify": 4
+    },
+    "main_metric": "cos",
+    "task_params": {
+      "pre_frames": 2,
+      "write_frames": 4,
+      "query_frames": 2,
+      "verify_frames": 3,
+      "gap_s": null,
+      "gap_min_s": 0.1,
+      "gap_max_s": 3.2
+    },
+    "eval_only": false,
+    "base_dataset": "synth_recall_single",
+    "base_task": "recall_single",
+    "sweep_gap_s": null,
+    "gap_s": null,
+    "capacity_k": null,
+    "sweep_role": "",
+    "layout_signature": "2b2bdc7b2b7c6a54",
+    "irregular": "stretch2",
+    "irregular_params": {},
+    "control": null,
+    "eval_manifests": [],
+    "eval_manifest_paths": [],
+    "notes": "DESIGN §1.6 irregular variant 'stretch2'",
+    "oracle_reference_definition": {
+      "perfect": "unbounded faithful memory reading only the observation (PerfectMemoryOracle) -> sanity upper bound 1.0",
+      "memoryless": "outputs the current observation only (ZeroMemoryOracle) -> memoryless bound",
+      "chance": "random read-out (RandomOracle) -> theoretical chance"
+    }
+  },
+  "seqs": [
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000000",
+      "source_id": "ep000000",
+      "split": "train",
+      "T": 16,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000000.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 0,
+        "seed": [
+          20261103,
+          863970488,
+          0
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 0.5,
+        "K": 1,
+        "T": 16,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 5
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000001",
+      "source_id": "ep000001",
+      "split": "train",
+      "T": 29,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000001.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1,
+        "seed": [
+          20261103,
+          863970488,
+          1
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.8,
+        "K": 1,
+        "T": 29,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 18
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000002",
+      "source_id": "ep000002",
+      "split": "train",
+      "T": 30,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000002.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 2,
+        "seed": [
+          20261103,
+          863970488,
+          2
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.9000000000000001,
+        "K": 1,
+        "T": 30,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 19
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000003",
+      "source_id": "ep000003",
+      "split": "train",
+      "T": 18,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000003.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 3,
+        "seed": [
+          20261103,
+          863970488,
+          3
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 0.7000000000000001,
+        "K": 1,
+        "T": 18,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 7
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000004",
+      "source_id": "ep000004",
+      "split": "train",
+      "T": 33,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000004.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 4,
+        "seed": [
+          20261103,
+          863970488,
+          4
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.2,
+        "K": 1,
+        "T": 33,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 22
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000005",
+      "source_id": "ep000005",
+      "split": "train",
+      "T": 13,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000005.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 5,
+        "seed": [
+          20261103,
+          863970488,
+          5
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 0.2,
+        "K": 1,
+        "T": 13,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 2
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000006",
+      "source_id": "ep000006",
+      "split": "train",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000006.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 6,
+        "seed": [
+          20261103,
+          863970488,
+          6
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 0.1,
+        "K": 1,
+        "T": 12,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 1
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000007",
+      "source_id": "ep000007",
+      "split": "train",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000007.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 7,
+        "seed": [
+          20261103,
+          863970488,
+          7
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 0.1,
+        "K": 1,
+        "T": 12,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 1
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000008",
+      "source_id": "ep000008",
+      "split": "train",
+      "T": 18,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000008.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 8,
+        "seed": [
+          20261103,
+          863970488,
+          8
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 0.7000000000000001,
+        "K": 1,
+        "T": 18,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 7
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000009",
+      "source_id": "ep000009",
+      "split": "train",
+      "T": 15,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000009.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 9,
+        "seed": [
+          20261103,
+          863970488,
+          9
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 0.4,
+        "K": 1,
+        "T": 15,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 4
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000010",
+      "source_id": "ep000010",
+      "split": "train",
+      "T": 17,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000010.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 10,
+        "seed": [
+          20261103,
+          863970488,
+          10
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 0.6000000000000001,
+        "K": 1,
+        "T": 17,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 6
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000011",
+      "source_id": "ep000011",
+      "split": "train",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000011.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 11,
+        "seed": [
+          20261103,
+          863970488,
+          11
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 0.1,
+        "K": 1,
+        "T": 12,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 1
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000012",
+      "source_id": "ep000012",
+      "split": "train",
+      "T": 32,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000012.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 12,
+        "seed": [
+          20261103,
+          863970488,
+          12
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.1,
+        "K": 1,
+        "T": 32,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 21
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000013",
+      "source_id": "ep000013",
+      "split": "train",
+      "T": 36,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000013.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 13,
+        "seed": [
+          20261103,
+          863970488,
+          13
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.5,
+        "K": 1,
+        "T": 36,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 25
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000014",
+      "source_id": "ep000014",
+      "split": "train",
+      "T": 18,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000014.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 14,
+        "seed": [
+          20261103,
+          863970488,
+          14
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 0.7000000000000001,
+        "K": 1,
+        "T": 18,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 7
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000015",
+      "source_id": "ep000015",
+      "split": "train",
+      "T": 15,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000015.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 15,
+        "seed": [
+          20261103,
+          863970488,
+          15
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 0.4,
+        "K": 1,
+        "T": 15,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 4
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000016",
+      "source_id": "ep000016",
+      "split": "train",
+      "T": 36,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000016.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 16,
+        "seed": [
+          20261103,
+          863970488,
+          16
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.5,
+        "K": 1,
+        "T": 36,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 25
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000017",
+      "source_id": "ep000017",
+      "split": "train",
+      "T": 19,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000017.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 17,
+        "seed": [
+          20261103,
+          863970488,
+          17
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 0.8,
+        "K": 1,
+        "T": 19,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 8
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000018",
+      "source_id": "ep000018",
+      "split": "train",
+      "T": 17,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000018.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 18,
+        "seed": [
+          20261103,
+          863970488,
+          18
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 0.6000000000000001,
+        "K": 1,
+        "T": 17,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 6
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000019",
+      "source_id": "ep000019",
+      "split": "train",
+      "T": 19,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000019.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 19,
+        "seed": [
+          20261103,
+          863970488,
+          19
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 0.8,
+        "K": 1,
+        "T": 19,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 8
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000020",
+      "source_id": "ep000020",
+      "split": "train",
+      "T": 17,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000020.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 20,
+        "seed": [
+          20261103,
+          863970488,
+          20
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 0.6000000000000001,
+        "K": 1,
+        "T": 17,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 6
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000021",
+      "source_id": "ep000021",
+      "split": "train",
+      "T": 20,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000021.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 21,
+        "seed": [
+          20261103,
+          863970488,
+          21
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 0.9,
+        "K": 1,
+        "T": 20,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 9
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000022",
+      "source_id": "ep000022",
+      "split": "train",
+      "T": 30,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000022.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 22,
+        "seed": [
+          20261103,
+          863970488,
+          22
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.9000000000000001,
+        "K": 1,
+        "T": 30,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 19
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000023",
+      "source_id": "ep000023",
+      "split": "train",
+      "T": 18,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000023.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 23,
+        "seed": [
+          20261103,
+          863970488,
+          23
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 0.7000000000000001,
+        "K": 1,
+        "T": 18,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 7
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000024",
+      "source_id": "ep000024",
+      "split": "train",
+      "T": 14,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000024.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 24,
+        "seed": [
+          20261103,
+          863970488,
+          24
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 0.30000000000000004,
+        "K": 1,
+        "T": 14,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 3
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000025",
+      "source_id": "ep000025",
+      "split": "train",
+      "T": 33,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000025.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 25,
+        "seed": [
+          20261103,
+          863970488,
+          25
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.2,
+        "K": 1,
+        "T": 33,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 22
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000026",
+      "source_id": "ep000026",
+      "split": "train",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000026.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 26,
+        "seed": [
+          20261103,
+          863970488,
+          26
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 0.1,
+        "K": 1,
+        "T": 12,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 1
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000027",
+      "source_id": "ep000027",
+      "split": "train",
+      "T": 22,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000027.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 27,
+        "seed": [
+          20261103,
+          863970488,
+          27
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.1,
+        "K": 1,
+        "T": 22,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 11
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000028",
+      "source_id": "ep000028",
+      "split": "train",
+      "T": 13,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000028.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 28,
+        "seed": [
+          20261103,
+          863970488,
+          28
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 0.2,
+        "K": 1,
+        "T": 13,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 2
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000029",
+      "source_id": "ep000029",
+      "split": "train",
+      "T": 13,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000029.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 29,
+        "seed": [
+          20261103,
+          863970488,
+          29
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 0.2,
+        "K": 1,
+        "T": 13,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 2
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000030",
+      "source_id": "ep000030",
+      "split": "train",
+      "T": 33,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000030.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 30,
+        "seed": [
+          20261103,
+          863970488,
+          30
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.2,
+        "K": 1,
+        "T": 33,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 22
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000031",
+      "source_id": "ep000031",
+      "split": "train",
+      "T": 15,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000031.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 31,
+        "seed": [
+          20261103,
+          863970488,
+          31
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 0.4,
+        "K": 1,
+        "T": 15,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 4
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000032",
+      "source_id": "ep000032",
+      "split": "train",
+      "T": 13,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000032.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 32,
+        "seed": [
+          20261103,
+          863970488,
+          32
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 0.2,
+        "K": 1,
+        "T": 13,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 2
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000033",
+      "source_id": "ep000033",
+      "split": "train",
+      "T": 16,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000033.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 33,
+        "seed": [
+          20261103,
+          863970488,
+          33
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 0.5,
+        "K": 1,
+        "T": 16,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 5
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000034",
+      "source_id": "ep000034",
+      "split": "train",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000034.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 34,
+        "seed": [
+          20261103,
+          863970488,
+          34
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 0.1,
+        "K": 1,
+        "T": 12,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 1
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000035",
+      "source_id": "ep000035",
+      "split": "train",
+      "T": 24,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000035.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 35,
+        "seed": [
+          20261103,
+          863970488,
+          35
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.3,
+        "K": 1,
+        "T": 24,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 13
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000036",
+      "source_id": "ep000036",
+      "split": "train",
+      "T": 26,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000036.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 36,
+        "seed": [
+          20261103,
+          863970488,
+          36
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.5,
+        "K": 1,
+        "T": 26,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 15
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000037",
+      "source_id": "ep000037",
+      "split": "train",
+      "T": 25,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000037.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 37,
+        "seed": [
+          20261103,
+          863970488,
+          37
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.4000000000000001,
+        "K": 1,
+        "T": 25,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 14
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000038",
+      "source_id": "ep000038",
+      "split": "train",
+      "T": 28,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000038.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 38,
+        "seed": [
+          20261103,
+          863970488,
+          38
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.7000000000000002,
+        "K": 1,
+        "T": 28,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 17
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000039",
+      "source_id": "ep000039",
+      "split": "train",
+      "T": 16,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000039.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 39,
+        "seed": [
+          20261103,
+          863970488,
+          39
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 0.5,
+        "K": 1,
+        "T": 16,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 5
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000040",
+      "source_id": "ep000040",
+      "split": "train",
+      "T": 36,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000040.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 40,
+        "seed": [
+          20261103,
+          863970488,
+          40
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.5,
+        "K": 1,
+        "T": 36,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 25
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000041",
+      "source_id": "ep000041",
+      "split": "train",
+      "T": 16,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000041.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 41,
+        "seed": [
+          20261103,
+          863970488,
+          41
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 0.5,
+        "K": 1,
+        "T": 16,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 5
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000042",
+      "source_id": "ep000042",
+      "split": "train",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000042.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 42,
+        "seed": [
+          20261103,
+          863970488,
+          42
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 0.1,
+        "K": 1,
+        "T": 12,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 1
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000043",
+      "source_id": "ep000043",
+      "split": "train",
+      "T": 32,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000043.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 43,
+        "seed": [
+          20261103,
+          863970488,
+          43
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.1,
+        "K": 1,
+        "T": 32,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 21
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000044",
+      "source_id": "ep000044",
+      "split": "train",
+      "T": 16,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000044.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 44,
+        "seed": [
+          20261103,
+          863970488,
+          44
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 0.5,
+        "K": 1,
+        "T": 16,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 5
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000045",
+      "source_id": "ep000045",
+      "split": "train",
+      "T": 22,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000045.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 45,
+        "seed": [
+          20261103,
+          863970488,
+          45
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 1.1,
+        "K": 1,
+        "T": 22,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 11
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000046",
+      "source_id": "ep000046",
+      "split": "train",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000046.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 46,
+        "seed": [
+          20261103,
+          863970488,
+          46
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 0.1,
+        "K": 1,
+        "T": 12,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 1
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000047",
+      "source_id": "ep000047",
+      "split": "train",
+      "T": 18,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000047.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 47,
+        "seed": [
+          20261103,
+          863970488,
+          47
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 0.7000000000000001,
+        "K": 1,
+        "T": 18,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 7
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000048",
+      "source_id": "ep000048",
+      "split": "train",
+      "T": 16,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000048.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 48,
+        "seed": [
+          20261103,
+          863970488,
+          48
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 0.5,
+        "K": 1,
+        "T": 16,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 5
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000049",
+      "source_id": "ep000049",
+      "split": "train",
+      "T": 14,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000049.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 49,
+        "seed": [
+          20261103,
+          863970488,
+          49
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 0.30000000000000004,
+        "K": 1,
+        "T": 14,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 3
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000050",
+      "source_id": "ep000050",
+      "split": "train",
+      "T": 41,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000050.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 50,
+        "seed": [
+          20261103,
+          863970488,
+          50
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 3.0,
+        "K": 1,
+        "T": 41,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 30
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000051",
+      "source_id": "ep000051",
+      "split": "train",
+      "T": 20,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000051.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 51,
+        "seed": [
+          20261103,
+          863970488,
+          51
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 0.9,
+        "K": 1,
+        "T": 20,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 9
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000052",
+      "source_id": "ep000052",
+      "split": "train",
+      "T": 16,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000052.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 52,
+        "seed": [
+          20261103,
+          863970488,
+          52
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 0.5,
+        "K": 1,
+        "T": 16,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 5
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000053",
+      "source_id": "ep000053",
+      "split": "train",
+      "T": 32,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000053.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 53,
+        "seed": [
+          20261103,
+          863970488,
+          53
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.1,
+        "K": 1,
+        "T": 32,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 21
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000054",
+      "source_id": "ep000054",
+      "split": "train",
+      "T": 15,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000054.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 54,
+        "seed": [
+          20261103,
+          863970488,
+          54
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 0.4,
+        "K": 1,
+        "T": 15,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 4
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000055",
+      "source_id": "ep000055",
+      "split": "train",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000055.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 55,
+        "seed": [
+          20261103,
+          863970488,
+          55
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 0.1,
+        "K": 1,
+        "T": 12,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 1
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000056",
+      "source_id": "ep000056",
+      "split": "train",
+      "T": 18,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000056.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 56,
+        "seed": [
+          20261103,
+          863970488,
+          56
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 0.7000000000000001,
+        "K": 1,
+        "T": 18,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 7
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000057",
+      "source_id": "ep000057",
+      "split": "train",
+      "T": 14,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000057.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 57,
+        "seed": [
+          20261103,
+          863970488,
+          57
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 0.30000000000000004,
+        "K": 1,
+        "T": 14,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 3
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000058",
+      "source_id": "ep000058",
+      "split": "train",
+      "T": 33,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000058.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 58,
+        "seed": [
+          20261103,
+          863970488,
+          58
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 2.2,
+        "K": 1,
+        "T": 33,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 22
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_train_000059",
+      "source_id": "ep000059",
+      "split": "train",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_train_000059.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 59,
+        "seed": [
+          20261103,
+          863970488,
+          59
+        ],
+        "split_group": [
+          0,
+          800
+        ],
+        "gap_s": 0.1,
+        "K": 1,
+        "T": 12,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 1
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_val_000800",
+      "source_id": "ep000800",
+      "split": "val",
+      "T": 13,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_val_000800.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 800,
+        "seed": [
+          20261103,
+          863970488,
+          800
+        ],
+        "split_group": [
+          800,
+          1000
+        ],
+        "gap_s": 0.2,
+        "K": 1,
+        "T": 13,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 2
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_val_000801",
+      "source_id": "ep000801",
+      "split": "val",
+      "T": 27,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_val_000801.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 801,
+        "seed": [
+          20261103,
+          863970488,
+          801
+        ],
+        "split_group": [
+          800,
+          1000
+        ],
+        "gap_s": 1.6,
+        "K": 1,
+        "T": 27,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 16
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_val_000802",
+      "source_id": "ep000802",
+      "split": "val",
+      "T": 22,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_val_000802.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 802,
+        "seed": [
+          20261103,
+          863970488,
+          802
+        ],
+        "split_group": [
+          800,
+          1000
+        ],
+        "gap_s": 1.1,
+        "K": 1,
+        "T": 22,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 11
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_val_000803",
+      "source_id": "ep000803",
+      "split": "val",
+      "T": 20,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_val_000803.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 803,
+        "seed": [
+          20261103,
+          863970488,
+          803
+        ],
+        "split_group": [
+          800,
+          1000
+        ],
+        "gap_s": 0.9,
+        "K": 1,
+        "T": 20,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 9
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_val_000804",
+      "source_id": "ep000804",
+      "split": "val",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_val_000804.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 804,
+        "seed": [
+          20261103,
+          863970488,
+          804
+        ],
+        "split_group": [
+          800,
+          1000
+        ],
+        "gap_s": 0.1,
+        "K": 1,
+        "T": 12,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 1
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_val_000805",
+      "source_id": "ep000805",
+      "split": "val",
+      "T": 19,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_val_000805.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 805,
+        "seed": [
+          20261103,
+          863970488,
+          805
+        ],
+        "split_group": [
+          800,
+          1000
+        ],
+        "gap_s": 0.8,
+        "K": 1,
+        "T": 19,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 8
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_val_000806",
+      "source_id": "ep000806",
+      "split": "val",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_val_000806.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 806,
+        "seed": [
+          20261103,
+          863970488,
+          806
+        ],
+        "split_group": [
+          800,
+          1000
+        ],
+        "gap_s": 0.1,
+        "K": 1,
+        "T": 12,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 1
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_val_000807",
+      "source_id": "ep000807",
+      "split": "val",
+      "T": 14,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_val_000807.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 807,
+        "seed": [
+          20261103,
+          863970488,
+          807
+        ],
+        "split_group": [
+          800,
+          1000
+        ],
+        "gap_s": 0.30000000000000004,
+        "K": 1,
+        "T": 14,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 3
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_test_001000",
+      "source_id": "ep001000",
+      "split": "test",
+      "T": 29,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_test_001000.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1000,
+        "seed": [
+          20261103,
+          863970488,
+          1000
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 1.8,
+        "K": 1,
+        "T": 29,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 18
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_test_001001",
+      "source_id": "ep001001",
+      "split": "test",
+      "T": 16,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_test_001001.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1001,
+        "seed": [
+          20261103,
+          863970488,
+          1001
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 0.5,
+        "K": 1,
+        "T": 16,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 5
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_test_001002",
+      "source_id": "ep001002",
+      "split": "test",
+      "T": 13,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_test_001002.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1002,
+        "seed": [
+          20261103,
+          863970488,
+          1002
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 0.2,
+        "K": 1,
+        "T": 13,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 2
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_test_001003",
+      "source_id": "ep001003",
+      "split": "test",
+      "T": 14,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_test_001003.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1003,
+        "seed": [
+          20261103,
+          863970488,
+          1003
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 0.30000000000000004,
+        "K": 1,
+        "T": 14,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 3
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_test_001004",
+      "source_id": "ep001004",
+      "split": "test",
+      "T": 13,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_test_001004.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1004,
+        "seed": [
+          20261103,
+          863970488,
+          1004
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 0.2,
+        "K": 1,
+        "T": 13,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 2
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_test_001005",
+      "source_id": "ep001005",
+      "split": "test",
+      "T": 14,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_test_001005.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1005,
+        "seed": [
+          20261103,
+          863970488,
+          1005
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 0.30000000000000004,
+        "K": 1,
+        "T": 14,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 3
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_test_001006",
+      "source_id": "ep001006",
+      "split": "test",
+      "T": 39,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_test_001006.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1006,
+        "seed": [
+          20261103,
+          863970488,
+          1006
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 2.8000000000000003,
+        "K": 1,
+        "T": 39,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 28
+      }
+    },
+    {
+      "seq_id": "synth_irregular_recall_single_stretch2_test_001007",
+      "source_id": "ep001007",
+      "split": "test",
+      "T": 33,
+      "path": "G:\\stream_memory_data\\synth\\synth_irregular_recall_single_stretch2\\synth_irregular_recall_single_stretch2_test_001007.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1007,
+        "seed": [
+          20261103,
+          863970488,
+          1007
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 2.2,
+        "K": 1,
+        "T": 33,
+        "same_raw_as": "synth_recall_single",
+        "irregular": "stretch2",
+        "gap_steps": 22
+      }
+    }
+  ]
+}

@@ -1,0 +1,439 @@
+{
+  "run_id": "ucf101_order__mlp__s1",
+  "generated_at": "2026-11-04 01:20:11",
+  "split": "test",
+  "main_metric": "acc",
+  "higher_is_better": true,
+  "n_sequences": 1212,
+  "global": {
+    "acc": 0.5000515924881337,
+    "f1": 0.3856885338541416,
+    "f1_macro": 0.3856885338541416,
+    "precision": 0.500202052862764,
+    "recall": 0.5000515924881165,
+    "n": 58148,
+    "main_metric": "acc",
+    "main_head": "order"
+  },
+  "head": "order",
+  "worst": [
+    {
+      "rank": 1,
+      "seq_id": "ApplyEyeMakeup__v_ApplyEyeMakeup_g02_c02__fwd",
+      "source_id": "v_ApplyEyeMakeup_g02_c02",
+      "value": 0.0,
+      "T": 48,
+      "diagnosis": "short_sequence;collapsed_prediction;below_majority_baseline",
+      "details": {
+        "T": 48,
+        "dt_cv": 0.3257,
+        "dt_mean": 0.061277,
+        "n_valid": 48,
+        "pred_top_class": 1,
+        "pred_top_share": 1.0,
+        "n_true_classes": 1,
+        "true_top_class": 0,
+        "seq_majority_baseline": 1.0,
+        "acc": 0.0
+      }
+    },
+    {
+      "rank": 2,
+      "seq_id": "ApplyEyeMakeup__v_ApplyEyeMakeup_g03_c05__fwd",
+      "source_id": "v_ApplyEyeMakeup_g03_c05",
+      "value": 0.0,
+      "T": 48,
+      "diagnosis": "short_sequence;collapsed_prediction;below_majority_baseline",
+      "details": {
+        "T": 48,
+        "dt_cv": 0.3257,
+        "dt_mean": 0.061277,
+        "n_valid": 48,
+        "pred_top_class": 1,
+        "pred_top_share": 1.0,
+        "n_true_classes": 1,
+        "true_top_class": 0,
+        "seq_majority_baseline": 1.0,
+        "acc": 0.0
+      }
+    },
+    {
+      "rank": 3,
+      "seq_id": "ApplyEyeMakeup__v_ApplyEyeMakeup_g04_c07__fwd",
+      "source_id": "v_ApplyEyeMakeup_g04_c07",
+      "value": 0.0,
+      "T": 48,
+      "diagnosis": "short_sequence;collapsed_prediction;below_majority_baseline",
+      "details": {
+        "T": 48,
+        "dt_cv": 0.2855,
+        "dt_mean": 0.066383,
+        "n_valid": 48,
+        "pred_top_class": 1,
+        "pred_top_share": 1.0,
+        "n_true_classes": 1,
+        "true_top_class": 0,
+        "seq_majority_baseline": 1.0,
+        "acc": 0.0
+      }
+    },
+    {
+      "rank": 4,
+      "seq_id": "ApplyEyeMakeup__v_ApplyEyeMakeup_g06_c07__fwd",
+      "source_id": "v_ApplyEyeMakeup_g06_c07",
+      "value": 0.0,
+      "T": 48,
+      "diagnosis": "short_sequence;collapsed_prediction;below_majority_baseline",
+      "details": {
+        "T": 48,
+        "dt_cv": 0.2499,
+        "dt_mean": 0.069787,
+        "n_valid": 48,
+        "pred_top_class": 1,
+        "pred_top_share": 1.0,
+        "n_true_classes": 1,
+        "true_top_class": 0,
+        "seq_majority_baseline": 1.0,
+        "acc": 0.0
+      }
+    },
+    {
+      "rank": 5,
+      "seq_id": "ApplyLipstick__v_ApplyLipstick_g02_c01__fwd",
+      "source_id": "v_ApplyLipstick_g02_c01",
+      "value": 0.0,
+      "T": 48,
+      "diagnosis": "short_sequence;collapsed_prediction;below_majority_baseline",
+      "details": {
+        "T": 48,
+        "dt_cv": 0.3534,
+        "dt_mean": 0.052766,
+        "n_valid": 48,
+        "pred_top_class": 1,
+        "pred_top_share": 1.0,
+        "n_true_classes": 1,
+        "true_top_class": 0,
+        "seq_majority_baseline": 1.0,
+        "acc": 0.0
+      }
+    },
+    {
+      "rank": 6,
+      "seq_id": "ApplyLipstick__v_ApplyLipstick_g03_c02__fwd",
+      "source_id": "v_ApplyLipstick_g03_c02",
+      "value": 0.0,
+      "T": 48,
+      "diagnosis": "short_sequence;collapsed_prediction;below_majority_baseline",
+      "details": {
+        "T": 48,
+        "dt_cv": 0.2959,
+        "dt_mean": 0.045106,
+        "n_valid": 48,
+        "pred_top_class": 1,
+        "pred_top_share": 1.0,
+        "n_true_classes": 1,
+        "true_top_class": 0,
+        "seq_majority_baseline": 1.0,
+        "acc": 0.0
+      }
+    },
+    {
+      "rank": 7,
+      "seq_id": "ApplyLipstick__v_ApplyLipstick_g05_c04__fwd",
+      "source_id": "v_ApplyLipstick_g05_c04",
+      "value": 0.0,
+      "T": 48,
+      "diagnosis": "short_sequence;collapsed_prediction;below_majority_baseline",
+      "details": {
+        "T": 48,
+        "dt_cv": 0.3474,
+        "dt_mean": 0.050213,
+        "n_valid": 48,
+        "pred_top_class": 1,
+        "pred_top_share": 1.0,
+        "n_true_classes": 1,
+        "true_top_class": 0,
+        "seq_majority_baseline": 1.0,
+        "acc": 0.0
+      }
+    },
+    {
+      "rank": 8,
+      "seq_id": "Archery__v_Archery_g01_c01__fwd",
+      "source_id": "v_Archery_g01_c01",
+      "value": 0.0,
+      "T": 48,
+      "diagnosis": "short_sequence;collapsed_prediction;below_majority_baseline",
+      "details": {
+        "T": 48,
+        "dt_cv": 0.3529,
+        "dt_mean": 0.054468,
+        "n_valid": 48,
+        "pred_top_class": 1,
+        "pred_top_share": 1.0,
+        "n_true_classes": 1,
+        "true_top_class": 0,
+        "seq_majority_baseline": 1.0,
+        "acc": 0.0
+      }
+    },
+    {
+      "rank": 9,
+      "seq_id": "Archery__v_Archery_g01_c07__fwd",
+      "source_id": "v_Archery_g01_c07",
+      "value": 0.0,
+      "T": 48,
+      "diagnosis": "short_sequence;collapsed_prediction;below_majority_baseline",
+      "details": {
+        "T": 48,
+        "dt_cv": 0.3356,
+        "dt_mean": 0.059574,
+        "n_valid": 48,
+        "pred_top_class": 1,
+        "pred_top_share": 1.0,
+        "n_true_classes": 1,
+        "true_top_class": 0,
+        "seq_majority_baseline": 1.0,
+        "acc": 0.0
+      }
+    },
+    {
+      "rank": 10,
+      "seq_id": "Archery__v_Archery_g02_c07__fwd",
+      "source_id": "v_Archery_g02_c07",
+      "value": 0.0,
+      "T": 48,
+      "diagnosis": "short_sequence;collapsed_prediction;below_majority_baseline",
+      "details": {
+        "T": 48,
+        "dt_cv": 0.2499,
+        "dt_mean": 0.069787,
+        "n_valid": 48,
+        "pred_top_class": 1,
+        "pred_top_share": 1.0,
+        "n_true_classes": 1,
+        "true_top_class": 0,
+        "seq_majority_baseline": 1.0,
+        "acc": 0.0
+      }
+    }
+  ],
+  "best": [
+    {
+      "rank": 1,
+      "seq_id": "ApplyEyeMakeup__v_ApplyEyeMakeup_g02_c02__rev",
+      "source_id": "v_ApplyEyeMakeup_g02_c02",
+      "value": 1.0,
+      "T": 48,
+      "diagnosis": "short_sequence;collapsed_prediction",
+      "details": {
+        "T": 48,
+        "dt_cv": 0.3257,
+        "dt_mean": 0.061277,
+        "n_valid": 48,
+        "pred_top_class": 1,
+        "pred_top_share": 1.0,
+        "n_true_classes": 1,
+        "true_top_class": 1,
+        "seq_majority_baseline": 1.0,
+        "acc": 1.0
+      }
+    },
+    {
+      "rank": 2,
+      "seq_id": "ApplyEyeMakeup__v_ApplyEyeMakeup_g03_c05__rev",
+      "source_id": "v_ApplyEyeMakeup_g03_c05",
+      "value": 1.0,
+      "T": 48,
+      "diagnosis": "short_sequence;collapsed_prediction",
+      "details": {
+        "T": 48,
+        "dt_cv": 0.3257,
+        "dt_mean": 0.061277,
+        "n_valid": 48,
+        "pred_top_class": 1,
+        "pred_top_share": 1.0,
+        "n_true_classes": 1,
+        "true_top_class": 1,
+        "seq_majority_baseline": 1.0,
+        "acc": 1.0
+      }
+    },
+    {
+      "rank": 3,
+      "seq_id": "ApplyEyeMakeup__v_ApplyEyeMakeup_g04_c07__rev",
+      "source_id": "v_ApplyEyeMakeup_g04_c07",
+      "value": 1.0,
+      "T": 48,
+      "diagnosis": "short_sequence;collapsed_prediction",
+      "details": {
+        "T": 48,
+        "dt_cv": 0.2855,
+        "dt_mean": 0.066383,
+        "n_valid": 48,
+        "pred_top_class": 1,
+        "pred_top_share": 1.0,
+        "n_true_classes": 1,
+        "true_top_class": 1,
+        "seq_majority_baseline": 1.0,
+        "acc": 1.0
+      }
+    },
+    {
+      "rank": 4,
+      "seq_id": "ApplyEyeMakeup__v_ApplyEyeMakeup_g06_c07__rev",
+      "source_id": "v_ApplyEyeMakeup_g06_c07",
+      "value": 1.0,
+      "T": 48,
+      "diagnosis": "short_sequence;collapsed_prediction",
+      "details": {
+        "T": 48,
+        "dt_cv": 0.2499,
+        "dt_mean": 0.069787,
+        "n_valid": 48,
+        "pred_top_class": 1,
+        "pred_top_share": 1.0,
+        "n_true_classes": 1,
+        "true_top_class": 1,
+        "seq_majority_baseline": 1.0,
+        "acc": 1.0
+      }
+    },
+    {
+      "rank": 5,
+      "seq_id": "ApplyLipstick__v_ApplyLipstick_g02_c01__rev",
+      "source_id": "v_ApplyLipstick_g02_c01",
+      "value": 1.0,
+      "T": 48,
+      "diagnosis": "short_sequence;collapsed_prediction",
+      "details": {
+        "T": 48,
+        "dt_cv": 0.3534,
+        "dt_mean": 0.052766,
+        "n_valid": 48,
+        "pred_top_class": 1,
+        "pred_top_share": 1.0,
+        "n_true_classes": 1,
+        "true_top_class": 1,
+        "seq_majority_baseline": 1.0,
+        "acc": 1.0
+      }
+    },
+    {
+      "rank": 6,
+      "seq_id": "ApplyLipstick__v_ApplyLipstick_g03_c02__rev",
+      "source_id": "v_ApplyLipstick_g03_c02",
+      "value": 1.0,
+      "T": 48,
+      "diagnosis": "short_sequence;collapsed_prediction",
+      "details": {
+        "T": 48,
+        "dt_cv": 0.2959,
+        "dt_mean": 0.045106,
+        "n_valid": 48,
+        "pred_top_class": 1,
+        "pred_top_share": 1.0,
+        "n_true_classes": 1,
+        "true_top_class": 1,
+        "seq_majority_baseline": 1.0,
+        "acc": 1.0
+      }
+    },
+    {
+      "rank": 7,
+      "seq_id": "ApplyLipstick__v_ApplyLipstick_g05_c04__rev",
+      "source_id": "v_ApplyLipstick_g05_c04",
+      "value": 1.0,
+      "T": 48,
+      "diagnosis": "short_sequence;collapsed_prediction",
+      "details": {
+        "T": 48,
+        "dt_cv": 0.3474,
+        "dt_mean": 0.050213,
+        "n_valid": 48,
+        "pred_top_class": 1,
+        "pred_top_share": 1.0,
+        "n_true_classes": 1,
+        "true_top_class": 1,
+        "seq_majority_baseline": 1.0,
+        "acc": 1.0
+      }
+    },
+    {
+      "rank": 8,
+      "seq_id": "Archery__v_Archery_g01_c01__rev",
+      "source_id": "v_Archery_g01_c01",
+      "value": 1.0,
+      "T": 48,
+      "diagnosis": "short_sequence;collapsed_prediction",
+      "details": {
+        "T": 48,
+        "dt_cv": 0.3529,
+        "dt_mean": 0.054468,
+        "n_valid": 48,
+        "pred_top_class": 1,
+        "pred_top_share": 1.0,
+        "n_true_classes": 1,
+        "true_top_class": 1,
+        "seq_majority_baseline": 1.0,
+        "acc": 1.0
+      }
+    },
+    {
+      "rank": 9,
+      "seq_id": "Archery__v_Archery_g01_c07__rev",
+      "source_id": "v_Archery_g01_c07",
+      "value": 1.0,
+      "T": 48,
+      "diagnosis": "short_sequence;collapsed_prediction",
+      "details": {
+        "T": 48,
+        "dt_cv": 0.3356,
+        "dt_mean": 0.059574,
+        "n_valid": 48,
+        "pred_top_class": 1,
+        "pred_top_share": 1.0,
+        "n_true_classes": 1,
+        "true_top_class": 1,
+        "seq_majority_baseline": 1.0,
+        "acc": 1.0
+      }
+    },
+    {
+      "rank": 10,
+      "seq_id": "Archery__v_Archery_g02_c07__rev",
+      "source_id": "v_Archery_g02_c07",
+      "value": 1.0,
+      "T": 48,
+      "diagnosis": "short_sequence;collapsed_prediction",
+      "details": {
+        "T": 48,
+        "dt_cv": 0.2499,
+        "dt_mean": 0.069787,
+        "n_valid": 48,
+        "pred_top_class": 1,
+        "pred_top_share": 1.0,
+        "n_true_classes": 1,
+        "true_top_class": 1,
+        "seq_majority_baseline": 1.0,
+        "acc": 1.0
+      }
+    }
+  ],
+  "diagnosis_counts": {
+    "short_sequence": 20,
+    "collapsed_prediction": 20,
+    "below_majority_baseline": 10
+  },
+  "extra": {
+    "split": "test",
+    "head": "order"
+  },
+  "kind": "ce",
+  "value_stats": {
+    "mean": 0.5000515676567657,
+    "p10": 0.0,
+    "p90": 1.0
+  },
+  "path": "failure_cases/ucf101_order__mlp__s1.json"
+}

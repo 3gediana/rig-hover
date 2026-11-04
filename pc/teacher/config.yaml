@@ -1,0 +1,104 @@
+# RIG-Hover 教师控制器参数
+# 来源：TECH-PLAN-v1.md §8.3（tracking / gesture / smoothing / lost 四组，数值原样照抄）
+#       + §4.1 CONTRACT 的 img_frame 双模开关
+#       + §7.2b 距离通道
+# gesture 组已按**事件化**重写（用 gesture_onset 边沿替代 wave_score 阈值 +
+# refractory 冷却）；语义见该组注释与 pc/perception/GESTURE_INTEGRATION.md。
+# 纪律：teacher.py 里不允许出现控制阈值字面量，全部从这里读。
+#       标了「外置」的键是 TECH-PLAN 正文里出现的字面量（15°、20°/s、3°、0.20 m/s 等），
+#       为了让 §7.2/§7.2b 的伪代码可调且不硬编码，一并外置。
+
+img_frame: 0            # 0 = head_cam（摄像头随头转，eps_body = theta_img + q_head）
+                        # 1 = body_cam（摄像头固定机身，eps_body = theta_img）
+                        # 现场用 §15-V1 的测法确认（/capture → /cmd?head=40 → /capture）
+
+tracking:
+  head_deadband_deg: 2.0    # |eps| 小于它时头部目标置 0（防抖，只作用于头部通道）
+  body_engage_deg: 5.0      # 超过这个角才动机身
+  head_full_deg: 25.0       # 超过这个角机身全速
+  head_share_mid: 0.7       # 中误差时头部只拿 70%，留 30% 当机身转动的驱动源
+  k_med: 1.5                # (度/秒)/度
+  k_fast: 3.0               # (度/秒)/度
+  vyaw_max_dps: 60.0
+  head_max_deg: 42.0        # 留 3° 余量给 ±45 机械限位；§15-V3 若头转破坏平衡可降到 25
+  head_limit_margin_deg: 3.0        # 外置：|head_des| > head_max - margin 触发限位保护
+  vyaw_floor_dps: 20.0              # 外置：头顶到限位时机身的最小角速度
+
+gesture:
+  # 触发条件（事件化后只有这一条）：
+  #   gesture_onset == 1 且 gesture_conf >= ack_conf_thresh
+  #   且 gesture_id ∈ ack_gesture_ids 且 gesture_gap_s >= ack_min_gap_s
+  #   （require_hand_up=true 时再加 hand_up_* 门）
+  # gesture_onset 是**边沿**：一段连续动作只有进入 GESTURE 那一帧是 1，
+  # 所以「一次动作一次 ACK」是结构保证，不需要冷却期。
+  ack_conf_thresh: 0.75     # 判据是 >=（与事件机 enter_thresh 的确认边界一致；
+                            # 用 > 会把「刚好 0.75 已确认」的动作漏掉）
+  ack_gesture_ids: [1, 2, 3]
+                            # 1=wave 2=open_palm 3=thumbs_up
+                            # 4=pointing 排除：测试 F1 只有 0.574，误响应代价高
+                            # 5=fist 排除：不像「叫我」的社交信号
+  ack_min_gap_s: 0.25       # 手势层**去抖**，不是冷却。语义区别见下方注释。
+  ack_hold_s: 1.5           # ACK 状态持续（点头 + 全力看人）
+  require_hand_up: false    # true 时额外要求本帧 hand_up_* 为 1（A 侧已由分类器保证，默认不重复加门）
+
+  # 下面两个是 A 侧量化关键点/过零用的门限，教师侧只读不用（参数单一来源）。
+  # 事件化后 wave_amp_thresh 已没有下游用途，留到下一次清理。
+  hand_up_conf: 0.6
+  wave_amp_thresh: 0.05
+
+  # -------------------------------------------------------------------------
+  # ack_min_gap_s 为什么不是 refractory_s（这个区别很容易被写错）
+  #
+  # 旧 refractory_s（3.0 s）是**冷却**：一次 ACK 之后 3 秒内不再响应，无论人做了
+  # 几次动作。它存在的原因是旧判定吃的是 wave_score **电平**——挥手期间电平一直
+  # 高于阈值，没有冷却就会每帧重入 ACK。代价是真人「挥两次手」只被响应一次。
+  #
+  # 新 ack_min_gap_s（0.25 s）是**去抖**：只在「上一次手势结束到现在不足 0.25 s」
+  # 时拒绝响应，挡住的是同一次动作被切成两个边沿（手势层的抖动），不是「两次动作
+  # 隔得近」。人手再做一个动作要 >400 ms，比它大一个数量级，所以它没有能力
+  # 「忘记」任何东西——间隔 0.5 s 的两次挥手，两次都会被响应。
+  # 而且这一层是冗余保护：事件机的 min_gap(0.25 s) 已经在结构上保证了单段单边沿。
+  # -------------------------------------------------------------------------
+
+smoothing:
+  head_lpf_alpha: 0.15      # 一阶低通，按 ctrl_fps 标定
+  vyaw_lpf_alpha: 0.2
+  head_rate_limit_dps: 300.0
+  vyaw_rate_limit_dps2: 400.0
+  ctrl_fps: 30.0            # 外置：上面几个 alpha 是按这个帧率标定的；dt 不同会自动换算
+  dt_max: 0.5               # 外置：单步 dt 上限（秒），防卡顿后一步跳变
+  vx_rate_limit_mps2: 0.8   # 外置：§8.3 没有 vx 速率限幅，但 vx 直接决定会不会冲下桌子，补一条
+
+lost:
+  stale_ms: 300             # 丢 300ms → STALE：冻结头部，机身/前进归零
+  lost_ms: 1000             # 丢 1s → LOST：头部按 recenter_ms 的速率回中
+  recenter_ms: 2000         # 丢 2s → IDLE（与 §6.3「seen=0 持续 2s → IDLE」一致）
+
+distance:
+  dist_target: 1.0          # 想保持的距离 (m)
+  dist_dead: 0.15           # 死区 (m)，防抖
+  k_dist: 0.5               # (m/s)/m
+  vx_max: 0.30              # 地面场景上限 (m/s)
+  vx_max_desktop: 0.20      # 桌面场景上限 (m/s)，§7.2b 安全约束 2
+  desktop_mode: true        # true 时按 min(vx_max, vx_max_desktop) 钳位
+  dist_k_coef: 0.65         # dist = dist_k_coef / person_h（§15-V9 必须标定后重设）
+                            # 说明见文件末尾「dist_k_coef 为什么取 0.65」
+  dist_lpf_tau: 0.5         # 一阶低通时间常数 (s)，§7.2b 要求必做
+  dist_min: 0.15            # 距离估计下界 (m)
+  dist_max: 4.0             # 距离估计上界 (m)
+  person_h_min: 0.001       # person_h 小于它视为无效帧（不更新距离）
+  vx_align_deg: 15.0        # 外置：|eps_body| > 它时 vx 强制 0（§7.2b 安全约束 1）
+  vx_backward_scale: 0.5    # 外置：人太近（e_dist < -dist_dead）后退速度减半（安全约束 3）
+
+# ---------------------------------------------------------------------------
+# dist_k_coef 为什么取 0.65
+#
+# CONTRACT §3.1 的 person_h 是「bbox 高 / 图高」∈[0,1]，不是像素数。
+# 按 60° 垂直视场、1.7m 身高反推，几何真值 K≈1.5：person_h = 1.5/dist。
+# 但 K=1.5 时 dist=1.0 要求 person_h=1.5 > 1（不可能），即 dist_target=1.0
+# 落在估计器可达域外，机器人会一直以为人太远、持续前压。
+# 这里故意取 0.65（低估距离）：机器人保持得更远、行为偏保守，且 dist_target=1.0
+# 对应 person_h≈0.65，在可达域内。§15-V9 实测后按 K = dist * person_h 重设。
+# 另注：dist=K/person_h 在近距会因 bbox 触顶饱和（人再近 person_h 也不会超过 1），
+#      近距段只能靠 dist_min 下限兜底，不能靠公式。
+# ---------------------------------------------------------------------------

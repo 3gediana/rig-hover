@@ -1,0 +1,373 @@
+{
+  "dataset": "davis_vos_smoke",
+  "task": "track",
+  "feature_dim": 768,
+  "tok_dim": 768,
+  "roi_dim": 768,
+  "n_roi": 1,
+  "encoder": {
+    "name": "openai/clip-vit-base-patch16",
+    "tag": "clip-vit-base-p16-224-f16-2x2tok-v1",
+    "input": 224,
+    "pool": "2x2",
+    "n_tok": 4,
+    "dtype": "float16",
+    "frozen": true,
+    "preprocess": "CLIPImageProcessor",
+    "roi_preprocess": "crop mask-bbox + 10% margin, stretch 224"
+  },
+  "split_key": "source_id",
+  "label_specs": {
+    "lab_track": {
+      "kind": "mse",
+      "dim": 4
+    },
+    "lab_present": {
+      "kind": "bce",
+      "n_classes": 1,
+      "dim": 1
+    }
+  },
+  "extra": {
+    "sampling": "10 fps target: frame indices round(k * 24/10) over the native image sequence, cap 120",
+    "timestamp_rule": "t = frame_index / 24 (DAVIS 2017 release is 24 fps; no per-sequence fps field exists in the archive)",
+    "split": "official DAVIS 2017 ImageSets/2017 train (60) / val (30), split by sequence, never by frame",
+    "roi": "mask bbox of the annotated object, normalised (cx,cy,w,h)",
+    "roi_valid": "0 where the mask is empty OR inside a simulated occlusion gap (see occlusion_simulation)",
+    "labels": {
+      "lab_track": "[T,1,4] normalised bbox of the object at frame t -- supervised even while roi_valid=0 (memory target)",
+      "lab_present": "[T,1] 1 if the object mask is non-empty (true visibility, not the injected flag)"
+    },
+    "occlusion_simulation": {
+      "why": "DAVIS is a VOS benchmark: the annotated object is present in essentially every frame, so the literal 'mask empty' rule produces no invalid frames and cannot test memory.",
+      "how": "per sequence, 1-3 gaps of 0.4-1.5 s (seeded by (seed, seq), deterministic), total <= 40% of frames, never frame 0, separated by >= 1 s of valid data",
+      "what_is_real": "pixels, CLIP features, mask bboxes, lab_present",
+      "what_is_injected": "only the roi_valid flag",
+      "seed": 0
+    },
+    "source_urls": [
+      "https://huggingface.co/datasets/yinloonga/DAVIS_2017 (DAVIS-2017-trainval-480p.zip, 832,766,765 B, contains JPEGImages/480p + Annotations/480p for all 90 sequence)",
+      "official https://data.vision.ee.ethz.ch/csergi/share/davis/DAVIS-2017-trainval-480p.zip measured at 0.04 MB/s -> not used"
+    ],
+    "encoder_config": {
+      "model": "openai/clip-vit-base-patch16",
+      "input_size": 224,
+      "dtype": "float16",
+      "device": "cuda"
+    },
+    "seed": 0,
+    "deterministic": true,
+    "n_extracted": 90,
+    "skipped": {},
+    "fixture": "tiny smoke fixture: first {'train': 12, 'val': 6, 'test': 2} sequences of each split of davis_vos, identical npz files -- for <60 s end-to-end pipeline tests only",
+    "parent_dataset": "davis_vos"
+  },
+  "seqs": [
+    {
+      "seq_id": "bear",
+      "source_id": "bear",
+      "split": "train",
+      "T": 34,
+      "path": "G:/stream_memory_data/features/davis_vos/bear.npz",
+      "labels": [
+        "track",
+        "present"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 34,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "bmx-bumps",
+      "source_id": "bmx-bumps",
+      "split": "train",
+      "T": 38,
+      "path": "G:/stream_memory_data/features/davis_vos/bmx-bumps.npz",
+      "labels": [
+        "track",
+        "present"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 38,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "boat",
+      "source_id": "boat",
+      "split": "train",
+      "T": 32,
+      "path": "G:/stream_memory_data/features/davis_vos/boat.npz",
+      "labels": [
+        "track",
+        "present"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 32,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "boxing-fisheye",
+      "source_id": "boxing-fisheye",
+      "split": "train",
+      "T": 37,
+      "path": "G:/stream_memory_data/features/davis_vos/boxing-fisheye.npz",
+      "labels": [
+        "track",
+        "present"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 37,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "breakdance-flare",
+      "source_id": "breakdance-flare",
+      "split": "train",
+      "T": 30,
+      "path": "G:/stream_memory_data/features/davis_vos/breakdance-flare.npz",
+      "labels": [
+        "track",
+        "present"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 30,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "bus",
+      "source_id": "bus",
+      "split": "train",
+      "T": 34,
+      "path": "G:/stream_memory_data/features/davis_vos/bus.npz",
+      "labels": [
+        "track",
+        "present"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 34,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "car-turn",
+      "source_id": "car-turn",
+      "split": "train",
+      "T": 34,
+      "path": "G:/stream_memory_data/features/davis_vos/car-turn.npz",
+      "labels": [
+        "track",
+        "present"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 34,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "cat-girl",
+      "source_id": "cat-girl",
+      "split": "train",
+      "T": 37,
+      "path": "G:/stream_memory_data/features/davis_vos/cat-girl.npz",
+      "labels": [
+        "track",
+        "present"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 37,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "classic-car",
+      "source_id": "classic-car",
+      "split": "train",
+      "T": 27,
+      "path": "G:/stream_memory_data/features/davis_vos/classic-car.npz",
+      "labels": [
+        "track",
+        "present"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 27,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "color-run",
+      "source_id": "color-run",
+      "split": "train",
+      "T": 35,
+      "path": "G:/stream_memory_data/features/davis_vos/color-run.npz",
+      "labels": [
+        "track",
+        "present"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 35,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "crossing",
+      "source_id": "crossing",
+      "split": "train",
+      "T": 22,
+      "path": "G:/stream_memory_data/features/davis_vos/crossing.npz",
+      "labels": [
+        "track",
+        "present"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 22,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "dance-jump",
+      "source_id": "dance-jump",
+      "split": "train",
+      "T": 25,
+      "path": "G:/stream_memory_data/features/davis_vos/dance-jump.npz",
+      "labels": [
+        "track",
+        "present"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 25,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "bike-packing",
+      "source_id": "bike-packing",
+      "split": "val",
+      "T": 29,
+      "path": "G:/stream_memory_data/features/davis_vos/bike-packing.npz",
+      "labels": [
+        "track",
+        "present"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 29,
+        "split_official": "val"
+      }
+    },
+    {
+      "seq_id": "blackswan",
+      "source_id": "blackswan",
+      "split": "val",
+      "T": 21,
+      "path": "G:/stream_memory_data/features/davis_vos/blackswan.npz",
+      "labels": [
+        "track",
+        "present"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 21,
+        "split_official": "val"
+      }
+    },
+    {
+      "seq_id": "bmx-trees",
+      "source_id": "bmx-trees",
+      "split": "val",
+      "T": 34,
+      "path": "G:/stream_memory_data/features/davis_vos/bmx-trees.npz",
+      "labels": [
+        "track",
+        "present"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 34,
+        "split_official": "val"
+      }
+    },
+    {
+      "seq_id": "breakdance",
+      "source_id": "breakdance",
+      "split": "val",
+      "T": 35,
+      "path": "G:/stream_memory_data/features/davis_vos/breakdance.npz",
+      "labels": [
+        "track",
+        "present"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 35,
+        "split_official": "val"
+      }
+    },
+    {
+      "seq_id": "camel",
+      "source_id": "camel",
+      "split": "val",
+      "T": 38,
+      "path": "G:/stream_memory_data/features/davis_vos/camel.npz",
+      "labels": [
+        "track",
+        "present"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 38,
+        "split_official": "val"
+      }
+    },
+    {
+      "seq_id": "car-roundabout",
+      "source_id": "car-roundabout",
+      "split": "val",
+      "T": 32,
+      "path": "G:/stream_memory_data/features/davis_vos/car-roundabout.npz",
+      "labels": [
+        "track",
+        "present"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 32,
+        "split_official": "val"
+      }
+    }
+  ]
+}

@@ -1,0 +1,277 @@
+{
+  "name": "real_pmatch_v1",
+  "round": "R1",
+  "description": "占位：真实视频数据集使用 d_in=768 的参数量匹配 hidden 表（数据集条目后续替换）。",
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "defaults": {
+    "loss": {
+      "task": {
+        "state": 1.0,
+        "class": 1.0,
+        "event": 1.0
+      },
+      "aux_num_scale": 0.1
+    },
+    "train": {
+      "epochs": 40,
+      "batch": 64,
+      "lr": 0.003,
+      "wd": 0.0001,
+      "amp": true,
+      "grad_clip": 1.0,
+      "patience": 8,
+      "aug": "none",
+      "T_max": 128,
+      "val_every": 1,
+      "warmup_epochs": 3,
+      "num_workers": 0,
+      "preload": true,
+      "preload_max_gb": 6.0,
+      "tok_fusion": "none"
+    },
+    "eval": {
+      "robustness": [
+        "dense",
+        "stride2",
+        "stride4",
+        "drop50",
+        "burst",
+        "repeat",
+        "jitter",
+        "shuffled",
+        "mixed"
+      ]
+    }
+  },
+  "datasets": {
+    "synth_recall_single": {
+      "task": "synth",
+      "manifest": "data_manifests/synth_recall_single.json",
+      "heads": {
+        "state": {
+          "kind": "mse",
+          "dim": 256
+        }
+      },
+      "main_metric": "r2",
+      "loss": {
+        "task": {
+          "state": 1.0
+        }
+      },
+      "train": {
+        "epochs": 40
+      }
+    },
+    "synth_recall_multi": {
+      "task": "synth",
+      "manifest": "data_manifests/synth_recall_multi.json",
+      "heads": {
+        "state": {
+          "kind": "mse",
+          "dim": 256
+        }
+      },
+      "main_metric": "r2",
+      "loss": {
+        "task": {
+          "state": 1.0
+        }
+      },
+      "train": {
+        "epochs": 50
+      }
+    },
+    "synth_vanish_reappear": {
+      "task": "synth",
+      "manifest": "data_manifests/synth_vanish_reappear.json",
+      "heads": {
+        "class": {
+          "kind": "ce",
+          "dim": 16,
+          "ignore": -1
+        }
+      },
+      "main_metric": "acc",
+      "loss": {
+        "task": {
+          "class": 1.0
+        }
+      },
+      "train": {
+        "epochs": 40
+      }
+    },
+    "synth_change_detect": {
+      "task": "synth",
+      "manifest": "data_manifests/synth_change_detect.json",
+      "heads": {
+        "state": {
+          "kind": "mse",
+          "dim": 256
+        }
+      },
+      "main_metric": "r2",
+      "loss": {
+        "task": {
+          "state": 1.0
+        }
+      },
+      "train": {
+        "epochs": 40
+      }
+    },
+    "synth_event_seq": {
+      "task": "synth",
+      "manifest": "data_manifests/synth_event_seq.json",
+      "heads": {
+        "event": {
+          "kind": "bce",
+          "dim": 1
+        },
+        "state": {
+          "kind": "mse",
+          "dim": 256
+        }
+      },
+      "main_metric": "f1",
+      "loss": {
+        "task": {
+          "event": 1.0,
+          "state": 1.0
+        }
+      },
+      "train": {
+        "epochs": 50
+      }
+    },
+    "synth_irregular": {
+      "task": "synth",
+      "manifest": "data_manifests/synth_irregular_recall_multi_logdt.json",
+      "heads": {
+        "state": {
+          "kind": "mse",
+          "dim": 256
+        }
+      },
+      "main_metric": "r2",
+      "loss": {
+        "task": {
+          "state": 1.0
+        }
+      },
+      "train": {
+        "epochs": 50
+      }
+    },
+    "synth_irregular_drop50": {
+      "task": "synth",
+      "manifest": "data_manifests/synth_irregular_recall_multi_drop50.json",
+      "heads": {
+        "state": {
+          "kind": "mse",
+          "dim": 256
+        }
+      },
+      "main_metric": "r2",
+      "loss": {
+        "task": {
+          "state": 1.0
+        }
+      },
+      "train": {
+        "epochs": 50
+      }
+    }
+  },
+  "models": [
+    {
+      "name": "mlp",
+      "hidden": 406,
+      "variant": "base",
+      "notes": "param-matched hidden=406"
+    },
+    {
+      "name": "gru",
+      "hidden": 169,
+      "variant": "base",
+      "notes": "param-matched hidden=169"
+    },
+    {
+      "name": "lstm",
+      "hidden": 132,
+      "variant": "base",
+      "notes": "param-matched hidden=132"
+    },
+    {
+      "name": "cfc",
+      "hidden": 1324,
+      "variant": "base",
+      "cfg": {
+        "backbone_units": 64
+      },
+      "notes": "param-matched hidden=1324"
+    },
+    {
+      "name": "mamba",
+      "hidden": 246,
+      "variant": "base",
+      "notes": "param-matched hidden=246"
+    },
+    {
+      "name": "mamba",
+      "hidden": 246,
+      "variant": "tdt",
+      "cfg": {
+        "tdt": true
+      },
+      "notes": "param-matched hidden=246"
+    },
+    {
+      "name": "deltanet",
+      "hidden": 395,
+      "variant": "base",
+      "cfg": {
+        "mem_dim": 64
+      },
+      "notes": "param-matched hidden=395"
+    },
+    {
+      "name": "dsm",
+      "hidden": 191,
+      "variant": "base",
+      "cfg": {
+        "mem_dim": 64,
+        "n_decay_groups": 4
+      },
+      "notes": "param-matched hidden=191"
+    },
+    {
+      "name": "dsm",
+      "hidden": 191,
+      "variant": "nodt",
+      "cfg": {
+        "mem_dim": 64,
+        "use_dt_struct": false,
+        "use_dt_feature": false
+      },
+      "notes": "param-matched hidden=191"
+    },
+    {
+      "name": "dsm_slot",
+      "hidden": 194,
+      "variant": "base",
+      "cfg": {
+        "n_slots": 12,
+        "slot_dim": 64
+      },
+      "notes": "param-matched hidden=194"
+    }
+  ],
+  "param_target": 480000,
+  "hidden_source": "build_core_matched"
+}

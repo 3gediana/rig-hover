@@ -1,0 +1,173 @@
+{
+  "ckpt": "gesture_classifier_skeleton.pt",
+  "appearance": false,
+  "n_params": 118567,
+  "macro_f1": 0.5105324416727103,
+  "accuracy": 0.7595,
+  "per_class": [
+    {
+      "class": "idle",
+      "precision": 0.85332269008182,
+      "recall": 0.9693946950804806,
+      "f1": 0.9076629165782212,
+      "support": 4411
+    },
+    {
+      "class": "wave",
+      "precision": 0.9819004524886877,
+      "recall": 0.9601769911504425,
+      "f1": 0.970917225950783,
+      "support": 904
+    },
+    {
+      "class": "open_palm",
+      "precision": 0.3123833229620411,
+      "recall": 0.5776754890678941,
+      "f1": 0.4054927302100162,
+      "support": 869
+    },
+    {
+      "class": "thumbs_up",
+      "precision": 0.8881856540084389,
+      "recall": 0.6437308868501529,
+      "f1": 0.7464539007092198,
+      "support": 654
+    },
+    {
+      "class": "pointing",
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 630
+    },
+    {
+      "class": "fist",
+      "precision": 0.47368421052631576,
+      "recall": 0.016917293233082706,
+      "f1": 0.032667876588021776,
+      "support": 532
+    }
+  ],
+  "confusion": [
+    [
+      4276,
+      12,
+      96,
+      23,
+      4,
+      0
+    ],
+    [
+      30,
+      868,
+      3,
+      3,
+      0,
+      0
+    ],
+    [
+      348,
+      0,
+      502,
+      12,
+      1,
+      6
+    ],
+    [
+      200,
+      0,
+      31,
+      421,
+      0,
+      2
+    ],
+    [
+      25,
+      1,
+      589,
+      13,
+      0,
+      2
+    ],
+    [
+      132,
+      3,
+      386,
+      2,
+      0,
+      9
+    ]
+  ],
+  "classes": [
+    "idle",
+    "wave",
+    "open_palm",
+    "thumbs_up",
+    "pointing",
+    "fist"
+  ],
+  "per_class_7": [
+    {
+      "class": "idle",
+      "precision": 0.867688679245283,
+      "recall": 0.9756032882524529,
+      "f1": 0.9184870802646361,
+      "support": 3771
+    },
+    {
+      "class": "wave",
+      "precision": 0.9808988764044944,
+      "recall": 0.9657079646017699,
+      "f1": 0.9732441471571905,
+      "support": 904
+    },
+    {
+      "class": "open_palm",
+      "precision": 0.30657815328907667,
+      "recall": 0.5845799769850403,
+      "f1": 0.40221694378463974,
+      "support": 869
+    },
+    {
+      "class": "thumbs_up",
+      "precision": 0.8804123711340206,
+      "recall": 0.6529051987767585,
+      "f1": 0.7497805092186128,
+      "support": 654
+    },
+    {
+      "class": "pointing",
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 630
+    },
+    {
+      "class": "fist",
+      "precision": 0.47368421052631576,
+      "recall": 0.016917293233082706,
+      "f1": 0.032667876588021776,
+      "support": 532
+    },
+    {
+      "class": "other",
+      "precision": 0.7826704545454546,
+      "recall": 0.8609375,
+      "f1": 0.8199404761904762,
+      "support": 640
+    }
+  ],
+  "unseen_open_set": {
+    "n": 149,
+    "frac_claimed_nonidle": 0.7315436241610739,
+    "frac_would_trigger": 0.12080536912751678,
+    "pred_hist": {
+      "idle": 40,
+      "wave": 0,
+      "open_palm": 102,
+      "thumbs_up": 3,
+      "pointing": 0,
+      "fist": 4
+    }
+  }
+}

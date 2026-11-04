@@ -1,0 +1,283 @@
+{
+  "name": "ablations_v1",
+  "round": "R1",
+  "description": "消融实验：用户要求的 19 项 + literature red-team 要求的 4 项。每个 variant 只改一个主要因素。先在合成任务上跑（便宜），结论确定后再在真实任务上复验。 为节省算力：消融用 1 个种子 + 2 个任务（主对比才是 3 seeds）。",
+  "seeds": [
+    0
+  ],
+  "defaults": {
+    "loss": {
+      "aux_num_scale": 0.1
+    },
+    "train": {
+      "epochs": 50,
+      "batch": 64,
+      "lr": 0.003,
+      "wd": 0.0001,
+      "amp": true,
+      "grad_clip": 1.0,
+      "patience": 40,
+      "aug": "none",
+      "T_max": 96,
+      "val_every": 1,
+      "warmup_epochs": 3,
+      "num_workers": 0,
+      "preload": true,
+      "tok_fusion": "flatten",
+      "preload_max_gb": 6.0
+    },
+    "eval": {
+      "robustness": [
+        "dense",
+        "stride2",
+        "stride4",
+        "drop50",
+        "burst",
+        "repeat",
+        "jitter",
+        "shuffled",
+        "mixed"
+      ]
+    }
+  },
+  "datasets": {
+    "synth_recall_multi": {
+      "task": "synth",
+      "manifest": "data_manifests/synth_recall_multi.json",
+      "heads": {
+        "state": {
+          "kind": "mse",
+          "dim": 256
+        }
+      },
+      "main_metric": "cos",
+      "loss": {
+        "task": {
+          "state": 1.0
+        }
+      },
+      "train": {
+        "epochs": 50
+      }
+    },
+    "synth_event_seq": {
+      "task": "synth",
+      "manifest": "data_manifests/synth_event_seq.json",
+      "heads": {
+        "event": {
+          "kind": "bce",
+          "dim": 1
+        },
+        "state": {
+          "kind": "mse",
+          "dim": 256
+        }
+      },
+      "main_metric": "cos",
+      "loss": {
+        "task": {
+          "event": 1.0,
+          "state": 1.0
+        }
+      },
+      "train": {
+        "epochs": 50
+      }
+    }
+  },
+  "models": [
+    {
+      "name": "cfc",
+      "hidden": 192,
+      "variant": "base",
+      "cfg": {
+        "backbone_units": 64
+      },
+      "notes": "A1 只有 CfC（主基线）"
+    },
+    {
+      "name": "dsm",
+      "hidden": 192,
+      "variant": "slowonly",
+      "cfg": {
+        "mem_off": true,
+        "mem_dim": 64
+      },
+      "notes": "A2 只有慢状态（关掉快记忆）"
+    },
+    {
+      "name": "deltanet",
+      "hidden": 192,
+      "variant": "base",
+      "cfg": {
+        "mem_dim": 64
+      },
+      "notes": "A3 只有快记忆（无慢状态）"
+    },
+    {
+      "name": "dsm",
+      "hidden": 192,
+      "variant": "base",
+      "cfg": {
+        "mem_dim": 64,
+        "n_decay_groups": 4
+      },
+      "notes": "A4 慢状态 + 矩阵快记忆（完整模型）"
+    },
+    {
+      "name": "dsm",
+      "hidden": 192,
+      "variant": "nodt_all",
+      "cfg": {
+        "mem_dim": 64,
+        "use_dt_struct": false,
+        "use_dt_feature": false,
+        "dt_const": 0.1
+      },
+      "notes": "A5 去掉真实 Δt（结构+输入都不给）"
+    },
+    {
+      "name": "dsm",
+      "hidden": 192,
+      "variant": "dt_feat_only",
+      "cfg": {
+        "mem_dim": 64,
+        "use_dt_struct": false,
+        "use_dt_feature": true
+      },
+      "notes": "A6 Δt 只拼接到输入特征"
+    },
+    {
+      "name": "dsm",
+      "hidden": 192,
+      "variant": "dt_struct_only",
+      "cfg": {
+        "mem_dim": 64,
+        "use_dt_struct": true,
+        "use_dt_feature": false
+      },
+      "notes": "A7 Δt 只控制衰减/流（不进输入）"
+    },
+    {
+      "name": "dsm",
+      "hidden": 192,
+      "variant": "write_outer",
+      "cfg": {
+        "mem_dim": 64,
+        "write_rule": "outer"
+      },
+      "notes": "A8/A9 去掉 delta 残差写，改普通（加性）外积写"
+    },
+    {
+      "name": "dsm_slot",
+      "hidden": 192,
+      "variant": "base",
+      "cfg": {
+        "n_slots": 12,
+        "slot_dim": 64
+      },
+      "notes": "A10 对照：slot 快记忆（内容寻址）"
+    },
+    {
+      "name": "dsm_slot",
+      "hidden": 192,
+      "variant": "noroute",
+      "cfg": {
+        "n_slots": 12,
+        "slot_dim": 64,
+        "route_mode": "none"
+      },
+      "notes": "A10 去掉多目标路由（固定槽位写入）"
+    },
+    {
+      "name": "dsm",
+      "hidden": 192,
+      "variant": "no_long_horizon",
+      "cfg": {
+        "mem_dim": 64
+      },
+      "loss": {
+        "aux": {
+          "long_horizon": 0.0
+        }
+      },
+      "notes": "A12 去掉长期（≥5 步 rollout）损失"
+    },
+    {
+      "name": "dsm",
+      "hidden": 192,
+      "variant": "no_time_consistency",
+      "cfg": {
+        "mem_dim": 64
+      },
+      "loss": {
+        "aux": {
+          "time_consistency": 0.0
+        }
+      },
+      "notes": "A13 去掉时间一致性损失"
+    },
+    {
+      "name": "dsm",
+      "hidden": 192,
+      "variant": "hard_write",
+      "cfg": {
+        "mem_dim": 64,
+        "hard_write": true,
+        "write_threshold": 0.5
+      },
+      "notes": "A15 硬写入（二值掩码，对照 A14 软写入=base）"
+    },
+    {
+      "name": "dsm",
+      "hidden": 192,
+      "variant": "no_decay",
+      "cfg": {
+        "mem_dim": 64,
+        "decay": false
+      },
+      "notes": "A20 [文献] 去掉时间衰减。Gated DeltaNet 声称 decay 有害，必须实测"
+    },
+    {
+      "name": "dsm",
+      "hidden": 192,
+      "variant": "read_bilinear",
+      "cfg": {
+        "mem_dim": 64,
+        "read_mode": "bilinear"
+      },
+      "notes": "A21 [文献] 双线性读（容量 ~d^2/log），对照线性读 O(d)"
+    },
+    {
+      "name": "dsm",
+      "hidden": 192,
+      "variant": "h_by_index",
+      "cfg": {
+        "mem_dim": 64,
+        "h_by_index": true
+      },
+      "notes": "A22 [文献] 慢状态按观测序号而非物理时间推进 → 检验连续时间极限"
+    },
+    {
+      "name": "dsm",
+      "hidden": 192,
+      "variant": "beta_exp",
+      "cfg": {
+        "mem_dim": 64,
+        "beta_exp": true
+      },
+      "notes": "A23 [文献] 写强度精确指数化，只验证稳定性，不主张提精度"
+    },
+    {
+      "name": "dsm",
+      "hidden": 192,
+      "variant": "bilinear_nodecay",
+      "cfg": {
+        "mem_dim": 64,
+        "read_mode": "bilinear",
+        "decay": false
+      },
+      "notes": "A24 [文献] 容量来源归因：残差写 + 双线性读，无衰减"
+    }
+  ]
+}

@@ -1,0 +1,98 @@
+﻿RIG-Hover 分层决策中枢 —— 真实后端演示转写
+生成时间: 2026-11-03 04:57:24
+环境: D:\smartcar\.venv\Scripts\python.exe
+==============================================================================
+
+==============================================================================
+RIG-Hover �� ��ʵ L2 ��ʾ������ -> PC �����ִ�� -> ����ص��ϲ�
+L0 ����(����) | L1 ����(����) | L2 PC agent(��ʵ HTTP) | L3 �ƶ�(�� key��������)
+==============================================================================
+python=3.11.9  cwd=D:\robot_work\pc\decision_hub
+������ agent_bridge �ӽ��̣�D:\robot_work\pc\agent_bridge\server.py
+  --port 60328  ->  http://127.0.0.1:60328
+  ������� ok������������ ['clock', 'disk', 'note', 'screenshot', 'system_status']��LLM planner=�� key���ù��� planner��
+
+[1/4] ָ�����û����ʶ�� -> L2 -> �� PC ��һ�ʣ���д robot_notes.log��
+   0.65s  �о��״γ��� p_esc=0.165 -> L2(pc_agent)  ������=language  ��Ҫ����������ͣ 150ms ���ɷ���
+   0.82s  �ɷ� L2 -> local-agent ttl=900ms  p_esc=0.5719
+         ���� m_point=0.75(+3.29) u_conf=0.00(+0.00) u_lost=0.00(+0.00) u_clip=0.00(+0.00)
+         P_fix={L1:0.03 L2:0.97 L3:0.00}  U(L)={L1:-0.03 L2:+0.43}  ��ѡ�㼶=[0, 1, 2]
+         �ȴ���ÿ���Գ�ָ��������㡢ͷ��������
+   0.86s  agent �ذ���HTTP ���� 24.2ms��agent �ڲ� 0.43ms��planner=rule��action=note
+         ������ͼ '����������������������������û���������о� m_point��p_esc=0.57��'
+         ԭʼ�ذ� {"ok": 1, "action": "note", "planner": "rule", "detail": "noted 42 chars", "elapsed_ms": 0.43, "level": 2}
+         �ṹ��ָ�� {"level": 2, "intent": "pc_note", "prog": [{"op": "emote", "id": 1.0, "ms": 300.0}, {"op": "track", "ms": 0.0}], "ttl_ms": 900, "fallback": [], "args": {"action": "note", "detail": "noted 42 chars", "planner": "rule", "agent_ms": 0.43, "roundtrip_ms": 24.17, "backend": "local-agent", "url": "http://127.0.0.1:60328/agent/task"}, "say": "�Ѽ��£�noted 42 chars", "confidence": 0.55, "source": "local-agent", "esc_id": 1}
+         ִ�� emote 1.0/300ms �� track/0ms  say='�Ѽ��£�noted 42 chars'
+   1.19s  ���� L0�����ز��� 300ms����ռ���磩
+  ----------------------------------------------------------------------
+  �˱�  �оݳ���->ָ�� 205.7ms���о�->�ɷ� 164.6 + �ɷ�->ָ�� 41.1��  HTTP ���� 24.2ms  agent �ڲ� 0.4ms  hub �۲� 40.9ms  L0 ���� p50 123?s
+  �ȴ��� 2 �ģ���������Υ�� 0 �ģ�  �㼶�ֲ� {0: 41, 2: 18}
+  �˶� [PASS] ��ʵִ�� robot_notes.log ĩ�� 1s ǰ��42 �� == detail �� 42��robot_notes.log 248 -> 249 ��
+
+[2/4] �������� 6�ң����ز�֪����ô�� -> L2 -> �� PC ϵͳ״̬����������/����/ʱ�䣩
+   0.61s  �о��״γ��� p_esc=0.646 -> L2(pc_agent)  ������=unknown  ��Ҫ����������ͣ 150ms ���ɷ���
+   0.78s  �ɷ� L2 -> local-agent ttl=900ms  p_esc=0.6457
+         ���� u_ood=1.00(+3.60) u_conf=0.00(+0.00) u_lost=0.00(+0.00) u_clip=0.00(+0.00)
+         P_fix={L1:0.04 L2:0.96 L3:0.00}  U(L)={L1:-0.02 L2:+0.50}  ��ѡ�㼶=[0, 1, 2]
+         �ȴ���ÿ���Գ�ָ��������㡢ͷ��������
+   0.82s  agent �ذ���HTTP ���� 27.8ms��agent �ڲ� 26.36ms��planner=rule��action=system_status
+         ������ͼ '���� PC ��ϵͳ״̬�����о� u_ood��p_esc=0.65��'
+         ԭʼ�ذ� {"ok": 1, "action": "system_status", "planner": "rule", "detail": "{\"hostname\": \"sans\", \"platform\": \"Windows-10-10.0.26200-SP0\", \"python\": \"3.11.9\", \"disk_free_gb\": 110.4, \"time\": \"2026-11-03T04:57:20\"}", "elapsed_ms": 26.36, "level": 2}
+         �ṹ��ָ�� {"level": 2, "intent": "pc_system_status", "prog": [{"op": "emote", "id": 4.0, "ms": 400.0}, {"op": "track", "ms": 0.0}], "ttl_ms": 900, "fallback": [], "args": {"action": "system_status", "detail": "{\"hostname\": \"sans\", \"platform\": \"Windows-10-10.0.26200-SP0\", \"python\": \"3.11.9\", \"disk_free_gb\": 110.4, \"time\": \"2026-11-03T04:57:20\"}", "planner": "rule", "agent_ms": 26.36, "roundtrip_ms": 27.76, "backend": "local-agent", "url": "http://127.0.0.1:60328/agent/task"}, "say": "PC ״̬ {\"hostname\": \"sans\", \"platform\": \"Windows-10-10.0.26200-SP0\", \"python\": \"3.11.9\", \"disk_free_gb\": 110.4, \"time\": \"2026-11-03T04:57:20\"}", "confidence": 0.55, "source": "local-agent", "esc_id": 1}
+         ִ�� emote 4.0/400ms �� track/0ms  say='PC ״̬ {"hostname": "sans", "platform": "Windows-10-10.0.26200-SP0", "python": "3.11.9", "disk_free_gb": 110.4, "time": "2026-11-03T04:57:20"}'
+   1.25s  ���� L0�����ز��� 400ms����ռ���磩
+  ----------------------------------------------------------------------
+  �˱�  �оݳ���->ָ�� 204.9ms���о�->�ɷ� 163.5 + �ɷ�->ָ�� 41.3��  HTTP ���� 27.8ms  agent �ڲ� 26.4ms  hub �۲� 41.3ms  L0 ���� p50 123?s
+  �ȴ��� 2 �ģ���������Υ�� 0 �ģ�  �㼶�ֲ� {0: 39, 2: 23}
+  �˶� [PASS] ��ʵִ�� hostname=sans=sans disk_free=110.4G(���� 110.4G) time��1s
+
+[3/4] ̫����û���ջ�Ҫ��ǰ�������� -> L2 -> �� PC ����ʣ�ࣨ��ʣ��ռ䣩
+   0.61s  �о��״γ��� p_esc=0.475 -> L2(pc_agent)  ������=stakes  ��Ҫ����������ͣ 150ms ���ɷ���
+   0.78s  �ɷ� L2 -> local-agent ttl=900ms  p_esc=0.475
+         ���� s_approach=0.69(+2.20) s_irrev=0.66(+1.70) c_local_ok=1.00(-1.00) u_conf=0.00(+0.00)
+         P_fix={L1:0.06 L2:0.94 L3:0.00}  U(L)={L1:-0.02 L2:+0.33}  ��ѡ�㼶=[0, 1, 2]
+         �ȴ���ÿ���Գ�ָ��������㡢ͷ��������
+   0.80s  agent �ذ���HTTP ���� 11.7ms��agent �ڲ� 0.65ms��planner=rule��action=disk
+         ������ͼ 'PC �ϸ����̻�ʣ���ٿռ䣿���о� s_approach��p_esc=0.47��'
+         ԭʼ�ذ� {"ok": 1, "action": "disk", "planner": "rule", "detail": "C: 19G free; D: 110G free; E: 99G free; G: 349G free", "elapsed_ms": 0.65, "level": 2}
+         �ṹ��ָ�� {"level": 2, "intent": "pc_disk", "prog": [{"op": "emote", "id": 4.0, "ms": 400.0}, {"op": "track", "ms": 0.0}], "ttl_ms": 900, "fallback": [], "args": {"action": "disk", "detail": "C: 19G free; D: 110G free; E: 99G free; G: 349G free", "planner": "rule", "agent_ms": 0.65, "roundtrip_ms": 11.7, "backend": "local-agent", "url": "http://127.0.0.1:60328/agent/task"}, "say": "���� C: 19G free; D: 110G free; E: 99G free; G: 349G free", "confidence": 0.55, "source": "local-agent", "esc_id": 1}
+         ִ�� emote 4.0/400ms �� track/0ms  say='���� C: 19G free; D: 110G free; E: 99G free; G: 349G free'
+   1.23s  ���� L0�����ز��� 400ms����ռ���磩
+  ----------------------------------------------------------------------
+  �˱�  �оݳ���->ָ�� 185.2ms���о�->�ɷ� 164.2 + �ɷ�->ָ�� 21.0��  HTTP ���� 11.7ms  agent �ڲ� 0.7ms  hub �۲� 20.8ms  L0 ���� p50 132?s
+  �ȴ��� 1 �ģ���������Υ�� 0 �ģ�  �㼶�ֲ� {0: 39, 2: 22}
+  �˶� [PASS] ��ʵִ�� 4 ���̣����ƫ�� 0.4GB
+
+[��֤] agent û������http://127.0.0.1:54790 ���˼�����
+  available()=False  Ԥ�ڣ�hub �������� L2 �Ž���ѡ��ֱ�� L1
+
+[4/4] ͬһ��ָ�ﳡ����L2 ������ -> L1 ���ؼ��ܣ������˲���ס
+   0.62s  �о��״γ��� p_esc=0.077 -> L1(skill)  ������=language  ��Ҫ����������ͣ 150ms ���ɷ���
+   0.78s  L1 ���ؼ��ܵ��Ŀ�ʼ�������磩��ask_attention
+         �ṹ��ָ�� {"level": 1, "intent": "ask_attention", "prog": [{"op": "emote", "id": 4.0, "ms": 700.0}], "ttl_ms": 2000, "fallback": [], "args": {}, "say": null, "confidence": 1.0, "source": "local-skill", "esc_id": 1}
+         ִ�� emote 4.0/700ms  say=None
+   1.52s  ���� L0�����ز��� 700ms����ռ���磩
+  ----------------------------------------------------------------------
+  �˱�  �оݳ���->ָ�� 163.6ms���о�->�ɷ� 0.0 + �ɷ�->ָ�� 0.0��  HTTP ���� 0.0ms  agent �ڲ� 0.0ms  hub �۲� 0.0ms  L0 ���� p50 128?s
+  �ȴ��� 0 �ģ���������Υ�� 0 �ģ�  �㼶�ֲ� {0: 39, 1: 36}
+  �˶� [PASS] ���� L1 ִ�� 36 �ģ�L2 ���� 0 �Σ�tick �쳣 ��
+
+==============================================================================
+ʵ����ܣ�ȫ���Ǳ�����ʵ������mock �� 99.9ms �������ű��
+==============================================================================
+����   L2 ����            agent�ڲ�    HTTP����    hub�۲�     �о�->ָ��  �˶�
+1/4  note                0.4ms     24.2ms    40.9ms     205.7ms  PASS
+2/4  system_status      26.4ms     27.8ms    41.3ms     204.9ms  PASS
+3/4  disk                0.7ms     11.7ms    20.8ms     185.2ms  PASS
+==============================================================================
+�㼶�˱�
+  L0 ������      p50=123?s p95=131?s��50Hz ʵʱѭ���ڣ��� Python��
+  L1 ���ؼ���    4/4 ���ף����س��򲥷� 700ms�������磻�ɹ���������������Ҫ��
+  L2 ��ʵ HTTP   note:24.2ms  system_status:27.8ms  disk:11.7ms��127.0.0.1���� agent ��ʵִ��ʱ�䣩
+  L3 �ƶ�        �����ã�û�� DEEPSEEK_API_KEY��L3 ��� available()=False��·�����Զ���ѡ����
+==============================================================================
+ע��hub �۲� = 50Hz tick �������ȣ�20ms���������� >= HTTP ��������ʵ HTTP �ӳٿ���HTTP���������С�
+���ۣ�������·��������ʵ�����ã�detail �������˶ԣ�PASS
+
+[agent_bridge] �ӽ��������[agent_bridge] listening on :60328  actions=['clock', 'disk', 'note', 'screenshot', 'system_status']  llm=False
+[agent_bridge] ��ֹͣ

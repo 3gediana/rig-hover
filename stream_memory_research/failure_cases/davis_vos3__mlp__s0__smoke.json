@@ -1,0 +1,379 @@
+{
+  "run_id": "davis_vos3__mlp__s0__smoke",
+  "generated_at": "2026-11-04 03:07:29",
+  "split": "test",
+  "main_metric": "mae",
+  "higher_is_better": false,
+  "n_sequences": 16,
+  "global": {
+    "mae": 0.18496201289322992,
+    "mse": 0.051279173577155376,
+    "rmse": 0.22644905293940926,
+    "n": 1732,
+    "r2": -0.9280206918414172,
+    "cos": 0.9486737173928461,
+    "mae_macro": 0.18715162977880628,
+    "main_metric": "mae",
+    "main_head": "track"
+  },
+  "head": "track",
+  "worst": [
+    {
+      "rank": 1,
+      "seq_id": "loading",
+      "source_id": "loading",
+      "value": 0.330291,
+      "T": 21,
+      "diagnosis": "highest_error",
+      "details": {
+        "T": 21,
+        "dt_cv": 0.2041,
+        "dt_mean": 0.1,
+        "n_valid": 84,
+        "mae": 0.330291,
+        "err_p95": 0.486914,
+        "target_std": 0.174297
+      }
+    },
+    {
+      "rank": 2,
+      "seq_id": "bike-packing",
+      "source_id": "bike-packing",
+      "value": 0.277711,
+      "T": 29,
+      "diagnosis": "highest_error",
+      "details": {
+        "T": 29,
+        "dt_cv": 0.2041,
+        "dt_mean": 0.099702,
+        "n_valid": 116,
+        "mae": 0.277711,
+        "err_p95": 0.490895,
+        "target_std": 0.179716
+      }
+    },
+    {
+      "rank": 3,
+      "seq_id": "gold-fish",
+      "source_id": "gold-fish",
+      "value": 0.256705,
+      "T": 33,
+      "diagnosis": "highest_error",
+      "details": {
+        "T": 33,
+        "dt_cv": 0.2041,
+        "dt_mean": 0.10026,
+        "n_valid": 132,
+        "mae": 0.256705,
+        "err_p95": 0.522093,
+        "target_std": 0.163651
+      }
+    },
+    {
+      "rank": 4,
+      "seq_id": "motocross-jump",
+      "source_id": "motocross-jump",
+      "value": 0.231084,
+      "T": 17,
+      "diagnosis": "short_sequence",
+      "details": {
+        "T": 17,
+        "dt_cv": 0.2038,
+        "dt_mean": 0.098958,
+        "n_valid": 68,
+        "mae": 0.231084,
+        "err_p95": 0.532253,
+        "target_std": 0.224282
+      }
+    },
+    {
+      "rank": 5,
+      "seq_id": "drift-straight",
+      "source_id": "drift-straight",
+      "value": 0.194771,
+      "T": 21,
+      "diagnosis": "highest_error",
+      "details": {
+        "T": 21,
+        "dt_cv": 0.2041,
+        "dt_mean": 0.1,
+        "n_valid": 84,
+        "mae": 0.194771,
+        "err_p95": 0.452354,
+        "target_std": 0.208612
+      }
+    },
+    {
+      "rank": 6,
+      "seq_id": "dance-twirl",
+      "source_id": "dance-twirl",
+      "value": 0.189237,
+      "T": 38,
+      "diagnosis": "highest_error",
+      "details": {
+        "T": 38,
+        "dt_cv": 0.2041,
+        "dt_mean": 0.100225,
+        "n_valid": 152,
+        "mae": 0.189237,
+        "err_p95": 0.427239,
+        "target_std": 0.229746
+      }
+    },
+    {
+      "rank": 7,
+      "seq_id": "lab-coat",
+      "source_id": "lab-coat",
+      "value": 0.185664,
+      "T": 20,
+      "diagnosis": "highest_error",
+      "details": {
+        "T": 20,
+        "dt_cv": 0.2039,
+        "dt_mean": 0.100877,
+        "n_valid": 80,
+        "mae": 0.185664,
+        "err_p95": 0.569625,
+        "target_std": 0.220232
+      }
+    },
+    {
+      "rank": 8,
+      "seq_id": "dogs-jump",
+      "source_id": "dogs-jump",
+      "value": 0.182717,
+      "T": 28,
+      "diagnosis": "highest_error",
+      "details": {
+        "T": 28,
+        "dt_cv": 0.2041,
+        "dt_mean": 0.100309,
+        "n_valid": 112,
+        "mae": 0.182717,
+        "err_p95": 0.385336,
+        "target_std": 0.123045
+      }
+    },
+    {
+      "rank": 9,
+      "seq_id": "camel",
+      "source_id": "camel",
+      "value": 0.173489,
+      "T": 38,
+      "diagnosis": "highest_error",
+      "details": {
+        "T": 38,
+        "dt_cv": 0.2041,
+        "dt_mean": 0.100225,
+        "n_valid": 152,
+        "mae": 0.173489,
+        "err_p95": 0.252349,
+        "target_std": 0.137096
+      }
+    },
+    {
+      "rank": 10,
+      "seq_id": "scooter-black",
+      "source_id": "scooter-black",
+      "value": 0.167528,
+      "T": 18,
+      "diagnosis": "highest_error",
+      "details": {
+        "T": 18,
+        "dt_cv": 0.2041,
+        "dt_mean": 0.10049,
+        "n_valid": 72,
+        "mae": 0.167528,
+        "err_p95": 0.355048,
+        "target_std": 0.1566
+      }
+    }
+  ],
+  "best": [
+    {
+      "rank": 1,
+      "seq_id": "horsejump-high",
+      "source_id": "horsejump-high",
+      "value": 0.089469,
+      "T": 21,
+      "diagnosis": "highest_error",
+      "details": {
+        "T": 21,
+        "dt_cv": 0.2041,
+        "dt_mean": 0.1,
+        "n_valid": 84,
+        "mae": 0.089469,
+        "err_p95": 0.169687,
+        "target_std": 0.093947
+      }
+    },
+    {
+      "rank": 2,
+      "seq_id": "bmx-trees",
+      "source_id": "bmx-trees",
+      "value": 0.109592,
+      "T": 34,
+      "diagnosis": "highest_error",
+      "details": {
+        "T": 34,
+        "dt_cv": 0.2041,
+        "dt_mean": 0.099747,
+        "n_valid": 136,
+        "mae": 0.109592,
+        "err_p95": 0.232509,
+        "target_std": 0.151901
+      }
+    },
+    {
+      "rank": 3,
+      "seq_id": "parkour",
+      "source_id": "parkour",
+      "value": 0.135882,
+      "T": 42,
+      "diagnosis": "highest_error",
+      "details": {
+        "T": 42,
+        "dt_cv": 0.2041,
+        "dt_mean": 0.099593,
+        "n_valid": 168,
+        "mae": 0.135882,
+        "err_p95": 0.296007,
+        "target_std": 0.181685
+      }
+    },
+    {
+      "rank": 4,
+      "seq_id": "car-shadow",
+      "source_id": "car-shadow",
+      "value": 0.143754,
+      "T": 17,
+      "diagnosis": "short_sequence",
+      "details": {
+        "T": 17,
+        "dt_cv": 0.2038,
+        "dt_mean": 0.098958,
+        "n_valid": 68,
+        "mae": 0.143754,
+        "err_p95": 0.304704,
+        "target_std": 0.091953
+      }
+    },
+    {
+      "rank": 5,
+      "seq_id": "judo",
+      "source_id": "judo",
+      "value": 0.160345,
+      "T": 14,
+      "diagnosis": "short_sequence",
+      "details": {
+        "T": 14,
+        "dt_cv": 0.204,
+        "dt_mean": 0.099359,
+        "n_valid": 56,
+        "mae": 0.160345,
+        "err_p95": 0.333508,
+        "target_std": 0.162386
+      }
+    },
+    {
+      "rank": 6,
+      "seq_id": "soapbox",
+      "source_id": "soapbox",
+      "value": 0.166185,
+      "T": 42,
+      "diagnosis": "highest_error",
+      "details": {
+        "T": 42,
+        "dt_cv": 0.2041,
+        "dt_mean": 0.099593,
+        "n_valid": 168,
+        "mae": 0.166185,
+        "err_p95": 0.435273,
+        "target_std": 0.182949
+      }
+    },
+    {
+      "rank": 7,
+      "seq_id": "scooter-black",
+      "source_id": "scooter-black",
+      "value": 0.167528,
+      "T": 18,
+      "diagnosis": "highest_error",
+      "details": {
+        "T": 18,
+        "dt_cv": 0.2041,
+        "dt_mean": 0.10049,
+        "n_valid": 72,
+        "mae": 0.167528,
+        "err_p95": 0.355048,
+        "target_std": 0.1566
+      }
+    },
+    {
+      "rank": 8,
+      "seq_id": "camel",
+      "source_id": "camel",
+      "value": 0.173489,
+      "T": 38,
+      "diagnosis": "highest_error",
+      "details": {
+        "T": 38,
+        "dt_cv": 0.2041,
+        "dt_mean": 0.100225,
+        "n_valid": 152,
+        "mae": 0.173489,
+        "err_p95": 0.252349,
+        "target_std": 0.137096
+      }
+    },
+    {
+      "rank": 9,
+      "seq_id": "dogs-jump",
+      "source_id": "dogs-jump",
+      "value": 0.182717,
+      "T": 28,
+      "diagnosis": "highest_error",
+      "details": {
+        "T": 28,
+        "dt_cv": 0.2041,
+        "dt_mean": 0.100309,
+        "n_valid": 112,
+        "mae": 0.182717,
+        "err_p95": 0.385336,
+        "target_std": 0.123045
+      }
+    },
+    {
+      "rank": 10,
+      "seq_id": "lab-coat",
+      "source_id": "lab-coat",
+      "value": 0.185664,
+      "T": 20,
+      "diagnosis": "highest_error",
+      "details": {
+        "T": 20,
+        "dt_cv": 0.2039,
+        "dt_mean": 0.100877,
+        "n_valid": 80,
+        "mae": 0.185664,
+        "err_p95": 0.569625,
+        "target_std": 0.220232
+      }
+    }
+  ],
+  "diagnosis_counts": {
+    "highest_error": 17,
+    "short_sequence": 3
+  },
+  "extra": {
+    "split": "test",
+    "head": "track"
+  },
+  "kind": "mse",
+  "value_stats": {
+    "mean": 0.18715162977880628,
+    "p10": 0.1227368815118546,
+    "p90": 0.2672082026924085
+  },
+  "path": "failure_cases/davis_vos3__mlp__s0__smoke.json"
+}

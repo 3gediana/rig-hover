@@ -1,0 +1,379 @@
+{
+  "run_id": "davis_vos3__deltanet__s2",
+  "generated_at": "2026-11-04 03:19:54",
+  "split": "test",
+  "main_metric": "mae",
+  "higher_is_better": false,
+  "n_sequences": 30,
+  "global": {
+    "mae": 0.1096182560375842,
+    "mse": 0.020416230804327664,
+    "rmse": 0.14288537645374233,
+    "n": 3372,
+    "r2": 0.18355606615013226,
+    "cos": 0.9679216376713398,
+    "mae_macro": 0.10978023012437028,
+    "main_metric": "mae",
+    "main_head": "track"
+  },
+  "head": "track",
+  "worst": [
+    {
+      "rank": 1,
+      "seq_id": "kite-surf",
+      "source_id": "kite-surf",
+      "value": 0.189363,
+      "T": 21,
+      "diagnosis": "highest_error",
+      "details": {
+        "T": 21,
+        "dt_cv": 0.2041,
+        "dt_mean": 0.1,
+        "n_valid": 84,
+        "mae": 0.189363,
+        "err_p95": 0.297487,
+        "target_std": 0.17247
+      }
+    },
+    {
+      "rank": 2,
+      "seq_id": "gold-fish",
+      "source_id": "gold-fish",
+      "value": 0.176077,
+      "T": 33,
+      "diagnosis": "highest_error",
+      "details": {
+        "T": 33,
+        "dt_cv": 0.2041,
+        "dt_mean": 0.10026,
+        "n_valid": 132,
+        "mae": 0.176077,
+        "err_p95": 0.398388,
+        "target_std": 0.163651
+      }
+    },
+    {
+      "rank": 3,
+      "seq_id": "drift-straight",
+      "source_id": "drift-straight",
+      "value": 0.174804,
+      "T": 21,
+      "diagnosis": "highest_error",
+      "details": {
+        "T": 21,
+        "dt_cv": 0.2041,
+        "dt_mean": 0.1,
+        "n_valid": 84,
+        "mae": 0.174804,
+        "err_p95": 0.360169,
+        "target_std": 0.208612
+      }
+    },
+    {
+      "rank": 4,
+      "seq_id": "soapbox",
+      "source_id": "soapbox",
+      "value": 0.163558,
+      "T": 42,
+      "diagnosis": "highest_error",
+      "details": {
+        "T": 42,
+        "dt_cv": 0.2041,
+        "dt_mean": 0.099593,
+        "n_valid": 168,
+        "mae": 0.163558,
+        "err_p95": 0.343345,
+        "target_std": 0.182949
+      }
+    },
+    {
+      "rank": 5,
+      "seq_id": "motocross-jump",
+      "source_id": "motocross-jump",
+      "value": 0.150387,
+      "T": 17,
+      "diagnosis": "short_sequence",
+      "details": {
+        "T": 17,
+        "dt_cv": 0.2038,
+        "dt_mean": 0.098958,
+        "n_valid": 68,
+        "mae": 0.150387,
+        "err_p95": 0.334483,
+        "target_std": 0.224282
+      }
+    },
+    {
+      "rank": 6,
+      "seq_id": "mbike-trick",
+      "source_id": "mbike-trick",
+      "value": 0.139571,
+      "T": 33,
+      "diagnosis": "highest_error",
+      "details": {
+        "T": 33,
+        "dt_cv": 0.2041,
+        "dt_mean": 0.10026,
+        "n_valid": 132,
+        "mae": 0.139571,
+        "err_p95": 0.326122,
+        "target_std": 0.182208
+      }
+    },
+    {
+      "rank": 7,
+      "seq_id": "drift-chicane",
+      "source_id": "drift-chicane",
+      "value": 0.134964,
+      "T": 22,
+      "diagnosis": "highest_error",
+      "details": {
+        "T": 22,
+        "dt_cv": 0.204,
+        "dt_mean": 0.099206,
+        "n_valid": 88,
+        "mae": 0.134964,
+        "err_p95": 0.278768,
+        "target_std": 0.182637
+      }
+    },
+    {
+      "rank": 8,
+      "seq_id": "paragliding-launch",
+      "source_id": "paragliding-launch",
+      "value": 0.130419,
+      "T": 34,
+      "diagnosis": "highest_error",
+      "details": {
+        "T": 34,
+        "dt_cv": 0.2041,
+        "dt_mean": 0.099747,
+        "n_valid": 136,
+        "mae": 0.130419,
+        "err_p95": 0.338161,
+        "target_std": 0.179416
+      }
+    },
+    {
+      "rank": 9,
+      "seq_id": "camel",
+      "source_id": "camel",
+      "value": 0.121733,
+      "T": 38,
+      "diagnosis": "highest_error",
+      "details": {
+        "T": 38,
+        "dt_cv": 0.2041,
+        "dt_mean": 0.100225,
+        "n_valid": 152,
+        "mae": 0.121733,
+        "err_p95": 0.284087,
+        "target_std": 0.137096
+      }
+    },
+    {
+      "rank": 10,
+      "seq_id": "dance-twirl",
+      "source_id": "dance-twirl",
+      "value": 0.116463,
+      "T": 38,
+      "diagnosis": "highest_error",
+      "details": {
+        "T": 38,
+        "dt_cv": 0.2041,
+        "dt_mean": 0.100225,
+        "n_valid": 152,
+        "mae": 0.116463,
+        "err_p95": 0.304713,
+        "target_std": 0.229746
+      }
+    }
+  ],
+  "best": [
+    {
+      "rank": 1,
+      "seq_id": "horsejump-high",
+      "source_id": "horsejump-high",
+      "value": 0.054393,
+      "T": 21,
+      "diagnosis": "highest_error",
+      "details": {
+        "T": 21,
+        "dt_cv": 0.2041,
+        "dt_mean": 0.1,
+        "n_valid": 84,
+        "mae": 0.054393,
+        "err_p95": 0.135852,
+        "target_std": 0.093947
+      }
+    },
+    {
+      "rank": 2,
+      "seq_id": "cows",
+      "source_id": "cows",
+      "value": 0.055014,
+      "T": 44,
+      "diagnosis": "highest_error",
+      "details": {
+        "T": 44,
+        "dt_cv": 0.2041,
+        "dt_mean": 0.099806,
+        "n_valid": 176,
+        "mae": 0.055014,
+        "err_p95": 0.138308,
+        "target_std": 0.078863
+      }
+    },
+    {
+      "rank": 3,
+      "seq_id": "bmx-trees",
+      "source_id": "bmx-trees",
+      "value": 0.069974,
+      "T": 34,
+      "diagnosis": "highest_error",
+      "details": {
+        "T": 34,
+        "dt_cv": 0.2041,
+        "dt_mean": 0.099747,
+        "n_valid": 136,
+        "mae": 0.069974,
+        "err_p95": 0.176201,
+        "target_std": 0.151901
+      }
+    },
+    {
+      "rank": 4,
+      "seq_id": "car-roundabout",
+      "source_id": "car-roundabout",
+      "value": 0.070974,
+      "T": 32,
+      "diagnosis": "highest_error",
+      "details": {
+        "T": 32,
+        "dt_cv": 0.204,
+        "dt_mean": 0.099462,
+        "n_valid": 128,
+        "mae": 0.070974,
+        "err_p95": 0.174707,
+        "target_std": 0.083431
+      }
+    },
+    {
+      "rank": 5,
+      "seq_id": "pigs",
+      "source_id": "pigs",
+      "value": 0.076723,
+      "T": 33,
+      "diagnosis": "highest_error",
+      "details": {
+        "T": 33,
+        "dt_cv": 0.2041,
+        "dt_mean": 0.10026,
+        "n_valid": 132,
+        "mae": 0.076723,
+        "err_p95": 0.247414,
+        "target_std": 0.176307
+      }
+    },
+    {
+      "rank": 6,
+      "seq_id": "goat",
+      "source_id": "goat",
+      "value": 0.08254,
+      "T": 38,
+      "diagnosis": "highest_error",
+      "details": {
+        "T": 38,
+        "dt_cv": 0.2041,
+        "dt_mean": 0.100225,
+        "n_valid": 152,
+        "mae": 0.08254,
+        "err_p95": 0.206237,
+        "target_std": 0.143915
+      }
+    },
+    {
+      "rank": 7,
+      "seq_id": "libby",
+      "source_id": "libby",
+      "value": 0.087491,
+      "T": 21,
+      "diagnosis": "highest_error",
+      "details": {
+        "T": 21,
+        "dt_cv": 0.2041,
+        "dt_mean": 0.1,
+        "n_valid": 84,
+        "mae": 0.087491,
+        "err_p95": 0.213756,
+        "target_std": 0.125093
+      }
+    },
+    {
+      "rank": 8,
+      "seq_id": "scooter-black",
+      "source_id": "scooter-black",
+      "value": 0.087636,
+      "T": 18,
+      "diagnosis": "highest_error",
+      "details": {
+        "T": 18,
+        "dt_cv": 0.2041,
+        "dt_mean": 0.10049,
+        "n_valid": 72,
+        "mae": 0.087636,
+        "err_p95": 0.196584,
+        "target_std": 0.1566
+      }
+    },
+    {
+      "rank": 9,
+      "seq_id": "judo",
+      "source_id": "judo",
+      "value": 0.088009,
+      "T": 14,
+      "diagnosis": "short_sequence",
+      "details": {
+        "T": 14,
+        "dt_cv": 0.204,
+        "dt_mean": 0.099359,
+        "n_valid": 56,
+        "mae": 0.088009,
+        "err_p95": 0.190627,
+        "target_std": 0.162386
+      }
+    },
+    {
+      "rank": 10,
+      "seq_id": "dog",
+      "source_id": "dog",
+      "value": 0.094085,
+      "T": 25,
+      "diagnosis": "highest_error",
+      "details": {
+        "T": 25,
+        "dt_cv": 0.204,
+        "dt_mean": 0.100694,
+        "n_valid": 100,
+        "mae": 0.094085,
+        "err_p95": 0.238808,
+        "target_std": 0.163784
+      }
+    }
+  ],
+  "diagnosis_counts": {
+    "highest_error": 18,
+    "short_sequence": 2
+  },
+  "extra": {
+    "split": "test",
+    "head": "track"
+  },
+  "kind": "mse",
+  "value_stats": {
+    "mean": 0.10978023012437028,
+    "p10": 0.07087392570204376,
+    "p90": 0.16468247886569728
+  },
+  "path": "failure_cases/davis_vos3__deltanet__s2.json"
+}

@@ -1,0 +1,8470 @@
+{
+  "dataset": "charades_event",
+  "task": "event",
+  "classes": [
+    "c000",
+    "c001",
+    "c002",
+    "c006",
+    "c008",
+    "c009",
+    "c011",
+    "c015",
+    "c016",
+    "c020",
+    "c021",
+    "c026",
+    "c032",
+    "c033",
+    "c040",
+    "c052",
+    "c059",
+    "c061",
+    "c062",
+    "c063",
+    "c065",
+    "c067",
+    "c070",
+    "c076",
+    "c081",
+    "c096",
+    "c097",
+    "c098",
+    "c106",
+    "c107",
+    "c109",
+    "c110",
+    "c112",
+    "c113",
+    "c118",
+    "c119",
+    "c123",
+    "c125",
+    "c126",
+    "c127",
+    "c141",
+    "c148",
+    "c149",
+    "c150",
+    "c151",
+    "c152",
+    "c153",
+    "c154",
+    "c155",
+    "c156"
+  ],
+  "counts": {
+    "train": 980,
+    "val": 210,
+    "test": 210
+  },
+  "selection_rule": "from the 7811 official-train clips that carry at least one action segment, pick 1400 with an even stride over the lexicographically sorted video ids (idx_i=floor(i*N/n)); split into 70/15/15 by contiguous blocks of that sorted selection (Charades ids are random 5-char strings so id order is effectively random; the split unit is the video id)",
+  "class_rule": "the 50 most frequent action classes among the selected clips, each with >= 60 annotated segments",
+  "event_stats": {
+    "n_segments_kept": 5716,
+    "positive_fraction": 1.7418247767857142,
+    "n_classes": 50
+  },
+  "records": [
+    {
+      "seq_id": "001YG",
+      "split": "train",
+      "n_segments": 6,
+      "length": 30.62
+    },
+    {
+      "seq_id": "00NN7",
+      "split": "train",
+      "n_segments": 9,
+      "length": 30.62
+    },
+    {
+      "seq_id": "013SD",
+      "split": "train",
+      "n_segments": 4,
+      "length": 9.38
+    },
+    {
+      "seq_id": "01ZWG",
+      "split": "train",
+      "n_segments": 8,
+      "length": 32.75
+    },
+    {
+      "seq_id": "02V54",
+      "split": "train",
+      "n_segments": 3,
+      "length": 18.33
+    },
+    {
+      "seq_id": "03EW0",
+      "split": "train",
+      "n_segments": 2,
+      "length": 31.12
+    },
+    {
+      "seq_id": "04MTP",
+      "split": "train",
+      "n_segments": 7,
+      "length": 31.38
+    },
+    {
+      "seq_id": "06CKN",
+      "split": "train",
+      "n_segments": 8,
+      "length": 25.42
+    },
+    {
+      "seq_id": "06OKE",
+      "split": "train",
+      "n_segments": 8,
+      "length": 31.08
+    },
+    {
+      "seq_id": "081WM",
+      "split": "train",
+      "n_segments": 4,
+      "length": 30.29
+    },
+    {
+      "seq_id": "08QQS",
+      "split": "train",
+      "n_segments": 4,
+      "length": 29.96
+    },
+    {
+      "seq_id": "09KVK",
+      "split": "train",
+      "n_segments": 2,
+      "length": 27.21
+    },
+    {
+      "seq_id": "0AGCS",
+      "split": "train",
+      "n_segments": 3,
+      "length": 27.33
+    },
+    {
+      "seq_id": "0BWYH",
+      "split": "train",
+      "n_segments": 5,
+      "length": 23.67
+    },
+    {
+      "seq_id": "0CFQV",
+      "split": "train",
+      "n_segments": 3,
+      "length": 20.83
+    },
+    {
+      "seq_id": "0CX32",
+      "split": "train",
+      "n_segments": 12,
+      "length": 33.17
+    },
+    {
+      "seq_id": "0DJ6R",
+      "split": "train",
+      "n_segments": 2,
+      "length": 16.83
+    },
+    {
+      "seq_id": "0ET8W",
+      "split": "train",
+      "n_segments": 4,
+      "length": 30.75
+    },
+    {
+      "seq_id": "0FJSU",
+      "split": "train",
+      "n_segments": 4,
+      "length": 17.79
+    },
+    {
+      "seq_id": "0GH5O",
+      "split": "train",
+      "n_segments": 9,
+      "length": 30.46
+    },
+    {
+      "seq_id": "0HD0T",
+      "split": "train",
+      "n_segments": 7,
+      "length": 29.25
+    },
+    {
+      "seq_id": "0IFCL",
+      "split": "train",
+      "n_segments": 4,
+      "length": 39.04
+    },
+    {
+      "seq_id": "0J5T4",
+      "split": "train",
+      "n_segments": 6,
+      "length": 36.29
+    },
+    {
+      "seq_id": "0JQ26",
+      "split": "train",
+      "n_segments": 3,
+      "length": 18.96
+    },
+    {
+      "seq_id": "0KISF",
+      "split": "train",
+      "n_segments": 6,
+      "length": 30.5
+    },
+    {
+      "seq_id": "0M1X0",
+      "split": "train",
+      "n_segments": 4,
+      "length": 29.21
+    },
+    {
+      "seq_id": "0MDYC",
+      "split": "train",
+      "n_segments": 5,
+      "length": 25.75
+    },
+    {
+      "seq_id": "0N7OQ",
+      "split": "train",
+      "n_segments": 7,
+      "length": 36.21
+    },
+    {
+      "seq_id": "0NN7I",
+      "split": "train",
+      "n_segments": 6,
+      "length": 31.12
+    },
+    {
+      "seq_id": "0O81T",
+      "split": "train",
+      "n_segments": 4,
+      "length": 31.04
+    },
+    {
+      "seq_id": "0PA3N",
+      "split": "train",
+      "n_segments": 5,
+      "length": 32.25
+    },
+    {
+      "seq_id": "0POYO",
+      "split": "train",
+      "n_segments": 7,
+      "length": 24.42
+    },
+    {
+      "seq_id": "0QMGP",
+      "split": "train",
+      "n_segments": 5,
+      "length": 30.58
+    },
+    {
+      "seq_id": "0RI7C",
+      "split": "train",
+      "n_segments": 6,
+      "length": 31.25
+    },
+    {
+      "seq_id": "0RPJX",
+      "split": "train",
+      "n_segments": 4,
+      "length": 33.42
+    },
+    {
+      "seq_id": "0SBT3",
+      "split": "train",
+      "n_segments": 10,
+      "length": 6.25
+    },
+    {
+      "seq_id": "0TJ7G",
+      "split": "train",
+      "n_segments": 4,
+      "length": 27.0
+    },
+    {
+      "seq_id": "0UFGC",
+      "split": "train",
+      "n_segments": 6,
+      "length": 30.79
+    },
+    {
+      "seq_id": "0VKEE",
+      "split": "train",
+      "n_segments": 8,
+      "length": 28.21
+    },
+    {
+      "seq_id": "0VQQL",
+      "split": "train",
+      "n_segments": 6,
+      "length": 29.58
+    },
+    {
+      "seq_id": "0WU7S",
+      "split": "train",
+      "n_segments": 9,
+      "length": 32.71
+    },
+    {
+      "seq_id": "0XRD1",
+      "split": "train",
+      "n_segments": 9,
+      "length": 31.0
+    },
+    {
+      "seq_id": "0YTSJ",
+      "split": "train",
+      "n_segments": 17,
+      "length": 37.08
+    },
+    {
+      "seq_id": "0ZOPH",
+      "split": "train",
+      "n_segments": 5,
+      "length": 33.38
+    },
+    {
+      "seq_id": "107YZ",
+      "split": "train",
+      "n_segments": 8,
+      "length": 30.08
+    },
+    {
+      "seq_id": "113YU",
+      "split": "train",
+      "n_segments": 4,
+      "length": 30.33
+    },
+    {
+      "seq_id": "11HOM",
+      "split": "train",
+      "n_segments": 2,
+      "length": 7.92
+    },
+    {
+      "seq_id": "12T13",
+      "split": "train",
+      "n_segments": 9,
+      "length": 30.58
+    },
+    {
+      "seq_id": "13AUQ",
+      "split": "train",
+      "n_segments": 10,
+      "length": 25.38
+    },
+    {
+      "seq_id": "14A2O",
+      "split": "train",
+      "n_segments": 8,
+      "length": 30.67
+    },
+    {
+      "seq_id": "1514T",
+      "split": "train",
+      "n_segments": 9,
+      "length": 24.21
+    },
+    {
+      "seq_id": "16CWY",
+      "split": "train",
+      "n_segments": 9,
+      "length": 31.54
+    },
+    {
+      "seq_id": "16UNJ",
+      "split": "train",
+      "n_segments": 3,
+      "length": 25.42
+    },
+    {
+      "seq_id": "17DOT",
+      "split": "train",
+      "n_segments": 6,
+      "length": 21.92
+    },
+    {
+      "seq_id": "18IDK",
+      "split": "train",
+      "n_segments": 4,
+      "length": 28.54
+    },
+    {
+      "seq_id": "19SJ6",
+      "split": "train",
+      "n_segments": 5,
+      "length": 31.25
+    },
+    {
+      "seq_id": "1AI3U",
+      "split": "train",
+      "n_segments": 7,
+      "length": 51.58
+    },
+    {
+      "seq_id": "1BUFQ",
+      "split": "train",
+      "n_segments": 8,
+      "length": 40.25
+    },
+    {
+      "seq_id": "1D2OX",
+      "split": "train",
+      "n_segments": 4,
+      "length": 30.83
+    },
+    {
+      "seq_id": "1DW7H",
+      "split": "train",
+      "n_segments": 3,
+      "length": 31.12
+    },
+    {
+      "seq_id": "1EJKT",
+      "split": "train",
+      "n_segments": 8,
+      "length": 42.33
+    },
+    {
+      "seq_id": "1F4YB",
+      "split": "train",
+      "n_segments": 3,
+      "length": 31.92
+    },
+    {
+      "seq_id": "1G90H",
+      "split": "train",
+      "n_segments": 4,
+      "length": 30.96
+    },
+    {
+      "seq_id": "1HAYV",
+      "split": "train",
+      "n_segments": 8,
+      "length": 37.75
+    },
+    {
+      "seq_id": "1IIS5",
+      "split": "train",
+      "n_segments": 8,
+      "length": 30.58
+    },
+    {
+      "seq_id": "1JGLR",
+      "split": "train",
+      "n_segments": 3,
+      "length": 28.04
+    },
+    {
+      "seq_id": "1K4ZT",
+      "split": "train",
+      "n_segments": 6,
+      "length": 30.75
+    },
+    {
+      "seq_id": "1KOZ4",
+      "split": "train",
+      "n_segments": 2,
+      "length": 43.25
+    },
+    {
+      "seq_id": "1LKPL",
+      "split": "train",
+      "n_segments": 9,
+      "length": 33.58
+    },
+    {
+      "seq_id": "1MD1H",
+      "split": "train",
+      "n_segments": 17,
+      "length": 32.5
+    },
+    {
+      "seq_id": "1NT8P",
+      "split": "train",
+      "n_segments": 6,
+      "length": 33.17
+    },
+    {
+      "seq_id": "1OIPY",
+      "split": "train",
+      "n_segments": 12,
+      "length": 39.88
+    },
+    {
+      "seq_id": "1PCR7",
+      "split": "train",
+      "n_segments": 5,
+      "length": 30.12
+    },
+    {
+      "seq_id": "1Q8WU",
+      "split": "train",
+      "n_segments": 3,
+      "length": 25.17
+    },
+    {
+      "seq_id": "1RNK6",
+      "split": "train",
+      "n_segments": 6,
+      "length": 18.5
+    },
+    {
+      "seq_id": "1SKLG",
+      "split": "train",
+      "n_segments": 5,
+      "length": 30.42
+    },
+    {
+      "seq_id": "1T3B4",
+      "split": "train",
+      "n_segments": 1,
+      "length": 35.75
+    },
+    {
+      "seq_id": "1TW98",
+      "split": "train",
+      "n_segments": 6,
+      "length": 29.33
+    },
+    {
+      "seq_id": "1UNXY",
+      "split": "train",
+      "n_segments": 7,
+      "length": 24.67
+    },
+    {
+      "seq_id": "1VUDV",
+      "split": "train",
+      "n_segments": 6,
+      "length": 30.5
+    },
+    {
+      "seq_id": "1WFWL",
+      "split": "train",
+      "n_segments": 4,
+      "length": 31.67
+    },
+    {
+      "seq_id": "1X0M3",
+      "split": "train",
+      "n_segments": 4,
+      "length": 52.92
+    },
+    {
+      "seq_id": "1XFDY",
+      "split": "train",
+      "n_segments": 8,
+      "length": 31.29
+    },
+    {
+      "seq_id": "1YBKW",
+      "split": "train",
+      "n_segments": 7,
+      "length": 30.46
+    },
+    {
+      "seq_id": "1YTD7",
+      "split": "train",
+      "n_segments": 5,
+      "length": 30.33
+    },
+    {
+      "seq_id": "1ZEJJ",
+      "split": "train",
+      "n_segments": 7,
+      "length": 21.42
+    },
+    {
+      "seq_id": "20YRU",
+      "split": "train",
+      "n_segments": 2,
+      "length": 30.5
+    },
+    {
+      "seq_id": "22A2G",
+      "split": "train",
+      "n_segments": 5,
+      "length": 36.42
+    },
+    {
+      "seq_id": "23Y3I",
+      "split": "train",
+      "n_segments": 5,
+      "length": 30.58
+    },
+    {
+      "seq_id": "24XDE",
+      "split": "train",
+      "n_segments": 7,
+      "length": 28.25
+    },
+    {
+      "seq_id": "25QPB",
+      "split": "train",
+      "n_segments": 6,
+      "length": 27.62
+    },
+    {
+      "seq_id": "279W6",
+      "split": "train",
+      "n_segments": 3,
+      "length": 31.42
+    },
+    {
+      "seq_id": "287ST",
+      "split": "train",
+      "n_segments": 10,
+      "length": 34.88
+    },
+    {
+      "seq_id": "29757",
+      "split": "train",
+      "n_segments": 6,
+      "length": 30.5
+    },
+    {
+      "seq_id": "29JK6",
+      "split": "train",
+      "n_segments": 12,
+      "length": 34.5
+    },
+    {
+      "seq_id": "2BFZG",
+      "split": "train",
+      "n_segments": 6,
+      "length": 30.42
+    },
+    {
+      "seq_id": "2C6ER",
+      "split": "train",
+      "n_segments": 2,
+      "length": 31.96
+    },
+    {
+      "seq_id": "2D5GN",
+      "split": "train",
+      "n_segments": 2,
+      "length": 31.83
+    },
+    {
+      "seq_id": "2DTZ3",
+      "split": "train",
+      "n_segments": 4,
+      "length": 15.92
+    },
+    {
+      "seq_id": "2FECZ",
+      "split": "train",
+      "n_segments": 9,
+      "length": 34.29
+    },
+    {
+      "seq_id": "2G59W",
+      "split": "train",
+      "n_segments": 7,
+      "length": 12.54
+    },
+    {
+      "seq_id": "2H56B",
+      "split": "train",
+      "n_segments": 7,
+      "length": 32.33
+    },
+    {
+      "seq_id": "2IC8O",
+      "split": "train",
+      "n_segments": 9,
+      "length": 31.67
+    },
+    {
+      "seq_id": "2J4MA",
+      "split": "train",
+      "n_segments": 3,
+      "length": 29.71
+    },
+    {
+      "seq_id": "2JTRG",
+      "split": "train",
+      "n_segments": 12,
+      "length": 31.79
+    },
+    {
+      "seq_id": "2KAWJ",
+      "split": "train",
+      "n_segments": 8,
+      "length": 33.96
+    },
+    {
+      "seq_id": "2LTCY",
+      "split": "train",
+      "n_segments": 7,
+      "length": 30.12
+    },
+    {
+      "seq_id": "2MGC1",
+      "split": "train",
+      "n_segments": 6,
+      "length": 35.21
+    },
+    {
+      "seq_id": "2MURI",
+      "split": "train",
+      "n_segments": 4,
+      "length": 17.29
+    },
+    {
+      "seq_id": "2O2LG",
+      "split": "train",
+      "n_segments": 4,
+      "length": 30.0
+    },
+    {
+      "seq_id": "2OWA8",
+      "split": "train",
+      "n_segments": 8,
+      "length": 28.38
+    },
+    {
+      "seq_id": "2PRCP",
+      "split": "train",
+      "n_segments": 6,
+      "length": 30.25
+    },
+    {
+      "seq_id": "2QI8F",
+      "split": "train",
+      "n_segments": 10,
+      "length": 21.42
+    },
+    {
+      "seq_id": "2RRSO",
+      "split": "train",
+      "n_segments": 6,
+      "length": 29.75
+    },
+    {
+      "seq_id": "2SKOA",
+      "split": "train",
+      "n_segments": 5,
+      "length": 25.17
+    },
+    {
+      "seq_id": "2T4AO",
+      "split": "train",
+      "n_segments": 1,
+      "length": 24.54
+    },
+    {
+      "seq_id": "2U903",
+      "split": "train",
+      "n_segments": 1,
+      "length": 26.0
+    },
+    {
+      "seq_id": "2VNXF",
+      "split": "train",
+      "n_segments": 10,
+      "length": 22.38
+    },
+    {
+      "seq_id": "2X2C5",
+      "split": "train",
+      "n_segments": 5,
+      "length": 21.38
+    },
+    {
+      "seq_id": "2XLVN",
+      "split": "train",
+      "n_segments": 4,
+      "length": 38.46
+    },
+    {
+      "seq_id": "2YO6G",
+      "split": "train",
+      "n_segments": 4,
+      "length": 11.54
+    },
+    {
+      "seq_id": "2Z60J",
+      "split": "train",
+      "n_segments": 5,
+      "length": 24.46
+    },
+    {
+      "seq_id": "2ZG3U",
+      "split": "train",
+      "n_segments": 5,
+      "length": 31.42
+    },
+    {
+      "seq_id": "306S9",
+      "split": "train",
+      "n_segments": 8,
+      "length": 31.25
+    },
+    {
+      "seq_id": "313G8",
+      "split": "train",
+      "n_segments": 6,
+      "length": 33.88
+    },
+    {
+      "seq_id": "32N81",
+      "split": "train",
+      "n_segments": 4,
+      "length": 22.5
+    },
+    {
+      "seq_id": "342XO",
+      "split": "train",
+      "n_segments": 6,
+      "length": 32.75
+    },
+    {
+      "seq_id": "35C4E",
+      "split": "train",
+      "n_segments": 6,
+      "length": 38.5
+    },
+    {
+      "seq_id": "36WU0",
+      "split": "train",
+      "n_segments": 3,
+      "length": 31.12
+    },
+    {
+      "seq_id": "37SE6",
+      "split": "train",
+      "n_segments": 9,
+      "length": 37.67
+    },
+    {
+      "seq_id": "38NUC",
+      "split": "train",
+      "n_segments": 6,
+      "length": 32.42
+    },
+    {
+      "seq_id": "38ZFZ",
+      "split": "train",
+      "n_segments": 6,
+      "length": 24.54
+    },
+    {
+      "seq_id": "39TDM",
+      "split": "train",
+      "n_segments": 6,
+      "length": 31.75
+    },
+    {
+      "seq_id": "3APWC",
+      "split": "train",
+      "n_segments": 4,
+      "length": 31.46
+    },
+    {
+      "seq_id": "3C36H",
+      "split": "train",
+      "n_segments": 7,
+      "length": 32.54
+    },
+    {
+      "seq_id": "3CFFJ",
+      "split": "train",
+      "n_segments": 11,
+      "length": 33.38
+    },
+    {
+      "seq_id": "3CTZL",
+      "split": "train",
+      "n_segments": 5,
+      "length": 27.25
+    },
+    {
+      "seq_id": "3DNW1",
+      "split": "train",
+      "n_segments": 10,
+      "length": 18.88
+    },
+    {
+      "seq_id": "3EHAJ",
+      "split": "train",
+      "n_segments": 6,
+      "length": 30.42
+    },
+    {
+      "seq_id": "3FX0M",
+      "split": "train",
+      "n_segments": 2,
+      "length": 7.71
+    },
+    {
+      "seq_id": "3GXB7",
+      "split": "train",
+      "n_segments": 5,
+      "length": 31.38
+    },
+    {
+      "seq_id": "3HF45",
+      "split": "train",
+      "n_segments": 4,
+      "length": 27.62
+    },
+    {
+      "seq_id": "3JJ7C",
+      "split": "train",
+      "n_segments": 5,
+      "length": 31.67
+    },
+    {
+      "seq_id": "3KZF7",
+      "split": "train",
+      "n_segments": 8,
+      "length": 29.08
+    },
+    {
+      "seq_id": "3LLXX",
+      "split": "train",
+      "n_segments": 8,
+      "length": 46.08
+    },
+    {
+      "seq_id": "3MLVF",
+      "split": "train",
+      "n_segments": 6,
+      "length": 30.62
+    },
+    {
+      "seq_id": "3O300",
+      "split": "train",
+      "n_segments": 4,
+      "length": 32.08
+    },
+    {
+      "seq_id": "3OQ8M",
+      "split": "train",
+      "n_segments": 12,
+      "length": 25.17
+    },
+    {
+      "seq_id": "3PXGQ",
+      "split": "train",
+      "n_segments": 7,
+      "length": 29.33
+    },
+    {
+      "seq_id": "3R7NX",
+      "split": "train",
+      "n_segments": 3,
+      "length": 30.46
+    },
+    {
+      "seq_id": "3S70A",
+      "split": "train",
+      "n_segments": 4,
+      "length": 25.83
+    },
+    {
+      "seq_id": "3STO2",
+      "split": "train",
+      "n_segments": 7,
+      "length": 33.08
+    },
+    {
+      "seq_id": "3UWW0",
+      "split": "train",
+      "n_segments": 3,
+      "length": 29.58
+    },
+    {
+      "seq_id": "3VEJY",
+      "split": "train",
+      "n_segments": 3,
+      "length": 16.5
+    },
+    {
+      "seq_id": "3W31X",
+      "split": "train",
+      "n_segments": 7,
+      "length": 26.04
+    },
+    {
+      "seq_id": "3WD4E",
+      "split": "train",
+      "n_segments": 9,
+      "length": 35.25
+    },
+    {
+      "seq_id": "3XKBC",
+      "split": "train",
+      "n_segments": 8,
+      "length": 29.75
+    },
+    {
+      "seq_id": "3YNPY",
+      "split": "train",
+      "n_segments": 8,
+      "length": 14.0
+    },
+    {
+      "seq_id": "3Z7KH",
+      "split": "train",
+      "n_segments": 12,
+      "length": 31.46
+    },
+    {
+      "seq_id": "3ZUVI",
+      "split": "train",
+      "n_segments": 10,
+      "length": 30.75
+    },
+    {
+      "seq_id": "409X2",
+      "split": "train",
+      "n_segments": 7,
+      "length": 29.71
+    },
+    {
+      "seq_id": "40WPV",
+      "split": "train",
+      "n_segments": 7,
+      "length": 37.92
+    },
+    {
+      "seq_id": "41GXC",
+      "split": "train",
+      "n_segments": 12,
+      "length": 30.71
+    },
+    {
+      "seq_id": "42E9I",
+      "split": "train",
+      "n_segments": 4,
+      "length": 33.29
+    },
+    {
+      "seq_id": "42UH8",
+      "split": "train",
+      "n_segments": 4,
+      "length": 25.88
+    },
+    {
+      "seq_id": "43UDQ",
+      "split": "train",
+      "n_segments": 3,
+      "length": 27.67
+    },
+    {
+      "seq_id": "452FV",
+      "split": "train",
+      "n_segments": 4,
+      "length": 18.21
+    },
+    {
+      "seq_id": "45Z2A",
+      "split": "train",
+      "n_segments": 7,
+      "length": 9.29
+    },
+    {
+      "seq_id": "46Z16",
+      "split": "train",
+      "n_segments": 11,
+      "length": 48.33
+    },
+    {
+      "seq_id": "47D1Y",
+      "split": "train",
+      "n_segments": 3,
+      "length": 32.88
+    },
+    {
+      "seq_id": "485G9",
+      "split": "train",
+      "n_segments": 6,
+      "length": 30.67
+    },
+    {
+      "seq_id": "48IQL",
+      "split": "train",
+      "n_segments": 8,
+      "length": 32.96
+    },
+    {
+      "seq_id": "4986V",
+      "split": "train",
+      "n_segments": 6,
+      "length": 31.08
+    },
+    {
+      "seq_id": "4BGWL",
+      "split": "train",
+      "n_segments": 7,
+      "length": 6.29
+    },
+    {
+      "seq_id": "4C4LC",
+      "split": "train",
+      "n_segments": 13,
+      "length": 31.5
+    },
+    {
+      "seq_id": "4D5XD",
+      "split": "train",
+      "n_segments": 5,
+      "length": 30.58
+    },
+    {
+      "seq_id": "4DZ33",
+      "split": "train",
+      "n_segments": 6,
+      "length": 34.62
+    },
+    {
+      "seq_id": "4F76V",
+      "split": "train",
+      "n_segments": 7,
+      "length": 28.25
+    },
+    {
+      "seq_id": "4FW7I",
+      "split": "train",
+      "n_segments": 3,
+      "length": 31.88
+    },
+    {
+      "seq_id": "4GWNV",
+      "split": "train",
+      "n_segments": 3,
+      "length": 19.21
+    },
+    {
+      "seq_id": "4ISIX",
+      "split": "train",
+      "n_segments": 5,
+      "length": 33.12
+    },
+    {
+      "seq_id": "4JKLQ",
+      "split": "train",
+      "n_segments": 13,
+      "length": 34.75
+    },
+    {
+      "seq_id": "4JWAH",
+      "split": "train",
+      "n_segments": 8,
+      "length": 30.67
+    },
+    {
+      "seq_id": "4L664",
+      "split": "train",
+      "n_segments": 5,
+      "length": 30.33
+    },
+    {
+      "seq_id": "4MFE0",
+      "split": "train",
+      "n_segments": 9,
+      "length": 27.96
+    },
+    {
+      "seq_id": "4N5P9",
+      "split": "train",
+      "n_segments": 7,
+      "length": 31.79
+    },
+    {
+      "seq_id": "4P13T",
+      "split": "train",
+      "n_segments": 7,
+      "length": 31.08
+    },
+    {
+      "seq_id": "4RBVB",
+      "split": "train",
+      "n_segments": 11,
+      "length": 35.79
+    },
+    {
+      "seq_id": "4SGC9",
+      "split": "train",
+      "n_segments": 4,
+      "length": 30.29
+    },
+    {
+      "seq_id": "4UR1F",
+      "split": "train",
+      "n_segments": 2,
+      "length": 3.0
+    },
+    {
+      "seq_id": "4VYE5",
+      "split": "train",
+      "n_segments": 8,
+      "length": 157.42
+    },
+    {
+      "seq_id": "4X2JC",
+      "split": "train",
+      "n_segments": 6,
+      "length": 31.12
+    },
+    {
+      "seq_id": "4YVE0",
+      "split": "train",
+      "n_segments": 3,
+      "length": 27.17
+    },
+    {
+      "seq_id": "4ZRHH",
+      "split": "train",
+      "n_segments": 4,
+      "length": 31.96
+    },
+    {
+      "seq_id": "50TLF",
+      "split": "train",
+      "n_segments": 6,
+      "length": 29.42
+    },
+    {
+      "seq_id": "51JUO",
+      "split": "train",
+      "n_segments": 7,
+      "length": 44.25
+    },
+    {
+      "seq_id": "52GJU",
+      "split": "train",
+      "n_segments": 2,
+      "length": 21.71
+    },
+    {
+      "seq_id": "537I0",
+      "split": "train",
+      "n_segments": 5,
+      "length": 21.29
+    },
+    {
+      "seq_id": "54CFS",
+      "split": "train",
+      "n_segments": 7,
+      "length": 30.71
+    },
+    {
+      "seq_id": "55BOW",
+      "split": "train",
+      "n_segments": 10,
+      "length": 32.17
+    },
+    {
+      "seq_id": "55OAL",
+      "split": "train",
+      "n_segments": 6,
+      "length": 22.38
+    },
+    {
+      "seq_id": "5657O",
+      "split": "train",
+      "n_segments": 7,
+      "length": 30.96
+    },
+    {
+      "seq_id": "56XKK",
+      "split": "train",
+      "n_segments": 15,
+      "length": 38.17
+    },
+    {
+      "seq_id": "57MEO",
+      "split": "train",
+      "n_segments": 8,
+      "length": 21.54
+    },
+    {
+      "seq_id": "57WV7",
+      "split": "train",
+      "n_segments": 8,
+      "length": 49.42
+    },
+    {
+      "seq_id": "58VZI",
+      "split": "train",
+      "n_segments": 10,
+      "length": 34.79
+    },
+    {
+      "seq_id": "5A3FT",
+      "split": "train",
+      "n_segments": 7,
+      "length": 27.12
+    },
+    {
+      "seq_id": "5AFC1",
+      "split": "train",
+      "n_segments": 7,
+      "length": 33.25
+    },
+    {
+      "seq_id": "5B2K2",
+      "split": "train",
+      "n_segments": 3,
+      "length": 30.38
+    },
+    {
+      "seq_id": "5C6IS",
+      "split": "train",
+      "n_segments": 6,
+      "length": 21.17
+    },
+    {
+      "seq_id": "5D351",
+      "split": "train",
+      "n_segments": 7,
+      "length": 29.58
+    },
+    {
+      "seq_id": "5E01W",
+      "split": "train",
+      "n_segments": 4,
+      "length": 23.92
+    },
+    {
+      "seq_id": "5EFVR",
+      "split": "train",
+      "n_segments": 10,
+      "length": 27.75
+    },
+    {
+      "seq_id": "5FJRT",
+      "split": "train",
+      "n_segments": 2,
+      "length": 30.04
+    },
+    {
+      "seq_id": "5GG5W",
+      "split": "train",
+      "n_segments": 7,
+      "length": 28.88
+    },
+    {
+      "seq_id": "5HGHH",
+      "split": "train",
+      "n_segments": 5,
+      "length": 31.96
+    },
+    {
+      "seq_id": "5I330",
+      "split": "train",
+      "n_segments": 3,
+      "length": 17.04
+    },
+    {
+      "seq_id": "5IVO1",
+      "split": "train",
+      "n_segments": 10,
+      "length": 31.38
+    },
+    {
+      "seq_id": "5JSFE",
+      "split": "train",
+      "n_segments": 7,
+      "length": 30.79
+    },
+    {
+      "seq_id": "5KOTU",
+      "split": "train",
+      "n_segments": 6,
+      "length": 38.21
+    },
+    {
+      "seq_id": "5LE93",
+      "split": "train",
+      "n_segments": 3,
+      "length": 21.08
+    },
+    {
+      "seq_id": "5LTLL",
+      "split": "train",
+      "n_segments": 8,
+      "length": 31.29
+    },
+    {
+      "seq_id": "5MDL5",
+      "split": "train",
+      "n_segments": 3,
+      "length": 31.79
+    },
+    {
+      "seq_id": "5N26T",
+      "split": "train",
+      "n_segments": 5,
+      "length": 35.71
+    },
+    {
+      "seq_id": "5NG8W",
+      "split": "train",
+      "n_segments": 5,
+      "length": 31.67
+    },
+    {
+      "seq_id": "5OB3W",
+      "split": "train",
+      "n_segments": 8,
+      "length": 30.67
+    },
+    {
+      "seq_id": "5P0ON",
+      "split": "train",
+      "n_segments": 9,
+      "length": 32.58
+    },
+    {
+      "seq_id": "5QJNP",
+      "split": "train",
+      "n_segments": 5,
+      "length": 38.21
+    },
+    {
+      "seq_id": "5RY3S",
+      "split": "train",
+      "n_segments": 4,
+      "length": 30.71
+    },
+    {
+      "seq_id": "5SAAB",
+      "split": "train",
+      "n_segments": 10,
+      "length": 30.75
+    },
+    {
+      "seq_id": "5TG2E",
+      "split": "train",
+      "n_segments": 4,
+      "length": 34.25
+    },
+    {
+      "seq_id": "5U1IT",
+      "split": "train",
+      "n_segments": 1,
+      "length": 9.33
+    },
+    {
+      "seq_id": "5UUEP",
+      "split": "train",
+      "n_segments": 4,
+      "length": 31.83
+    },
+    {
+      "seq_id": "5VINT",
+      "split": "train",
+      "n_segments": 4,
+      "length": 30.54
+    },
+    {
+      "seq_id": "5X5DT",
+      "split": "train",
+      "n_segments": 7,
+      "length": 28.79
+    },
+    {
+      "seq_id": "5XCUV",
+      "split": "train",
+      "n_segments": 5,
+      "length": 27.88
+    },
+    {
+      "seq_id": "5Y3VW",
+      "split": "train",
+      "n_segments": 6,
+      "length": 21.62
+    },
+    {
+      "seq_id": "5ZDNU",
+      "split": "train",
+      "n_segments": 4,
+      "length": 23.29
+    },
+    {
+      "seq_id": "5ZXA3",
+      "split": "train",
+      "n_segments": 7,
+      "length": 30.71
+    },
+    {
+      "seq_id": "61FWZ",
+      "split": "train",
+      "n_segments": 4,
+      "length": 30.67
+    },
+    {
+      "seq_id": "61WBK",
+      "split": "train",
+      "n_segments": 7,
+      "length": 32.71
+    },
+    {
+      "seq_id": "62VEF",
+      "split": "train",
+      "n_segments": 4,
+      "length": 32.88
+    },
+    {
+      "seq_id": "646CU",
+      "split": "train",
+      "n_segments": 2,
+      "length": 28.75
+    },
+    {
+      "seq_id": "651VO",
+      "split": "train",
+      "n_segments": 3,
+      "length": 30.58
+    },
+    {
+      "seq_id": "662ZU",
+      "split": "train",
+      "n_segments": 1,
+      "length": 35.25
+    },
+    {
+      "seq_id": "677VJ",
+      "split": "train",
+      "n_segments": 2,
+      "length": 33.0
+    },
+    {
+      "seq_id": "68JOO",
+      "split": "train",
+      "n_segments": 6,
+      "length": 30.58
+    },
+    {
+      "seq_id": "69EK6",
+      "split": "train",
+      "n_segments": 6,
+      "length": 36.42
+    },
+    {
+      "seq_id": "6AHBW",
+      "split": "train",
+      "n_segments": 13,
+      "length": 29.75
+    },
+    {
+      "seq_id": "6AVDE",
+      "split": "train",
+      "n_segments": 3,
+      "length": 33.08
+    },
+    {
+      "seq_id": "6BFKO",
+      "split": "train",
+      "n_segments": 4,
+      "length": 28.42
+    },
+    {
+      "seq_id": "6C526",
+      "split": "train",
+      "n_segments": 6,
+      "length": 25.42
+    },
+    {
+      "seq_id": "6E4L5",
+      "split": "train",
+      "n_segments": 8,
+      "length": 32.5
+    },
+    {
+      "seq_id": "6EZH6",
+      "split": "train",
+      "n_segments": 4,
+      "length": 19.96
+    },
+    {
+      "seq_id": "6FYXS",
+      "split": "train",
+      "n_segments": 9,
+      "length": 19.62
+    },
+    {
+      "seq_id": "6HR54",
+      "split": "train",
+      "n_segments": 11,
+      "length": 25.42
+    },
+    {
+      "seq_id": "6JACT",
+      "split": "train",
+      "n_segments": 4,
+      "length": 22.04
+    },
+    {
+      "seq_id": "6KDQO",
+      "split": "train",
+      "n_segments": 10,
+      "length": 29.79
+    },
+    {
+      "seq_id": "6L2J7",
+      "split": "train",
+      "n_segments": 9,
+      "length": 30.75
+    },
+    {
+      "seq_id": "6MCD9",
+      "split": "train",
+      "n_segments": 8,
+      "length": 21.96
+    },
+    {
+      "seq_id": "6N4BD",
+      "split": "train",
+      "n_segments": 5,
+      "length": 33.25
+    },
+    {
+      "seq_id": "6PL9Z",
+      "split": "train",
+      "n_segments": 6,
+      "length": 19.67
+    },
+    {
+      "seq_id": "6PZJ3",
+      "split": "train",
+      "n_segments": 8,
+      "length": 30.79
+    },
+    {
+      "seq_id": "6R6RS",
+      "split": "train",
+      "n_segments": 4,
+      "length": 29.96
+    },
+    {
+      "seq_id": "6RQHT",
+      "split": "train",
+      "n_segments": 2,
+      "length": 22.0
+    },
+    {
+      "seq_id": "6SY23",
+      "split": "train",
+      "n_segments": 7,
+      "length": 26.96
+    },
+    {
+      "seq_id": "6U082",
+      "split": "train",
+      "n_segments": 4,
+      "length": 23.88
+    },
+    {
+      "seq_id": "6VF2L",
+      "split": "train",
+      "n_segments": 8,
+      "length": 34.58
+    },
+    {
+      "seq_id": "6VUKN",
+      "split": "train",
+      "n_segments": 7,
+      "length": 30.96
+    },
+    {
+      "seq_id": "6X0OV",
+      "split": "train",
+      "n_segments": 4,
+      "length": 16.79
+    },
+    {
+      "seq_id": "6YH19",
+      "split": "train",
+      "n_segments": 8,
+      "length": 33.71
+    },
+    {
+      "seq_id": "6Z9ZC",
+      "split": "train",
+      "n_segments": 4,
+      "length": 30.96
+    },
+    {
+      "seq_id": "70FXC",
+      "split": "train",
+      "n_segments": 5,
+      "length": 33.5
+    },
+    {
+      "seq_id": "71QKB",
+      "split": "train",
+      "n_segments": 4,
+      "length": 29.46
+    },
+    {
+      "seq_id": "72VBG",
+      "split": "train",
+      "n_segments": 5,
+      "length": 31.04
+    },
+    {
+      "seq_id": "73X8Q",
+      "split": "train",
+      "n_segments": 9,
+      "length": 30.29
+    },
+    {
+      "seq_id": "74S1R",
+      "split": "train",
+      "n_segments": 9,
+      "length": 27.83
+    },
+    {
+      "seq_id": "75HWR",
+      "split": "train",
+      "n_segments": 5,
+      "length": 37.0
+    },
+    {
+      "seq_id": "76BFU",
+      "split": "train",
+      "n_segments": 5,
+      "length": 30.71
+    },
+    {
+      "seq_id": "77JB7",
+      "split": "train",
+      "n_segments": 5,
+      "length": 43.21
+    },
+    {
+      "seq_id": "78LXZ",
+      "split": "train",
+      "n_segments": 5,
+      "length": 16.17
+    },
+    {
+      "seq_id": "78XZ9",
+      "split": "train",
+      "n_segments": 8,
+      "length": 31.79
+    },
+    {
+      "seq_id": "7B1CR",
+      "split": "train",
+      "n_segments": 6,
+      "length": 27.79
+    },
+    {
+      "seq_id": "7BFDL",
+      "split": "train",
+      "n_segments": 8,
+      "length": 38.75
+    },
+    {
+      "seq_id": "7C13O",
+      "split": "train",
+      "n_segments": 4,
+      "length": 49.33
+    },
+    {
+      "seq_id": "7DGWM",
+      "split": "train",
+      "n_segments": 13,
+      "length": 31.04
+    },
+    {
+      "seq_id": "7EBTI",
+      "split": "train",
+      "n_segments": 14,
+      "length": 30.88
+    },
+    {
+      "seq_id": "7FCAW",
+      "split": "train",
+      "n_segments": 7,
+      "length": 31.33
+    },
+    {
+      "seq_id": "7FTBS",
+      "split": "train",
+      "n_segments": 12,
+      "length": 50.5
+    },
+    {
+      "seq_id": "7GIOE",
+      "split": "train",
+      "n_segments": 4,
+      "length": 33.79
+    },
+    {
+      "seq_id": "7HEWH",
+      "split": "train",
+      "n_segments": 10,
+      "length": 30.62
+    },
+    {
+      "seq_id": "7HWK2",
+      "split": "train",
+      "n_segments": 11,
+      "length": 39.46
+    },
+    {
+      "seq_id": "7JSAI",
+      "split": "train",
+      "n_segments": 7,
+      "length": 30.25
+    },
+    {
+      "seq_id": "7K2CS",
+      "split": "train",
+      "n_segments": 7,
+      "length": 30.08
+    },
+    {
+      "seq_id": "7KZ20",
+      "split": "train",
+      "n_segments": 2,
+      "length": 15.83
+    },
+    {
+      "seq_id": "7L4DW",
+      "split": "train",
+      "n_segments": 4,
+      "length": 31.29
+    },
+    {
+      "seq_id": "7MI5Z",
+      "split": "train",
+      "n_segments": 3,
+      "length": 28.42
+    },
+    {
+      "seq_id": "7ODVS",
+      "split": "train",
+      "n_segments": 6,
+      "length": 10.25
+    },
+    {
+      "seq_id": "7P0HA",
+      "split": "train",
+      "n_segments": 6,
+      "length": 25.88
+    },
+    {
+      "seq_id": "7QLMY",
+      "split": "train",
+      "n_segments": 3,
+      "length": 21.75
+    },
+    {
+      "seq_id": "7RBKP",
+      "split": "train",
+      "n_segments": 11,
+      "length": 30.62
+    },
+    {
+      "seq_id": "7SQXM",
+      "split": "train",
+      "n_segments": 3,
+      "length": 30.88
+    },
+    {
+      "seq_id": "7TJ60",
+      "split": "train",
+      "n_segments": 2,
+      "length": 30.79
+    },
+    {
+      "seq_id": "7UP0Q",
+      "split": "train",
+      "n_segments": 6,
+      "length": 22.88
+    },
+    {
+      "seq_id": "7VHXG",
+      "split": "train",
+      "n_segments": 4,
+      "length": 28.88
+    },
+    {
+      "seq_id": "7W1ZI",
+      "split": "train",
+      "n_segments": 4,
+      "length": 30.12
+    },
+    {
+      "seq_id": "7WJUW",
+      "split": "train",
+      "n_segments": 12,
+      "length": 34.5
+    },
+    {
+      "seq_id": "7XKUI",
+      "split": "train",
+      "n_segments": 7,
+      "length": 16.71
+    },
+    {
+      "seq_id": "7YMK9",
+      "split": "train",
+      "n_segments": 7,
+      "length": 40.46
+    },
+    {
+      "seq_id": "7ZCXJ",
+      "split": "train",
+      "n_segments": 8,
+      "length": 30.67
+    },
+    {
+      "seq_id": "803H6",
+      "split": "train",
+      "n_segments": 5,
+      "length": 30.79
+    },
+    {
+      "seq_id": "80YWL",
+      "split": "train",
+      "n_segments": 6,
+      "length": 13.08
+    },
+    {
+      "seq_id": "81G9S",
+      "split": "train",
+      "n_segments": 4,
+      "length": 31.21
+    },
+    {
+      "seq_id": "827O1",
+      "split": "train",
+      "n_segments": 10,
+      "length": 27.12
+    },
+    {
+      "seq_id": "82XWA",
+      "split": "train",
+      "n_segments": 13,
+      "length": 24.08
+    },
+    {
+      "seq_id": "83D9H",
+      "split": "train",
+      "n_segments": 9,
+      "length": 30.54
+    },
+    {
+      "seq_id": "857LD",
+      "split": "train",
+      "n_segments": 2,
+      "length": 26.96
+    },
+    {
+      "seq_id": "866F1",
+      "split": "train",
+      "n_segments": 6,
+      "length": 10.08
+    },
+    {
+      "seq_id": "87EXS",
+      "split": "train",
+      "n_segments": 4,
+      "length": 31.42
+    },
+    {
+      "seq_id": "883AD",
+      "split": "train",
+      "n_segments": 5,
+      "length": 33.08
+    },
+    {
+      "seq_id": "88Z3M",
+      "split": "train",
+      "n_segments": 2,
+      "length": 27.17
+    },
+    {
+      "seq_id": "89IBC",
+      "split": "train",
+      "n_segments": 3,
+      "length": 27.96
+    },
+    {
+      "seq_id": "8AT69",
+      "split": "train",
+      "n_segments": 3,
+      "length": 30.46
+    },
+    {
+      "seq_id": "8BCI8",
+      "split": "train",
+      "n_segments": 7,
+      "length": 42.04
+    },
+    {
+      "seq_id": "8BSG7",
+      "split": "train",
+      "n_segments": 7,
+      "length": 31.12
+    },
+    {
+      "seq_id": "8D3M4",
+      "split": "train",
+      "n_segments": 1,
+      "length": 35.5
+    },
+    {
+      "seq_id": "8DQ3V",
+      "split": "train",
+      "n_segments": 5,
+      "length": 31.79
+    },
+    {
+      "seq_id": "8ESHT",
+      "split": "train",
+      "n_segments": 12,
+      "length": 26.38
+    },
+    {
+      "seq_id": "8FH96",
+      "split": "train",
+      "n_segments": 6,
+      "length": 17.58
+    },
+    {
+      "seq_id": "8GQJO",
+      "split": "train",
+      "n_segments": 2,
+      "length": 23.08
+    },
+    {
+      "seq_id": "8ICEM",
+      "split": "train",
+      "n_segments": 11,
+      "length": 31.29
+    },
+    {
+      "seq_id": "8J5O9",
+      "split": "train",
+      "n_segments": 8,
+      "length": 30.42
+    },
+    {
+      "seq_id": "8JTF4",
+      "split": "train",
+      "n_segments": 3,
+      "length": 27.71
+    },
+    {
+      "seq_id": "8L08M",
+      "split": "train",
+      "n_segments": 5,
+      "length": 30.33
+    },
+    {
+      "seq_id": "8M0ZV",
+      "split": "train",
+      "n_segments": 5,
+      "length": 30.08
+    },
+    {
+      "seq_id": "8MLCU",
+      "split": "train",
+      "n_segments": 5,
+      "length": 29.08
+    },
+    {
+      "seq_id": "8N939",
+      "split": "train",
+      "n_segments": 8,
+      "length": 30.17
+    },
+    {
+      "seq_id": "8NU39",
+      "split": "train",
+      "n_segments": 4,
+      "length": 31.71
+    },
+    {
+      "seq_id": "8PSXZ",
+      "split": "train",
+      "n_segments": 6,
+      "length": 32.33
+    },
+    {
+      "seq_id": "8R0SZ",
+      "split": "train",
+      "n_segments": 2,
+      "length": 28.96
+    },
+    {
+      "seq_id": "8SA46",
+      "split": "train",
+      "n_segments": 7,
+      "length": 34.83
+    },
+    {
+      "seq_id": "8TRIW",
+      "split": "train",
+      "n_segments": 12,
+      "length": 32.71
+    },
+    {
+      "seq_id": "8V97G",
+      "split": "train",
+      "n_segments": 5,
+      "length": 26.62
+    },
+    {
+      "seq_id": "8VQBR",
+      "split": "train",
+      "n_segments": 3,
+      "length": 30.5
+    },
+    {
+      "seq_id": "8WJIR",
+      "split": "train",
+      "n_segments": 13,
+      "length": 34.71
+    },
+    {
+      "seq_id": "8X49S",
+      "split": "train",
+      "n_segments": 8,
+      "length": 21.21
+    },
+    {
+      "seq_id": "8XL11",
+      "split": "train",
+      "n_segments": 3,
+      "length": 6.12
+    },
+    {
+      "seq_id": "8YZ8X",
+      "split": "train",
+      "n_segments": 8,
+      "length": 41.67
+    },
+    {
+      "seq_id": "8ZF5S",
+      "split": "train",
+      "n_segments": 4,
+      "length": 32.58
+    },
+    {
+      "seq_id": "914NC",
+      "split": "train",
+      "n_segments": 2,
+      "length": 15.29
+    },
+    {
+      "seq_id": "91VUF",
+      "split": "train",
+      "n_segments": 2,
+      "length": 29.62
+    },
+    {
+      "seq_id": "92FFB",
+      "split": "train",
+      "n_segments": 6,
+      "length": 20.17
+    },
+    {
+      "seq_id": "92TUQ",
+      "split": "train",
+      "n_segments": 4,
+      "length": 26.21
+    },
+    {
+      "seq_id": "93YXJ",
+      "split": "train",
+      "n_segments": 9,
+      "length": 42.67
+    },
+    {
+      "seq_id": "94HXT",
+      "split": "train",
+      "n_segments": 3,
+      "length": 31.96
+    },
+    {
+      "seq_id": "953I1",
+      "split": "train",
+      "n_segments": 6,
+      "length": 22.92
+    },
+    {
+      "seq_id": "96GIQ",
+      "split": "train",
+      "n_segments": 5,
+      "length": 30.33
+    },
+    {
+      "seq_id": "9777C",
+      "split": "train",
+      "n_segments": 4,
+      "length": 29.29
+    },
+    {
+      "seq_id": "97U3W",
+      "split": "train",
+      "n_segments": 4,
+      "length": 7.71
+    },
+    {
+      "seq_id": "98KNP",
+      "split": "train",
+      "n_segments": 3,
+      "length": 27.67
+    },
+    {
+      "seq_id": "99SGB",
+      "split": "train",
+      "n_segments": 8,
+      "length": 12.88
+    },
+    {
+      "seq_id": "9A90E",
+      "split": "train",
+      "n_segments": 9,
+      "length": 31.25
+    },
+    {
+      "seq_id": "9BCOH",
+      "split": "train",
+      "n_segments": 3,
+      "length": 22.33
+    },
+    {
+      "seq_id": "9CDB6",
+      "split": "train",
+      "n_segments": 5,
+      "length": 30.46
+    },
+    {
+      "seq_id": "9EP7R",
+      "split": "train",
+      "n_segments": 10,
+      "length": 31.29
+    },
+    {
+      "seq_id": "9FH1E",
+      "split": "train",
+      "n_segments": 11,
+      "length": 32.75
+    },
+    {
+      "seq_id": "9GOUI",
+      "split": "train",
+      "n_segments": 9,
+      "length": 18.75
+    },
+    {
+      "seq_id": "9HI9D",
+      "split": "train",
+      "n_segments": 4,
+      "length": 30.79
+    },
+    {
+      "seq_id": "9I034",
+      "split": "train",
+      "n_segments": 1,
+      "length": 26.33
+    },
+    {
+      "seq_id": "9IO0Y",
+      "split": "train",
+      "n_segments": 5,
+      "length": 36.0
+    },
+    {
+      "seq_id": "9J074",
+      "split": "train",
+      "n_segments": 1,
+      "length": 29.42
+    },
+    {
+      "seq_id": "9JIOI",
+      "split": "train",
+      "n_segments": 5,
+      "length": 16.42
+    },
+    {
+      "seq_id": "9KGIR",
+      "split": "train",
+      "n_segments": 6,
+      "length": 32.46
+    },
+    {
+      "seq_id": "9LHP3",
+      "split": "train",
+      "n_segments": 11,
+      "length": 31.79
+    },
+    {
+      "seq_id": "9MOH2",
+      "split": "train",
+      "n_segments": 3,
+      "length": 29.5
+    },
+    {
+      "seq_id": "9NES7",
+      "split": "train",
+      "n_segments": 2,
+      "length": 28.42
+    },
+    {
+      "seq_id": "9NWSD",
+      "split": "train",
+      "n_segments": 4,
+      "length": 27.88
+    },
+    {
+      "seq_id": "9OJXP",
+      "split": "train",
+      "n_segments": 4,
+      "length": 31.62
+    },
+    {
+      "seq_id": "9PAQ4",
+      "split": "train",
+      "n_segments": 7,
+      "length": 19.08
+    },
+    {
+      "seq_id": "9QI0W",
+      "split": "train",
+      "n_segments": 4,
+      "length": 21.46
+    },
+    {
+      "seq_id": "9REZ6",
+      "split": "train",
+      "n_segments": 4,
+      "length": 28.67
+    },
+    {
+      "seq_id": "9RX96",
+      "split": "train",
+      "n_segments": 4,
+      "length": 39.12
+    },
+    {
+      "seq_id": "9SNMR",
+      "split": "train",
+      "n_segments": 6,
+      "length": 21.79
+    },
+    {
+      "seq_id": "9T11N",
+      "split": "train",
+      "n_segments": 13,
+      "length": 30.46
+    },
+    {
+      "seq_id": "9UZEY",
+      "split": "train",
+      "n_segments": 6,
+      "length": 16.25
+    },
+    {
+      "seq_id": "9VZOY",
+      "split": "train",
+      "n_segments": 10,
+      "length": 30.79
+    },
+    {
+      "seq_id": "9WLBQ",
+      "split": "train",
+      "n_segments": 6,
+      "length": 32.88
+    },
+    {
+      "seq_id": "9XOED",
+      "split": "train",
+      "n_segments": 5,
+      "length": 30.71
+    },
+    {
+      "seq_id": "9YRHF",
+      "split": "train",
+      "n_segments": 7,
+      "length": 23.5
+    },
+    {
+      "seq_id": "A0MZ9",
+      "split": "train",
+      "n_segments": 3,
+      "length": 32.83
+    },
+    {
+      "seq_id": "A10NL",
+      "split": "train",
+      "n_segments": 3,
+      "length": 20.21
+    },
+    {
+      "seq_id": "A2771",
+      "split": "train",
+      "n_segments": 5,
+      "length": 30.92
+    },
+    {
+      "seq_id": "A2Z46",
+      "split": "train",
+      "n_segments": 10,
+      "length": 33.75
+    },
+    {
+      "seq_id": "A3OWG",
+      "split": "train",
+      "n_segments": 4,
+      "length": 17.54
+    },
+    {
+      "seq_id": "A4N6Z",
+      "split": "train",
+      "n_segments": 5,
+      "length": 29.96
+    },
+    {
+      "seq_id": "A54DW",
+      "split": "train",
+      "n_segments": 7,
+      "length": 31.25
+    },
+    {
+      "seq_id": "A5YR8",
+      "split": "train",
+      "n_segments": 5,
+      "length": 14.25
+    },
+    {
+      "seq_id": "A6R22",
+      "split": "train",
+      "n_segments": 8,
+      "length": 31.62
+    },
+    {
+      "seq_id": "A81AV",
+      "split": "train",
+      "n_segments": 9,
+      "length": 30.08
+    },
+    {
+      "seq_id": "A9BDS",
+      "split": "train",
+      "n_segments": 15,
+      "length": 32.17
+    },
+    {
+      "seq_id": "AAJI0",
+      "split": "train",
+      "n_segments": 3,
+      "length": 29.71
+    },
+    {
+      "seq_id": "ABFGZ",
+      "split": "train",
+      "n_segments": 4,
+      "length": 19.0
+    },
+    {
+      "seq_id": "AC3T4",
+      "split": "train",
+      "n_segments": 4,
+      "length": 39.08
+    },
+    {
+      "seq_id": "AD28I",
+      "split": "train",
+      "n_segments": 8,
+      "length": 34.62
+    },
+    {
+      "seq_id": "AEJ4T",
+      "split": "train",
+      "n_segments": 7,
+      "length": 30.58
+    },
+    {
+      "seq_id": "AF8VD",
+      "split": "train",
+      "n_segments": 6,
+      "length": 20.17
+    },
+    {
+      "seq_id": "AGELP",
+      "split": "train",
+      "n_segments": 6,
+      "length": 29.12
+    },
+    {
+      "seq_id": "AGZ28",
+      "split": "train",
+      "n_segments": 5,
+      "length": 34.75
+    },
+    {
+      "seq_id": "AHLZY",
+      "split": "train",
+      "n_segments": 8,
+      "length": 32.83
+    },
+    {
+      "seq_id": "AIOTI",
+      "split": "train",
+      "n_segments": 8,
+      "length": 30.62
+    },
+    {
+      "seq_id": "AJTDO",
+      "split": "train",
+      "n_segments": 6,
+      "length": 36.75
+    },
+    {
+      "seq_id": "AKKWU",
+      "split": "train",
+      "n_segments": 5,
+      "length": 12.17
+    },
+    {
+      "seq_id": "AM4QC",
+      "split": "train",
+      "n_segments": 11,
+      "length": 24.21
+    },
+    {
+      "seq_id": "AMX7S",
+      "split": "train",
+      "n_segments": 6,
+      "length": 23.0
+    },
+    {
+      "seq_id": "ANZ0S",
+      "split": "train",
+      "n_segments": 4,
+      "length": 28.62
+    },
+    {
+      "seq_id": "APJQ8",
+      "split": "train",
+      "n_segments": 4,
+      "length": 17.67
+    },
+    {
+      "seq_id": "AQ0CP",
+      "split": "train",
+      "n_segments": 4,
+      "length": 30.88
+    },
+    {
+      "seq_id": "AR4S6",
+      "split": "train",
+      "n_segments": 4,
+      "length": 28.58
+    },
+    {
+      "seq_id": "ASNER",
+      "split": "train",
+      "n_segments": 8,
+      "length": 24.08
+    },
+    {
+      "seq_id": "ATUOW",
+      "split": "train",
+      "n_segments": 6,
+      "length": 35.58
+    },
+    {
+      "seq_id": "AVJFE",
+      "split": "train",
+      "n_segments": 11,
+      "length": 32.04
+    },
+    {
+      "seq_id": "AWCQN",
+      "split": "train",
+      "n_segments": 10,
+      "length": 30.71
+    },
+    {
+      "seq_id": "AXJUB",
+      "split": "train",
+      "n_segments": 12,
+      "length": 37.08
+    },
+    {
+      "seq_id": "AXZVQ",
+      "split": "train",
+      "n_segments": 7,
+      "length": 30.71
+    },
+    {
+      "seq_id": "AYMCZ",
+      "split": "train",
+      "n_segments": 6,
+      "length": 29.46
+    },
+    {
+      "seq_id": "AZMVM",
+      "split": "train",
+      "n_segments": 9,
+      "length": 31.04
+    },
+    {
+      "seq_id": "AZZ7V",
+      "split": "train",
+      "n_segments": 11,
+      "length": 30.75
+    },
+    {
+      "seq_id": "B17UQ",
+      "split": "train",
+      "n_segments": 6,
+      "length": 31.5
+    },
+    {
+      "seq_id": "B2NBR",
+      "split": "train",
+      "n_segments": 3,
+      "length": 30.5
+    },
+    {
+      "seq_id": "B4F0T",
+      "split": "train",
+      "n_segments": 8,
+      "length": 33.67
+    },
+    {
+      "seq_id": "B55HG",
+      "split": "train",
+      "n_segments": 9,
+      "length": 30.33
+    },
+    {
+      "seq_id": "B5VY1",
+      "split": "train",
+      "n_segments": 10,
+      "length": 21.42
+    },
+    {
+      "seq_id": "B6HUA",
+      "split": "train",
+      "n_segments": 5,
+      "length": 31.04
+    },
+    {
+      "seq_id": "B71ZJ",
+      "split": "train",
+      "n_segments": 10,
+      "length": 28.25
+    },
+    {
+      "seq_id": "B7SZJ",
+      "split": "train",
+      "n_segments": 11,
+      "length": 28.79
+    },
+    {
+      "seq_id": "B8IYJ",
+      "split": "train",
+      "n_segments": 3,
+      "length": 18.5
+    },
+    {
+      "seq_id": "B9XZX",
+      "split": "train",
+      "n_segments": 10,
+      "length": 27.38
+    },
+    {
+      "seq_id": "BAUQE",
+      "split": "train",
+      "n_segments": 5,
+      "length": 14.62
+    },
+    {
+      "seq_id": "BBAVF",
+      "split": "train",
+      "n_segments": 8,
+      "length": 30.62
+    },
+    {
+      "seq_id": "BCQWJ",
+      "split": "train",
+      "n_segments": 6,
+      "length": 24.83
+    },
+    {
+      "seq_id": "BDWIX",
+      "split": "train",
+      "n_segments": 11,
+      "length": 30.17
+    },
+    {
+      "seq_id": "BFVX0",
+      "split": "train",
+      "n_segments": 7,
+      "length": 25.42
+    },
+    {
+      "seq_id": "BHTPL",
+      "split": "train",
+      "n_segments": 6,
+      "length": 10.5
+    },
+    {
+      "seq_id": "BIK4X",
+      "split": "train",
+      "n_segments": 5,
+      "length": 5.75
+    },
+    {
+      "seq_id": "BJO5X",
+      "split": "train",
+      "n_segments": 3,
+      "length": 31.54
+    },
+    {
+      "seq_id": "BKXN4",
+      "split": "train",
+      "n_segments": 13,
+      "length": 31.33
+    },
+    {
+      "seq_id": "BLIW5",
+      "split": "train",
+      "n_segments": 5,
+      "length": 32.75
+    },
+    {
+      "seq_id": "BMLFA",
+      "split": "train",
+      "n_segments": 6,
+      "length": 30.42
+    },
+    {
+      "seq_id": "BNEQL",
+      "split": "train",
+      "n_segments": 8,
+      "length": 50.67
+    },
+    {
+      "seq_id": "BOHLW",
+      "split": "train",
+      "n_segments": 5,
+      "length": 32.08
+    },
+    {
+      "seq_id": "BP94L",
+      "split": "train",
+      "n_segments": 5,
+      "length": 22.96
+    },
+    {
+      "seq_id": "BPZE3",
+      "split": "train",
+      "n_segments": 3,
+      "length": 35.12
+    },
+    {
+      "seq_id": "BQKW5",
+      "split": "train",
+      "n_segments": 8,
+      "length": 32.54
+    },
+    {
+      "seq_id": "BRLNM",
+      "split": "train",
+      "n_segments": 4,
+      "length": 31.08
+    },
+    {
+      "seq_id": "BSU86",
+      "split": "train",
+      "n_segments": 3,
+      "length": 30.58
+    },
+    {
+      "seq_id": "BTW1H",
+      "split": "train",
+      "n_segments": 4,
+      "length": 30.88
+    },
+    {
+      "seq_id": "BV28R",
+      "split": "train",
+      "n_segments": 8,
+      "length": 37.71
+    },
+    {
+      "seq_id": "BVCCX",
+      "split": "train",
+      "n_segments": 7,
+      "length": 31.12
+    },
+    {
+      "seq_id": "BVX8X",
+      "split": "train",
+      "n_segments": 7,
+      "length": 30.25
+    },
+    {
+      "seq_id": "BWKJB",
+      "split": "train",
+      "n_segments": 7,
+      "length": 17.33
+    },
+    {
+      "seq_id": "BYMO6",
+      "split": "train",
+      "n_segments": 4,
+      "length": 25.58
+    },
+    {
+      "seq_id": "BZ4K7",
+      "split": "train",
+      "n_segments": 7,
+      "length": 24.12
+    },
+    {
+      "seq_id": "C0207",
+      "split": "train",
+      "n_segments": 2,
+      "length": 36.42
+    },
+    {
+      "seq_id": "C1AEV",
+      "split": "train",
+      "n_segments": 3,
+      "length": 29.71
+    },
+    {
+      "seq_id": "C1QDS",
+      "split": "train",
+      "n_segments": 5,
+      "length": 30.58
+    },
+    {
+      "seq_id": "C3ZJU",
+      "split": "train",
+      "n_segments": 11,
+      "length": 29.54
+    },
+    {
+      "seq_id": "C4KZ4",
+      "split": "train",
+      "n_segments": 2,
+      "length": 30.38
+    },
+    {
+      "seq_id": "C5KNM",
+      "split": "train",
+      "n_segments": 6,
+      "length": 36.25
+    },
+    {
+      "seq_id": "C6LDA",
+      "split": "train",
+      "n_segments": 9,
+      "length": 30.75
+    },
+    {
+      "seq_id": "C8BKE",
+      "split": "train",
+      "n_segments": 10,
+      "length": 33.71
+    },
+    {
+      "seq_id": "C9HLB",
+      "split": "train",
+      "n_segments": 5,
+      "length": 33.92
+    },
+    {
+      "seq_id": "CALKE",
+      "split": "train",
+      "n_segments": 11,
+      "length": 48.33
+    },
+    {
+      "seq_id": "CBLSW",
+      "split": "train",
+      "n_segments": 4,
+      "length": 44.33
+    },
+    {
+      "seq_id": "CC610",
+      "split": "train",
+      "n_segments": 7,
+      "length": 33.08
+    },
+    {
+      "seq_id": "CCTIO",
+      "split": "train",
+      "n_segments": 7,
+      "length": 18.92
+    },
+    {
+      "seq_id": "CDT32",
+      "split": "train",
+      "n_segments": 5,
+      "length": 31.58
+    },
+    {
+      "seq_id": "CEPB8",
+      "split": "train",
+      "n_segments": 9,
+      "length": 30.71
+    },
+    {
+      "seq_id": "CF9QP",
+      "split": "train",
+      "n_segments": 8,
+      "length": 30.75
+    },
+    {
+      "seq_id": "CG7FL",
+      "split": "train",
+      "n_segments": 8,
+      "length": 18.58
+    },
+    {
+      "seq_id": "CH8XJ",
+      "split": "train",
+      "n_segments": 3,
+      "length": 28.12
+    },
+    {
+      "seq_id": "CICFF",
+      "split": "train",
+      "n_segments": 5,
+      "length": 46.0
+    },
+    {
+      "seq_id": "CIL5L",
+      "split": "train",
+      "n_segments": 8,
+      "length": 32.46
+    },
+    {
+      "seq_id": "CJP4R",
+      "split": "train",
+      "n_segments": 9,
+      "length": 14.75
+    },
+    {
+      "seq_id": "CKUYC",
+      "split": "train",
+      "n_segments": 7,
+      "length": 29.75
+    },
+    {
+      "seq_id": "CLW8L",
+      "split": "train",
+      "n_segments": 4,
+      "length": 22.17
+    },
+    {
+      "seq_id": "CMC93",
+      "split": "train",
+      "n_segments": 12,
+      "length": 51.96
+    },
+    {
+      "seq_id": "CMZOB",
+      "split": "train",
+      "n_segments": 9,
+      "length": 31.62
+    },
+    {
+      "seq_id": "CNS9B",
+      "split": "train",
+      "n_segments": 2,
+      "length": 31.12
+    },
+    {
+      "seq_id": "CO3LU",
+      "split": "train",
+      "n_segments": 8,
+      "length": 37.0
+    },
+    {
+      "seq_id": "COPHL",
+      "split": "train",
+      "n_segments": 7,
+      "length": 30.17
+    },
+    {
+      "seq_id": "CPDJD",
+      "split": "train",
+      "n_segments": 13,
+      "length": 32.83
+    },
+    {
+      "seq_id": "CPZZ1",
+      "split": "train",
+      "n_segments": 7,
+      "length": 46.88
+    },
+    {
+      "seq_id": "CRNL5",
+      "split": "train",
+      "n_segments": 3,
+      "length": 30.0
+    },
+    {
+      "seq_id": "CSHUE",
+      "split": "train",
+      "n_segments": 10,
+      "length": 21.54
+    },
+    {
+      "seq_id": "CTFYL",
+      "split": "train",
+      "n_segments": 8,
+      "length": 34.0
+    },
+    {
+      "seq_id": "CUB69",
+      "split": "train",
+      "n_segments": 7,
+      "length": 21.71
+    },
+    {
+      "seq_id": "CV20O",
+      "split": "train",
+      "n_segments": 7,
+      "length": 30.29
+    },
+    {
+      "seq_id": "CVPQR",
+      "split": "train",
+      "n_segments": 7,
+      "length": 30.58
+    },
+    {
+      "seq_id": "CW9VO",
+      "split": "train",
+      "n_segments": 2,
+      "length": 34.25
+    },
+    {
+      "seq_id": "CX5ZM",
+      "split": "train",
+      "n_segments": 5,
+      "length": 27.33
+    },
+    {
+      "seq_id": "CXSYS",
+      "split": "train",
+      "n_segments": 5,
+      "length": 23.38
+    },
+    {
+      "seq_id": "CYM3V",
+      "split": "train",
+      "n_segments": 8,
+      "length": 30.58
+    },
+    {
+      "seq_id": "CZPU9",
+      "split": "train",
+      "n_segments": 16,
+      "length": 35.42
+    },
+    {
+      "seq_id": "D0SCK",
+      "split": "train",
+      "n_segments": 8,
+      "length": 32.46
+    },
+    {
+      "seq_id": "D1D55",
+      "split": "train",
+      "n_segments": 9,
+      "length": 36.5
+    },
+    {
+      "seq_id": "D24XF",
+      "split": "train",
+      "n_segments": 5,
+      "length": 31.33
+    },
+    {
+      "seq_id": "D2T7Z",
+      "split": "train",
+      "n_segments": 10,
+      "length": 30.46
+    },
+    {
+      "seq_id": "D3N3P",
+      "split": "train",
+      "n_segments": 5,
+      "length": 17.04
+    },
+    {
+      "seq_id": "D4XVH",
+      "split": "train",
+      "n_segments": 4,
+      "length": 31.54
+    },
+    {
+      "seq_id": "D5SB7",
+      "split": "train",
+      "n_segments": 3,
+      "length": 31.21
+    },
+    {
+      "seq_id": "D7D89",
+      "split": "train",
+      "n_segments": 6,
+      "length": 30.46
+    },
+    {
+      "seq_id": "D7PI9",
+      "split": "train",
+      "n_segments": 5,
+      "length": 30.75
+    },
+    {
+      "seq_id": "D8HN1",
+      "split": "train",
+      "n_segments": 10,
+      "length": 27.62
+    },
+    {
+      "seq_id": "D9AR5",
+      "split": "train",
+      "n_segments": 2,
+      "length": 33.54
+    },
+    {
+      "seq_id": "D9UBV",
+      "split": "train",
+      "n_segments": 3,
+      "length": 27.25
+    },
+    {
+      "seq_id": "DAIN7",
+      "split": "train",
+      "n_segments": 4,
+      "length": 35.92
+    },
+    {
+      "seq_id": "DB4WX",
+      "split": "train",
+      "n_segments": 3,
+      "length": 29.71
+    },
+    {
+      "seq_id": "DC94A",
+      "split": "train",
+      "n_segments": 7,
+      "length": 30.25
+    },
+    {
+      "seq_id": "DD9YS",
+      "split": "train",
+      "n_segments": 3,
+      "length": 30.38
+    },
+    {
+      "seq_id": "DE8T8",
+      "split": "train",
+      "n_segments": 4,
+      "length": 31.21
+    },
+    {
+      "seq_id": "DEXMO",
+      "split": "train",
+      "n_segments": 3,
+      "length": 31.0
+    },
+    {
+      "seq_id": "DFEG2",
+      "split": "train",
+      "n_segments": 10,
+      "length": 20.33
+    },
+    {
+      "seq_id": "DG5TX",
+      "split": "train",
+      "n_segments": 8,
+      "length": 30.08
+    },
+    {
+      "seq_id": "DH66I",
+      "split": "train",
+      "n_segments": 9,
+      "length": 32.04
+    },
+    {
+      "seq_id": "DHVLP",
+      "split": "train",
+      "n_segments": 3,
+      "length": 62.92
+    },
+    {
+      "seq_id": "DIM24",
+      "split": "train",
+      "n_segments": 6,
+      "length": 30.88
+    },
+    {
+      "seq_id": "DJ7DG",
+      "split": "train",
+      "n_segments": 2,
+      "length": 30.75
+    },
+    {
+      "seq_id": "DK1F7",
+      "split": "train",
+      "n_segments": 3,
+      "length": 24.0
+    },
+    {
+      "seq_id": "DKV1Z",
+      "split": "train",
+      "n_segments": 6,
+      "length": 31.83
+    },
+    {
+      "seq_id": "DM2HW",
+      "split": "train",
+      "n_segments": 3,
+      "length": 20.88
+    },
+    {
+      "seq_id": "DN6QU",
+      "split": "train",
+      "n_segments": 5,
+      "length": 27.75
+    },
+    {
+      "seq_id": "DOGYU",
+      "split": "train",
+      "n_segments": 8,
+      "length": 31.04
+    },
+    {
+      "seq_id": "DP7DG",
+      "split": "train",
+      "n_segments": 8,
+      "length": 29.92
+    },
+    {
+      "seq_id": "DPCGS",
+      "split": "train",
+      "n_segments": 7,
+      "length": 30.42
+    },
+    {
+      "seq_id": "DQ46N",
+      "split": "train",
+      "n_segments": 9,
+      "length": 31.04
+    },
+    {
+      "seq_id": "DQGYG",
+      "split": "train",
+      "n_segments": 8,
+      "length": 41.92
+    },
+    {
+      "seq_id": "DRPO3",
+      "split": "train",
+      "n_segments": 8,
+      "length": 31.25
+    },
+    {
+      "seq_id": "DSG0F",
+      "split": "train",
+      "n_segments": 8,
+      "length": 31.21
+    },
+    {
+      "seq_id": "DSWBA",
+      "split": "train",
+      "n_segments": 2,
+      "length": 24.75
+    },
+    {
+      "seq_id": "DTUJD",
+      "split": "train",
+      "n_segments": 10,
+      "length": 16.0
+    },
+    {
+      "seq_id": "DUNVR",
+      "split": "train",
+      "n_segments": 7,
+      "length": 30.96
+    },
+    {
+      "seq_id": "DVHIB",
+      "split": "train",
+      "n_segments": 8,
+      "length": 29.92
+    },
+    {
+      "seq_id": "DVTAR",
+      "split": "train",
+      "n_segments": 3,
+      "length": 21.25
+    },
+    {
+      "seq_id": "DXUQS",
+      "split": "train",
+      "n_segments": 9,
+      "length": 32.71
+    },
+    {
+      "seq_id": "DYWR1",
+      "split": "train",
+      "n_segments": 3,
+      "length": 30.42
+    },
+    {
+      "seq_id": "DZ1VH",
+      "split": "train",
+      "n_segments": 3,
+      "length": 21.04
+    },
+    {
+      "seq_id": "E06A2",
+      "split": "train",
+      "n_segments": 5,
+      "length": 31.25
+    },
+    {
+      "seq_id": "E0ZBC",
+      "split": "train",
+      "n_segments": 7,
+      "length": 44.83
+    },
+    {
+      "seq_id": "E1U37",
+      "split": "train",
+      "n_segments": 8,
+      "length": 10.25
+    },
+    {
+      "seq_id": "E2EXR",
+      "split": "train",
+      "n_segments": 6,
+      "length": 30.62
+    },
+    {
+      "seq_id": "E3UFX",
+      "split": "train",
+      "n_segments": 3,
+      "length": 12.38
+    },
+    {
+      "seq_id": "E51QT",
+      "split": "train",
+      "n_segments": 6,
+      "length": 31.62
+    },
+    {
+      "seq_id": "E5TW6",
+      "split": "train",
+      "n_segments": 13,
+      "length": 30.54
+    },
+    {
+      "seq_id": "E67EF",
+      "split": "train",
+      "n_segments": 1,
+      "length": 20.58
+    },
+    {
+      "seq_id": "E6PSM",
+      "split": "train",
+      "n_segments": 14,
+      "length": 42.0
+    },
+    {
+      "seq_id": "E7DKD",
+      "split": "train",
+      "n_segments": 5,
+      "length": 30.08
+    },
+    {
+      "seq_id": "E8468",
+      "split": "train",
+      "n_segments": 6,
+      "length": 30.58
+    },
+    {
+      "seq_id": "E9FY2",
+      "split": "train",
+      "n_segments": 17,
+      "length": 30.75
+    },
+    {
+      "seq_id": "EAVWL",
+      "split": "train",
+      "n_segments": 5,
+      "length": 23.42
+    },
+    {
+      "seq_id": "EBBKQ",
+      "split": "train",
+      "n_segments": 2,
+      "length": 20.54
+    },
+    {
+      "seq_id": "EBTD6",
+      "split": "train",
+      "n_segments": 13,
+      "length": 31.92
+    },
+    {
+      "seq_id": "ECLIB",
+      "split": "train",
+      "n_segments": 7,
+      "length": 35.71
+    },
+    {
+      "seq_id": "EDKXT",
+      "split": "train",
+      "n_segments": 7,
+      "length": 13.67
+    },
+    {
+      "seq_id": "EE8OB",
+      "split": "train",
+      "n_segments": 7,
+      "length": 20.29
+    },
+    {
+      "seq_id": "EFI64",
+      "split": "train",
+      "n_segments": 9,
+      "length": 30.33
+    },
+    {
+      "seq_id": "EG0IU",
+      "split": "train",
+      "n_segments": 4,
+      "length": 28.33
+    },
+    {
+      "seq_id": "EGVGL",
+      "split": "train",
+      "n_segments": 5,
+      "length": 32.21
+    },
+    {
+      "seq_id": "EHTB6",
+      "split": "train",
+      "n_segments": 4,
+      "length": 41.0
+    },
+    {
+      "seq_id": "EIB97",
+      "split": "train",
+      "n_segments": 10,
+      "length": 32.29
+    },
+    {
+      "seq_id": "EJIKG",
+      "split": "train",
+      "n_segments": 8,
+      "length": 27.25
+    },
+    {
+      "seq_id": "EKBW4",
+      "split": "train",
+      "n_segments": 5,
+      "length": 30.88
+    },
+    {
+      "seq_id": "ELBLK",
+      "split": "train",
+      "n_segments": 10,
+      "length": 30.04
+    },
+    {
+      "seq_id": "EMH48",
+      "split": "train",
+      "n_segments": 1,
+      "length": 2.83
+    },
+    {
+      "seq_id": "EN0CD",
+      "split": "train",
+      "n_segments": 4,
+      "length": 33.58
+    },
+    {
+      "seq_id": "ENCXV",
+      "split": "train",
+      "n_segments": 4,
+      "length": 32.25
+    },
+    {
+      "seq_id": "ENT4H",
+      "split": "train",
+      "n_segments": 4,
+      "length": 32.12
+    },
+    {
+      "seq_id": "EOA7I",
+      "split": "train",
+      "n_segments": 5,
+      "length": 30.67
+    },
+    {
+      "seq_id": "EPKTX",
+      "split": "train",
+      "n_segments": 7,
+      "length": 22.54
+    },
+    {
+      "seq_id": "EQO9N",
+      "split": "train",
+      "n_segments": 6,
+      "length": 30.92
+    },
+    {
+      "seq_id": "ES7QT",
+      "split": "train",
+      "n_segments": 4,
+      "length": 30.67
+    },
+    {
+      "seq_id": "ET224",
+      "split": "train",
+      "n_segments": 15,
+      "length": 61.12
+    },
+    {
+      "seq_id": "ETY8D",
+      "split": "train",
+      "n_segments": 8,
+      "length": 19.92
+    },
+    {
+      "seq_id": "EUV3V",
+      "split": "train",
+      "n_segments": 3,
+      "length": 30.88
+    },
+    {
+      "seq_id": "EVU9O",
+      "split": "train",
+      "n_segments": 5,
+      "length": 30.67
+    },
+    {
+      "seq_id": "EWES1",
+      "split": "train",
+      "n_segments": 13,
+      "length": 31.75
+    },
+    {
+      "seq_id": "EXB02",
+      "split": "train",
+      "n_segments": 7,
+      "length": 30.08
+    },
+    {
+      "seq_id": "EYP8H",
+      "split": "train",
+      "n_segments": 5,
+      "length": 31.71
+    },
+    {
+      "seq_id": "F082Z",
+      "split": "train",
+      "n_segments": 3,
+      "length": 32.33
+    },
+    {
+      "seq_id": "F0ZPW",
+      "split": "train",
+      "n_segments": 16,
+      "length": 39.29
+    },
+    {
+      "seq_id": "F1MWB",
+      "split": "train",
+      "n_segments": 4,
+      "length": 36.96
+    },
+    {
+      "seq_id": "F24GU",
+      "split": "train",
+      "n_segments": 4,
+      "length": 31.17
+    },
+    {
+      "seq_id": "F3O37",
+      "split": "train",
+      "n_segments": 7,
+      "length": 30.71
+    },
+    {
+      "seq_id": "F4TXY",
+      "split": "train",
+      "n_segments": 6,
+      "length": 32.58
+    },
+    {
+      "seq_id": "F5XQM",
+      "split": "train",
+      "n_segments": 1,
+      "length": 34.67
+    },
+    {
+      "seq_id": "F76GD",
+      "split": "train",
+      "n_segments": 9,
+      "length": 35.71
+    },
+    {
+      "seq_id": "F800A",
+      "split": "train",
+      "n_segments": 3,
+      "length": 29.96
+    },
+    {
+      "seq_id": "F8E8C",
+      "split": "train",
+      "n_segments": 10,
+      "length": 32.33
+    },
+    {
+      "seq_id": "F8SNW",
+      "split": "train",
+      "n_segments": 5,
+      "length": 54.25
+    },
+    {
+      "seq_id": "F9K8L",
+      "split": "train",
+      "n_segments": 6,
+      "length": 30.62
+    },
+    {
+      "seq_id": "FAZXS",
+      "split": "train",
+      "n_segments": 5,
+      "length": 29.75
+    },
+    {
+      "seq_id": "FC7C1",
+      "split": "train",
+      "n_segments": 6,
+      "length": 32.0
+    },
+    {
+      "seq_id": "FDNWD",
+      "split": "train",
+      "n_segments": 5,
+      "length": 23.67
+    },
+    {
+      "seq_id": "FDYQZ",
+      "split": "train",
+      "n_segments": 5,
+      "length": 31.75
+    },
+    {
+      "seq_id": "FEWUR",
+      "split": "train",
+      "n_segments": 4,
+      "length": 30.71
+    },
+    {
+      "seq_id": "FGY8R",
+      "split": "train",
+      "n_segments": 20,
+      "length": 27.25
+    },
+    {
+      "seq_id": "FI2DL",
+      "split": "train",
+      "n_segments": 6,
+      "length": 20.5
+    },
+    {
+      "seq_id": "FIV2P",
+      "split": "train",
+      "n_segments": 4,
+      "length": 31.04
+    },
+    {
+      "seq_id": "FJRGJ",
+      "split": "train",
+      "n_segments": 3,
+      "length": 32.04
+    },
+    {
+      "seq_id": "FKZQN",
+      "split": "train",
+      "n_segments": 9,
+      "length": 30.5
+    },
+    {
+      "seq_id": "FL7X4",
+      "split": "train",
+      "n_segments": 8,
+      "length": 17.08
+    },
+    {
+      "seq_id": "FM3TT",
+      "split": "train",
+      "n_segments": 2,
+      "length": 8.83
+    },
+    {
+      "seq_id": "FMXZS",
+      "split": "train",
+      "n_segments": 8,
+      "length": 43.29
+    },
+    {
+      "seq_id": "FNLLG",
+      "split": "train",
+      "n_segments": 1,
+      "length": 30.58
+    },
+    {
+      "seq_id": "FNRYR",
+      "split": "train",
+      "n_segments": 2,
+      "length": 30.75
+    },
+    {
+      "seq_id": "FP5MM",
+      "split": "train",
+      "n_segments": 7,
+      "length": 30.25
+    },
+    {
+      "seq_id": "FPQRX",
+      "split": "train",
+      "n_segments": 12,
+      "length": 50.38
+    },
+    {
+      "seq_id": "FQ6OB",
+      "split": "train",
+      "n_segments": 11,
+      "length": 31.67
+    },
+    {
+      "seq_id": "FQDD1",
+      "split": "train",
+      "n_segments": 5,
+      "length": 35.21
+    },
+    {
+      "seq_id": "FQNPB",
+      "split": "train",
+      "n_segments": 8,
+      "length": 9.17
+    },
+    {
+      "seq_id": "FRX6I",
+      "split": "train",
+      "n_segments": 5,
+      "length": 15.58
+    },
+    {
+      "seq_id": "FSWT4",
+      "split": "train",
+      "n_segments": 9,
+      "length": 40.0
+    },
+    {
+      "seq_id": "FTIPX",
+      "split": "train",
+      "n_segments": 8,
+      "length": 30.08
+    },
+    {
+      "seq_id": "FU5NY",
+      "split": "train",
+      "n_segments": 4,
+      "length": 20.33
+    },
+    {
+      "seq_id": "FV9AL",
+      "split": "train",
+      "n_segments": 3,
+      "length": 29.67
+    },
+    {
+      "seq_id": "FVSB0",
+      "split": "train",
+      "n_segments": 6,
+      "length": 34.5
+    },
+    {
+      "seq_id": "FWUV8",
+      "split": "train",
+      "n_segments": 7,
+      "length": 36.88
+    },
+    {
+      "seq_id": "FXIVQ",
+      "split": "train",
+      "n_segments": 13,
+      "length": 23.25
+    },
+    {
+      "seq_id": "FYJJT",
+      "split": "train",
+      "n_segments": 4,
+      "length": 33.83
+    },
+    {
+      "seq_id": "FZ6AD",
+      "split": "train",
+      "n_segments": 5,
+      "length": 29.38
+    },
+    {
+      "seq_id": "G0BKH",
+      "split": "train",
+      "n_segments": 8,
+      "length": 35.58
+    },
+    {
+      "seq_id": "G1BSD",
+      "split": "train",
+      "n_segments": 6,
+      "length": 35.29
+    },
+    {
+      "seq_id": "G24CA",
+      "split": "train",
+      "n_segments": 6,
+      "length": 54.0
+    },
+    {
+      "seq_id": "G2WHU",
+      "split": "train",
+      "n_segments": 2,
+      "length": 11.58
+    },
+    {
+      "seq_id": "G3OUM",
+      "split": "train",
+      "n_segments": 7,
+      "length": 32.0
+    },
+    {
+      "seq_id": "G4AJK",
+      "split": "train",
+      "n_segments": 11,
+      "length": 42.25
+    },
+    {
+      "seq_id": "G4MDY",
+      "split": "train",
+      "n_segments": 8,
+      "length": 25.42
+    },
+    {
+      "seq_id": "G537E",
+      "split": "train",
+      "n_segments": 8,
+      "length": 39.12
+    },
+    {
+      "seq_id": "G5KWF",
+      "split": "train",
+      "n_segments": 4,
+      "length": 30.67
+    },
+    {
+      "seq_id": "G6GQP",
+      "split": "train",
+      "n_segments": 5,
+      "length": 27.79
+    },
+    {
+      "seq_id": "G752J",
+      "split": "train",
+      "n_segments": 5,
+      "length": 30.83
+    },
+    {
+      "seq_id": "G838Q",
+      "split": "train",
+      "n_segments": 4,
+      "length": 32.08
+    },
+    {
+      "seq_id": "G8V6N",
+      "split": "train",
+      "n_segments": 4,
+      "length": 4.96
+    },
+    {
+      "seq_id": "G9I7C",
+      "split": "train",
+      "n_segments": 8,
+      "length": 32.04
+    },
+    {
+      "seq_id": "GADDK",
+      "split": "train",
+      "n_segments": 5,
+      "length": 18.79
+    },
+    {
+      "seq_id": "GBDJX",
+      "split": "train",
+      "n_segments": 11,
+      "length": 22.58
+    },
+    {
+      "seq_id": "GBZAK",
+      "split": "train",
+      "n_segments": 8,
+      "length": 28.33
+    },
+    {
+      "seq_id": "GCTH8",
+      "split": "train",
+      "n_segments": 3,
+      "length": 30.08
+    },
+    {
+      "seq_id": "GDS6Q",
+      "split": "train",
+      "n_segments": 9,
+      "length": 21.54
+    },
+    {
+      "seq_id": "GF6UG",
+      "split": "train",
+      "n_segments": 2,
+      "length": 18.62
+    },
+    {
+      "seq_id": "GFVSV",
+      "split": "train",
+      "n_segments": 13,
+      "length": 39.46
+    },
+    {
+      "seq_id": "GH3D1",
+      "split": "train",
+      "n_segments": 7,
+      "length": 30.5
+    },
+    {
+      "seq_id": "GIA8M",
+      "split": "train",
+      "n_segments": 4,
+      "length": 30.33
+    },
+    {
+      "seq_id": "GIQEO",
+      "split": "train",
+      "n_segments": 11,
+      "length": 28.67
+    },
+    {
+      "seq_id": "GJJA1",
+      "split": "train",
+      "n_segments": 4,
+      "length": 32.42
+    },
+    {
+      "seq_id": "GK6GN",
+      "split": "train",
+      "n_segments": 12,
+      "length": 29.25
+    },
+    {
+      "seq_id": "GKVBS",
+      "split": "train",
+      "n_segments": 5,
+      "length": 39.75
+    },
+    {
+      "seq_id": "GLLNH",
+      "split": "train",
+      "n_segments": 8,
+      "length": 31.04
+    },
+    {
+      "seq_id": "GMMVC",
+      "split": "train",
+      "n_segments": 14,
+      "length": 17.83
+    },
+    {
+      "seq_id": "GNA1H",
+      "split": "train",
+      "n_segments": 7,
+      "length": 29.88
+    },
+    {
+      "seq_id": "GO761",
+      "split": "train",
+      "n_segments": 3,
+      "length": 18.04
+    },
+    {
+      "seq_id": "GPJ6E",
+      "split": "train",
+      "n_segments": 7,
+      "length": 29.71
+    },
+    {
+      "seq_id": "GQ4ML",
+      "split": "train",
+      "n_segments": 5,
+      "length": 30.46
+    },
+    {
+      "seq_id": "GQR08",
+      "split": "train",
+      "n_segments": 6,
+      "length": 31.29
+    },
+    {
+      "seq_id": "GRBUE",
+      "split": "train",
+      "n_segments": 7,
+      "length": 21.75
+    },
+    {
+      "seq_id": "GSIYV",
+      "split": "train",
+      "n_segments": 8,
+      "length": 30.42
+    },
+    {
+      "seq_id": "GUYVC",
+      "split": "train",
+      "n_segments": 4,
+      "length": 21.5
+    },
+    {
+      "seq_id": "GW2Y8",
+      "split": "train",
+      "n_segments": 14,
+      "length": 32.25
+    },
+    {
+      "seq_id": "GWXD9",
+      "split": "train",
+      "n_segments": 7,
+      "length": 22.5
+    },
+    {
+      "seq_id": "GXDGV",
+      "split": "train",
+      "n_segments": 5,
+      "length": 35.62
+    },
+    {
+      "seq_id": "GY9MZ",
+      "split": "train",
+      "n_segments": 8,
+      "length": 35.17
+    },
+    {
+      "seq_id": "GZMJK",
+      "split": "train",
+      "n_segments": 7,
+      "length": 31.96
+    },
+    {
+      "seq_id": "H1GWM",
+      "split": "train",
+      "n_segments": 7,
+      "length": 32.0
+    },
+    {
+      "seq_id": "H2B7U",
+      "split": "train",
+      "n_segments": 9,
+      "length": 27.21
+    },
+    {
+      "seq_id": "H378S",
+      "split": "train",
+      "n_segments": 7,
+      "length": 29.67
+    },
+    {
+      "seq_id": "H40VV",
+      "split": "train",
+      "n_segments": 4,
+      "length": 30.92
+    },
+    {
+      "seq_id": "H4ZD8",
+      "split": "train",
+      "n_segments": 12,
+      "length": 22.08
+    },
+    {
+      "seq_id": "H5V2Y",
+      "split": "train",
+      "n_segments": 7,
+      "length": 30.46
+    },
+    {
+      "seq_id": "H6OA2",
+      "split": "train",
+      "n_segments": 3,
+      "length": 31.75
+    },
+    {
+      "seq_id": "H7LQM",
+      "split": "train",
+      "n_segments": 7,
+      "length": 34.33
+    },
+    {
+      "seq_id": "H8UJ3",
+      "split": "train",
+      "n_segments": 7,
+      "length": 52.58
+    },
+    {
+      "seq_id": "H9V9I",
+      "split": "train",
+      "n_segments": 5,
+      "length": 33.5
+    },
+    {
+      "seq_id": "HAR5P",
+      "split": "train",
+      "n_segments": 10,
+      "length": 31.54
+    },
+    {
+      "seq_id": "HBUJ2",
+      "split": "train",
+      "n_segments": 5,
+      "length": 9.0
+    },
+    {
+      "seq_id": "HCSPE",
+      "split": "train",
+      "n_segments": 7,
+      "length": 30.54
+    },
+    {
+      "seq_id": "HDMN4",
+      "split": "train",
+      "n_segments": 10,
+      "length": 30.29
+    },
+    {
+      "seq_id": "HEOJM",
+      "split": "train",
+      "n_segments": 6,
+      "length": 31.46
+    },
+    {
+      "seq_id": "HFWE9",
+      "split": "train",
+      "n_segments": 5,
+      "length": 31.38
+    },
+    {
+      "seq_id": "HGSB7",
+      "split": "train",
+      "n_segments": 5,
+      "length": 31.33
+    },
+    {
+      "seq_id": "HHZUI",
+      "split": "train",
+      "n_segments": 8,
+      "length": 32.79
+    },
+    {
+      "seq_id": "HITEM",
+      "split": "train",
+      "n_segments": 3,
+      "length": 35.04
+    },
+    {
+      "seq_id": "HJJ32",
+      "split": "train",
+      "n_segments": 6,
+      "length": 31.42
+    },
+    {
+      "seq_id": "HKLB1",
+      "split": "train",
+      "n_segments": 6,
+      "length": 32.96
+    },
+    {
+      "seq_id": "HL4V4",
+      "split": "train",
+      "n_segments": 15,
+      "length": 33.08
+    },
+    {
+      "seq_id": "HMLJX",
+      "split": "train",
+      "n_segments": 11,
+      "length": 33.08
+    },
+    {
+      "seq_id": "HOGVD",
+      "split": "train",
+      "n_segments": 3,
+      "length": 25.12
+    },
+    {
+      "seq_id": "HONL7",
+      "split": "train",
+      "n_segments": 7,
+      "length": 31.62
+    },
+    {
+      "seq_id": "HPEE5",
+      "split": "train",
+      "n_segments": 7,
+      "length": 24.21
+    },
+    {
+      "seq_id": "HR6MF",
+      "split": "train",
+      "n_segments": 8,
+      "length": 30.08
+    },
+    {
+      "seq_id": "HSPTH",
+      "split": "train",
+      "n_segments": 4,
+      "length": 4.25
+    },
+    {
+      "seq_id": "HU409",
+      "split": "train",
+      "n_segments": 7,
+      "length": 29.88
+    },
+    {
+      "seq_id": "HV2NI",
+      "split": "train",
+      "n_segments": 3,
+      "length": 23.75
+    },
+    {
+      "seq_id": "HWL2J",
+      "split": "train",
+      "n_segments": 4,
+      "length": 30.42
+    },
+    {
+      "seq_id": "HXCGX",
+      "split": "train",
+      "n_segments": 6,
+      "length": 32.08
+    },
+    {
+      "seq_id": "HY9LW",
+      "split": "train",
+      "n_segments": 3,
+      "length": 33.75
+    },
+    {
+      "seq_id": "HYRBL",
+      "split": "train",
+      "n_segments": 6,
+      "length": 30.12
+    },
+    {
+      "seq_id": "I005F",
+      "split": "train",
+      "n_segments": 6,
+      "length": 18.12
+    },
+    {
+      "seq_id": "I0THD",
+      "split": "train",
+      "n_segments": 3,
+      "length": 30.62
+    },
+    {
+      "seq_id": "I20II",
+      "split": "train",
+      "n_segments": 6,
+      "length": 5.88
+    },
+    {
+      "seq_id": "I34L6",
+      "split": "train",
+      "n_segments": 3,
+      "length": 31.5
+    },
+    {
+      "seq_id": "I4K7B",
+      "split": "train",
+      "n_segments": 10,
+      "length": 30.42
+    },
+    {
+      "seq_id": "I5L3Y",
+      "split": "train",
+      "n_segments": 7,
+      "length": 32.79
+    },
+    {
+      "seq_id": "I5Q2Z",
+      "split": "train",
+      "n_segments": 9,
+      "length": 30.71
+    },
+    {
+      "seq_id": "I6H4R",
+      "split": "train",
+      "n_segments": 7,
+      "length": 30.5
+    },
+    {
+      "seq_id": "I713Z",
+      "split": "train",
+      "n_segments": 7,
+      "length": 30.08
+    },
+    {
+      "seq_id": "I7HPL",
+      "split": "train",
+      "n_segments": 4,
+      "length": 30.46
+    },
+    {
+      "seq_id": "I8LEO",
+      "split": "train",
+      "n_segments": 3,
+      "length": 28.67
+    },
+    {
+      "seq_id": "IA2O6",
+      "split": "train",
+      "n_segments": 4,
+      "length": 29.25
+    },
+    {
+      "seq_id": "IACBH",
+      "split": "train",
+      "n_segments": 4,
+      "length": 34.42
+    },
+    {
+      "seq_id": "IBIWF",
+      "split": "train",
+      "n_segments": 7,
+      "length": 30.79
+    },
+    {
+      "seq_id": "IC4D5",
+      "split": "train",
+      "n_segments": 1,
+      "length": 29.96
+    },
+    {
+      "seq_id": "IDACP",
+      "split": "train",
+      "n_segments": 2,
+      "length": 22.96
+    },
+    {
+      "seq_id": "IEXTB",
+      "split": "train",
+      "n_segments": 9,
+      "length": 32.46
+    },
+    {
+      "seq_id": "IFQS1",
+      "split": "train",
+      "n_segments": 7,
+      "length": 16.54
+    },
+    {
+      "seq_id": "IGH70",
+      "split": "train",
+      "n_segments": 2,
+      "length": 25.88
+    },
+    {
+      "seq_id": "IHGNV",
+      "split": "train",
+      "n_segments": 8,
+      "length": 29.79
+    },
+    {
+      "seq_id": "IIFVE",
+      "split": "train",
+      "n_segments": 4,
+      "length": 25.88
+    },
+    {
+      "seq_id": "IJN3M",
+      "split": "train",
+      "n_segments": 7,
+      "length": 41.42
+    },
+    {
+      "seq_id": "IJWV9",
+      "split": "train",
+      "n_segments": 3,
+      "length": 59.08
+    },
+    {
+      "seq_id": "IK8PA",
+      "split": "train",
+      "n_segments": 8,
+      "length": 31.08
+    },
+    {
+      "seq_id": "IKYVB",
+      "split": "train",
+      "n_segments": 7,
+      "length": 26.88
+    },
+    {
+      "seq_id": "ILF19",
+      "split": "train",
+      "n_segments": 4,
+      "length": 31.71
+    },
+    {
+      "seq_id": "IM96T",
+      "split": "train",
+      "n_segments": 1,
+      "length": 22.46
+    },
+    {
+      "seq_id": "INQNU",
+      "split": "train",
+      "n_segments": 8,
+      "length": 18.46
+    },
+    {
+      "seq_id": "IOBKP",
+      "split": "train",
+      "n_segments": 14,
+      "length": 34.17
+    },
+    {
+      "seq_id": "IPNEG",
+      "split": "train",
+      "n_segments": 8,
+      "length": 37.5
+    },
+    {
+      "seq_id": "IQSWM",
+      "split": "train",
+      "n_segments": 6,
+      "length": 27.5
+    },
+    {
+      "seq_id": "IS3OX",
+      "split": "train",
+      "n_segments": 4,
+      "length": 39.25
+    },
+    {
+      "seq_id": "ITJIY",
+      "split": "train",
+      "n_segments": 7,
+      "length": 18.54
+    },
+    {
+      "seq_id": "IU8YI",
+      "split": "train",
+      "n_segments": 4,
+      "length": 31.46
+    },
+    {
+      "seq_id": "IUW9N",
+      "split": "train",
+      "n_segments": 6,
+      "length": 30.29
+    },
+    {
+      "seq_id": "IVJWH",
+      "split": "train",
+      "n_segments": 2,
+      "length": 22.25
+    },
+    {
+      "seq_id": "IWMW1",
+      "split": "train",
+      "n_segments": 4,
+      "length": 27.46
+    },
+    {
+      "seq_id": "IXJKT",
+      "split": "train",
+      "n_segments": 5,
+      "length": 25.67
+    },
+    {
+      "seq_id": "IYNUU",
+      "split": "train",
+      "n_segments": 7,
+      "length": 32.46
+    },
+    {
+      "seq_id": "IZCB0",
+      "split": "train",
+      "n_segments": 6,
+      "length": 29.17
+    },
+    {
+      "seq_id": "J0SZG",
+      "split": "train",
+      "n_segments": 8,
+      "length": 30.25
+    },
+    {
+      "seq_id": "J1RLO",
+      "split": "train",
+      "n_segments": 3,
+      "length": 32.62
+    },
+    {
+      "seq_id": "J2J3Q",
+      "split": "train",
+      "n_segments": 4,
+      "length": 26.62
+    },
+    {
+      "seq_id": "J3UGZ",
+      "split": "train",
+      "n_segments": 7,
+      "length": 23.0
+    },
+    {
+      "seq_id": "J40UT",
+      "split": "train",
+      "n_segments": 2,
+      "length": 31.88
+    },
+    {
+      "seq_id": "J4VCR",
+      "split": "train",
+      "n_segments": 4,
+      "length": 29.46
+    },
+    {
+      "seq_id": "J5ZZQ",
+      "split": "train",
+      "n_segments": 2,
+      "length": 29.96
+    },
+    {
+      "seq_id": "J6WE2",
+      "split": "train",
+      "n_segments": 7,
+      "length": 36.29
+    },
+    {
+      "seq_id": "J8781",
+      "split": "train",
+      "n_segments": 12,
+      "length": 19.96
+    },
+    {
+      "seq_id": "J95X1",
+      "split": "train",
+      "n_segments": 7,
+      "length": 45.21
+    },
+    {
+      "seq_id": "JA49K",
+      "split": "train",
+      "n_segments": 3,
+      "length": 30.38
+    },
+    {
+      "seq_id": "JBY4E",
+      "split": "train",
+      "n_segments": 15,
+      "length": 32.04
+    },
+    {
+      "seq_id": "JCKRL",
+      "split": "train",
+      "n_segments": 5,
+      "length": 35.96
+    },
+    {
+      "seq_id": "JD3KW",
+      "split": "train",
+      "n_segments": 11,
+      "length": 45.54
+    },
+    {
+      "seq_id": "JELL2",
+      "split": "train",
+      "n_segments": 9,
+      "length": 25.17
+    },
+    {
+      "seq_id": "JFXG8",
+      "split": "train",
+      "n_segments": 6,
+      "length": 28.04
+    },
+    {
+      "seq_id": "JHRI6",
+      "split": "train",
+      "n_segments": 5,
+      "length": 12.21
+    },
+    {
+      "seq_id": "JIDHM",
+      "split": "train",
+      "n_segments": 3,
+      "length": 33.58
+    },
+    {
+      "seq_id": "JISS4",
+      "split": "train",
+      "n_segments": 6,
+      "length": 42.88
+    },
+    {
+      "seq_id": "JJKNY",
+      "split": "train",
+      "n_segments": 11,
+      "length": 9.79
+    },
+    {
+      "seq_id": "JKR9A",
+      "split": "train",
+      "n_segments": 4,
+      "length": 29.83
+    },
+    {
+      "seq_id": "JL5O0",
+      "split": "train",
+      "n_segments": 7,
+      "length": 18.5
+    },
+    {
+      "seq_id": "JMA1R",
+      "split": "train",
+      "n_segments": 4,
+      "length": 15.25
+    },
+    {
+      "seq_id": "JNFCE",
+      "split": "train",
+      "n_segments": 5,
+      "length": 31.25
+    },
+    {
+      "seq_id": "JOLLV",
+      "split": "train",
+      "n_segments": 7,
+      "length": 31.58
+    },
+    {
+      "seq_id": "JP60G",
+      "split": "train",
+      "n_segments": 9,
+      "length": 21.92
+    },
+    {
+      "seq_id": "JPVSV",
+      "split": "train",
+      "n_segments": 6,
+      "length": 30.29
+    },
+    {
+      "seq_id": "JQLD3",
+      "split": "train",
+      "n_segments": 11,
+      "length": 30.29
+    },
+    {
+      "seq_id": "JSBMM",
+      "split": "train",
+      "n_segments": 4,
+      "length": 31.04
+    },
+    {
+      "seq_id": "JSUF4",
+      "split": "train",
+      "n_segments": 5,
+      "length": 30.54
+    },
+    {
+      "seq_id": "JTUHP",
+      "split": "train",
+      "n_segments": 3,
+      "length": 27.21
+    },
+    {
+      "seq_id": "JUGS8",
+      "split": "train",
+      "n_segments": 7,
+      "length": 30.71
+    },
+    {
+      "seq_id": "JVJZX",
+      "split": "train",
+      "n_segments": 3,
+      "length": 25.58
+    },
+    {
+      "seq_id": "JWPS5",
+      "split": "train",
+      "n_segments": 11,
+      "length": 30.67
+    },
+    {
+      "seq_id": "JXKPA",
+      "split": "train",
+      "n_segments": 3,
+      "length": 25.71
+    },
+    {
+      "seq_id": "JYBGS",
+      "split": "train",
+      "n_segments": 5,
+      "length": 19.46
+    },
+    {
+      "seq_id": "JZB97",
+      "split": "train",
+      "n_segments": 12,
+      "length": 32.08
+    },
+    {
+      "seq_id": "K0Z9V",
+      "split": "train",
+      "n_segments": 8,
+      "length": 30.71
+    },
+    {
+      "seq_id": "K1M15",
+      "split": "train",
+      "n_segments": 7,
+      "length": 31.17
+    },
+    {
+      "seq_id": "K2L7F",
+      "split": "train",
+      "n_segments": 4,
+      "length": 31.08
+    },
+    {
+      "seq_id": "K3T1B",
+      "split": "train",
+      "n_segments": 2,
+      "length": 10.12
+    },
+    {
+      "seq_id": "K4X20",
+      "split": "train",
+      "n_segments": 4,
+      "length": 32.42
+    },
+    {
+      "seq_id": "K5IAK",
+      "split": "train",
+      "n_segments": 9,
+      "length": 32.71
+    },
+    {
+      "seq_id": "K7FNC",
+      "split": "train",
+      "n_segments": 9,
+      "length": 31.88
+    },
+    {
+      "seq_id": "K87AC",
+      "split": "train",
+      "n_segments": 9,
+      "length": 31.92
+    },
+    {
+      "seq_id": "K8MMX",
+      "split": "train",
+      "n_segments": 6,
+      "length": 30.96
+    },
+    {
+      "seq_id": "K9GJF",
+      "split": "train",
+      "n_segments": 6,
+      "length": 30.12
+    },
+    {
+      "seq_id": "KA3ER",
+      "split": "train",
+      "n_segments": 10,
+      "length": 30.58
+    },
+    {
+      "seq_id": "KAKSU",
+      "split": "train",
+      "n_segments": 4,
+      "length": 31.08
+    },
+    {
+      "seq_id": "KB0Y8",
+      "split": "train",
+      "n_segments": 4,
+      "length": 8.5
+    },
+    {
+      "seq_id": "KCLMY",
+      "split": "train",
+      "n_segments": 4,
+      "length": 30.38
+    },
+    {
+      "seq_id": "KELYK",
+      "split": "train",
+      "n_segments": 4,
+      "length": 21.5
+    },
+    {
+      "seq_id": "KF42S",
+      "split": "train",
+      "n_segments": 3,
+      "length": 19.54
+    },
+    {
+      "seq_id": "KFI7N",
+      "split": "train",
+      "n_segments": 4,
+      "length": 11.38
+    },
+    {
+      "seq_id": "KG2LF",
+      "split": "train",
+      "n_segments": 5,
+      "length": 31.04
+    },
+    {
+      "seq_id": "KHXGJ",
+      "split": "train",
+      "n_segments": 4,
+      "length": 4.67
+    },
+    {
+      "seq_id": "KJ8G2",
+      "split": "train",
+      "n_segments": 6,
+      "length": 29.96
+    },
+    {
+      "seq_id": "KK8N9",
+      "split": "train",
+      "n_segments": 8,
+      "length": 12.17
+    },
+    {
+      "seq_id": "KKP3R",
+      "split": "train",
+      "n_segments": 4,
+      "length": 31.96
+    },
+    {
+      "seq_id": "KLP7V",
+      "split": "train",
+      "n_segments": 4,
+      "length": 23.79
+    },
+    {
+      "seq_id": "KN97F",
+      "split": "train",
+      "n_segments": 2,
+      "length": 33.46
+    },
+    {
+      "seq_id": "KNX2Y",
+      "split": "train",
+      "n_segments": 11,
+      "length": 20.0
+    },
+    {
+      "seq_id": "KOHWO",
+      "split": "train",
+      "n_segments": 3,
+      "length": 30.67
+    },
+    {
+      "seq_id": "KPHP5",
+      "split": "train",
+      "n_segments": 11,
+      "length": 30.58
+    },
+    {
+      "seq_id": "KQL1P",
+      "split": "train",
+      "n_segments": 10,
+      "length": 31.46
+    },
+    {
+      "seq_id": "KR4EB",
+      "split": "train",
+      "n_segments": 4,
+      "length": 28.04
+    },
+    {
+      "seq_id": "KRZW8",
+      "split": "train",
+      "n_segments": 7,
+      "length": 31.54
+    },
+    {
+      "seq_id": "KSAU8",
+      "split": "train",
+      "n_segments": 4,
+      "length": 16.33
+    },
+    {
+      "seq_id": "KTBKA",
+      "split": "train",
+      "n_segments": 3,
+      "length": 29.54
+    },
+    {
+      "seq_id": "KTXE0",
+      "split": "train",
+      "n_segments": 7,
+      "length": 30.42
+    },
+    {
+      "seq_id": "KUBPN",
+      "split": "train",
+      "n_segments": 8,
+      "length": 30.62
+    },
+    {
+      "seq_id": "KV99H",
+      "split": "train",
+      "n_segments": 8,
+      "length": 29.96
+    },
+    {
+      "seq_id": "KW0K8",
+      "split": "train",
+      "n_segments": 5,
+      "length": 11.33
+    },
+    {
+      "seq_id": "KX7FC",
+      "split": "train",
+      "n_segments": 4,
+      "length": 36.62
+    },
+    {
+      "seq_id": "KXO5Q",
+      "split": "train",
+      "n_segments": 2,
+      "length": 30.75
+    },
+    {
+      "seq_id": "KZK6W",
+      "split": "train",
+      "n_segments": 6,
+      "length": 35.46
+    },
+    {
+      "seq_id": "KZTDH",
+      "split": "train",
+      "n_segments": 8,
+      "length": 26.08
+    },
+    {
+      "seq_id": "L0OUW",
+      "split": "train",
+      "n_segments": 2,
+      "length": 3.79
+    },
+    {
+      "seq_id": "L1MR4",
+      "split": "train",
+      "n_segments": 7,
+      "length": 27.33
+    },
+    {
+      "seq_id": "L2DR0",
+      "split": "train",
+      "n_segments": 4,
+      "length": 26.42
+    },
+    {
+      "seq_id": "L36YT",
+      "split": "train",
+      "n_segments": 7,
+      "length": 20.75
+    },
+    {
+      "seq_id": "L4DUU",
+      "split": "train",
+      "n_segments": 8,
+      "length": 31.58
+    },
+    {
+      "seq_id": "L58KN",
+      "split": "train",
+      "n_segments": 6,
+      "length": 30.42
+    },
+    {
+      "seq_id": "L5ZAB",
+      "split": "train",
+      "n_segments": 4,
+      "length": 14.67
+    },
+    {
+      "seq_id": "L8120",
+      "split": "train",
+      "n_segments": 12,
+      "length": 28.46
+    },
+    {
+      "seq_id": "L8V10",
+      "split": "train",
+      "n_segments": 4,
+      "length": 28.38
+    },
+    {
+      "seq_id": "L9J5I",
+      "split": "train",
+      "n_segments": 8,
+      "length": 30.58
+    },
+    {
+      "seq_id": "LB4AR",
+      "split": "train",
+      "n_segments": 9,
+      "length": 27.5
+    },
+    {
+      "seq_id": "LC8T4",
+      "split": "train",
+      "n_segments": 3,
+      "length": 28.33
+    },
+    {
+      "seq_id": "LDBDD",
+      "split": "train",
+      "n_segments": 11,
+      "length": 30.04
+    },
+    {
+      "seq_id": "LE5F4",
+      "split": "train",
+      "n_segments": 5,
+      "length": 25.21
+    },
+    {
+      "seq_id": "LF49A",
+      "split": "train",
+      "n_segments": 4,
+      "length": 26.33
+    },
+    {
+      "seq_id": "LG73V",
+      "split": "train",
+      "n_segments": 7,
+      "length": 33.42
+    },
+    {
+      "seq_id": "LHU7D",
+      "split": "train",
+      "n_segments": 3,
+      "length": 26.21
+    },
+    {
+      "seq_id": "LJ0JS",
+      "split": "train",
+      "n_segments": 5,
+      "length": 25.5
+    },
+    {
+      "seq_id": "LK1AE",
+      "split": "train",
+      "n_segments": 5,
+      "length": 27.96
+    },
+    {
+      "seq_id": "LKN3Z",
+      "split": "train",
+      "n_segments": 9,
+      "length": 33.67
+    },
+    {
+      "seq_id": "LLOGB",
+      "split": "train",
+      "n_segments": 7,
+      "length": 30.25
+    },
+    {
+      "seq_id": "LNWWJ",
+      "split": "train",
+      "n_segments": 2,
+      "length": 21.92
+    },
+    {
+      "seq_id": "LOSLI",
+      "split": "train",
+      "n_segments": 6,
+      "length": 23.29
+    },
+    {
+      "seq_id": "LPR6Z",
+      "split": "train",
+      "n_segments": 3,
+      "length": 34.5
+    },
+    {
+      "seq_id": "LQO5R",
+      "split": "train",
+      "n_segments": 4,
+      "length": 33.46
+    },
+    {
+      "seq_id": "LRPBA",
+      "split": "train",
+      "n_segments": 5,
+      "length": 19.75
+    },
+    {
+      "seq_id": "LSY08",
+      "split": "train",
+      "n_segments": 5,
+      "length": 30.92
+    },
+    {
+      "seq_id": "LTC5Y",
+      "split": "train",
+      "n_segments": 12,
+      "length": 31.42
+    },
+    {
+      "seq_id": "LUPRO",
+      "split": "train",
+      "n_segments": 8,
+      "length": 23.75
+    },
+    {
+      "seq_id": "LUZNA",
+      "split": "train",
+      "n_segments": 3,
+      "length": 31.29
+    },
+    {
+      "seq_id": "LVNAU",
+      "split": "train",
+      "n_segments": 4,
+      "length": 47.04
+    },
+    {
+      "seq_id": "LWBPP",
+      "split": "train",
+      "n_segments": 4,
+      "length": 9.79
+    },
+    {
+      "seq_id": "LX54K",
+      "split": "train",
+      "n_segments": 5,
+      "length": 31.92
+    },
+    {
+      "seq_id": "LYDEA",
+      "split": "train",
+      "n_segments": 8,
+      "length": 25.38
+    },
+    {
+      "seq_id": "LZEWE",
+      "split": "train",
+      "n_segments": 6,
+      "length": 32.0
+    },
+    {
+      "seq_id": "M0ENV",
+      "split": "train",
+      "n_segments": 4,
+      "length": 31.29
+    },
+    {
+      "seq_id": "M149H",
+      "split": "train",
+      "n_segments": 8,
+      "length": 22.38
+    },
+    {
+      "seq_id": "M1SRW",
+      "split": "train",
+      "n_segments": 4,
+      "length": 30.75
+    },
+    {
+      "seq_id": "M2KU5",
+      "split": "train",
+      "n_segments": 3,
+      "length": 38.71
+    },
+    {
+      "seq_id": "M3IK4",
+      "split": "train",
+      "n_segments": 4,
+      "length": 33.17
+    },
+    {
+      "seq_id": "M506V",
+      "split": "train",
+      "n_segments": 8,
+      "length": 30.71
+    },
+    {
+      "seq_id": "M5W51",
+      "split": "train",
+      "n_segments": 8,
+      "length": 30.33
+    },
+    {
+      "seq_id": "M6XX6",
+      "split": "train",
+      "n_segments": 4,
+      "length": 31.92
+    },
+    {
+      "seq_id": "M7Y6V",
+      "split": "train",
+      "n_segments": 11,
+      "length": 31.79
+    },
+    {
+      "seq_id": "M8NZA",
+      "split": "train",
+      "n_segments": 8,
+      "length": 31.5
+    },
+    {
+      "seq_id": "MAMJ8",
+      "split": "train",
+      "n_segments": 4,
+      "length": 30.67
+    },
+    {
+      "seq_id": "MBSW4",
+      "split": "train",
+      "n_segments": 7,
+      "length": 16.33
+    },
+    {
+      "seq_id": "MC6J7",
+      "split": "train",
+      "n_segments": 12,
+      "length": 33.04
+    },
+    {
+      "seq_id": "MD41D",
+      "split": "train",
+      "n_segments": 4,
+      "length": 40.5
+    },
+    {
+      "seq_id": "MDXF4",
+      "split": "train",
+      "n_segments": 7,
+      "length": 34.42
+    },
+    {
+      "seq_id": "MERBU",
+      "split": "train",
+      "n_segments": 7,
+      "length": 31.42
+    },
+    {
+      "seq_id": "MF8AX",
+      "split": "train",
+      "n_segments": 4,
+      "length": 30.25
+    },
+    {
+      "seq_id": "MGBLJ",
+      "split": "train",
+      "n_segments": 5,
+      "length": 31.17
+    },
+    {
+      "seq_id": "MHQYD",
+      "split": "train",
+      "n_segments": 3,
+      "length": 30.79
+    },
+    {
+      "seq_id": "MI76A",
+      "split": "train",
+      "n_segments": 5,
+      "length": 31.71
+    },
+    {
+      "seq_id": "MJ1T7",
+      "split": "train",
+      "n_segments": 4,
+      "length": 30.46
+    },
+    {
+      "seq_id": "MJZJM",
+      "split": "train",
+      "n_segments": 5,
+      "length": 30.21
+    },
+    {
+      "seq_id": "MLK57",
+      "split": "train",
+      "n_segments": 8,
+      "length": 26.25
+    },
+    {
+      "seq_id": "MMGTX",
+      "split": "train",
+      "n_segments": 6,
+      "length": 35.25
+    },
+    {
+      "seq_id": "MN1MC",
+      "split": "train",
+      "n_segments": 9,
+      "length": 30.42
+    },
+    {
+      "seq_id": "MNGT1",
+      "split": "train",
+      "n_segments": 9,
+      "length": 33.67
+    },
+    {
+      "seq_id": "MO4WK",
+      "split": "train",
+      "n_segments": 6,
+      "length": 21.5
+    },
+    {
+      "seq_id": "MOWLI",
+      "split": "train",
+      "n_segments": 5,
+      "length": 29.38
+    },
+    {
+      "seq_id": "MPUJ7",
+      "split": "train",
+      "n_segments": 6,
+      "length": 30.42
+    },
+    {
+      "seq_id": "MQHDC",
+      "split": "train",
+      "n_segments": 3,
+      "length": 30.62
+    },
+    {
+      "seq_id": "MR3ON",
+      "split": "train",
+      "n_segments": 3,
+      "length": 15.83
+    },
+    {
+      "seq_id": "MRSYL",
+      "split": "train",
+      "n_segments": 5,
+      "length": 26.42
+    },
+    {
+      "seq_id": "MSN1B",
+      "split": "train",
+      "n_segments": 7,
+      "length": 23.46
+    },
+    {
+      "seq_id": "MTEOU",
+      "split": "train",
+      "n_segments": 6,
+      "length": 62.58
+    },
+    {
+      "seq_id": "MUAR4",
+      "split": "train",
+      "n_segments": 5,
+      "length": 29.96
+    },
+    {
+      "seq_id": "MUO4G",
+      "split": "train",
+      "n_segments": 5,
+      "length": 18.46
+    },
+    {
+      "seq_id": "MV37M",
+      "split": "train",
+      "n_segments": 10,
+      "length": 23.29
+    },
+    {
+      "seq_id": "MVPQF",
+      "split": "train",
+      "n_segments": 11,
+      "length": 32.29
+    },
+    {
+      "seq_id": "MWUIN",
+      "split": "train",
+      "n_segments": 7,
+      "length": 20.5
+    },
+    {
+      "seq_id": "MXW4N",
+      "split": "train",
+      "n_segments": 5,
+      "length": 31.67
+    },
+    {
+      "seq_id": "MYGJA",
+      "split": "train",
+      "n_segments": 12,
+      "length": 21.33
+    },
+    {
+      "seq_id": "MZHDX",
+      "split": "train",
+      "n_segments": 11,
+      "length": 31.38
+    },
+    {
+      "seq_id": "N0DXI",
+      "split": "train",
+      "n_segments": 5,
+      "length": 25.54
+    },
+    {
+      "seq_id": "N1EDG",
+      "split": "train",
+      "n_segments": 7,
+      "length": 29.71
+    },
+    {
+      "seq_id": "N2TPE",
+      "split": "train",
+      "n_segments": 7,
+      "length": 31.42
+    },
+    {
+      "seq_id": "N3OKQ",
+      "split": "train",
+      "n_segments": 10,
+      "length": 31.88
+    },
+    {
+      "seq_id": "N588B",
+      "split": "train",
+      "n_segments": 5,
+      "length": 25.12
+    },
+    {
+      "seq_id": "N67PL",
+      "split": "train",
+      "n_segments": 10,
+      "length": 30.54
+    },
+    {
+      "seq_id": "N79WJ",
+      "split": "train",
+      "n_segments": 6,
+      "length": 30.96
+    },
+    {
+      "seq_id": "N7ZBM",
+      "split": "train",
+      "n_segments": 6,
+      "length": 30.46
+    },
+    {
+      "seq_id": "N915C",
+      "split": "train",
+      "n_segments": 8,
+      "length": 33.83
+    },
+    {
+      "seq_id": "N9TRF",
+      "split": "train",
+      "n_segments": 10,
+      "length": 27.88
+    },
+    {
+      "seq_id": "NAWO1",
+      "split": "train",
+      "n_segments": 2,
+      "length": 48.08
+    },
+    {
+      "seq_id": "NBIR0",
+      "split": "train",
+      "n_segments": 11,
+      "length": 32.29
+    },
+    {
+      "seq_id": "NCBNH",
+      "split": "train",
+      "n_segments": 10,
+      "length": 40.42
+    },
+    {
+      "seq_id": "NDBXV",
+      "split": "train",
+      "n_segments": 5,
+      "length": 45.17
+    },
+    {
+      "seq_id": "NDWYP",
+      "split": "train",
+      "n_segments": 3,
+      "length": 23.12
+    },
+    {
+      "seq_id": "NEM29",
+      "split": "train",
+      "n_segments": 12,
+      "length": 32.42
+    },
+    {
+      "seq_id": "NGHT9",
+      "split": "train",
+      "n_segments": 4,
+      "length": 29.38
+    },
+    {
+      "seq_id": "NGZQ9",
+      "split": "train",
+      "n_segments": 4,
+      "length": 35.25
+    },
+    {
+      "seq_id": "NHSAW",
+      "split": "train",
+      "n_segments": 8,
+      "length": 21.58
+    },
+    {
+      "seq_id": "NI4JV",
+      "split": "train",
+      "n_segments": 3,
+      "length": 31.62
+    },
+    {
+      "seq_id": "NIRNP",
+      "split": "train",
+      "n_segments": 6,
+      "length": 16.88
+    },
+    {
+      "seq_id": "NJU3G",
+      "split": "train",
+      "n_segments": 13,
+      "length": 30.75
+    },
+    {
+      "seq_id": "NKTWF",
+      "split": "train",
+      "n_segments": 7,
+      "length": 20.08
+    },
+    {
+      "seq_id": "NLU6W",
+      "split": "train",
+      "n_segments": 7,
+      "length": 30.83
+    },
+    {
+      "seq_id": "NMC5N",
+      "split": "train",
+      "n_segments": 5,
+      "length": 31.88
+    },
+    {
+      "seq_id": "NNG97",
+      "split": "train",
+      "n_segments": 8,
+      "length": 28.5
+    },
+    {
+      "seq_id": "NO9MI",
+      "split": "train",
+      "n_segments": 5,
+      "length": 26.04
+    },
+    {
+      "seq_id": "NOP6W",
+      "split": "train",
+      "n_segments": 1,
+      "length": 31.58
+    },
+    {
+      "seq_id": "NPNB3",
+      "split": "train",
+      "n_segments": 5,
+      "length": 31.25
+    },
+    {
+      "seq_id": "NR9L2",
+      "split": "train",
+      "n_segments": 6,
+      "length": 30.92
+    },
+    {
+      "seq_id": "NSHA7",
+      "split": "train",
+      "n_segments": 7,
+      "length": 31.33
+    },
+    {
+      "seq_id": "NT2HT",
+      "split": "train",
+      "n_segments": 9,
+      "length": 29.96
+    },
+    {
+      "seq_id": "NUMAW",
+      "split": "train",
+      "n_segments": 6,
+      "length": 30.5
+    },
+    {
+      "seq_id": "NV70C",
+      "split": "train",
+      "n_segments": 4,
+      "length": 30.42
+    },
+    {
+      "seq_id": "NVQ84",
+      "split": "train",
+      "n_segments": 9,
+      "length": 43.29
+    },
+    {
+      "seq_id": "NXC5X",
+      "split": "train",
+      "n_segments": 4,
+      "length": 31.04
+    },
+    {
+      "seq_id": "NY5LX",
+      "split": "train",
+      "n_segments": 15,
+      "length": 34.5
+    },
+    {
+      "seq_id": "NYXJ6",
+      "split": "train",
+      "n_segments": 16,
+      "length": 36.0
+    },
+    {
+      "seq_id": "NZCG8",
+      "split": "train",
+      "n_segments": 3,
+      "length": 31.71
+    },
+    {
+      "seq_id": "O0C2Z",
+      "split": "train",
+      "n_segments": 8,
+      "length": 31.54
+    },
+    {
+      "seq_id": "O1D7K",
+      "split": "train",
+      "n_segments": 4,
+      "length": 35.92
+    },
+    {
+      "seq_id": "O1YWR",
+      "split": "train",
+      "n_segments": 6,
+      "length": 31.58
+    },
+    {
+      "seq_id": "O3HAK",
+      "split": "train",
+      "n_segments": 3,
+      "length": 30.5
+    },
+    {
+      "seq_id": "O4P08",
+      "split": "train",
+      "n_segments": 4,
+      "length": 30.21
+    },
+    {
+      "seq_id": "O5FR0",
+      "split": "train",
+      "n_segments": 2,
+      "length": 30.92
+    },
+    {
+      "seq_id": "O6DZ0",
+      "split": "train",
+      "n_segments": 5,
+      "length": 26.92
+    },
+    {
+      "seq_id": "O7I5K",
+      "split": "train",
+      "n_segments": 4,
+      "length": 35.21
+    },
+    {
+      "seq_id": "O8DER",
+      "split": "train",
+      "n_segments": 13,
+      "length": 30.67
+    },
+    {
+      "seq_id": "O8VYU",
+      "split": "train",
+      "n_segments": 7,
+      "length": 34.46
+    },
+    {
+      "seq_id": "OA9W5",
+      "split": "train",
+      "n_segments": 13,
+      "length": 34.46
+    },
+    {
+      "seq_id": "OB1XO",
+      "split": "train",
+      "n_segments": 9,
+      "length": 36.96
+    },
+    {
+      "seq_id": "OBTP8",
+      "split": "train",
+      "n_segments": 6,
+      "length": 31.08
+    },
+    {
+      "seq_id": "OCVY4",
+      "split": "train",
+      "n_segments": 11,
+      "length": 34.62
+    },
+    {
+      "seq_id": "OE751",
+      "split": "train",
+      "n_segments": 11,
+      "length": 33.17
+    },
+    {
+      "seq_id": "OEUGC",
+      "split": "train",
+      "n_segments": 12,
+      "length": 36.17
+    },
+    {
+      "seq_id": "OFNQV",
+      "split": "train",
+      "n_segments": 8,
+      "length": 33.79
+    },
+    {
+      "seq_id": "OH3R9",
+      "split": "train",
+      "n_segments": 5,
+      "length": 29.83
+    },
+    {
+      "seq_id": "OHS4T",
+      "split": "train",
+      "n_segments": 7,
+      "length": 30.54
+    },
+    {
+      "seq_id": "OIOIO",
+      "split": "train",
+      "n_segments": 3,
+      "length": 31.92
+    },
+    {
+      "seq_id": "OJ4IE",
+      "split": "train",
+      "n_segments": 7,
+      "length": 30.5
+    },
+    {
+      "seq_id": "OJLFZ",
+      "split": "train",
+      "n_segments": 15,
+      "length": 33.58
+    },
+    {
+      "seq_id": "OKYYQ",
+      "split": "train",
+      "n_segments": 10,
+      "length": 27.12
+    },
+    {
+      "seq_id": "OLH8O",
+      "split": "train",
+      "n_segments": 2,
+      "length": 30.12
+    },
+    {
+      "seq_id": "OMBR9",
+      "split": "train",
+      "n_segments": 12,
+      "length": 65.17
+    },
+    {
+      "seq_id": "ON6CG",
+      "split": "train",
+      "n_segments": 1,
+      "length": 30.33
+    },
+    {
+      "seq_id": "OO6BH",
+      "split": "train",
+      "n_segments": 12,
+      "length": 38.96
+    },
+    {
+      "seq_id": "OOOQT",
+      "split": "train",
+      "n_segments": 4,
+      "length": 29.79
+    },
+    {
+      "seq_id": "OQM2I",
+      "split": "train",
+      "n_segments": 6,
+      "length": 31.46
+    },
+    {
+      "seq_id": "ORJTD",
+      "split": "train",
+      "n_segments": 5,
+      "length": 31.04
+    },
+    {
+      "seq_id": "OS7VW",
+      "split": "train",
+      "n_segments": 6,
+      "length": 29.96
+    },
+    {
+      "seq_id": "OSTTS",
+      "split": "train",
+      "n_segments": 2,
+      "length": 30.71
+    },
+    {
+      "seq_id": "OU3HS",
+      "split": "train",
+      "n_segments": 8,
+      "length": 38.92
+    },
+    {
+      "seq_id": "OVEXF",
+      "split": "train",
+      "n_segments": 5,
+      "length": 31.33
+    },
+    {
+      "seq_id": "OVYAC",
+      "split": "train",
+      "n_segments": 7,
+      "length": 28.67
+    },
+    {
+      "seq_id": "OWLRQ",
+      "split": "train",
+      "n_segments": 12,
+      "length": 31.25
+    },
+    {
+      "seq_id": "OX5TB",
+      "split": "train",
+      "n_segments": 5,
+      "length": 43.04
+    },
+    {
+      "seq_id": "OXPD4",
+      "split": "train",
+      "n_segments": 3,
+      "length": 32.08
+    },
+    {
+      "seq_id": "OZ5SV",
+      "split": "train",
+      "n_segments": 10,
+      "length": 19.96
+    },
+    {
+      "seq_id": "OZSB3",
+      "split": "train",
+      "n_segments": 7,
+      "length": 30.92
+    },
+    {
+      "seq_id": "P1LWC",
+      "split": "train",
+      "n_segments": 9,
+      "length": 7.17
+    },
+    {
+      "seq_id": "P2HZG",
+      "split": "train",
+      "n_segments": 6,
+      "length": 30.92
+    },
+    {
+      "seq_id": "P36YW",
+      "split": "val",
+      "n_segments": 12,
+      "length": 27.21
+    },
+    {
+      "seq_id": "P4AEF",
+      "split": "val",
+      "n_segments": 8,
+      "length": 29.25
+    },
+    {
+      "seq_id": "P4MBS",
+      "split": "val",
+      "n_segments": 8,
+      "length": 29.92
+    },
+    {
+      "seq_id": "P64DQ",
+      "split": "val",
+      "n_segments": 2,
+      "length": 6.54
+    },
+    {
+      "seq_id": "P73KX",
+      "split": "val",
+      "n_segments": 5,
+      "length": 36.71
+    },
+    {
+      "seq_id": "P7TT1",
+      "split": "val",
+      "n_segments": 11,
+      "length": 30.5
+    },
+    {
+      "seq_id": "P8ZU6",
+      "split": "val",
+      "n_segments": 9,
+      "length": 30.33
+    },
+    {
+      "seq_id": "P9RNA",
+      "split": "val",
+      "n_segments": 6,
+      "length": 23.33
+    },
+    {
+      "seq_id": "PB0TU",
+      "split": "val",
+      "n_segments": 4,
+      "length": 23.71
+    },
+    {
+      "seq_id": "PC0M6",
+      "split": "val",
+      "n_segments": 5,
+      "length": 25.25
+    },
+    {
+      "seq_id": "PD30D",
+      "split": "val",
+      "n_segments": 2,
+      "length": 35.42
+    },
+    {
+      "seq_id": "PE4BQ",
+      "split": "val",
+      "n_segments": 4,
+      "length": 30.75
+    },
+    {
+      "seq_id": "PFLFU",
+      "split": "val",
+      "n_segments": 4,
+      "length": 30.42
+    },
+    {
+      "seq_id": "PGGRZ",
+      "split": "val",
+      "n_segments": 9,
+      "length": 12.46
+    },
+    {
+      "seq_id": "PHIIX",
+      "split": "val",
+      "n_segments": 10,
+      "length": 25.25
+    },
+    {
+      "seq_id": "PIMO4",
+      "split": "val",
+      "n_segments": 6,
+      "length": 30.04
+    },
+    {
+      "seq_id": "PKEZI",
+      "split": "val",
+      "n_segments": 14,
+      "length": 38.58
+    },
+    {
+      "seq_id": "PM1VD",
+      "split": "val",
+      "n_segments": 6,
+      "length": 160.62
+    },
+    {
+      "seq_id": "PN4MI",
+      "split": "val",
+      "n_segments": 11,
+      "length": 30.5
+    },
+    {
+      "seq_id": "PNC99",
+      "split": "val",
+      "n_segments": 9,
+      "length": 38.38
+    },
+    {
+      "seq_id": "PO74I",
+      "split": "val",
+      "n_segments": 3,
+      "length": 25.88
+    },
+    {
+      "seq_id": "POXTH",
+      "split": "val",
+      "n_segments": 7,
+      "length": 24.79
+    },
+    {
+      "seq_id": "PPXPA",
+      "split": "val",
+      "n_segments": 8,
+      "length": 31.46
+    },
+    {
+      "seq_id": "PQX96",
+      "split": "val",
+      "n_segments": 5,
+      "length": 30.38
+    },
+    {
+      "seq_id": "PRV4N",
+      "split": "val",
+      "n_segments": 9,
+      "length": 44.67
+    },
+    {
+      "seq_id": "PSSJ8",
+      "split": "val",
+      "n_segments": 7,
+      "length": 29.71
+    },
+    {
+      "seq_id": "PTPJL",
+      "split": "val",
+      "n_segments": 4,
+      "length": 30.67
+    },
+    {
+      "seq_id": "PV3KQ",
+      "split": "val",
+      "n_segments": 8,
+      "length": 36.12
+    },
+    {
+      "seq_id": "PVC93",
+      "split": "val",
+      "n_segments": 5,
+      "length": 30.38
+    },
+    {
+      "seq_id": "PW3GG",
+      "split": "val",
+      "n_segments": 5,
+      "length": 23.71
+    },
+    {
+      "seq_id": "PWR6D",
+      "split": "val",
+      "n_segments": 5,
+      "length": 31.0
+    },
+    {
+      "seq_id": "PXKFK",
+      "split": "val",
+      "n_segments": 4,
+      "length": 35.58
+    },
+    {
+      "seq_id": "PZ2W1",
+      "split": "val",
+      "n_segments": 5,
+      "length": 36.96
+    },
+    {
+      "seq_id": "Q01UB",
+      "split": "val",
+      "n_segments": 5,
+      "length": 32.92
+    },
+    {
+      "seq_id": "Q0OEU",
+      "split": "val",
+      "n_segments": 1,
+      "length": 16.92
+    },
+    {
+      "seq_id": "Q1K00",
+      "split": "val",
+      "n_segments": 7,
+      "length": 30.79
+    },
+    {
+      "seq_id": "Q2GBA",
+      "split": "val",
+      "n_segments": 4,
+      "length": 30.21
+    },
+    {
+      "seq_id": "Q36FS",
+      "split": "val",
+      "n_segments": 4,
+      "length": 25.54
+    },
+    {
+      "seq_id": "Q3QC8",
+      "split": "val",
+      "n_segments": 4,
+      "length": 29.96
+    },
+    {
+      "seq_id": "Q49E0",
+      "split": "val",
+      "n_segments": 8,
+      "length": 32.29
+    },
+    {
+      "seq_id": "Q5BXH",
+      "split": "val",
+      "n_segments": 4,
+      "length": 47.33
+    },
+    {
+      "seq_id": "Q6M0X",
+      "split": "val",
+      "n_segments": 9,
+      "length": 33.46
+    },
+    {
+      "seq_id": "Q7DEB",
+      "split": "val",
+      "n_segments": 3,
+      "length": 24.92
+    },
+    {
+      "seq_id": "Q8HQM",
+      "split": "val",
+      "n_segments": 3,
+      "length": 24.75
+    },
+    {
+      "seq_id": "Q9DW7",
+      "split": "val",
+      "n_segments": 7,
+      "length": 43.5
+    },
+    {
+      "seq_id": "QAHJG",
+      "split": "val",
+      "n_segments": 4,
+      "length": 31.0
+    },
+    {
+      "seq_id": "QBQR3",
+      "split": "val",
+      "n_segments": 4,
+      "length": 22.96
+    },
+    {
+      "seq_id": "QCBIG",
+      "split": "val",
+      "n_segments": 10,
+      "length": 30.75
+    },
+    {
+      "seq_id": "QDRWK",
+      "split": "val",
+      "n_segments": 10,
+      "length": 29.5
+    },
+    {
+      "seq_id": "QEQJ3",
+      "split": "val",
+      "n_segments": 6,
+      "length": 30.54
+    },
+    {
+      "seq_id": "QFDKV",
+      "split": "val",
+      "n_segments": 2,
+      "length": 32.96
+    },
+    {
+      "seq_id": "QGIP7",
+      "split": "val",
+      "n_segments": 8,
+      "length": 30.04
+    },
+    {
+      "seq_id": "QHM66",
+      "split": "val",
+      "n_segments": 12,
+      "length": 32.33
+    },
+    {
+      "seq_id": "QIQXR",
+      "split": "val",
+      "n_segments": 4,
+      "length": 66.0
+    },
+    {
+      "seq_id": "QJIAV",
+      "split": "val",
+      "n_segments": 5,
+      "length": 32.17
+    },
+    {
+      "seq_id": "QKOP0",
+      "split": "val",
+      "n_segments": 6,
+      "length": 26.29
+    },
+    {
+      "seq_id": "QLQNJ",
+      "split": "val",
+      "n_segments": 6,
+      "length": 30.08
+    },
+    {
+      "seq_id": "QMTF2",
+      "split": "val",
+      "n_segments": 5,
+      "length": 23.12
+    },
+    {
+      "seq_id": "QNKDI",
+      "split": "val",
+      "n_segments": 7,
+      "length": 32.21
+    },
+    {
+      "seq_id": "QNXGG",
+      "split": "val",
+      "n_segments": 5,
+      "length": 20.96
+    },
+    {
+      "seq_id": "QO7SM",
+      "split": "val",
+      "n_segments": 10,
+      "length": 31.46
+    },
+    {
+      "seq_id": "QQD2X",
+      "split": "val",
+      "n_segments": 5,
+      "length": 26.75
+    },
+    {
+      "seq_id": "QQUI7",
+      "split": "val",
+      "n_segments": 10,
+      "length": 30.58
+    },
+    {
+      "seq_id": "QRR1S",
+      "split": "val",
+      "n_segments": 7,
+      "length": 23.29
+    },
+    {
+      "seq_id": "QS0AZ",
+      "split": "val",
+      "n_segments": 10,
+      "length": 27.25
+    },
+    {
+      "seq_id": "QT4WM",
+      "split": "val",
+      "n_segments": 7,
+      "length": 37.17
+    },
+    {
+      "seq_id": "QU2WL",
+      "split": "val",
+      "n_segments": 13,
+      "length": 34.21
+    },
+    {
+      "seq_id": "QUPLC",
+      "split": "val",
+      "n_segments": 7,
+      "length": 11.42
+    },
+    {
+      "seq_id": "QWZV5",
+      "split": "val",
+      "n_segments": 7,
+      "length": 29.5
+    },
+    {
+      "seq_id": "QXEWB",
+      "split": "val",
+      "n_segments": 2,
+      "length": 13.79
+    },
+    {
+      "seq_id": "QYF31",
+      "split": "val",
+      "n_segments": 4,
+      "length": 11.17
+    },
+    {
+      "seq_id": "QZCSM",
+      "split": "val",
+      "n_segments": 7,
+      "length": 12.0
+    },
+    {
+      "seq_id": "R00LO",
+      "split": "val",
+      "n_segments": 10,
+      "length": 31.75
+    },
+    {
+      "seq_id": "R0OGE",
+      "split": "val",
+      "n_segments": 4,
+      "length": 42.54
+    },
+    {
+      "seq_id": "R1OUC",
+      "split": "val",
+      "n_segments": 5,
+      "length": 40.29
+    },
+    {
+      "seq_id": "R2G6S",
+      "split": "val",
+      "n_segments": 11,
+      "length": 49.21
+    },
+    {
+      "seq_id": "R2ZYS",
+      "split": "val",
+      "n_segments": 5,
+      "length": 31.0
+    },
+    {
+      "seq_id": "R4BTI",
+      "split": "val",
+      "n_segments": 6,
+      "length": 39.21
+    },
+    {
+      "seq_id": "R5IQ5",
+      "split": "val",
+      "n_segments": 4,
+      "length": 30.62
+    },
+    {
+      "seq_id": "R6H5P",
+      "split": "val",
+      "n_segments": 7,
+      "length": 14.46
+    },
+    {
+      "seq_id": "R77MC",
+      "split": "val",
+      "n_segments": 10,
+      "length": 33.33
+    },
+    {
+      "seq_id": "R979C",
+      "split": "val",
+      "n_segments": 7,
+      "length": 28.04
+    },
+    {
+      "seq_id": "RB9VI",
+      "split": "val",
+      "n_segments": 12,
+      "length": 30.92
+    },
+    {
+      "seq_id": "RBJ4E",
+      "split": "val",
+      "n_segments": 3,
+      "length": 23.75
+    },
+    {
+      "seq_id": "RE1M6",
+      "split": "val",
+      "n_segments": 7,
+      "length": 27.04
+    },
+    {
+      "seq_id": "REOES",
+      "split": "val",
+      "n_segments": 12,
+      "length": 25.38
+    },
+    {
+      "seq_id": "RG1XI",
+      "split": "val",
+      "n_segments": 7,
+      "length": 31.08
+    },
+    {
+      "seq_id": "RGZVZ",
+      "split": "val",
+      "n_segments": 6,
+      "length": 28.79
+    },
+    {
+      "seq_id": "RHU79",
+      "split": "val",
+      "n_segments": 3,
+      "length": 30.58
+    },
+    {
+      "seq_id": "RIE30",
+      "split": "val",
+      "n_segments": 6,
+      "length": 18.88
+    },
+    {
+      "seq_id": "RJ8WY",
+      "split": "val",
+      "n_segments": 5,
+      "length": 23.58
+    },
+    {
+      "seq_id": "RJN35",
+      "split": "val",
+      "n_segments": 3,
+      "length": 34.17
+    },
+    {
+      "seq_id": "RK9II",
+      "split": "val",
+      "n_segments": 2,
+      "length": 33.58
+    },
+    {
+      "seq_id": "RLA7N",
+      "split": "val",
+      "n_segments": 4,
+      "length": 37.79
+    },
+    {
+      "seq_id": "RNCN8",
+      "split": "val",
+      "n_segments": 9,
+      "length": 29.38
+    },
+    {
+      "seq_id": "RO9RP",
+      "split": "val",
+      "n_segments": 7,
+      "length": 29.17
+    },
+    {
+      "seq_id": "RPPCV",
+      "split": "val",
+      "n_segments": 4,
+      "length": 30.75
+    },
+    {
+      "seq_id": "RR7AR",
+      "split": "val",
+      "n_segments": 7,
+      "length": 38.38
+    },
+    {
+      "seq_id": "RRNDQ",
+      "split": "val",
+      "n_segments": 8,
+      "length": 31.83
+    },
+    {
+      "seq_id": "RS9D9",
+      "split": "val",
+      "n_segments": 9,
+      "length": 38.21
+    },
+    {
+      "seq_id": "RSLIM",
+      "split": "val",
+      "n_segments": 1,
+      "length": 30.58
+    },
+    {
+      "seq_id": "RTGML",
+      "split": "val",
+      "n_segments": 3,
+      "length": 17.38
+    },
+    {
+      "seq_id": "RUK08",
+      "split": "val",
+      "n_segments": 6,
+      "length": 8.33
+    },
+    {
+      "seq_id": "RVKKS",
+      "split": "val",
+      "n_segments": 3,
+      "length": 28.71
+    },
+    {
+      "seq_id": "RVYXB",
+      "split": "val",
+      "n_segments": 7,
+      "length": 31.08
+    },
+    {
+      "seq_id": "RXED2",
+      "split": "val",
+      "n_segments": 6,
+      "length": 31.25
+    },
+    {
+      "seq_id": "RXRAS",
+      "split": "val",
+      "n_segments": 6,
+      "length": 31.58
+    },
+    {
+      "seq_id": "RYQI0",
+      "split": "val",
+      "n_segments": 5,
+      "length": 30.92
+    },
+    {
+      "seq_id": "RZLAZ",
+      "split": "val",
+      "n_segments": 4,
+      "length": 21.79
+    },
+    {
+      "seq_id": "S0B9O",
+      "split": "val",
+      "n_segments": 3,
+      "length": 30.5
+    },
+    {
+      "seq_id": "S1F6M",
+      "split": "val",
+      "n_segments": 2,
+      "length": 30.92
+    },
+    {
+      "seq_id": "S1PWD",
+      "split": "val",
+      "n_segments": 15,
+      "length": 29.83
+    },
+    {
+      "seq_id": "S29H6",
+      "split": "val",
+      "n_segments": 6,
+      "length": 29.92
+    },
+    {
+      "seq_id": "S2KYK",
+      "split": "val",
+      "n_segments": 5,
+      "length": 17.42
+    },
+    {
+      "seq_id": "S37QK",
+      "split": "val",
+      "n_segments": 7,
+      "length": 32.04
+    },
+    {
+      "seq_id": "S47DI",
+      "split": "val",
+      "n_segments": 8,
+      "length": 30.33
+    },
+    {
+      "seq_id": "S5NC8",
+      "split": "val",
+      "n_segments": 9,
+      "length": 30.83
+    },
+    {
+      "seq_id": "S6N22",
+      "split": "val",
+      "n_segments": 6,
+      "length": 24.62
+    },
+    {
+      "seq_id": "S7PLQ",
+      "split": "val",
+      "n_segments": 5,
+      "length": 31.96
+    },
+    {
+      "seq_id": "S8TI7",
+      "split": "val",
+      "n_segments": 5,
+      "length": 33.25
+    },
+    {
+      "seq_id": "SA7GL",
+      "split": "val",
+      "n_segments": 8,
+      "length": 30.83
+    },
+    {
+      "seq_id": "SAJ4D",
+      "split": "val",
+      "n_segments": 5,
+      "length": 5.12
+    },
+    {
+      "seq_id": "SBMQX",
+      "split": "val",
+      "n_segments": 3,
+      "length": 30.29
+    },
+    {
+      "seq_id": "SC5YW",
+      "split": "val",
+      "n_segments": 8,
+      "length": 30.21
+    },
+    {
+      "seq_id": "SDXZ8",
+      "split": "val",
+      "n_segments": 7,
+      "length": 51.42
+    },
+    {
+      "seq_id": "SFH7G",
+      "split": "val",
+      "n_segments": 7,
+      "length": 39.96
+    },
+    {
+      "seq_id": "SFOPU",
+      "split": "val",
+      "n_segments": 11,
+      "length": 24.42
+    },
+    {
+      "seq_id": "SG99Q",
+      "split": "val",
+      "n_segments": 5,
+      "length": 30.46
+    },
+    {
+      "seq_id": "SHMU7",
+      "split": "val",
+      "n_segments": 11,
+      "length": 30.92
+    },
+    {
+      "seq_id": "SILHS",
+      "split": "val",
+      "n_segments": 10,
+      "length": 30.38
+    },
+    {
+      "seq_id": "SJQVM",
+      "split": "val",
+      "n_segments": 8,
+      "length": 27.88
+    },
+    {
+      "seq_id": "SL401",
+      "split": "val",
+      "n_segments": 4,
+      "length": 4.33
+    },
+    {
+      "seq_id": "SM0HI",
+      "split": "val",
+      "n_segments": 4,
+      "length": 30.04
+    },
+    {
+      "seq_id": "SMPEB",
+      "split": "val",
+      "n_segments": 6,
+      "length": 32.33
+    },
+    {
+      "seq_id": "SNECW",
+      "split": "val",
+      "n_segments": 7,
+      "length": 34.42
+    },
+    {
+      "seq_id": "SOI68",
+      "split": "val",
+      "n_segments": 5,
+      "length": 31.71
+    },
+    {
+      "seq_id": "SP8UG",
+      "split": "val",
+      "n_segments": 6,
+      "length": 33.25
+    },
+    {
+      "seq_id": "SPKSE",
+      "split": "val",
+      "n_segments": 6,
+      "length": 28.12
+    },
+    {
+      "seq_id": "SQKR0",
+      "split": "val",
+      "n_segments": 2,
+      "length": 19.42
+    },
+    {
+      "seq_id": "SRTW8",
+      "split": "val",
+      "n_segments": 4,
+      "length": 17.58
+    },
+    {
+      "seq_id": "SSVYY",
+      "split": "val",
+      "n_segments": 3,
+      "length": 30.21
+    },
+    {
+      "seq_id": "STG2D",
+      "split": "val",
+      "n_segments": 5,
+      "length": 14.67
+    },
+    {
+      "seq_id": "SU8PN",
+      "split": "val",
+      "n_segments": 10,
+      "length": 27.33
+    },
+    {
+      "seq_id": "SVEWD",
+      "split": "val",
+      "n_segments": 9,
+      "length": 28.58
+    },
+    {
+      "seq_id": "SWIQN",
+      "split": "val",
+      "n_segments": 6,
+      "length": 24.75
+    },
+    {
+      "seq_id": "SXAAN",
+      "split": "val",
+      "n_segments": 2,
+      "length": 29.75
+    },
+    {
+      "seq_id": "SXYLN",
+      "split": "val",
+      "n_segments": 10,
+      "length": 29.88
+    },
+    {
+      "seq_id": "SZJ09",
+      "split": "val",
+      "n_segments": 6,
+      "length": 30.58
+    },
+    {
+      "seq_id": "T0HLX",
+      "split": "val",
+      "n_segments": 8,
+      "length": 31.62
+    },
+    {
+      "seq_id": "T1FTD",
+      "split": "val",
+      "n_segments": 8,
+      "length": 33.88
+    },
+    {
+      "seq_id": "T28D7",
+      "split": "val",
+      "n_segments": 2,
+      "length": 32.21
+    },
+    {
+      "seq_id": "T342T",
+      "split": "val",
+      "n_segments": 7,
+      "length": 32.38
+    },
+    {
+      "seq_id": "T4HF9",
+      "split": "val",
+      "n_segments": 3,
+      "length": 21.92
+    },
+    {
+      "seq_id": "T5JY8",
+      "split": "val",
+      "n_segments": 8,
+      "length": 31.5
+    },
+    {
+      "seq_id": "T7N6A",
+      "split": "val",
+      "n_segments": 8,
+      "length": 35.83
+    },
+    {
+      "seq_id": "T87QE",
+      "split": "val",
+      "n_segments": 8,
+      "length": 35.67
+    },
+    {
+      "seq_id": "T8XGN",
+      "split": "val",
+      "n_segments": 4,
+      "length": 30.04
+    },
+    {
+      "seq_id": "TA23R",
+      "split": "val",
+      "n_segments": 8,
+      "length": 26.75
+    },
+    {
+      "seq_id": "TAZGF",
+      "split": "val",
+      "n_segments": 13,
+      "length": 12.04
+    },
+    {
+      "seq_id": "TC015",
+      "split": "val",
+      "n_segments": 5,
+      "length": 30.58
+    },
+    {
+      "seq_id": "TCM46",
+      "split": "val",
+      "n_segments": 6,
+      "length": 23.0
+    },
+    {
+      "seq_id": "TD1KD",
+      "split": "val",
+      "n_segments": 3,
+      "length": 27.38
+    },
+    {
+      "seq_id": "TDNV3",
+      "split": "val",
+      "n_segments": 8,
+      "length": 33.54
+    },
+    {
+      "seq_id": "TEQU4",
+      "split": "val",
+      "n_segments": 7,
+      "length": 26.25
+    },
+    {
+      "seq_id": "TF95Y",
+      "split": "val",
+      "n_segments": 4,
+      "length": 15.38
+    },
+    {
+      "seq_id": "TGDWN",
+      "split": "val",
+      "n_segments": 3,
+      "length": 30.54
+    },
+    {
+      "seq_id": "THW67",
+      "split": "val",
+      "n_segments": 22,
+      "length": 29.04
+    },
+    {
+      "seq_id": "TIS3Z",
+      "split": "val",
+      "n_segments": 9,
+      "length": 32.96
+    },
+    {
+      "seq_id": "TJKGJ",
+      "split": "val",
+      "n_segments": 13,
+      "length": 32.04
+    },
+    {
+      "seq_id": "TKFY2",
+      "split": "val",
+      "n_segments": 5,
+      "length": 31.38
+    },
+    {
+      "seq_id": "TLDA3",
+      "split": "val",
+      "n_segments": 6,
+      "length": 32.12
+    },
+    {
+      "seq_id": "TM9I6",
+      "split": "val",
+      "n_segments": 6,
+      "length": 30.5
+    },
+    {
+      "seq_id": "TNEEH",
+      "split": "val",
+      "n_segments": 7,
+      "length": 28.42
+    },
+    {
+      "seq_id": "TOE9V",
+      "split": "val",
+      "n_segments": 9,
+      "length": 20.58
+    },
+    {
+      "seq_id": "TPH12",
+      "split": "val",
+      "n_segments": 16,
+      "length": 29.58
+    },
+    {
+      "seq_id": "TQGPM",
+      "split": "val",
+      "n_segments": 7,
+      "length": 30.88
+    },
+    {
+      "seq_id": "TRHB9",
+      "split": "val",
+      "n_segments": 8,
+      "length": 40.75
+    },
+    {
+      "seq_id": "TSI2S",
+      "split": "val",
+      "n_segments": 8,
+      "length": 35.62
+    },
+    {
+      "seq_id": "TTLFX",
+      "split": "val",
+      "n_segments": 4,
+      "length": 29.46
+    },
+    {
+      "seq_id": "TU3IG",
+      "split": "val",
+      "n_segments": 9,
+      "length": 19.08
+    },
+    {
+      "seq_id": "TVBLW",
+      "split": "val",
+      "n_segments": 5,
+      "length": 32.46
+    },
+    {
+      "seq_id": "TVS1P",
+      "split": "val",
+      "n_segments": 3,
+      "length": 25.79
+    },
+    {
+      "seq_id": "TW6NZ",
+      "split": "val",
+      "n_segments": 14,
+      "length": 32.75
+    },
+    {
+      "seq_id": "TX122",
+      "split": "val",
+      "n_segments": 5,
+      "length": 35.92
+    },
+    {
+      "seq_id": "TXNDA",
+      "split": "val",
+      "n_segments": 9,
+      "length": 13.0
+    },
+    {
+      "seq_id": "TYYZK",
+      "split": "val",
+      "n_segments": 6,
+      "length": 41.38
+    },
+    {
+      "seq_id": "TZL6H",
+      "split": "val",
+      "n_segments": 4,
+      "length": 30.75
+    },
+    {
+      "seq_id": "U0ACD",
+      "split": "val",
+      "n_segments": 5,
+      "length": 28.5
+    },
+    {
+      "seq_id": "U1DTW",
+      "split": "val",
+      "n_segments": 4,
+      "length": 32.71
+    },
+    {
+      "seq_id": "U2V5A",
+      "split": "val",
+      "n_segments": 2,
+      "length": 30.04
+    },
+    {
+      "seq_id": "U386F",
+      "split": "val",
+      "n_segments": 7,
+      "length": 31.17
+    },
+    {
+      "seq_id": "U3VOM",
+      "split": "val",
+      "n_segments": 10,
+      "length": 30.58
+    },
+    {
+      "seq_id": "U4FR1",
+      "split": "val",
+      "n_segments": 5,
+      "length": 44.58
+    },
+    {
+      "seq_id": "U5M7E",
+      "split": "val",
+      "n_segments": 7,
+      "length": 30.25
+    },
+    {
+      "seq_id": "U6QKX",
+      "split": "val",
+      "n_segments": 8,
+      "length": 14.29
+    },
+    {
+      "seq_id": "U79C9",
+      "split": "val",
+      "n_segments": 3,
+      "length": 34.88
+    },
+    {
+      "seq_id": "U8V9N",
+      "split": "val",
+      "n_segments": 5,
+      "length": 46.92
+    },
+    {
+      "seq_id": "U9LKA",
+      "split": "val",
+      "n_segments": 10,
+      "length": 25.67
+    },
+    {
+      "seq_id": "UAT1F",
+      "split": "val",
+      "n_segments": 11,
+      "length": 29.83
+    },
+    {
+      "seq_id": "UB3KO",
+      "split": "val",
+      "n_segments": 6,
+      "length": 42.92
+    },
+    {
+      "seq_id": "UBYBQ",
+      "split": "val",
+      "n_segments": 9,
+      "length": 30.62
+    },
+    {
+      "seq_id": "UCNVW",
+      "split": "val",
+      "n_segments": 3,
+      "length": 30.96
+    },
+    {
+      "seq_id": "UD7R8",
+      "split": "val",
+      "n_segments": 9,
+      "length": 30.42
+    },
+    {
+      "seq_id": "UDRZ6",
+      "split": "val",
+      "n_segments": 6,
+      "length": 31.04
+    },
+    {
+      "seq_id": "UEXO4",
+      "split": "val",
+      "n_segments": 6,
+      "length": 25.08
+    },
+    {
+      "seq_id": "UFWKL",
+      "split": "val",
+      "n_segments": 7,
+      "length": 29.38
+    },
+    {
+      "seq_id": "UGMJZ",
+      "split": "val",
+      "n_segments": 7,
+      "length": 31.58
+    },
+    {
+      "seq_id": "UI0QG",
+      "split": "val",
+      "n_segments": 6,
+      "length": 30.08
+    },
+    {
+      "seq_id": "UIPXF",
+      "split": "val",
+      "n_segments": 8,
+      "length": 31.33
+    },
+    {
+      "seq_id": "UJMNV",
+      "split": "val",
+      "n_segments": 2,
+      "length": 31.88
+    },
+    {
+      "seq_id": "UK5AT",
+      "split": "test",
+      "n_segments": 7,
+      "length": 36.58
+    },
+    {
+      "seq_id": "UKLQ1",
+      "split": "test",
+      "n_segments": 7,
+      "length": 32.92
+    },
+    {
+      "seq_id": "ULAWO",
+      "split": "test",
+      "n_segments": 3,
+      "length": 31.21
+    },
+    {
+      "seq_id": "UN6O9",
+      "split": "test",
+      "n_segments": 4,
+      "length": 27.33
+    },
+    {
+      "seq_id": "UNQD7",
+      "split": "test",
+      "n_segments": 3,
+      "length": 31.96
+    },
+    {
+      "seq_id": "UPCQK",
+      "split": "test",
+      "n_segments": 12,
+      "length": 29.92
+    },
+    {
+      "seq_id": "UPWTC",
+      "split": "test",
+      "n_segments": 11,
+      "length": 33.62
+    },
+    {
+      "seq_id": "UQPO0",
+      "split": "test",
+      "n_segments": 4,
+      "length": 50.29
+    },
+    {
+      "seq_id": "URG8B",
+      "split": "test",
+      "n_segments": 10,
+      "length": 29.96
+    },
+    {
+      "seq_id": "USNP1",
+      "split": "test",
+      "n_segments": 4,
+      "length": 19.0
+    },
+    {
+      "seq_id": "UTAGQ",
+      "split": "test",
+      "n_segments": 9,
+      "length": 12.0
+    },
+    {
+      "seq_id": "UU2LH",
+      "split": "test",
+      "n_segments": 7,
+      "length": 24.25
+    },
+    {
+      "seq_id": "UVN96",
+      "split": "test",
+      "n_segments": 5,
+      "length": 31.08
+    },
+    {
+      "seq_id": "UVRMR",
+      "split": "test",
+      "n_segments": 14,
+      "length": 33.54
+    },
+    {
+      "seq_id": "UX8NQ",
+      "split": "test",
+      "n_segments": 15,
+      "length": 25.0
+    },
+    {
+      "seq_id": "UY7BK",
+      "split": "test",
+      "n_segments": 6,
+      "length": 31.17
+    },
+    {
+      "seq_id": "UZIQS",
+      "split": "test",
+      "n_segments": 5,
+      "length": 29.71
+    },
+    {
+      "seq_id": "V00AL",
+      "split": "test",
+      "n_segments": 4,
+      "length": 20.67
+    },
+    {
+      "seq_id": "V1JIC",
+      "split": "test",
+      "n_segments": 8,
+      "length": 26.92
+    },
+    {
+      "seq_id": "V25IB",
+      "split": "test",
+      "n_segments": 5,
+      "length": 30.58
+    },
+    {
+      "seq_id": "V2I7S",
+      "split": "test",
+      "n_segments": 3,
+      "length": 31.58
+    },
+    {
+      "seq_id": "V3B51",
+      "split": "test",
+      "n_segments": 5,
+      "length": 31.67
+    },
+    {
+      "seq_id": "V47ZW",
+      "split": "test",
+      "n_segments": 6,
+      "length": 29.5
+    },
+    {
+      "seq_id": "V4HBP",
+      "split": "test",
+      "n_segments": 12,
+      "length": 31.08
+    },
+    {
+      "seq_id": "V58VE",
+      "split": "test",
+      "n_segments": 5,
+      "length": 31.54
+    },
+    {
+      "seq_id": "V6LP3",
+      "split": "test",
+      "n_segments": 8,
+      "length": 34.42
+    },
+    {
+      "seq_id": "V7KBN",
+      "split": "test",
+      "n_segments": 4,
+      "length": 29.21
+    },
+    {
+      "seq_id": "V8H9M",
+      "split": "test",
+      "n_segments": 6,
+      "length": 31.08
+    },
+    {
+      "seq_id": "V9RT3",
+      "split": "test",
+      "n_segments": 8,
+      "length": 29.12
+    },
+    {
+      "seq_id": "VAAXH",
+      "split": "test",
+      "n_segments": 5,
+      "length": 31.12
+    },
+    {
+      "seq_id": "VB1HT",
+      "split": "test",
+      "n_segments": 6,
+      "length": 35.88
+    },
+    {
+      "seq_id": "VD6P1",
+      "split": "test",
+      "n_segments": 5,
+      "length": 25.38
+    },
+    {
+      "seq_id": "VE52Z",
+      "split": "test",
+      "n_segments": 9,
+      "length": 35.46
+    },
+    {
+      "seq_id": "VEX8Z",
+      "split": "test",
+      "n_segments": 5,
+      "length": 23.71
+    },
+    {
+      "seq_id": "VG0GK",
+      "split": "test",
+      "n_segments": 13,
+      "length": 21.0
+    },
+    {
+      "seq_id": "VGPCG",
+      "split": "test",
+      "n_segments": 5,
+      "length": 31.5
+    },
+    {
+      "seq_id": "VI2TX",
+      "split": "test",
+      "n_segments": 8,
+      "length": 31.25
+    },
+    {
+      "seq_id": "VJ2QS",
+      "split": "test",
+      "n_segments": 10,
+      "length": 23.75
+    },
+    {
+      "seq_id": "VKLP7",
+      "split": "test",
+      "n_segments": 1,
+      "length": 32.96
+    },
+    {
+      "seq_id": "VLE11",
+      "split": "test",
+      "n_segments": 13,
+      "length": 33.08
+    },
+    {
+      "seq_id": "VML1Z",
+      "split": "test",
+      "n_segments": 2,
+      "length": 29.33
+    },
+    {
+      "seq_id": "VNQJ0",
+      "split": "test",
+      "n_segments": 10,
+      "length": 31.42
+    },
+    {
+      "seq_id": "VOTA7",
+      "split": "test",
+      "n_segments": 7,
+      "length": 18.08
+    },
+    {
+      "seq_id": "VP6ID",
+      "split": "test",
+      "n_segments": 5,
+      "length": 37.96
+    },
+    {
+      "seq_id": "VPJLN",
+      "split": "test",
+      "n_segments": 4,
+      "length": 30.33
+    },
+    {
+      "seq_id": "VRMNI",
+      "split": "test",
+      "n_segments": 9,
+      "length": 33.75
+    },
+    {
+      "seq_id": "VSAA7",
+      "split": "test",
+      "n_segments": 8,
+      "length": 36.21
+    },
+    {
+      "seq_id": "VSS68",
+      "split": "test",
+      "n_segments": 6,
+      "length": 28.5
+    },
+    {
+      "seq_id": "VTAX3",
+      "split": "test",
+      "n_segments": 6,
+      "length": 16.25
+    },
+    {
+      "seq_id": "VTOYP",
+      "split": "test",
+      "n_segments": 3,
+      "length": 28.17
+    },
+    {
+      "seq_id": "VUNSQ",
+      "split": "test",
+      "n_segments": 3,
+      "length": 33.71
+    },
+    {
+      "seq_id": "VVJE0",
+      "split": "test",
+      "n_segments": 15,
+      "length": 30.83
+    },
+    {
+      "seq_id": "VX1GX",
+      "split": "test",
+      "n_segments": 12,
+      "length": 48.79
+    },
+    {
+      "seq_id": "VXNGC",
+      "split": "test",
+      "n_segments": 5,
+      "length": 30.29
+    },
+    {
+      "seq_id": "VYI5L",
+      "split": "test",
+      "n_segments": 6,
+      "length": 30.42
+    },
+    {
+      "seq_id": "W0624",
+      "split": "test",
+      "n_segments": 11,
+      "length": 29.21
+    },
+    {
+      "seq_id": "W1KJ9",
+      "split": "test",
+      "n_segments": 2,
+      "length": 18.54
+    },
+    {
+      "seq_id": "W28C2",
+      "split": "test",
+      "n_segments": 10,
+      "length": 35.75
+    },
+    {
+      "seq_id": "W2QG1",
+      "split": "test",
+      "n_segments": 5,
+      "length": 20.88
+    },
+    {
+      "seq_id": "W3Y5Q",
+      "split": "test",
+      "n_segments": 4,
+      "length": 28.46
+    },
+    {
+      "seq_id": "W4U3V",
+      "split": "test",
+      "n_segments": 11,
+      "length": 36.88
+    },
+    {
+      "seq_id": "W6210",
+      "split": "test",
+      "n_segments": 7,
+      "length": 30.83
+    },
+    {
+      "seq_id": "W75CV",
+      "split": "test",
+      "n_segments": 6,
+      "length": 22.0
+    },
+    {
+      "seq_id": "W86JJ",
+      "split": "test",
+      "n_segments": 3,
+      "length": 30.75
+    },
+    {
+      "seq_id": "W98IU",
+      "split": "test",
+      "n_segments": 5,
+      "length": 30.25
+    },
+    {
+      "seq_id": "WA7WD",
+      "split": "test",
+      "n_segments": 16,
+      "length": 31.46
+    },
+    {
+      "seq_id": "WBBTU",
+      "split": "test",
+      "n_segments": 6,
+      "length": 31.12
+    },
+    {
+      "seq_id": "WCIBT",
+      "split": "test",
+      "n_segments": 8,
+      "length": 60.58
+    },
+    {
+      "seq_id": "WDB4S",
+      "split": "test",
+      "n_segments": 4,
+      "length": 33.17
+    },
+    {
+      "seq_id": "WEIS2",
+      "split": "test",
+      "n_segments": 8,
+      "length": 30.67
+    },
+    {
+      "seq_id": "WETXR",
+      "split": "test",
+      "n_segments": 3,
+      "length": 29.79
+    },
+    {
+      "seq_id": "WF8WM",
+      "split": "test",
+      "n_segments": 6,
+      "length": 31.62
+    },
+    {
+      "seq_id": "WGFU7",
+      "split": "test",
+      "n_segments": 6,
+      "length": 22.29
+    },
+    {
+      "seq_id": "WH1PD",
+      "split": "test",
+      "n_segments": 9,
+      "length": 30.08
+    },
+    {
+      "seq_id": "WI6NB",
+      "split": "test",
+      "n_segments": 5,
+      "length": 44.5
+    },
+    {
+      "seq_id": "WIQ2O",
+      "split": "test",
+      "n_segments": 5,
+      "length": 31.38
+    },
+    {
+      "seq_id": "WJ33D",
+      "split": "test",
+      "n_segments": 11,
+      "length": 31.42
+    },
+    {
+      "seq_id": "WJNJJ",
+      "split": "test",
+      "n_segments": 2,
+      "length": 27.42
+    },
+    {
+      "seq_id": "WKDPZ",
+      "split": "test",
+      "n_segments": 6,
+      "length": 30.62
+    },
+    {
+      "seq_id": "WLKEF",
+      "split": "test",
+      "n_segments": 6,
+      "length": 18.71
+    },
+    {
+      "seq_id": "WMD0E",
+      "split": "test",
+      "n_segments": 4,
+      "length": 29.25
+    },
+    {
+      "seq_id": "WN7T3",
+      "split": "test",
+      "n_segments": 5,
+      "length": 30.71
+    },
+    {
+      "seq_id": "WO0OM",
+      "split": "test",
+      "n_segments": 6,
+      "length": 31.46
+    },
+    {
+      "seq_id": "WPFKR",
+      "split": "test",
+      "n_segments": 4,
+      "length": 29.38
+    },
+    {
+      "seq_id": "WPZQ7",
+      "split": "test",
+      "n_segments": 4,
+      "length": 25.71
+    },
+    {
+      "seq_id": "WQYET",
+      "split": "test",
+      "n_segments": 4,
+      "length": 31.21
+    },
+    {
+      "seq_id": "WRW7O",
+      "split": "test",
+      "n_segments": 11,
+      "length": 25.38
+    },
+    {
+      "seq_id": "WSS3R",
+      "split": "test",
+      "n_segments": 3,
+      "length": 39.54
+    },
+    {
+      "seq_id": "WT7GN",
+      "split": "test",
+      "n_segments": 5,
+      "length": 31.42
+    },
+    {
+      "seq_id": "WTJQ0",
+      "split": "test",
+      "n_segments": 7,
+      "length": 18.58
+    },
+    {
+      "seq_id": "WUL5P",
+      "split": "test",
+      "n_segments": 4,
+      "length": 32.33
+    },
+    {
+      "seq_id": "WVOQP",
+      "split": "test",
+      "n_segments": 14,
+      "length": 36.71
+    },
+    {
+      "seq_id": "WWHLD",
+      "split": "test",
+      "n_segments": 4,
+      "length": 27.38
+    },
+    {
+      "seq_id": "WX7AG",
+      "split": "test",
+      "n_segments": 9,
+      "length": 29.96
+    },
+    {
+      "seq_id": "WXUZK",
+      "split": "test",
+      "n_segments": 6,
+      "length": 29.71
+    },
+    {
+      "seq_id": "WYZ5D",
+      "split": "test",
+      "n_segments": 5,
+      "length": 23.5
+    },
+    {
+      "seq_id": "WZN0I",
+      "split": "test",
+      "n_segments": 7,
+      "length": 31.0
+    },
+    {
+      "seq_id": "X00I8",
+      "split": "test",
+      "n_segments": 7,
+      "length": 29.29
+    },
+    {
+      "seq_id": "X0JKJ",
+      "split": "test",
+      "n_segments": 5,
+      "length": 33.46
+    },
+    {
+      "seq_id": "X16WJ",
+      "split": "test",
+      "n_segments": 12,
+      "length": 14.75
+    },
+    {
+      "seq_id": "X1XZA",
+      "split": "test",
+      "n_segments": 2,
+      "length": 31.75
+    },
+    {
+      "seq_id": "X2LBW",
+      "split": "test",
+      "n_segments": 21,
+      "length": 68.08
+    },
+    {
+      "seq_id": "X3FAP",
+      "split": "test",
+      "n_segments": 5,
+      "length": 36.83
+    },
+    {
+      "seq_id": "X4DOF",
+      "split": "test",
+      "n_segments": 5,
+      "length": 18.08
+    },
+    {
+      "seq_id": "X5E6E",
+      "split": "test",
+      "n_segments": 8,
+      "length": 25.83
+    },
+    {
+      "seq_id": "X6JKA",
+      "split": "test",
+      "n_segments": 1,
+      "length": 24.38
+    },
+    {
+      "seq_id": "X7J7H",
+      "split": "test",
+      "n_segments": 7,
+      "length": 18.25
+    },
+    {
+      "seq_id": "X8A6H",
+      "split": "test",
+      "n_segments": 8,
+      "length": 28.21
+    },
+    {
+      "seq_id": "X8LT0",
+      "split": "test",
+      "n_segments": 7,
+      "length": 56.46
+    },
+    {
+      "seq_id": "X95MU",
+      "split": "test",
+      "n_segments": 6,
+      "length": 36.38
+    },
+    {
+      "seq_id": "XAHU4",
+      "split": "test",
+      "n_segments": 3,
+      "length": 10.92
+    },
+    {
+      "seq_id": "XB4HN",
+      "split": "test",
+      "n_segments": 6,
+      "length": 25.5
+    },
+    {
+      "seq_id": "XC8DF",
+      "split": "test",
+      "n_segments": 6,
+      "length": 23.12
+    },
+    {
+      "seq_id": "XDFPV",
+      "split": "test",
+      "n_segments": 8,
+      "length": 30.5
+    },
+    {
+      "seq_id": "XDVAY",
+      "split": "test",
+      "n_segments": 7,
+      "length": 31.79
+    },
+    {
+      "seq_id": "XED6W",
+      "split": "test",
+      "n_segments": 5,
+      "length": 18.88
+    },
+    {
+      "seq_id": "XF93D",
+      "split": "test",
+      "n_segments": 10,
+      "length": 24.29
+    },
+    {
+      "seq_id": "XG839",
+      "split": "test",
+      "n_segments": 9,
+      "length": 47.67
+    },
+    {
+      "seq_id": "XHL3Z",
+      "split": "test",
+      "n_segments": 7,
+      "length": 42.33
+    },
+    {
+      "seq_id": "XIUQJ",
+      "split": "test",
+      "n_segments": 10,
+      "length": 35.08
+    },
+    {
+      "seq_id": "XJFMW",
+      "split": "test",
+      "n_segments": 7,
+      "length": 31.12
+    },
+    {
+      "seq_id": "XJU8U",
+      "split": "test",
+      "n_segments": 8,
+      "length": 30.25
+    },
+    {
+      "seq_id": "XKM5R",
+      "split": "test",
+      "n_segments": 3,
+      "length": 30.54
+    },
+    {
+      "seq_id": "XLR4B",
+      "split": "test",
+      "n_segments": 10,
+      "length": 30.33
+    },
+    {
+      "seq_id": "XN64E",
+      "split": "test",
+      "n_segments": 7,
+      "length": 33.04
+    },
+    {
+      "seq_id": "XNXW6",
+      "split": "test",
+      "n_segments": 5,
+      "length": 17.12
+    },
+    {
+      "seq_id": "XP305",
+      "split": "test",
+      "n_segments": 6,
+      "length": 17.88
+    },
+    {
+      "seq_id": "XPQ0D",
+      "split": "test",
+      "n_segments": 3,
+      "length": 22.12
+    },
+    {
+      "seq_id": "XQDQ4",
+      "split": "test",
+      "n_segments": 4,
+      "length": 30.92
+    },
+    {
+      "seq_id": "XRLG6",
+      "split": "test",
+      "n_segments": 1,
+      "length": 30.92
+    },
+    {
+      "seq_id": "XRWBL",
+      "split": "test",
+      "n_segments": 7,
+      "length": 30.04
+    },
+    {
+      "seq_id": "XSS0J",
+      "split": "test",
+      "n_segments": 2,
+      "length": 31.04
+    },
+    {
+      "seq_id": "XTHL8",
+      "split": "test",
+      "n_segments": 3,
+      "length": 31.75
+    },
+    {
+      "seq_id": "XULW2",
+      "split": "test",
+      "n_segments": 6,
+      "length": 12.0
+    },
+    {
+      "seq_id": "XVBTO",
+      "split": "test",
+      "n_segments": 2,
+      "length": 20.96
+    },
+    {
+      "seq_id": "XWQ1D",
+      "split": "test",
+      "n_segments": 5,
+      "length": 30.54
+    },
+    {
+      "seq_id": "XXDHJ",
+      "split": "test",
+      "n_segments": 5,
+      "length": 23.83
+    },
+    {
+      "seq_id": "XXYWL",
+      "split": "test",
+      "n_segments": 11,
+      "length": 8.62
+    },
+    {
+      "seq_id": "XYTFC",
+      "split": "test",
+      "n_segments": 7,
+      "length": 32.17
+    },
+    {
+      "seq_id": "XZGIR",
+      "split": "test",
+      "n_segments": 5,
+      "length": 30.75
+    },
+    {
+      "seq_id": "Y0CA0",
+      "split": "test",
+      "n_segments": 4,
+      "length": 30.88
+    },
+    {
+      "seq_id": "Y1HOV",
+      "split": "test",
+      "n_segments": 5,
+      "length": 24.92
+    },
+    {
+      "seq_id": "Y2NAO",
+      "split": "test",
+      "n_segments": 7,
+      "length": 21.5
+    },
+    {
+      "seq_id": "Y3C08",
+      "split": "test",
+      "n_segments": 3,
+      "length": 5.62
+    },
+    {
+      "seq_id": "Y49WR",
+      "split": "test",
+      "n_segments": 4,
+      "length": 24.0
+    },
+    {
+      "seq_id": "Y4X8J",
+      "split": "test",
+      "n_segments": 5,
+      "length": 31.71
+    },
+    {
+      "seq_id": "Y5PF5",
+      "split": "test",
+      "n_segments": 2,
+      "length": 31.79
+    },
+    {
+      "seq_id": "Y6ROG",
+      "split": "test",
+      "n_segments": 9,
+      "length": 29.38
+    },
+    {
+      "seq_id": "Y8ON2",
+      "split": "test",
+      "n_segments": 5,
+      "length": 16.25
+    },
+    {
+      "seq_id": "Y9JWG",
+      "split": "test",
+      "n_segments": 6,
+      "length": 30.67
+    },
+    {
+      "seq_id": "YAXGX",
+      "split": "test",
+      "n_segments": 8,
+      "length": 30.33
+    },
+    {
+      "seq_id": "YBW3D",
+      "split": "test",
+      "n_segments": 7,
+      "length": 32.71
+    },
+    {
+      "seq_id": "YCST7",
+      "split": "test",
+      "n_segments": 3,
+      "length": 4.38
+    },
+    {
+      "seq_id": "YDLBN",
+      "split": "test",
+      "n_segments": 7,
+      "length": 33.46
+    },
+    {
+      "seq_id": "YEHFQ",
+      "split": "test",
+      "n_segments": 4,
+      "length": 30.67
+    },
+    {
+      "seq_id": "YG2EP",
+      "split": "test",
+      "n_segments": 5,
+      "length": 36.29
+    },
+    {
+      "seq_id": "YH7K4",
+      "split": "test",
+      "n_segments": 6,
+      "length": 28.92
+    },
+    {
+      "seq_id": "YINV4",
+      "split": "test",
+      "n_segments": 10,
+      "length": 15.75
+    },
+    {
+      "seq_id": "YJFWW",
+      "split": "test",
+      "n_segments": 4,
+      "length": 30.71
+    },
+    {
+      "seq_id": "YK7FT",
+      "split": "test",
+      "n_segments": 6,
+      "length": 31.42
+    },
+    {
+      "seq_id": "YLEK5",
+      "split": "test",
+      "n_segments": 7,
+      "length": 27.38
+    },
+    {
+      "seq_id": "YM213",
+      "split": "test",
+      "n_segments": 5,
+      "length": 29.67
+    },
+    {
+      "seq_id": "YMT5U",
+      "split": "test",
+      "n_segments": 5,
+      "length": 31.0
+    },
+    {
+      "seq_id": "YNRI0",
+      "split": "test",
+      "n_segments": 7,
+      "length": 21.54
+    },
+    {
+      "seq_id": "YPERJ",
+      "split": "test",
+      "n_segments": 2,
+      "length": 30.29
+    },
+    {
+      "seq_id": "YPUYO",
+      "split": "test",
+      "n_segments": 9,
+      "length": 31.79
+    },
+    {
+      "seq_id": "YQSN8",
+      "split": "test",
+      "n_segments": 3,
+      "length": 30.96
+    },
+    {
+      "seq_id": "YSBN0",
+      "split": "test",
+      "n_segments": 3,
+      "length": 28.54
+    },
+    {
+      "seq_id": "YT9AL",
+      "split": "test",
+      "n_segments": 8,
+      "length": 56.54
+    },
+    {
+      "seq_id": "YUGJJ",
+      "split": "test",
+      "n_segments": 9,
+      "length": 37.83
+    },
+    {
+      "seq_id": "YV874",
+      "split": "test",
+      "n_segments": 3,
+      "length": 30.25
+    },
+    {
+      "seq_id": "YW5C4",
+      "split": "test",
+      "n_segments": 7,
+      "length": 26.17
+    },
+    {
+      "seq_id": "YXBXH",
+      "split": "test",
+      "n_segments": 5,
+      "length": 26.96
+    },
+    {
+      "seq_id": "YXQWH",
+      "split": "test",
+      "n_segments": 7,
+      "length": 30.25
+    },
+    {
+      "seq_id": "YYKZ9",
+      "split": "test",
+      "n_segments": 3,
+      "length": 34.33
+    },
+    {
+      "seq_id": "Z04NK",
+      "split": "test",
+      "n_segments": 5,
+      "length": 30.96
+    },
+    {
+      "seq_id": "Z1A0Q",
+      "split": "test",
+      "n_segments": 5,
+      "length": 42.96
+    },
+    {
+      "seq_id": "Z1LE8",
+      "split": "test",
+      "n_segments": 14,
+      "length": 25.12
+    },
+    {
+      "seq_id": "Z2MBK",
+      "split": "test",
+      "n_segments": 5,
+      "length": 30.0
+    },
+    {
+      "seq_id": "Z4P5B",
+      "split": "test",
+      "n_segments": 6,
+      "length": 31.42
+    },
+    {
+      "seq_id": "Z5KH4",
+      "split": "test",
+      "n_segments": 2,
+      "length": 60.38
+    },
+    {
+      "seq_id": "Z6IAE",
+      "split": "test",
+      "n_segments": 6,
+      "length": 37.17
+    },
+    {
+      "seq_id": "Z70KK",
+      "split": "test",
+      "n_segments": 10,
+      "length": 30.96
+    },
+    {
+      "seq_id": "Z9B4Y",
+      "split": "test",
+      "n_segments": 9,
+      "length": 31.33
+    },
+    {
+      "seq_id": "Z9XLJ",
+      "split": "test",
+      "n_segments": 8,
+      "length": 24.58
+    },
+    {
+      "seq_id": "ZAO65",
+      "split": "test",
+      "n_segments": 8,
+      "length": 26.75
+    },
+    {
+      "seq_id": "ZC8L5",
+      "split": "test",
+      "n_segments": 7,
+      "length": 30.96
+    },
+    {
+      "seq_id": "ZCOSY",
+      "split": "test",
+      "n_segments": 2,
+      "length": 30.38
+    },
+    {
+      "seq_id": "ZDFOL",
+      "split": "test",
+      "n_segments": 9,
+      "length": 18.04
+    },
+    {
+      "seq_id": "ZED9E",
+      "split": "test",
+      "n_segments": 5,
+      "length": 30.75
+    },
+    {
+      "seq_id": "ZG1EM",
+      "split": "test",
+      "n_segments": 10,
+      "length": 31.17
+    },
+    {
+      "seq_id": "ZHDUR",
+      "split": "test",
+      "n_segments": 6,
+      "length": 33.83
+    },
+    {
+      "seq_id": "ZHZST",
+      "split": "test",
+      "n_segments": 3,
+      "length": 12.12
+    },
+    {
+      "seq_id": "ZIU9C",
+      "split": "test",
+      "n_segments": 7,
+      "length": 29.71
+    },
+    {
+      "seq_id": "ZJPK8",
+      "split": "test",
+      "n_segments": 8,
+      "length": 32.54
+    },
+    {
+      "seq_id": "ZKNCV",
+      "split": "test",
+      "n_segments": 3,
+      "length": 32.38
+    },
+    {
+      "seq_id": "ZL7E9",
+      "split": "test",
+      "n_segments": 6,
+      "length": 16.71
+    },
+    {
+      "seq_id": "ZNH10",
+      "split": "test",
+      "n_segments": 7,
+      "length": 29.46
+    },
+    {
+      "seq_id": "ZOMM2",
+      "split": "test",
+      "n_segments": 8,
+      "length": 31.42
+    },
+    {
+      "seq_id": "ZP6LO",
+      "split": "test",
+      "n_segments": 6,
+      "length": 29.5
+    },
+    {
+      "seq_id": "ZQAMW",
+      "split": "test",
+      "n_segments": 6,
+      "length": 33.08
+    },
+    {
+      "seq_id": "ZRXQ1",
+      "split": "test",
+      "n_segments": 2,
+      "length": 31.5
+    },
+    {
+      "seq_id": "ZS9XR",
+      "split": "test",
+      "n_segments": 12,
+      "length": 44.29
+    },
+    {
+      "seq_id": "ZSREG",
+      "split": "test",
+      "n_segments": 3,
+      "length": 14.67
+    },
+    {
+      "seq_id": "ZUKHZ",
+      "split": "test",
+      "n_segments": 7,
+      "length": 18.0
+    },
+    {
+      "seq_id": "ZVV1Y",
+      "split": "test",
+      "n_segments": 6,
+      "length": 30.25
+    },
+    {
+      "seq_id": "ZWVO3",
+      "split": "test",
+      "n_segments": 1,
+      "length": 30.62
+    },
+    {
+      "seq_id": "ZXSRR",
+      "split": "test",
+      "n_segments": 11,
+      "length": 36.46
+    },
+    {
+      "seq_id": "ZYGYS",
+      "split": "test",
+      "n_segments": 7,
+      "length": 24.42
+    },
+    {
+      "seq_id": "ZZ2SF",
+      "split": "test",
+      "n_segments": 6,
+      "length": 30.83
+    }
+  ]
+}

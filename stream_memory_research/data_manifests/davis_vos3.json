@@ -1,0 +1,1682 @@
+{
+  "dataset": "davis_vos3",
+  "task": "track",
+  "feature_dim": 768,
+  "tok_dim": 768,
+  "roi_dim": 768,
+  "n_roi": 1,
+  "encoder": {
+    "name": "openai/clip-vit-base-patch16",
+    "tag": "clip-vit-base-p16-224-f16-2x2tok-v1",
+    "input": 224,
+    "pool": "2x2",
+    "n_tok": 4,
+    "dtype": "float16",
+    "frozen": true,
+    "preprocess": "CLIPImageProcessor",
+    "roi_preprocess": "crop mask-bbox + 10% margin, stretch 224"
+  },
+  "split_key": "source_id",
+  "label_specs": {
+    "track": {
+      "kind": "mse",
+      "dim": 4
+    }
+  },
+  "extra": {
+    "sampling": "10 fps target: frame indices round(k * 24/10) over the native image sequence, cap 120",
+    "timestamp_rule": "t = frame_index / 24 (DAVIS 2017 release is 24 fps; no per-sequence fps field exists in the archive)",
+    "split": "train = official train minus deterministic val slice (every 6th sorted seq, offset 5); val = that slice; test = official val (never used for model selection)",
+    "roi": "mask bbox of the annotated object, normalised (cx,cy,w,h)",
+    "roi_valid": "0 where the mask is empty OR inside a simulated occlusion gap (see occlusion_simulation)",
+    "labels": {
+      "lab_track": "[T,1,4] normalised bbox of the object at frame t -- supervised even while roi_valid=0 (memory target)",
+      "lab_present": "[T,1] 1 if the object mask is non-empty (true visibility, not the injected flag)"
+    },
+    "occlusion_simulation": {
+      "why": "DAVIS is a VOS benchmark: the annotated object is present in essentially every frame, so the literal 'mask empty' rule produces no invalid frames and cannot test memory.",
+      "how": "per sequence, 1-3 gaps of 0.4-1.5 s (seeded by (seed, seq), deterministic), total <= 40% of frames, never frame 0, separated by >= 1 s of valid data",
+      "what_is_real": "pixels, CLIP features, mask bboxes, lab_present",
+      "what_is_injected": "only the roi_valid flag",
+      "seed": 0
+    },
+    "source_urls": [
+      "https://huggingface.co/datasets/yinloonga/DAVIS_2017 (DAVIS-2017-trainval-480p.zip, 832,766,765 B, contains JPEGImages/480p + Annotations/480p for all 90 sequence)",
+      "official https://data.vision.ee.ethz.ch/csergi/share/davis/DAVIS-2017-trainval-480p.zip measured at 0.04 MB/s -> not used"
+    ],
+    "encoder_config": {
+      "model": "openai/clip-vit-base-patch16",
+      "input_size": 224,
+      "dtype": "float16",
+      "device": "cuda"
+    },
+    "seed": 0,
+    "deterministic": true,
+    "n_extracted": 90,
+    "skipped": {},
+    "added_lab_age": "seconds since roi_valid was last 1; 0 on visible steps. per_gap then measures bbox error vs time since the object was last observed.",
+    "labels_squeezed": "lab_track [T,1,4]->[T,4], lab_present/lab_age [T,1]->[T] so the shared generic losses accept them; features unchanged"
+  },
+  "seqs": [
+    {
+      "seq_id": "bear",
+      "source_id": "bear",
+      "split": "train",
+      "T": 34,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\bear.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 34,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "bmx-bumps",
+      "source_id": "bmx-bumps",
+      "split": "train",
+      "T": 38,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\bmx-bumps.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 38,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "boat",
+      "source_id": "boat",
+      "split": "train",
+      "T": 32,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\boat.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 32,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "boxing-fisheye",
+      "source_id": "boxing-fisheye",
+      "split": "train",
+      "T": 37,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\boxing-fisheye.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 37,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "breakdance-flare",
+      "source_id": "breakdance-flare",
+      "split": "train",
+      "T": 30,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\breakdance-flare.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 30,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "bus",
+      "source_id": "bus",
+      "split": "val",
+      "T": 34,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\bus.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 34,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "car-turn",
+      "source_id": "car-turn",
+      "split": "train",
+      "T": 34,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\car-turn.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 34,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "cat-girl",
+      "source_id": "cat-girl",
+      "split": "train",
+      "T": 37,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\cat-girl.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 37,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "classic-car",
+      "source_id": "classic-car",
+      "split": "train",
+      "T": 27,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\classic-car.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 27,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "color-run",
+      "source_id": "color-run",
+      "split": "train",
+      "T": 35,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\color-run.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 35,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "crossing",
+      "source_id": "crossing",
+      "split": "train",
+      "T": 22,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\crossing.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 22,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "dance-jump",
+      "source_id": "dance-jump",
+      "split": "val",
+      "T": 25,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\dance-jump.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 25,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "dancing",
+      "source_id": "dancing",
+      "split": "train",
+      "T": 26,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\dancing.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 26,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "disc-jockey",
+      "source_id": "disc-jockey",
+      "split": "train",
+      "T": 32,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\disc-jockey.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 32,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "dog-agility",
+      "source_id": "dog-agility",
+      "split": "train",
+      "T": 11,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\dog-agility.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 11,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "dog-gooses",
+      "source_id": "dog-gooses",
+      "split": "train",
+      "T": 36,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\dog-gooses.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 36,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "dogs-scale",
+      "source_id": "dogs-scale",
+      "split": "train",
+      "T": 35,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\dogs-scale.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 35,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "drift-turn",
+      "source_id": "drift-turn",
+      "split": "val",
+      "T": 27,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\drift-turn.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 27,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "drone",
+      "source_id": "drone",
+      "split": "train",
+      "T": 38,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\drone.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 38,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "elephant",
+      "source_id": "elephant",
+      "split": "train",
+      "T": 34,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\elephant.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 34,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "flamingo",
+      "source_id": "flamingo",
+      "split": "train",
+      "T": 34,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\flamingo.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 34,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "hike",
+      "source_id": "hike",
+      "split": "train",
+      "T": 34,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\hike.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 34,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "hockey",
+      "source_id": "hockey",
+      "split": "train",
+      "T": 32,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\hockey.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 32,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "horsejump-low",
+      "source_id": "horsejump-low",
+      "split": "val",
+      "T": 25,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\horsejump-low.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 25,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "kid-football",
+      "source_id": "kid-football",
+      "split": "train",
+      "T": 29,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\kid-football.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 29,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "kite-walk",
+      "source_id": "kite-walk",
+      "split": "train",
+      "T": 34,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\kite-walk.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 34,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "koala",
+      "source_id": "koala",
+      "split": "train",
+      "T": 42,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\koala.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 42,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "lady-running",
+      "source_id": "lady-running",
+      "split": "train",
+      "T": 27,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\lady-running.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 27,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "lindy-hop",
+      "source_id": "lindy-hop",
+      "split": "train",
+      "T": 31,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\lindy-hop.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 31,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "longboard",
+      "source_id": "longboard",
+      "split": "val",
+      "T": 22,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\longboard.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 22,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "lucia",
+      "source_id": "lucia",
+      "split": "train",
+      "T": 29,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\lucia.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 29,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "mallard-fly",
+      "source_id": "mallard-fly",
+      "split": "train",
+      "T": 29,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\mallard-fly.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 29,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "mallard-water",
+      "source_id": "mallard-water",
+      "split": "train",
+      "T": 34,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\mallard-water.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 34,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "miami-surf",
+      "source_id": "miami-surf",
+      "split": "train",
+      "T": 29,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\miami-surf.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 29,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "motocross-bumps",
+      "source_id": "motocross-bumps",
+      "split": "train",
+      "T": 25,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\motocross-bumps.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 25,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "motorbike",
+      "source_id": "motorbike",
+      "split": "val",
+      "T": 18,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\motorbike.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 18,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "night-race",
+      "source_id": "night-race",
+      "split": "train",
+      "T": 19,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\night-race.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 19,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "paragliding",
+      "source_id": "paragliding",
+      "split": "train",
+      "T": 29,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\paragliding.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 29,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "planes-water",
+      "source_id": "planes-water",
+      "split": "train",
+      "T": 16,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\planes-water.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 16,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "rallye",
+      "source_id": "rallye",
+      "split": "train",
+      "T": 21,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\rallye.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 21,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "rhino",
+      "source_id": "rhino",
+      "split": "train",
+      "T": 38,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\rhino.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 38,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "rollerblade",
+      "source_id": "rollerblade",
+      "split": "val",
+      "T": 15,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\rollerblade.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 15,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "schoolgirls",
+      "source_id": "schoolgirls",
+      "split": "train",
+      "T": 34,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\schoolgirls.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 34,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "scooter-board",
+      "source_id": "scooter-board",
+      "split": "train",
+      "T": 38,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\scooter-board.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 38,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "scooter-gray",
+      "source_id": "scooter-gray",
+      "split": "train",
+      "T": 32,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\scooter-gray.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 32,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "sheep",
+      "source_id": "sheep",
+      "split": "train",
+      "T": 29,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\sheep.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 29,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "skate-park",
+      "source_id": "skate-park",
+      "split": "train",
+      "T": 34,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\skate-park.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 34,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "snowboard",
+      "source_id": "snowboard",
+      "split": "val",
+      "T": 28,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\snowboard.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 28,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "soccerball",
+      "source_id": "soccerball",
+      "split": "train",
+      "T": 20,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\soccerball.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 20,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "stroller",
+      "source_id": "stroller",
+      "split": "train",
+      "T": 38,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\stroller.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 38,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "stunt",
+      "source_id": "stunt",
+      "split": "train",
+      "T": 30,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\stunt.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 30,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "surf",
+      "source_id": "surf",
+      "split": "train",
+      "T": 23,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\surf.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 23,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "swing",
+      "source_id": "swing",
+      "split": "train",
+      "T": 25,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\swing.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 25,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "tennis",
+      "source_id": "tennis",
+      "split": "val",
+      "T": 29,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\tennis.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 29,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "tractor-sand",
+      "source_id": "tractor-sand",
+      "split": "train",
+      "T": 32,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\tractor-sand.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 32,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "train",
+      "source_id": "train",
+      "split": "train",
+      "T": 34,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\train.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 34,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "tuk-tuk",
+      "source_id": "tuk-tuk",
+      "split": "train",
+      "T": 25,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\tuk-tuk.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 25,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "upside-down",
+      "source_id": "upside-down",
+      "split": "train",
+      "T": 27,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\upside-down.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 27,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "varanus-cage",
+      "source_id": "varanus-cage",
+      "split": "train",
+      "T": 28,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\varanus-cage.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 28,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "walking",
+      "source_id": "walking",
+      "split": "val",
+      "T": 30,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\walking.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 30,
+        "split_official": "train"
+      }
+    },
+    {
+      "seq_id": "bike-packing",
+      "source_id": "bike-packing",
+      "split": "test",
+      "T": 29,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\bike-packing.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 29,
+        "split_official": "val"
+      }
+    },
+    {
+      "seq_id": "blackswan",
+      "source_id": "blackswan",
+      "split": "test",
+      "T": 21,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\blackswan.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 21,
+        "split_official": "val"
+      }
+    },
+    {
+      "seq_id": "bmx-trees",
+      "source_id": "bmx-trees",
+      "split": "test",
+      "T": 34,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\bmx-trees.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 34,
+        "split_official": "val"
+      }
+    },
+    {
+      "seq_id": "breakdance",
+      "source_id": "breakdance",
+      "split": "test",
+      "T": 35,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\breakdance.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 35,
+        "split_official": "val"
+      }
+    },
+    {
+      "seq_id": "camel",
+      "source_id": "camel",
+      "split": "test",
+      "T": 38,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\camel.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 38,
+        "split_official": "val"
+      }
+    },
+    {
+      "seq_id": "car-roundabout",
+      "source_id": "car-roundabout",
+      "split": "test",
+      "T": 32,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\car-roundabout.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 32,
+        "split_official": "val"
+      }
+    },
+    {
+      "seq_id": "car-shadow",
+      "source_id": "car-shadow",
+      "split": "test",
+      "T": 17,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\car-shadow.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 17,
+        "split_official": "val"
+      }
+    },
+    {
+      "seq_id": "cows",
+      "source_id": "cows",
+      "split": "test",
+      "T": 44,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\cows.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 44,
+        "split_official": "val"
+      }
+    },
+    {
+      "seq_id": "dance-twirl",
+      "source_id": "dance-twirl",
+      "split": "test",
+      "T": 38,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\dance-twirl.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 38,
+        "split_official": "val"
+      }
+    },
+    {
+      "seq_id": "dog",
+      "source_id": "dog",
+      "split": "test",
+      "T": 25,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\dog.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 25,
+        "split_official": "val"
+      }
+    },
+    {
+      "seq_id": "dogs-jump",
+      "source_id": "dogs-jump",
+      "split": "test",
+      "T": 28,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\dogs-jump.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 28,
+        "split_official": "val"
+      }
+    },
+    {
+      "seq_id": "drift-chicane",
+      "source_id": "drift-chicane",
+      "split": "test",
+      "T": 22,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\drift-chicane.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 22,
+        "split_official": "val"
+      }
+    },
+    {
+      "seq_id": "drift-straight",
+      "source_id": "drift-straight",
+      "split": "test",
+      "T": 21,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\drift-straight.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 21,
+        "split_official": "val"
+      }
+    },
+    {
+      "seq_id": "goat",
+      "source_id": "goat",
+      "split": "test",
+      "T": 38,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\goat.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 38,
+        "split_official": "val"
+      }
+    },
+    {
+      "seq_id": "gold-fish",
+      "source_id": "gold-fish",
+      "split": "test",
+      "T": 33,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\gold-fish.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 33,
+        "split_official": "val"
+      }
+    },
+    {
+      "seq_id": "horsejump-high",
+      "source_id": "horsejump-high",
+      "split": "test",
+      "T": 21,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\horsejump-high.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 21,
+        "split_official": "val"
+      }
+    },
+    {
+      "seq_id": "india",
+      "source_id": "india",
+      "split": "test",
+      "T": 34,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\india.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 34,
+        "split_official": "val"
+      }
+    },
+    {
+      "seq_id": "judo",
+      "source_id": "judo",
+      "split": "test",
+      "T": 14,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\judo.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 14,
+        "split_official": "val"
+      }
+    },
+    {
+      "seq_id": "kite-surf",
+      "source_id": "kite-surf",
+      "split": "test",
+      "T": 21,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\kite-surf.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 21,
+        "split_official": "val"
+      }
+    },
+    {
+      "seq_id": "lab-coat",
+      "source_id": "lab-coat",
+      "split": "test",
+      "T": 20,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\lab-coat.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 20,
+        "split_official": "val"
+      }
+    },
+    {
+      "seq_id": "libby",
+      "source_id": "libby",
+      "split": "test",
+      "T": 21,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\libby.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 21,
+        "split_official": "val"
+      }
+    },
+    {
+      "seq_id": "loading",
+      "source_id": "loading",
+      "split": "test",
+      "T": 21,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\loading.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 21,
+        "split_official": "val"
+      }
+    },
+    {
+      "seq_id": "mbike-trick",
+      "source_id": "mbike-trick",
+      "split": "test",
+      "T": 33,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\mbike-trick.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 33,
+        "split_official": "val"
+      }
+    },
+    {
+      "seq_id": "motocross-jump",
+      "source_id": "motocross-jump",
+      "split": "test",
+      "T": 17,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\motocross-jump.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 17,
+        "split_official": "val"
+      }
+    },
+    {
+      "seq_id": "paragliding-launch",
+      "source_id": "paragliding-launch",
+      "split": "test",
+      "T": 34,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\paragliding-launch.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 34,
+        "split_official": "val"
+      }
+    },
+    {
+      "seq_id": "parkour",
+      "source_id": "parkour",
+      "split": "test",
+      "T": 42,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\parkour.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 42,
+        "split_official": "val"
+      }
+    },
+    {
+      "seq_id": "pigs",
+      "source_id": "pigs",
+      "split": "test",
+      "T": 33,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\pigs.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 33,
+        "split_official": "val"
+      }
+    },
+    {
+      "seq_id": "scooter-black",
+      "source_id": "scooter-black",
+      "split": "test",
+      "T": 18,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\scooter-black.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 18,
+        "split_official": "val"
+      }
+    },
+    {
+      "seq_id": "shooting",
+      "source_id": "shooting",
+      "split": "test",
+      "T": 17,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\shooting.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 17,
+        "split_official": "val"
+      }
+    },
+    {
+      "seq_id": "soapbox",
+      "source_id": "soapbox",
+      "split": "test",
+      "T": 42,
+      "path": "G:\\stream_memory_data\\features\\davis_vos3\\soapbox.npz",
+      "labels": [
+        "track",
+        "present",
+        "age"
+      ],
+      "meta": {
+        "native_fps": 24.0,
+        "target_fps": 10.0,
+        "n_frames_kept": 42,
+        "split_official": "val"
+      }
+    }
+  ]
+}

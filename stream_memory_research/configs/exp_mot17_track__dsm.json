@@ -1,0 +1,32 @@
+{
+  "run_id": "mot17_track__dsm__base__s0",
+  "dataset": "mot17_track",
+  "manifest": "data_manifests/mot17_track.json",
+  "task": "track",
+  "model": {"name": "dsm_slot", "hidden": 192, "cfg": {"n_slots": 12, "slot_dim": 64}},
+  "heads": {"track": {"kind": "mse", "dim": 4},
+            "id": {"kind": "ce", "dim": 64, "ignore": -1}},
+  "loss": {
+    "task": {"track": 1.0, "id": 0.5},
+    "aux_num_scale": 0.1,
+    "aux": {"retrieval": 0.1, "crosstalk": 0.05, "time_consistency": 0.05,
+            "write_budget": 0.01, "long_horizon": 0.1},
+    "aux_cfg": {"crosstalk": {"w_shared": 1.0, "w_balance": 0.1},
+                "long_horizon": {"horizon": 5}}
+  },
+  "train": {
+    "epochs": 30, "batch": 32, "lr": 0.002, "wd": 0.0001, "amp": true,
+    "grad_clip": 1.0, "patience": 6, "aug": "medium", "T_max": 128,
+    "val_every": 1, "warmup_epochs": 2, "num_workers": 0, "preload": true,
+    "preload_max_gb": 6.0
+  },
+  "eval": {
+    "batch": 16,
+    "robustness": ["dense", "stride2", "stride4", "drop30", "drop50", "drop70",
+                   "burst", "repeat", "jitter", "mixed", "shuffled"],
+    "latency": true, "flops": true, "failure_topk": 10
+  },
+  "main_metric": "mae",
+  "seed": 0,
+  "notes": "template: MOT17 tracking / occlusion recovery (slot memory + identity head)"
+}

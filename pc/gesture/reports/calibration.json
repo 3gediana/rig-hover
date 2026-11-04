@@ -1,0 +1,498 @@
+{
+  "n_episodes": 40,
+  "before": {
+    "wave_latency_mean_ms": 3566.6666666666665,
+    "wave_latency_by_freq": {
+      "wave_0.5Hz_amp0.35": null,
+      "wave_0.5Hz_amp0.75": null,
+      "wave_1.0Hz_amp0.35": null,
+      "wave_1.0Hz_amp0.75": null,
+      "wave_1.5Hz_amp0.35": null,
+      "wave_1.5Hz_amp0.75": null,
+      "wave_2.0Hz_amp0.35": null,
+      "wave_2.0Hz_amp0.75": null,
+      "wave_2.5Hz_amp0.35": 3566.6666666666665,
+      "wave_2.5Hz_amp0.75": null
+    },
+    "wave_miss_rate": 0.9,
+    "static_trigger_rate": 0.0,
+    "idle_false_alarms": 0,
+    "idle_minutes": 3.0
+  },
+  "after": {
+    "wave": {
+      "n_episodes": 10,
+      "n_onsets_mean": 1.0,
+      "n_onsets": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "miss_rate": 0.0,
+      "latency_mean_ms": 836.6666666666666,
+      "latency_p90_ms": 976.6666666666666
+    },
+    "two_wave": {
+      "n_episodes": 5,
+      "n_onsets_mean": 1.8,
+      "n_onsets": [
+        1,
+        2,
+        2,
+        2,
+        2
+      ],
+      "miss_rate": 0.0,
+      "latency_mean_ms": 786.6666666666667,
+      "latency_p90_ms": 820.0
+    },
+    "static": {
+      "n_episodes": 4,
+      "n_onsets_mean": 0.75,
+      "n_onsets": [
+        1,
+        1,
+        0,
+        1
+      ],
+      "miss_rate": 0.25,
+      "latency_mean_ms": 522.2222222222223,
+      "latency_p90_ms": 613.3333333333334
+    },
+    "idle": {
+      "n_episodes": 9,
+      "n_onsets_mean": 0.0,
+      "n_onsets": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "miss_rate": 0.0,
+      "latency_mean_ms": null,
+      "latency_p90_ms": null
+    },
+    "unseen": {
+      "n_episodes": 12,
+      "n_onsets_mean": 0.16666666666666666,
+      "n_onsets": [
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "miss_rate": 0.0,
+      "latency_mean_ms": null,
+      "latency_p90_ms": null
+    },
+    "fa_per_min": 0.4,
+    "fa_idle_per_min": 0.0,
+    "fa_unseen_per_min": 1.0,
+    "fa_idle_minutes": 3.0,
+    "fa_unseen_minutes": 2.0,
+    "cont_single_onset_rate": 1.0,
+    "static_one_onset_rate": 0.75,
+    "two_wave_split_rate": 0.8,
+    "feasible": false,
+    "cost": 1001121.6666666666
+  },
+  "per_episode_latency_ms_after": {
+    "wave_0.5Hz_amp0.35": 900.0,
+    "wave_0.5Hz_amp0.75": 966.6666666666666,
+    "wave_1.0Hz_amp0.35": 800.0,
+    "wave_1.0Hz_amp0.75": 766.6666666666666,
+    "wave_1.5Hz_amp0.35": 933.3333333333334,
+    "wave_1.5Hz_amp0.75": 433.3333333333333,
+    "wave_2.0Hz_amp0.35": 833.3333333333334,
+    "wave_2.0Hz_amp0.75": 833.3333333333334,
+    "wave_2.5Hz_amp0.35": 1066.6666666666667,
+    "wave_2.5Hz_amp0.75": 833.3333333333334,
+    "two_wave_gap0.4": 800.0,
+    "two_wave_gap0.6": 800.0,
+    "two_wave_gap0.8": 833.3333333333334,
+    "two_wave_gap1.0": 733.3333333333334,
+    "two_wave_gap1.5": 766.6666666666666,
+    "static_open_palm": 633.3333333333334,
+    "static_thumbs_up": 533.3333333333334,
+    "static_pointing": null,
+    "static_fist": 400.0,
+    "idle_00": null,
+    "idle_01": null,
+    "idle_02": null,
+    "idle_03": null,
+    "idle_04": null,
+    "idle_05": null,
+    "idle_06": null,
+    "idle_07": null,
+    "idle_08": null,
+    "unseen_00": null,
+    "unseen_01": null,
+    "unseen_02": null,
+    "unseen_03": null,
+    "unseen_04": null,
+    "unseen_05": null,
+    "unseen_06": null,
+    "unseen_07": null,
+    "unseen_08": null,
+    "unseen_09": null,
+    "unseen_10": null,
+    "unseen_11": null
+  },
+  "per_episode_latency_ms_before": {
+    "wave_0.5Hz_amp0.35": null,
+    "wave_0.5Hz_amp0.75": null,
+    "wave_1.0Hz_amp0.35": null,
+    "wave_1.0Hz_amp0.75": null,
+    "wave_1.5Hz_amp0.35": null,
+    "wave_1.5Hz_amp0.75": null,
+    "wave_2.0Hz_amp0.35": null,
+    "wave_2.0Hz_amp0.75": null,
+    "wave_2.5Hz_amp0.35": 3566.6666666666665,
+    "wave_2.5Hz_amp0.75": null,
+    "two_wave_gap0.4": null,
+    "two_wave_gap0.6": null,
+    "two_wave_gap0.8": null,
+    "two_wave_gap1.0": null,
+    "two_wave_gap1.5": null,
+    "static_open_palm": null,
+    "static_thumbs_up": null,
+    "static_pointing": null,
+    "static_fist": null,
+    "idle_00": null,
+    "idle_01": null,
+    "idle_02": null,
+    "idle_03": null,
+    "idle_04": null,
+    "idle_05": null,
+    "idle_06": null,
+    "idle_07": null,
+    "idle_08": null,
+    "unseen_00": null,
+    "unseen_01": null,
+    "unseen_02": null,
+    "unseen_03": null,
+    "unseen_04": null,
+    "unseen_05": null,
+    "unseen_06": null,
+    "unseen_07": null,
+    "unseen_08": null,
+    "unseen_09": null,
+    "unseen_10": null,
+    "unseen_11": null
+  },
+  "config_after": {
+    "enter_thresh": 0.75,
+    "exit_thresh": 0.52
+  },
+  "timing_after": {
+    "pending_hold": 0.1,
+    "release": 0.25,
+    "min_gesture": 0.45,
+    "return_clear": 0.35,
+    "min_gap": 0.25,
+    "return_timeout": 2.0,
+    "max_dt_s": 0.25
+  },
+  "old_rows": [
+    {
+      "name": "wave_0.5Hz_amp0.35",
+      "n_trigger_frames": 0,
+      "latency_ms": null,
+      "miss": 1,
+      "duration_s": 6.7
+    },
+    {
+      "name": "wave_0.5Hz_amp0.75",
+      "n_trigger_frames": 0,
+      "latency_ms": null,
+      "miss": 1,
+      "duration_s": 6.7
+    },
+    {
+      "name": "wave_1.0Hz_amp0.35",
+      "n_trigger_frames": 0,
+      "latency_ms": null,
+      "miss": 1,
+      "duration_s": 6.7
+    },
+    {
+      "name": "wave_1.0Hz_amp0.75",
+      "n_trigger_frames": 0,
+      "latency_ms": null,
+      "miss": 1,
+      "duration_s": 6.7
+    },
+    {
+      "name": "wave_1.5Hz_amp0.35",
+      "n_trigger_frames": 0,
+      "latency_ms": null,
+      "miss": 1,
+      "duration_s": 6.7
+    },
+    {
+      "name": "wave_1.5Hz_amp0.75",
+      "n_trigger_frames": 0,
+      "latency_ms": null,
+      "miss": 1,
+      "duration_s": 6.7
+    },
+    {
+      "name": "wave_2.0Hz_amp0.35",
+      "n_trigger_frames": 0,
+      "latency_ms": null,
+      "miss": 1,
+      "duration_s": 6.7
+    },
+    {
+      "name": "wave_2.0Hz_amp0.75",
+      "n_trigger_frames": 0,
+      "latency_ms": null,
+      "miss": 1,
+      "duration_s": 6.7
+    },
+    {
+      "name": "wave_2.5Hz_amp0.35",
+      "n_trigger_frames": 54,
+      "latency_ms": 3566.6666666666665,
+      "miss": 0,
+      "duration_s": 6.7
+    },
+    {
+      "name": "wave_2.5Hz_amp0.75",
+      "n_trigger_frames": 0,
+      "latency_ms": null,
+      "miss": 1,
+      "duration_s": 6.7
+    },
+    {
+      "name": "two_wave_gap0.4",
+      "n_trigger_frames": 0,
+      "latency_ms": null,
+      "miss": 0,
+      "duration_s": 6.4
+    },
+    {
+      "name": "two_wave_gap0.6",
+      "n_trigger_frames": 0,
+      "latency_ms": null,
+      "miss": 0,
+      "duration_s": 6.6
+    },
+    {
+      "name": "two_wave_gap0.8",
+      "n_trigger_frames": 0,
+      "latency_ms": null,
+      "miss": 0,
+      "duration_s": 6.8
+    },
+    {
+      "name": "two_wave_gap1.0",
+      "n_trigger_frames": 0,
+      "latency_ms": null,
+      "miss": 0,
+      "duration_s": 7.0
+    },
+    {
+      "name": "two_wave_gap1.5",
+      "n_trigger_frames": 0,
+      "latency_ms": null,
+      "miss": 0,
+      "duration_s": 7.5
+    },
+    {
+      "name": "static_open_palm",
+      "n_trigger_frames": 0,
+      "latency_ms": null,
+      "miss": 1,
+      "duration_s": 5.5
+    },
+    {
+      "name": "static_thumbs_up",
+      "n_trigger_frames": 0,
+      "latency_ms": null,
+      "miss": 1,
+      "duration_s": 5.5
+    },
+    {
+      "name": "static_pointing",
+      "n_trigger_frames": 0,
+      "latency_ms": null,
+      "miss": 1,
+      "duration_s": 5.5
+    },
+    {
+      "name": "static_fist",
+      "n_trigger_frames": 0,
+      "latency_ms": null,
+      "miss": 1,
+      "duration_s": 5.5
+    },
+    {
+      "name": "idle_00",
+      "n_trigger_frames": 0,
+      "latency_ms": null,
+      "miss": 0,
+      "duration_s": 20.0
+    },
+    {
+      "name": "idle_01",
+      "n_trigger_frames": 0,
+      "latency_ms": null,
+      "miss": 0,
+      "duration_s": 20.0
+    },
+    {
+      "name": "idle_02",
+      "n_trigger_frames": 0,
+      "latency_ms": null,
+      "miss": 0,
+      "duration_s": 20.0
+    },
+    {
+      "name": "idle_03",
+      "n_trigger_frames": 0,
+      "latency_ms": null,
+      "miss": 0,
+      "duration_s": 20.0
+    },
+    {
+      "name": "idle_04",
+      "n_trigger_frames": 0,
+      "latency_ms": null,
+      "miss": 0,
+      "duration_s": 20.0
+    },
+    {
+      "name": "idle_05",
+      "n_trigger_frames": 0,
+      "latency_ms": null,
+      "miss": 0,
+      "duration_s": 20.0
+    },
+    {
+      "name": "idle_06",
+      "n_trigger_frames": 0,
+      "latency_ms": null,
+      "miss": 0,
+      "duration_s": 20.0
+    },
+    {
+      "name": "idle_07",
+      "n_trigger_frames": 0,
+      "latency_ms": null,
+      "miss": 0,
+      "duration_s": 20.0
+    },
+    {
+      "name": "idle_08",
+      "n_trigger_frames": 0,
+      "latency_ms": null,
+      "miss": 0,
+      "duration_s": 20.0
+    },
+    {
+      "name": "unseen_00",
+      "n_trigger_frames": 0,
+      "latency_ms": null,
+      "miss": 0,
+      "duration_s": 10.0
+    },
+    {
+      "name": "unseen_01",
+      "n_trigger_frames": 0,
+      "latency_ms": null,
+      "miss": 0,
+      "duration_s": 10.0
+    },
+    {
+      "name": "unseen_02",
+      "n_trigger_frames": 0,
+      "latency_ms": null,
+      "miss": 0,
+      "duration_s": 10.0
+    },
+    {
+      "name": "unseen_03",
+      "n_trigger_frames": 0,
+      "latency_ms": null,
+      "miss": 0,
+      "duration_s": 10.0
+    },
+    {
+      "name": "unseen_04",
+      "n_trigger_frames": 0,
+      "latency_ms": null,
+      "miss": 0,
+      "duration_s": 10.0
+    },
+    {
+      "name": "unseen_05",
+      "n_trigger_frames": 0,
+      "latency_ms": null,
+      "miss": 0,
+      "duration_s": 10.0
+    },
+    {
+      "name": "unseen_06",
+      "n_trigger_frames": 0,
+      "latency_ms": null,
+      "miss": 0,
+      "duration_s": 10.0
+    },
+    {
+      "name": "unseen_07",
+      "n_trigger_frames": 0,
+      "latency_ms": null,
+      "miss": 0,
+      "duration_s": 10.0
+    },
+    {
+      "name": "unseen_08",
+      "n_trigger_frames": 0,
+      "latency_ms": null,
+      "miss": 0,
+      "duration_s": 10.0
+    },
+    {
+      "name": "unseen_09",
+      "n_trigger_frames": 0,
+      "latency_ms": null,
+      "miss": 0,
+      "duration_s": 10.0
+    },
+    {
+      "name": "unseen_10",
+      "n_trigger_frames": 0,
+      "latency_ms": null,
+      "miss": 0,
+      "duration_s": 10.0
+    },
+    {
+      "name": "unseen_11",
+      "n_trigger_frames": 0,
+      "latency_ms": null,
+      "miss": 0,
+      "duration_s": 10.0
+    }
+  ]
+}

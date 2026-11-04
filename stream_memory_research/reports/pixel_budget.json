@@ -1,0 +1,8 @@
+{
+ "params": 3266388,
+ "macs_per_frame": 166705600.0,
+ "resolution": 160,
+ "K": 4,
+ "crop": 64,
+ "window": 16
+}

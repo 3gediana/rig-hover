@@ -1,0 +1,22 @@
+{
+  "run_id": "fixture_action__dsm__base__s0",
+  "dataset": "fixture_action",
+  "manifest": "runs/_fixture/manifest.json",
+  "task": "action",
+  "model": {"name": "dsm", "hidden": 64, "cfg": {"mem_dim": 32, "n_decay_groups": 4}},
+  "heads": {"action": {"kind": "ce", "dim": 5, "ignore": -1}},
+  "loss": {
+    "task": {"action": 1.0},
+    "aux_num_scale": 0.1,
+    "aux": {"retrieval": 0.1, "crosstalk": 0.05, "time_consistency": 0.05, "write_budget": 0.01, "long_horizon": 0.1}
+  },
+  "train": {
+    "epochs": 6, "batch": 16, "lr": 0.004, "wd": 0.0001, "amp": true,
+    "grad_clip": 1.0, "patience": 4, "aug": "medium", "T_max": 32,
+    "val_every": 1, "warmup_epochs": 1, "num_workers": 0, "preload": true
+  },
+  "eval": {"batch": 16, "robustness": ["dense", "stride2", "stride4", "drop50", "burst", "repeat", "jitter", "mixed", "shuffled"]},
+  "main_metric": "acc",
+  "seed": 0,
+  "notes": "integration check: real DSM core from src/models with the fixture"
+}

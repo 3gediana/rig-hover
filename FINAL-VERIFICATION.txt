@@ -1,0 +1,51 @@
+RIG-Hover 通宵交付 —— 最终验收日志
+生成时间: 2026-11-03 13:01:45 +0800
+python   : D:\smartcar\.venv\Scripts\python.exe
+机器人   : 离线（热点仍在，192.168.137.50 不通）。所有条目均不需要机器人。
+说明     : 17 个门禁套件 + 固件编译 + 1 个设计上为红的诊断项。
+           本次新增 deploygate（真机帧可部署性）与 calibrate_inputs 的验收入口。
+
+==============================================================================
+
+running 22 gate suite(s) + 1 diagnostic(s) with python.exe
+
+
+==============================================================================
+suite       result       time   note
+------------------------------------------------------------------------------
+cfc_host    PASS        18.0s   exit=0
+train       PASS        17.2s   exit=0
+obsv2       PASS         0.3s   exit=0
+precision   PASS         3.5s   exit=0
+perception  PASS        11.9s   exit=0
+scenesig    PASS         0.4s   exit=0
+scenariov2  PASS         0.2s   exit=0
+framesrc    PASS        15.2s   exit=0
+pickperson  PASS         3.6s   exit=0
+tableedge   PASS         0.3s   exit=0
+gesture     PASS         7.7s   exit=0
+teacher     PASS         0.5s   exit=0
+hub         PASS         8.8s   exit=0
+escalate    PASS         8.3s   exit=0
+bridge      PASS         2.1s   exit=0
+sim         PASS        24.5s   exit=0
+realimg     PASS        21.1s   exit=0
+e2ereplay   PASS        13.6s   exit=0
+evalsession PASS         3.9s   exit=0
+deploygate  PASS         3.4s   exit=0
+threetier   PASS         3.9s   exit=0
+safety      PASS         2.8s   exit=0
+firmware    PASS         8.3s   ok
+obsdomain   FAIL        11.7s   exit=1 (diagnostic)
+==============================================================================
+
+--- obsdomain (diagnostic) tail ---
+  2. Retrain on recorded robot features -- still the only way to make the 64-d
+     block carry information. Needs frames from the robot's own camera.
+  3. Calibrate synth_feat to the real distribution -- measured as the affine
+     condition in _feat_ablation.py: teacher-ACK recall 75.9% -> 20.7%. It moves
+     the statistics without adding information, so it is the worst of the three
+     by a wide margin.
+
+GATES: 23/23 passed
+DIAGNOSTICS: 0/1 green (not counted; obsdomain is red by design -- see its entry)
