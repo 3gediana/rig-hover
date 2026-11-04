@@ -1,0 +1,176 @@
+{
+  "name": "real_v1",
+  "round": "R1",
+  "description": "真实视频任务主对比。冻结 CLIP 特征，tok_fusion=none（这些是场景级任务，不需要对象寻址，也让参数量花在时序核心上而不是 1536→H 的输入投影上）。",
+  "seeds": [
+    0,
+    1
+  ],
+  "defaults": {
+    "loss": {
+      "aux_num_scale": 0.0
+    },
+    "train": {
+      "epochs": 15,
+      "batch": 64,
+      "lr": 0.002,
+      "wd": 0.0001,
+      "amp": true,
+      "grad_clip": 1.0,
+      "patience": 6,
+      "aug": "medium",
+      "tok_fusion": "none",
+      "T_max": 96,
+      "val_every": 1,
+      "warmup_epochs": 2,
+      "num_workers": 0,
+      "preload": true,
+      "preload_max_gb": 8.0
+    },
+    "eval": {
+      "robustness": [
+        "dense",
+        "stride2",
+        "stride4",
+        "drop30",
+        "drop50",
+        "drop70",
+        "burst",
+        "repeat",
+        "jitter",
+        "shuffled",
+        "mixed"
+      ]
+    }
+  },
+  "datasets": {
+    "ucf101_action": {
+      "task": "action",
+      "manifest": "data_manifests/ucf101_action.json",
+      "heads": {
+        "action": {
+          "kind": "ce",
+          "dim": 101,
+          "ignore": -1
+        }
+      },
+      "main_metric": "acc",
+      "loss": {
+        "task": {
+          "action": 1.0
+        },
+        "aux_num_scale": 0.0
+      },
+      "train": {
+        "epochs": 15
+      }
+    },
+    "charades_event": {
+      "task": "event",
+      "manifest": "data_manifests/charades_event.json",
+      "heads": {
+        "event": {
+          "kind": "bce",
+          "dim": 36
+        }
+      },
+      "main_metric": "f1",
+      "loss": {
+        "task": {
+          "event": 1.0
+        },
+        "aux_num_scale": 0.0
+      },
+      "train": {
+        "epochs": 15,
+        "aug": "medium"
+      }
+    },
+    "davis_vos": {
+      "task": "track",
+      "manifest": "data_manifests/davis_vos.json",
+      "heads": {
+        "track": {
+          "kind": "mse",
+          "dim": 4
+        }
+      },
+      "main_metric": "mae",
+      "loss": {
+        "task": {
+          "track": 1.0
+        },
+        "aux_num_scale": 0.0
+      },
+      "train": {
+        "epochs": 15,
+        "aug": "hard",
+        "tok_fusion": "none"
+      }
+    }
+  },
+  "models": [
+    {
+      "name": "mlp",
+      "hidden": 192,
+      "variant": "base"
+    },
+    {
+      "name": "gru",
+      "hidden": 192,
+      "variant": "base"
+    },
+    {
+      "name": "lstm",
+      "hidden": 192,
+      "variant": "base"
+    },
+    {
+      "name": "cfc",
+      "hidden": 192,
+      "variant": "base",
+      "cfg": {
+        "backbone_units": 64
+      }
+    },
+    {
+      "name": "cfc",
+      "hidden": 192,
+      "variant": "widebackbone",
+      "cfg": {
+        "backbone_units": 256
+      },
+      "notes": "CfC 容量控制：加大 backbone 而不是 hidden"
+    },
+    {
+      "name": "mamba",
+      "hidden": 192,
+      "variant": "base"
+    },
+    {
+      "name": "deltanet",
+      "hidden": 192,
+      "variant": "base",
+      "cfg": {
+        "mem_dim": 64
+      }
+    },
+    {
+      "name": "dsm",
+      "hidden": 192,
+      "variant": "base",
+      "cfg": {
+        "mem_dim": 64
+      }
+    },
+    {
+      "name": "dsm_slot",
+      "hidden": 192,
+      "variant": "base",
+      "cfg": {
+        "n_slots": 12,
+        "slot_dim": 64
+      }
+    }
+  ]
+}

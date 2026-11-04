@@ -1,0 +1,174 @@
+{
+  "name": "synth_pmatch_v1",
+  "round": "R1",
+  "description": "参数量匹配的合成任务对比（每个模型 hidden 由 build_core_matched 调到 ~150k 参数）。用于回答「优势是否只是参数更多」。",
+  "seeds": [
+    0
+  ],
+  "defaults": {
+    "loss": {
+      "task": {
+        "state": 1.0,
+        "class": 1.0,
+        "event": 1.0
+      },
+      "aux_num_scale": 0.1
+    },
+    "train": {
+      "epochs": 50,
+      "batch": 64,
+      "lr": 0.003,
+      "wd": 0.0001,
+      "amp": true,
+      "grad_clip": 1.0,
+      "patience": 40,
+      "aug": "none",
+      "T_max": 96,
+      "val_every": 1,
+      "warmup_epochs": 3,
+      "num_workers": 0,
+      "preload": true,
+      "preload_max_gb": 6.0,
+      "tok_fusion": "flatten"
+    },
+    "eval": {
+      "robustness": [
+        "dense",
+        "stride2",
+        "stride4",
+        "drop50",
+        "burst",
+        "repeat",
+        "jitter",
+        "shuffled",
+        "mixed"
+      ]
+    }
+  },
+  "datasets": {
+    "synth_recall_single": {
+      "task": "synth",
+      "manifest": "data_manifests/synth_recall_single.json",
+      "heads": {
+        "state": {
+          "kind": "mse",
+          "dim": 256
+        }
+      },
+      "main_metric": "cos",
+      "loss": {
+        "task": {
+          "state": 1.0
+        }
+      },
+      "train": {
+        "epochs": 50
+      }
+    },
+    "synth_recall_multi": {
+      "task": "synth",
+      "manifest": "data_manifests/synth_recall_multi.json",
+      "heads": {
+        "state": {
+          "kind": "mse",
+          "dim": 256
+        }
+      },
+      "main_metric": "cos",
+      "loss": {
+        "task": {
+          "state": 1.0
+        }
+      },
+      "train": {
+        "epochs": 50
+      }
+    }
+  },
+  "models": [
+    {
+      "name": "mlp",
+      "hidden": 355,
+      "variant": "base",
+      "notes": "param-matched hidden=355"
+    },
+    {
+      "name": "gru",
+      "hidden": 192,
+      "variant": "base",
+      "notes": "param-matched hidden=192"
+    },
+    {
+      "name": "lstm",
+      "hidden": 163,
+      "variant": "base",
+      "notes": "param-matched hidden=163"
+    },
+    {
+      "name": "cfc",
+      "hidden": 449,
+      "variant": "base",
+      "cfg": {
+        "backbone_units": 64
+      },
+      "notes": "param-matched hidden=449"
+    },
+    {
+      "name": "mamba",
+      "hidden": 319,
+      "variant": "base",
+      "notes": "param-matched hidden=319"
+    },
+    {
+      "name": "mamba",
+      "hidden": 319,
+      "variant": "tdt",
+      "cfg": {
+        "tdt": true
+      },
+      "notes": "param-matched hidden=319"
+    },
+    {
+      "name": "deltanet",
+      "hidden": 1045,
+      "variant": "base",
+      "cfg": {
+        "mem_dim": 64
+      },
+      "notes": "param-matched hidden=1045"
+    },
+    {
+      "name": "dsm",
+      "hidden": 117,
+      "variant": "base",
+      "cfg": {
+        "mem_dim": 64,
+        "n_decay_groups": 4
+      },
+      "notes": "param-matched hidden=117"
+    },
+    {
+      "name": "dsm",
+      "hidden": 117,
+      "variant": "nodt",
+      "cfg": {
+        "mem_dim": 64,
+        "use_dt_struct": false,
+        "use_dt_feature": false
+      },
+      "notes": "param-matched hidden=117"
+    },
+    {
+      "name": "dsm_slot",
+      "hidden": 120,
+      "variant": "base",
+      "cfg": {
+        "n_slots": 12,
+        "slot_dim": 64
+      },
+      "notes": "param-matched hidden=120"
+    }
+  ],
+  "param_target": 150000,
+  "hidden_source": "build_core_matched"
+}

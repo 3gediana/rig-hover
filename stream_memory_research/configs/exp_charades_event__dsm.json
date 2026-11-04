@@ -1,0 +1,30 @@
+{
+  "run_id": "charades_event__dsm__base__s0",
+  "dataset": "charades_event",
+  "manifest": "data_manifests/charades_event.json",
+  "task": "event",
+  "model": {"name": "dsm", "hidden": 192, "cfg": {"mem_dim": 64, "n_decay_groups": 4}},
+  "heads": {"event": {"kind": "bce", "dim": 24}},
+  "loss": {
+    "task": {"event": 1.0},
+    "aux_num_scale": 0.1,
+    "aux": {"retrieval": 0.1, "crosstalk": 0.05, "time_consistency": 0.05,
+            "write_budget": 0.01, "long_horizon": 0.1},
+    "aux_cfg": {"long_horizon": {"horizon": 5, "tau": 1.0, "write_thr": 0.1}}
+  },
+  "train": {
+    "epochs": 30, "batch": 32, "lr": 0.002, "wd": 0.0001, "amp": true,
+    "grad_clip": 1.0, "patience": 6, "aug": "medium", "T_max": 128,
+    "val_every": 1, "warmup_epochs": 2, "num_workers": 0, "preload": true,
+    "preload_max_gb": 6.0
+  },
+  "eval": {
+    "batch": 32,
+    "robustness": ["dense", "stride2", "stride4", "drop30", "drop50", "drop70",
+                   "burst", "repeat", "jitter", "mixed", "shuffled"],
+    "latency": true, "flops": true, "failure_topk": 10
+  },
+  "main_metric": "f1",
+  "seed": 0,
+  "notes": "template: Charades online event detection (onset metrics with tolerance+dedup)"
+}

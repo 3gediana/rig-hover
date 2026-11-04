@@ -1,0 +1,21 @@
+timestamp,round,suite,dataset,task,model,variant,seed,hidden,params,epochs,best_epoch,val_metric,test_metric,metric_name,wall_sec,peak_vram_gb,code_hash,manifest,status,notes
+2026-11-04 00:08:11,R1,dt_tune_v1,synth_recall_single,synth,mlp,mlp,0,192,177444,50,14,0.12707258494678533,-0.06241430752652832,cos,27.7,0.065,7dd57cb343a61d67,data_manifests/synth_recall_single.json,complete,dt_scale=1
+2026-11-04 00:08:46,R1,dt_tune_v1,synth_recall_single,synth,mlp,mlp,0,192,177444,50,14,0.09166762509143617,-0.06794844526674998,cos,35.3,0.065,7dd57cb343a61d67,data_manifests/synth_recall_single.json,complete,dt_scale=10
+2026-11-04 00:09:21,R1,dt_tune_v1,synth_recall_single,synth,mlp,mlp,0,192,177444,50,14,0.10857525756335917,-0.07248865645553329,cos,34.9,0.065,7dd57cb343a61d67,data_manifests/synth_recall_single.json,complete,dt_scale=30
+2026-11-04 00:10:02,R1,dt_tune_v1,synth_recall_single,synth,gru,gru,0,192,381732,50,49,0.9925728675789793,0.9936892891558037,cos,40.7,0.078,7dd57cb343a61d67,data_manifests/synth_recall_single.json,complete,dt_scale=1
+2026-11-04 00:10:44,R1,dt_tune_v1,synth_recall_single,synth,gru,gru,0,192,381732,50,47,0.9932322530677183,0.9938575253696319,cos,42.1,0.078,4593fed9bd293606,data_manifests/synth_recall_single.json,complete,dt_scale=10
+2026-11-04 00:11:07,R1,dt_tune_v1,synth_recall_single,synth,gru,gru,0,192,381732,4,,,,cos,22.9,0.078,4fea79c6b1a685dc,data_manifests/synth_recall_single.json,failed,dt_scale=30
+2026-11-04 00:11:40,R1,dt_tune_v1,synth_recall_single,synth,lstm,lstm,0,192,483876,50,48,0.9687864918510561,0.9692852547366767,cos,33.7,0.084,0179e41badbade28,data_manifests/synth_recall_single.json,complete,dt_scale=1
+2026-11-04 00:12:28,R1,dt_tune_v1,synth_recall_single,synth,lstm,lstm,0,192,483876,50,49,0.9702917045983795,0.97129709410139,cos,47.2,0.084,ae1c8f3ed15854bd,data_manifests/synth_recall_single.json,complete,dt_scale=10
+2026-11-04 00:13:20,R1,dt_tune_v1,synth_recall_single,synth,lstm,lstm,0,192,483876,50,50,0.9657129485411119,0.971535572205511,cos,52.8,0.084,ae1c8f3ed15854bd,data_manifests/synth_recall_single.json,complete,dt_scale=30
+2026-11-04 00:14:22,R1,dt_tune_v1,synth_recall_single,synth,cfc,cfc,0,192,159204,50,50,0.6451831128760274,0.5956847973416971,cos,61.8,0.073,ae1c8f3ed15854bd,data_manifests/synth_recall_single.json,complete,dt_scale=1
+2026-11-04 00:15:03,R1,dt_tune_v1,synth_recall_single,synth,cfc,cfc,0,192,159204,50,50,0.5168546915081271,0.49049309926622087,cos,40.4,0.073,23a883279f6feb5d,data_manifests/synth_recall_single.json,complete,dt_scale=10
+2026-11-04 00:15:46,R1,dt_tune_v1,synth_recall_single,synth,cfc,cfc,0,192,159204,50,50,0.49957458194726534,0.439258251105006,cos,43.1,0.073,23a883279f6feb5d,data_manifests/synth_recall_single.json,complete,dt_scale=30
+2026-11-04 00:15:59,R1,dt_tune_v1,synth_recall_single,synth,mamba,mamba,0,192,258631,0,,,,cos,13.6,0.139,61ee66080b7b29b5,data_manifests/synth_recall_single.json,failed,dt_scale=1
+2026-11-04 00:16:51,R1,dt_tune_v1,synth_recall_single,synth,mamba,mamba,0,192,258631,50,50,0.976621365130345,0.9777467827622749,cos,51.2,0.179,61ee66080b7b29b5,data_manifests/synth_recall_single.json,complete,dt_scale=10
+2026-11-04 00:17:04,R1,dt_tune_v1,synth_recall_single,synth,mamba,mamba,0,192,258631,0,,,,cos,13.0,0.139,61ee66080b7b29b5,data_manifests/synth_recall_single.json,failed,dt_scale=30
+2026-11-04 00:17:39,R1,dt_tune_v1,synth_recall_single,synth,mamba,mamba,0,192,258631,0,,,,cos,35.8,0.139,61ee66080b7b29b5,data_manifests/synth_recall_single.json,failed,dt_scale=1
+2026-11-04 00:18:20,R1,dt_tune_v1,synth_recall_single,synth,mamba,mamba,0,192,258631,0,,,,cos,40.1,0.139,61ee66080b7b29b5,data_manifests/synth_recall_single.json,failed,dt_scale=10
+2026-11-04 00:19:18,R1,dt_tune_v1,synth_recall_single,synth,mamba,mamba,0,192,258631,0,,,,cos,58.7,0.139,61ee66080b7b29b5,data_manifests/synth_recall_single.json,failed,dt_scale=30
+2026-11-04 00:20:09,R1,dt_tune_v1,synth_recall_single,synth,deltanet,deltanet,0,192,227436,1,,,,cos,50.8,0.313,61ee66080b7b29b5,data_manifests/synth_recall_single.json,failed,dt_scale=1
+2026-11-04 00:22:02,R1,dt_tune_v1,synth_recall_single,synth,deltanet,deltanet,0,192,227436,50,50,0.9622023712230249,0.9466269546820355,cos,112.5,0.313,61ee66080b7b29b5,data_manifests/synth_recall_single.json,complete,dt_scale=10

@@ -1,0 +1,58 @@
+{
+  "epochs": 100,
+  "elapsed_s": 603.320186900004,
+  "params": 32848,
+  "calibration": {
+    "T": 1.0,
+    "bias": 0.0
+  },
+  "val": {
+    "n_sessions": 42,
+    "base": {
+      "n": 3840,
+      "auc_vs_teacher": 0.9988136514980805,
+      "ece": 0.34000838474118306,
+      "brier": 0.15492852246952532,
+      "spearman_vs_teacher": 0.19695791947443925,
+      "mode_acc": 0.99453125
+    },
+    "temporal": {
+      "n": 12288,
+      "gt_rate": 0.25,
+      "auc_pooled": 0.7595063138891149,
+      "auc_teacher_pooled": 0.4974161783854167,
+      "per_family": {
+        "bearing_rate": {
+          "auc_matched": 0.8888540959012681,
+          "auc_matched_teacher": 0.5040358391360961,
+          "n_pos": 736,
+          "n_neg": 1536
+        },
+        "conf_drift": {
+          "auc_matched": 0.6313387552897135,
+          "auc_matched_teacher": 0.4873495101928711,
+          "n_pos": 1024,
+          "n_neg": 1536
+        },
+        "flicker": {
+          "auc_matched": 0.6817309061686198,
+          "auc_matched_teacher": 0.5656808217366537,
+          "n_pos": 512,
+          "n_neg": 1536
+        },
+        "sustained_conf": {
+          "auc_matched": 0.7046761067708334,
+          "auc_matched_teacher": 0.645865478515625,
+          "n_pos": 800,
+          "n_neg": 1536
+        }
+      },
+      "auc_matched": 0.7105659113989936,
+      "auc_matched_macro": 0.7266499660326087
+    }
+  },
+  "lambda_end": 0.093361996114254,
+  "train_sessions": 125,
+  "val_sessions": 42,
+  "device": "cuda:0"
+}

@@ -1,0 +1,1483 @@
+{
+  "dataset": "synth_recall_single_gap0.1s",
+  "task": "synth_mem",
+  "feature_dim": 64,
+  "tok_dim": 17,
+  "roi_dim": 0,
+  "n_roi": 0,
+  "encoder": {
+    "name": "synthetic_controlled",
+    "version": "synth-suite-v1",
+    "task": "recall_single"
+  },
+  "split_key": "source_id",
+  "label_specs": {
+    "state": {
+      "kind": "mse",
+      "dim": 256
+    },
+    "class": {
+      "kind": "ce",
+      "dim": 1,
+      "n_classes": 16,
+      "ignore": -1
+    },
+    "event": {
+      "kind": "bce",
+      "dim": 1,
+      "n_classes": 1
+    }
+  },
+  "extra": {
+    "generator": "src/synth",
+    "suite_format": "synth-suite-v1",
+    "task_id": "recall_single",
+    "seed_base": 20261103,
+    "split_policy": "split by episode generator seed group: train=[0,800), val=[800,1000), test=[1000,1200); source_id = 'ep<index>' (never split by frame); test episodes are generated independently",
+    "split_ranges": {
+      "train": [
+        0,
+        800
+      ],
+      "val": [
+        800,
+        1000
+      ],
+      "test": [
+        1000,
+        1200
+      ]
+    },
+    "nominal_dt": 0.1,
+    "layout": {
+      "layout_version": 1,
+      "KMAX": 16,
+      "V": 16,
+      "VC": 8,
+      "VA": 8,
+      "N_CODES": 16,
+      "tok_dim": 17,
+      "feat_dim": 64,
+      "feat_summary_dim": 16,
+      "C_EVENT": 4
+    },
+    "channel_layout": {
+      "feat": {
+        "shape": "[T, 64] float16",
+        "summary_channels": [
+          {
+            "idx": 0,
+            "name": "bias",
+            "meaning": "constant 1.0"
+          },
+          {
+            "idx": 1,
+            "name": "vis_frac",
+            "meaning": "number of currently observed object tokens / 16"
+          },
+          {
+            "idx": 2,
+            "name": "any_hidden",
+            "meaning": "1.0 if at least one existing object is currently hidden"
+          },
+          {
+            "idx": 3,
+            "name": "query",
+            "meaning": "1.0 on steps flagged as a recall query"
+          },
+          {
+            "idx": 4,
+            "name": "event_pulse",
+            "meaning": "1.0 on an event step (knock/wave impulse)"
+          },
+          {
+            "idx": 5,
+            "name": "event_type_norm",
+            "meaning": "event type / (C_EVENT-1) in [0,1]; 0 when no event"
+          },
+          {
+            "idx": 6,
+            "name": "elapsed_s_60",
+            "meaning": "physical elapsed time / 60 s (causal clock)"
+          },
+          {
+            "idx": 7,
+            "name": "event_age_s_60",
+            "meaning": "seconds since the last event / 60 s (0 if none yet)"
+          },
+          {
+            "idx": 8,
+            "name": "since_change_s_60",
+            "meaning": "seconds since any visible token value last changed / 60 s"
+          },
+          {
+            "idx": 9,
+            "name": "hidden_asked_frac",
+            "meaning": "number of object-slots that are existing+hidden / 16"
+          },
+          {
+            "idx": 10,
+            "name": "mean_vis_norm",
+            "meaning": "mean L2 norm of the currently observed token values"
+          },
+          {
+            "idx": 11,
+            "name": "n_existing_frac",
+            "meaning": "number of existing object slots / 16"
+          },
+          {
+            "idx": 12,
+            "name": "reserved",
+            "meaning": "0.0"
+          },
+          {
+            "idx": 13,
+            "name": "reserved",
+            "meaning": "0.0"
+          },
+          {
+            "idx": 14,
+            "name": "reserved",
+            "meaning": "0.0"
+          },
+          {
+            "idx": 15,
+            "name": "reserved",
+            "meaning": "0.0"
+          }
+        ],
+        "reserved": "channels 16..63 are always 0.0 (reserved)"
+      },
+      "tok": {
+        "shape": "[T, 16, 17] float16",
+        "channels_0_15": "that object's current 16-dim value (identity dims zeroed when visible-but-not-identifiable)",
+        "channel_16": "visibility flag: 1.0 iff the object is observed now; when not observed the entire token is 0"
+      },
+      "labels": {
+        "lab_state": "[T, 256] float32 = 16 slots x 16 state dims; true state scaled by lab_mask-independent knowability (0 where the slot is unused or its value is unknowable)",
+        "lab_mask": "[T, 16] float32 = 1.0 iff the slot is asked for (knowable but absent from the current observation); all metrics are computed on lab_mask==1",
+        "lab_class": "[T] int64 = -1 ignore; identity id (vanish_reappear) or event type (event_seq)",
+        "lab_event": "[T] float32 0/1 event indicator"
+      },
+      "identity_code": "state dims 0..7: signed one-hot (16 identities); dims 8..15: N(0,1) analogue"
+    },
+    "phases": {
+      "pre": 0,
+      "write": 1,
+      "gap": 2,
+      "query": 3,
+      "verify": 4
+    },
+    "main_metric": "cos",
+    "task_params": {
+      "pre_frames": 2,
+      "write_frames": 4,
+      "query_frames": 2,
+      "verify_frames": 3,
+      "gap_s": 0.1,
+      "gap_min_s": 0.1,
+      "gap_max_s": 3.2
+    },
+    "eval_only": true,
+    "base_dataset": "synth_recall_single",
+    "base_task": "recall_single",
+    "sweep_gap_s": 0.1,
+    "gap_s": 0.1,
+    "capacity_k": null,
+    "sweep_role": "single_gap",
+    "layout_signature": "2b2bdc7b2b7c6a54",
+    "irregular": null,
+    "irregular_params": {},
+    "control": null,
+    "eval_manifests": [],
+    "eval_manifest_paths": [],
+    "notes": "eval-only fixed hidden gap 0.1 s (= 1 steps at Δ0=0.1) — DESIGN §1.6 sweep",
+    "oracle_reference_definition": {
+      "perfect": "unbounded faithful memory reading only the observation (PerfectMemoryOracle) -> sanity upper bound 1.0",
+      "memoryless": "outputs the current observation only (ZeroMemoryOracle) -> memoryless bound",
+      "chance": "random read-out (RandomOracle) -> theoretical chance"
+    }
+  },
+  "seqs": [
+    {
+      "seq_id": "synth_recall_single_gap0.1s_test_001000",
+      "source_id": "ep001000",
+      "split": "test",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_gap0.1s\\synth_recall_single_gap0.1s_test_001000.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1000,
+        "seed": [
+          20261103,
+          863970488,
+          1000
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 0.1,
+        "K": 1,
+        "T": 12,
+        "same_raw_as": "synth_recall_single",
+        "gap_steps": 1
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_gap0.1s_test_001001",
+      "source_id": "ep001001",
+      "split": "test",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_gap0.1s\\synth_recall_single_gap0.1s_test_001001.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1001,
+        "seed": [
+          20261103,
+          863970488,
+          1001
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 0.1,
+        "K": 1,
+        "T": 12,
+        "same_raw_as": "synth_recall_single",
+        "gap_steps": 1
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_gap0.1s_test_001002",
+      "source_id": "ep001002",
+      "split": "test",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_gap0.1s\\synth_recall_single_gap0.1s_test_001002.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1002,
+        "seed": [
+          20261103,
+          863970488,
+          1002
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 0.1,
+        "K": 1,
+        "T": 12,
+        "same_raw_as": "synth_recall_single",
+        "gap_steps": 1
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_gap0.1s_test_001003",
+      "source_id": "ep001003",
+      "split": "test",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_gap0.1s\\synth_recall_single_gap0.1s_test_001003.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1003,
+        "seed": [
+          20261103,
+          863970488,
+          1003
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 0.1,
+        "K": 1,
+        "T": 12,
+        "same_raw_as": "synth_recall_single",
+        "gap_steps": 1
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_gap0.1s_test_001004",
+      "source_id": "ep001004",
+      "split": "test",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_gap0.1s\\synth_recall_single_gap0.1s_test_001004.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1004,
+        "seed": [
+          20261103,
+          863970488,
+          1004
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 0.1,
+        "K": 1,
+        "T": 12,
+        "same_raw_as": "synth_recall_single",
+        "gap_steps": 1
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_gap0.1s_test_001005",
+      "source_id": "ep001005",
+      "split": "test",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_gap0.1s\\synth_recall_single_gap0.1s_test_001005.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1005,
+        "seed": [
+          20261103,
+          863970488,
+          1005
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 0.1,
+        "K": 1,
+        "T": 12,
+        "same_raw_as": "synth_recall_single",
+        "gap_steps": 1
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_gap0.1s_test_001006",
+      "source_id": "ep001006",
+      "split": "test",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_gap0.1s\\synth_recall_single_gap0.1s_test_001006.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1006,
+        "seed": [
+          20261103,
+          863970488,
+          1006
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 0.1,
+        "K": 1,
+        "T": 12,
+        "same_raw_as": "synth_recall_single",
+        "gap_steps": 1
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_gap0.1s_test_001007",
+      "source_id": "ep001007",
+      "split": "test",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_gap0.1s\\synth_recall_single_gap0.1s_test_001007.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1007,
+        "seed": [
+          20261103,
+          863970488,
+          1007
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 0.1,
+        "K": 1,
+        "T": 12,
+        "same_raw_as": "synth_recall_single",
+        "gap_steps": 1
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_gap0.1s_test_001008",
+      "source_id": "ep001008",
+      "split": "test",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_gap0.1s\\synth_recall_single_gap0.1s_test_001008.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1008,
+        "seed": [
+          20261103,
+          863970488,
+          1008
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 0.1,
+        "K": 1,
+        "T": 12,
+        "same_raw_as": "synth_recall_single",
+        "gap_steps": 1
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_gap0.1s_test_001009",
+      "source_id": "ep001009",
+      "split": "test",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_gap0.1s\\synth_recall_single_gap0.1s_test_001009.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1009,
+        "seed": [
+          20261103,
+          863970488,
+          1009
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 0.1,
+        "K": 1,
+        "T": 12,
+        "same_raw_as": "synth_recall_single",
+        "gap_steps": 1
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_gap0.1s_test_001010",
+      "source_id": "ep001010",
+      "split": "test",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_gap0.1s\\synth_recall_single_gap0.1s_test_001010.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1010,
+        "seed": [
+          20261103,
+          863970488,
+          1010
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 0.1,
+        "K": 1,
+        "T": 12,
+        "same_raw_as": "synth_recall_single",
+        "gap_steps": 1
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_gap0.1s_test_001011",
+      "source_id": "ep001011",
+      "split": "test",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_gap0.1s\\synth_recall_single_gap0.1s_test_001011.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1011,
+        "seed": [
+          20261103,
+          863970488,
+          1011
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 0.1,
+        "K": 1,
+        "T": 12,
+        "same_raw_as": "synth_recall_single",
+        "gap_steps": 1
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_gap0.1s_test_001012",
+      "source_id": "ep001012",
+      "split": "test",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_gap0.1s\\synth_recall_single_gap0.1s_test_001012.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1012,
+        "seed": [
+          20261103,
+          863970488,
+          1012
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 0.1,
+        "K": 1,
+        "T": 12,
+        "same_raw_as": "synth_recall_single",
+        "gap_steps": 1
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_gap0.1s_test_001013",
+      "source_id": "ep001013",
+      "split": "test",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_gap0.1s\\synth_recall_single_gap0.1s_test_001013.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1013,
+        "seed": [
+          20261103,
+          863970488,
+          1013
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 0.1,
+        "K": 1,
+        "T": 12,
+        "same_raw_as": "synth_recall_single",
+        "gap_steps": 1
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_gap0.1s_test_001014",
+      "source_id": "ep001014",
+      "split": "test",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_gap0.1s\\synth_recall_single_gap0.1s_test_001014.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1014,
+        "seed": [
+          20261103,
+          863970488,
+          1014
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 0.1,
+        "K": 1,
+        "T": 12,
+        "same_raw_as": "synth_recall_single",
+        "gap_steps": 1
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_gap0.1s_test_001015",
+      "source_id": "ep001015",
+      "split": "test",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_gap0.1s\\synth_recall_single_gap0.1s_test_001015.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1015,
+        "seed": [
+          20261103,
+          863970488,
+          1015
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 0.1,
+        "K": 1,
+        "T": 12,
+        "same_raw_as": "synth_recall_single",
+        "gap_steps": 1
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_gap0.1s_test_001016",
+      "source_id": "ep001016",
+      "split": "test",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_gap0.1s\\synth_recall_single_gap0.1s_test_001016.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1016,
+        "seed": [
+          20261103,
+          863970488,
+          1016
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 0.1,
+        "K": 1,
+        "T": 12,
+        "same_raw_as": "synth_recall_single",
+        "gap_steps": 1
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_gap0.1s_test_001017",
+      "source_id": "ep001017",
+      "split": "test",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_gap0.1s\\synth_recall_single_gap0.1s_test_001017.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1017,
+        "seed": [
+          20261103,
+          863970488,
+          1017
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 0.1,
+        "K": 1,
+        "T": 12,
+        "same_raw_as": "synth_recall_single",
+        "gap_steps": 1
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_gap0.1s_test_001018",
+      "source_id": "ep001018",
+      "split": "test",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_gap0.1s\\synth_recall_single_gap0.1s_test_001018.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1018,
+        "seed": [
+          20261103,
+          863970488,
+          1018
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 0.1,
+        "K": 1,
+        "T": 12,
+        "same_raw_as": "synth_recall_single",
+        "gap_steps": 1
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_gap0.1s_test_001019",
+      "source_id": "ep001019",
+      "split": "test",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_gap0.1s\\synth_recall_single_gap0.1s_test_001019.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1019,
+        "seed": [
+          20261103,
+          863970488,
+          1019
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 0.1,
+        "K": 1,
+        "T": 12,
+        "same_raw_as": "synth_recall_single",
+        "gap_steps": 1
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_gap0.1s_test_001020",
+      "source_id": "ep001020",
+      "split": "test",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_gap0.1s\\synth_recall_single_gap0.1s_test_001020.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1020,
+        "seed": [
+          20261103,
+          863970488,
+          1020
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 0.1,
+        "K": 1,
+        "T": 12,
+        "same_raw_as": "synth_recall_single",
+        "gap_steps": 1
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_gap0.1s_test_001021",
+      "source_id": "ep001021",
+      "split": "test",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_gap0.1s\\synth_recall_single_gap0.1s_test_001021.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1021,
+        "seed": [
+          20261103,
+          863970488,
+          1021
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 0.1,
+        "K": 1,
+        "T": 12,
+        "same_raw_as": "synth_recall_single",
+        "gap_steps": 1
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_gap0.1s_test_001022",
+      "source_id": "ep001022",
+      "split": "test",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_gap0.1s\\synth_recall_single_gap0.1s_test_001022.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1022,
+        "seed": [
+          20261103,
+          863970488,
+          1022
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 0.1,
+        "K": 1,
+        "T": 12,
+        "same_raw_as": "synth_recall_single",
+        "gap_steps": 1
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_gap0.1s_test_001023",
+      "source_id": "ep001023",
+      "split": "test",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_gap0.1s\\synth_recall_single_gap0.1s_test_001023.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1023,
+        "seed": [
+          20261103,
+          863970488,
+          1023
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 0.1,
+        "K": 1,
+        "T": 12,
+        "same_raw_as": "synth_recall_single",
+        "gap_steps": 1
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_gap0.1s_test_001024",
+      "source_id": "ep001024",
+      "split": "test",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_gap0.1s\\synth_recall_single_gap0.1s_test_001024.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1024,
+        "seed": [
+          20261103,
+          863970488,
+          1024
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 0.1,
+        "K": 1,
+        "T": 12,
+        "same_raw_as": "synth_recall_single",
+        "gap_steps": 1
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_gap0.1s_test_001025",
+      "source_id": "ep001025",
+      "split": "test",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_gap0.1s\\synth_recall_single_gap0.1s_test_001025.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1025,
+        "seed": [
+          20261103,
+          863970488,
+          1025
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 0.1,
+        "K": 1,
+        "T": 12,
+        "same_raw_as": "synth_recall_single",
+        "gap_steps": 1
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_gap0.1s_test_001026",
+      "source_id": "ep001026",
+      "split": "test",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_gap0.1s\\synth_recall_single_gap0.1s_test_001026.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1026,
+        "seed": [
+          20261103,
+          863970488,
+          1026
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 0.1,
+        "K": 1,
+        "T": 12,
+        "same_raw_as": "synth_recall_single",
+        "gap_steps": 1
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_gap0.1s_test_001027",
+      "source_id": "ep001027",
+      "split": "test",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_gap0.1s\\synth_recall_single_gap0.1s_test_001027.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1027,
+        "seed": [
+          20261103,
+          863970488,
+          1027
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 0.1,
+        "K": 1,
+        "T": 12,
+        "same_raw_as": "synth_recall_single",
+        "gap_steps": 1
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_gap0.1s_test_001028",
+      "source_id": "ep001028",
+      "split": "test",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_gap0.1s\\synth_recall_single_gap0.1s_test_001028.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1028,
+        "seed": [
+          20261103,
+          863970488,
+          1028
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 0.1,
+        "K": 1,
+        "T": 12,
+        "same_raw_as": "synth_recall_single",
+        "gap_steps": 1
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_gap0.1s_test_001029",
+      "source_id": "ep001029",
+      "split": "test",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_gap0.1s\\synth_recall_single_gap0.1s_test_001029.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1029,
+        "seed": [
+          20261103,
+          863970488,
+          1029
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 0.1,
+        "K": 1,
+        "T": 12,
+        "same_raw_as": "synth_recall_single",
+        "gap_steps": 1
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_gap0.1s_test_001030",
+      "source_id": "ep001030",
+      "split": "test",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_gap0.1s\\synth_recall_single_gap0.1s_test_001030.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1030,
+        "seed": [
+          20261103,
+          863970488,
+          1030
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 0.1,
+        "K": 1,
+        "T": 12,
+        "same_raw_as": "synth_recall_single",
+        "gap_steps": 1
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_gap0.1s_test_001031",
+      "source_id": "ep001031",
+      "split": "test",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_gap0.1s\\synth_recall_single_gap0.1s_test_001031.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1031,
+        "seed": [
+          20261103,
+          863970488,
+          1031
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 0.1,
+        "K": 1,
+        "T": 12,
+        "same_raw_as": "synth_recall_single",
+        "gap_steps": 1
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_gap0.1s_test_001032",
+      "source_id": "ep001032",
+      "split": "test",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_gap0.1s\\synth_recall_single_gap0.1s_test_001032.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1032,
+        "seed": [
+          20261103,
+          863970488,
+          1032
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 0.1,
+        "K": 1,
+        "T": 12,
+        "same_raw_as": "synth_recall_single",
+        "gap_steps": 1
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_gap0.1s_test_001033",
+      "source_id": "ep001033",
+      "split": "test",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_gap0.1s\\synth_recall_single_gap0.1s_test_001033.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1033,
+        "seed": [
+          20261103,
+          863970488,
+          1033
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 0.1,
+        "K": 1,
+        "T": 12,
+        "same_raw_as": "synth_recall_single",
+        "gap_steps": 1
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_gap0.1s_test_001034",
+      "source_id": "ep001034",
+      "split": "test",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_gap0.1s\\synth_recall_single_gap0.1s_test_001034.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1034,
+        "seed": [
+          20261103,
+          863970488,
+          1034
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 0.1,
+        "K": 1,
+        "T": 12,
+        "same_raw_as": "synth_recall_single",
+        "gap_steps": 1
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_gap0.1s_test_001035",
+      "source_id": "ep001035",
+      "split": "test",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_gap0.1s\\synth_recall_single_gap0.1s_test_001035.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1035,
+        "seed": [
+          20261103,
+          863970488,
+          1035
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 0.1,
+        "K": 1,
+        "T": 12,
+        "same_raw_as": "synth_recall_single",
+        "gap_steps": 1
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_gap0.1s_test_001036",
+      "source_id": "ep001036",
+      "split": "test",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_gap0.1s\\synth_recall_single_gap0.1s_test_001036.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1036,
+        "seed": [
+          20261103,
+          863970488,
+          1036
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 0.1,
+        "K": 1,
+        "T": 12,
+        "same_raw_as": "synth_recall_single",
+        "gap_steps": 1
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_gap0.1s_test_001037",
+      "source_id": "ep001037",
+      "split": "test",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_gap0.1s\\synth_recall_single_gap0.1s_test_001037.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1037,
+        "seed": [
+          20261103,
+          863970488,
+          1037
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 0.1,
+        "K": 1,
+        "T": 12,
+        "same_raw_as": "synth_recall_single",
+        "gap_steps": 1
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_gap0.1s_test_001038",
+      "source_id": "ep001038",
+      "split": "test",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_gap0.1s\\synth_recall_single_gap0.1s_test_001038.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1038,
+        "seed": [
+          20261103,
+          863970488,
+          1038
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 0.1,
+        "K": 1,
+        "T": 12,
+        "same_raw_as": "synth_recall_single",
+        "gap_steps": 1
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_gap0.1s_test_001039",
+      "source_id": "ep001039",
+      "split": "test",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_gap0.1s\\synth_recall_single_gap0.1s_test_001039.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1039,
+        "seed": [
+          20261103,
+          863970488,
+          1039
+        ],
+        "split_group": [
+          1000,
+          1200
+        ],
+        "gap_s": 0.1,
+        "K": 1,
+        "T": 12,
+        "same_raw_as": "synth_recall_single",
+        "gap_steps": 1
+      }
+    }
+  ]
+}

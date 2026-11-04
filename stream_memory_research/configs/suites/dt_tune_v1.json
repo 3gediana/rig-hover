@@ -1,0 +1,332 @@
+{
+  "name": "dt_tune_v1",
+  "round": "R1",
+  "description": "dt_scale 公平性调参：每个模型族在 val 上选时间重参数化尺度。CfC 的 time gate 是 sigmoid(ta*z*ts+tb*z)，ts=真实秒会让它退化成离散 RNN（已证实 cfc=0.25 vs gru=0.98）。dt_scale 是统一的重参数化，不是给谁特权。",
+  "seeds": [
+    0
+  ],
+  "defaults": {
+    "loss": {
+      "task": {
+        "state": 1.0,
+        "class": 1.0,
+        "event": 1.0
+      },
+      "aux_num_scale": 0.1
+    },
+    "train": {
+      "epochs": 50,
+      "batch": 64,
+      "lr": 0.003,
+      "wd": 0.0001,
+      "amp": true,
+      "grad_clip": 1.0,
+      "patience": 40,
+      "aug": "none",
+      "T_max": 96,
+      "val_every": 1,
+      "warmup_epochs": 3,
+      "num_workers": 0,
+      "preload": true,
+      "preload_max_gb": 6.0,
+      "tok_fusion": "flatten"
+    },
+    "eval": {
+      "robustness": [
+        "dense",
+        "stride2",
+        "stride4",
+        "drop50",
+        "burst",
+        "repeat",
+        "jitter",
+        "shuffled",
+        "mixed"
+      ]
+    }
+  },
+  "datasets": {
+    "synth_recall_single": {
+      "task": "synth",
+      "manifest": "data_manifests/synth_recall_single.json",
+      "heads": {
+        "state": {
+          "kind": "mse",
+          "dim": 256
+        }
+      },
+      "main_metric": "cos",
+      "loss": {
+        "task": {
+          "state": 1.0
+        }
+      },
+      "train": {
+        "epochs": 50
+      }
+    }
+  },
+  "models": [
+    {
+      "name": "mlp",
+      "hidden": 192,
+      "variant": "dts1",
+      "cfg": {
+        "dt_scale": 1
+      },
+      "notes": "dt_scale=1"
+    },
+    {
+      "name": "mlp",
+      "hidden": 192,
+      "variant": "dts10",
+      "cfg": {
+        "dt_scale": 10
+      },
+      "notes": "dt_scale=10"
+    },
+    {
+      "name": "mlp",
+      "hidden": 192,
+      "variant": "dts30",
+      "cfg": {
+        "dt_scale": 30
+      },
+      "notes": "dt_scale=30"
+    },
+    {
+      "name": "gru",
+      "hidden": 192,
+      "variant": "dts1",
+      "cfg": {
+        "dt_scale": 1
+      },
+      "notes": "dt_scale=1"
+    },
+    {
+      "name": "gru",
+      "hidden": 192,
+      "variant": "dts10",
+      "cfg": {
+        "dt_scale": 10
+      },
+      "notes": "dt_scale=10"
+    },
+    {
+      "name": "gru",
+      "hidden": 192,
+      "variant": "dts30",
+      "cfg": {
+        "dt_scale": 30
+      },
+      "notes": "dt_scale=30"
+    },
+    {
+      "name": "lstm",
+      "hidden": 192,
+      "variant": "dts1",
+      "cfg": {
+        "dt_scale": 1
+      },
+      "notes": "dt_scale=1"
+    },
+    {
+      "name": "lstm",
+      "hidden": 192,
+      "variant": "dts10",
+      "cfg": {
+        "dt_scale": 10
+      },
+      "notes": "dt_scale=10"
+    },
+    {
+      "name": "lstm",
+      "hidden": 192,
+      "variant": "dts30",
+      "cfg": {
+        "dt_scale": 30
+      },
+      "notes": "dt_scale=30"
+    },
+    {
+      "name": "cfc",
+      "cfg": {
+        "backbone_units": 64,
+        "dt_scale": 1
+      },
+      "hidden": 192,
+      "variant": "dts1",
+      "notes": "dt_scale=1"
+    },
+    {
+      "name": "cfc",
+      "cfg": {
+        "backbone_units": 64,
+        "dt_scale": 10
+      },
+      "hidden": 192,
+      "variant": "dts10",
+      "notes": "dt_scale=10"
+    },
+    {
+      "name": "cfc",
+      "cfg": {
+        "backbone_units": 64,
+        "dt_scale": 30
+      },
+      "hidden": 192,
+      "variant": "dts30",
+      "notes": "dt_scale=30"
+    },
+    {
+      "name": "mamba",
+      "hidden": 192,
+      "variant": "dts1",
+      "cfg": {
+        "dt_scale": 1
+      },
+      "notes": "dt_scale=1"
+    },
+    {
+      "name": "mamba",
+      "hidden": 192,
+      "variant": "dts10",
+      "cfg": {
+        "dt_scale": 10
+      },
+      "notes": "dt_scale=10"
+    },
+    {
+      "name": "mamba",
+      "hidden": 192,
+      "variant": "dts30",
+      "cfg": {
+        "dt_scale": 30
+      },
+      "notes": "dt_scale=30"
+    },
+    {
+      "name": "mamba",
+      "cfg": {
+        "tdt": true,
+        "dt_scale": 1
+      },
+      "hidden": 192,
+      "variant": "dts1",
+      "notes": "dt_scale=1"
+    },
+    {
+      "name": "mamba",
+      "cfg": {
+        "tdt": true,
+        "dt_scale": 10
+      },
+      "hidden": 192,
+      "variant": "dts10",
+      "notes": "dt_scale=10"
+    },
+    {
+      "name": "mamba",
+      "cfg": {
+        "tdt": true,
+        "dt_scale": 30
+      },
+      "hidden": 192,
+      "variant": "dts30",
+      "notes": "dt_scale=30"
+    },
+    {
+      "name": "deltanet",
+      "cfg": {
+        "mem_dim": 64,
+        "dt_scale": 1
+      },
+      "hidden": 192,
+      "variant": "dts1",
+      "notes": "dt_scale=1"
+    },
+    {
+      "name": "deltanet",
+      "cfg": {
+        "mem_dim": 64,
+        "dt_scale": 10
+      },
+      "hidden": 192,
+      "variant": "dts10",
+      "notes": "dt_scale=10"
+    },
+    {
+      "name": "deltanet",
+      "cfg": {
+        "mem_dim": 64,
+        "dt_scale": 30
+      },
+      "hidden": 192,
+      "variant": "dts30",
+      "notes": "dt_scale=30"
+    },
+    {
+      "name": "dsm",
+      "cfg": {
+        "mem_dim": 64,
+        "dt_scale": 1
+      },
+      "hidden": 192,
+      "variant": "dts1",
+      "notes": "dt_scale=1"
+    },
+    {
+      "name": "dsm",
+      "cfg": {
+        "mem_dim": 64,
+        "dt_scale": 10
+      },
+      "hidden": 192,
+      "variant": "dts10",
+      "notes": "dt_scale=10"
+    },
+    {
+      "name": "dsm",
+      "cfg": {
+        "mem_dim": 64,
+        "dt_scale": 30
+      },
+      "hidden": 192,
+      "variant": "dts30",
+      "notes": "dt_scale=30"
+    },
+    {
+      "name": "dsm_slot",
+      "cfg": {
+        "n_slots": 12,
+        "slot_dim": 64,
+        "dt_scale": 1
+      },
+      "hidden": 192,
+      "variant": "dts1",
+      "notes": "dt_scale=1"
+    },
+    {
+      "name": "dsm_slot",
+      "cfg": {
+        "n_slots": 12,
+        "slot_dim": 64,
+        "dt_scale": 10
+      },
+      "hidden": 192,
+      "variant": "dts10",
+      "notes": "dt_scale=10"
+    },
+    {
+      "name": "dsm_slot",
+      "cfg": {
+        "n_slots": 12,
+        "slot_dim": 64,
+        "dt_scale": 30
+      },
+      "hidden": 192,
+      "variant": "dts30",
+      "notes": "dt_scale=30"
+    }
+  ]
+}

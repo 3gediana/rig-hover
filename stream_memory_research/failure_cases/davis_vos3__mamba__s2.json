@@ -1,0 +1,380 @@
+{
+  "run_id": "davis_vos3__mamba__s2",
+  "generated_at": "2026-11-04 03:18:15",
+  "split": "test",
+  "main_metric": "mae",
+  "higher_is_better": false,
+  "n_sequences": 30,
+  "global": {
+    "mae": 0.12697241870931672,
+    "mse": 0.02835261333734437,
+    "rmse": 0.16838234271248387,
+    "n": 3372,
+    "r2": -0.1819790987855384,
+    "cos": 0.9552479207498471,
+    "mae_macro": 0.12927764964602423,
+    "main_metric": "mae",
+    "main_head": "track"
+  },
+  "head": "track",
+  "worst": [
+    {
+      "rank": 1,
+      "seq_id": "drift-chicane",
+      "source_id": "drift-chicane",
+      "value": 0.235138,
+      "T": 22,
+      "diagnosis": "highest_error",
+      "details": {
+        "T": 22,
+        "dt_cv": 0.204,
+        "dt_mean": 0.099206,
+        "n_valid": 88,
+        "mae": 0.235138,
+        "err_p95": 0.478772,
+        "target_std": 0.182637
+      }
+    },
+    {
+      "rank": 2,
+      "seq_id": "drift-straight",
+      "source_id": "drift-straight",
+      "value": 0.221223,
+      "T": 21,
+      "diagnosis": "highest_error",
+      "details": {
+        "T": 21,
+        "dt_cv": 0.2041,
+        "dt_mean": 0.1,
+        "n_valid": 84,
+        "mae": 0.221223,
+        "err_p95": 0.38235,
+        "target_std": 0.208612
+      }
+    },
+    {
+      "rank": 3,
+      "seq_id": "kite-surf",
+      "source_id": "kite-surf",
+      "value": 0.20307,
+      "T": 21,
+      "diagnosis": "highest_error",
+      "details": {
+        "T": 21,
+        "dt_cv": 0.2041,
+        "dt_mean": 0.1,
+        "n_valid": 84,
+        "mae": 0.20307,
+        "err_p95": 0.336994,
+        "target_std": 0.17247
+      }
+    },
+    {
+      "rank": 4,
+      "seq_id": "mbike-trick",
+      "source_id": "mbike-trick",
+      "value": 0.183402,
+      "T": 33,
+      "diagnosis": "highest_error",
+      "details": {
+        "T": 33,
+        "dt_cv": 0.2041,
+        "dt_mean": 0.10026,
+        "n_valid": 132,
+        "mae": 0.183402,
+        "err_p95": 0.410471,
+        "target_std": 0.182208
+      }
+    },
+    {
+      "rank": 5,
+      "seq_id": "parkour",
+      "source_id": "parkour",
+      "value": 0.17668,
+      "T": 42,
+      "diagnosis": "highest_error",
+      "details": {
+        "T": 42,
+        "dt_cv": 0.2041,
+        "dt_mean": 0.099593,
+        "n_valid": 168,
+        "mae": 0.17668,
+        "err_p95": 0.332085,
+        "target_std": 0.181685
+      }
+    },
+    {
+      "rank": 6,
+      "seq_id": "motocross-jump",
+      "source_id": "motocross-jump",
+      "value": 0.168039,
+      "T": 17,
+      "diagnosis": "short_sequence",
+      "details": {
+        "T": 17,
+        "dt_cv": 0.2038,
+        "dt_mean": 0.098958,
+        "n_valid": 68,
+        "mae": 0.168039,
+        "err_p95": 0.398984,
+        "target_std": 0.224282
+      }
+    },
+    {
+      "rank": 7,
+      "seq_id": "soapbox",
+      "source_id": "soapbox",
+      "value": 0.167306,
+      "T": 42,
+      "diagnosis": "highest_error",
+      "details": {
+        "T": 42,
+        "dt_cv": 0.2041,
+        "dt_mean": 0.099593,
+        "n_valid": 168,
+        "mae": 0.167306,
+        "err_p95": 0.474494,
+        "target_std": 0.182949
+      }
+    },
+    {
+      "rank": 8,
+      "seq_id": "breakdance",
+      "source_id": "breakdance",
+      "value": 0.145788,
+      "T": 35,
+      "diagnosis": "highest_error",
+      "details": {
+        "T": 35,
+        "dt_cv": 0.2041,
+        "dt_mean": 0.10049,
+        "n_valid": 140,
+        "mae": 0.145788,
+        "err_p95": 0.372234,
+        "target_std": 0.181769
+      }
+    },
+    {
+      "rank": 9,
+      "seq_id": "libby",
+      "source_id": "libby",
+      "value": 0.144432,
+      "T": 21,
+      "diagnosis": "highest_error",
+      "details": {
+        "T": 21,
+        "dt_cv": 0.2041,
+        "dt_mean": 0.1,
+        "n_valid": 84,
+        "mae": 0.144432,
+        "err_p95": 0.340731,
+        "target_std": 0.125093
+      }
+    },
+    {
+      "rank": 10,
+      "seq_id": "car-shadow",
+      "source_id": "car-shadow",
+      "value": 0.14337,
+      "T": 17,
+      "diagnosis": "short_sequence",
+      "details": {
+        "T": 17,
+        "dt_cv": 0.2038,
+        "dt_mean": 0.098958,
+        "n_valid": 68,
+        "mae": 0.14337,
+        "err_p95": 0.375877,
+        "target_std": 0.091953
+      }
+    }
+  ],
+  "best": [
+    {
+      "rank": 1,
+      "seq_id": "cows",
+      "source_id": "cows",
+      "value": 0.03432,
+      "T": 44,
+      "diagnosis": "heavy_tail_errors",
+      "details": {
+        "T": 44,
+        "dt_cv": 0.2041,
+        "dt_mean": 0.099806,
+        "n_valid": 176,
+        "mae": 0.03432,
+        "err_p95": 0.109119,
+        "target_std": 0.078863
+      }
+    },
+    {
+      "rank": 2,
+      "seq_id": "pigs",
+      "source_id": "pigs",
+      "value": 0.045486,
+      "T": 33,
+      "diagnosis": "heavy_tail_errors",
+      "details": {
+        "T": 33,
+        "dt_cv": 0.2041,
+        "dt_mean": 0.10026,
+        "n_valid": 132,
+        "mae": 0.045486,
+        "err_p95": 0.2937,
+        "target_std": 0.176307
+      }
+    },
+    {
+      "rank": 3,
+      "seq_id": "blackswan",
+      "source_id": "blackswan",
+      "value": 0.050977,
+      "T": 21,
+      "diagnosis": "highest_error",
+      "details": {
+        "T": 21,
+        "dt_cv": 0.2041,
+        "dt_mean": 0.1,
+        "n_valid": 84,
+        "mae": 0.050977,
+        "err_p95": 0.136586,
+        "target_std": 0.099274
+      }
+    },
+    {
+      "rank": 4,
+      "seq_id": "horsejump-high",
+      "source_id": "horsejump-high",
+      "value": 0.064951,
+      "T": 21,
+      "diagnosis": "highest_error",
+      "details": {
+        "T": 21,
+        "dt_cv": 0.2041,
+        "dt_mean": 0.1,
+        "n_valid": 84,
+        "mae": 0.064951,
+        "err_p95": 0.186306,
+        "target_std": 0.093947
+      }
+    },
+    {
+      "rank": 5,
+      "seq_id": "bike-packing",
+      "source_id": "bike-packing",
+      "value": 0.09472,
+      "T": 29,
+      "diagnosis": "highest_error",
+      "details": {
+        "T": 29,
+        "dt_cv": 0.2041,
+        "dt_mean": 0.099702,
+        "n_valid": 116,
+        "mae": 0.09472,
+        "err_p95": 0.236729,
+        "target_std": 0.179716
+      }
+    },
+    {
+      "rank": 6,
+      "seq_id": "camel",
+      "source_id": "camel",
+      "value": 0.097727,
+      "T": 38,
+      "diagnosis": "highest_error",
+      "details": {
+        "T": 38,
+        "dt_cv": 0.2041,
+        "dt_mean": 0.100225,
+        "n_valid": 152,
+        "mae": 0.097727,
+        "err_p95": 0.190906,
+        "target_std": 0.137096
+      }
+    },
+    {
+      "rank": 7,
+      "seq_id": "judo",
+      "source_id": "judo",
+      "value": 0.099017,
+      "T": 14,
+      "diagnosis": "short_sequence",
+      "details": {
+        "T": 14,
+        "dt_cv": 0.204,
+        "dt_mean": 0.099359,
+        "n_valid": 56,
+        "mae": 0.099017,
+        "err_p95": 0.332028,
+        "target_std": 0.162386
+      }
+    },
+    {
+      "rank": 8,
+      "seq_id": "india",
+      "source_id": "india",
+      "value": 0.114142,
+      "T": 34,
+      "diagnosis": "highest_error",
+      "details": {
+        "T": 34,
+        "dt_cv": 0.2041,
+        "dt_mean": 0.099747,
+        "n_valid": 136,
+        "mae": 0.114142,
+        "err_p95": 0.259493,
+        "target_std": 0.164248
+      }
+    },
+    {
+      "rank": 9,
+      "seq_id": "scooter-black",
+      "source_id": "scooter-black",
+      "value": 0.114446,
+      "T": 18,
+      "diagnosis": "highest_error",
+      "details": {
+        "T": 18,
+        "dt_cv": 0.2041,
+        "dt_mean": 0.10049,
+        "n_valid": 72,
+        "mae": 0.114446,
+        "err_p95": 0.255362,
+        "target_std": 0.1566
+      }
+    },
+    {
+      "rank": 10,
+      "seq_id": "goat",
+      "source_id": "goat",
+      "value": 0.114531,
+      "T": 38,
+      "diagnosis": "highest_error",
+      "details": {
+        "T": 38,
+        "dt_cv": 0.2041,
+        "dt_mean": 0.100225,
+        "n_valid": 152,
+        "mae": 0.114531,
+        "err_p95": 0.28906,
+        "target_std": 0.143915
+      }
+    }
+  ],
+  "diagnosis_counts": {
+    "highest_error": 15,
+    "short_sequence": 3,
+    "heavy_tail_errors": 2
+  },
+  "extra": {
+    "split": "test",
+    "head": "track"
+  },
+  "kind": "mse",
+  "value_stats": {
+    "mean": 0.12927764964602423,
+    "p10": 0.06355315049489339,
+    "p90": 0.18536840473741167
+  },
+  "path": "failure_cases/davis_vos3__mamba__s2.json"
+}

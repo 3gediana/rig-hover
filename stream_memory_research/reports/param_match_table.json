@@ -1,0 +1,70 @@
+{
+  "64": {
+    "cfc": {
+      "hidden": 449,
+      "params": 149896
+    },
+    "deltanet": {
+      "hidden": 1045,
+      "params": 150029
+    },
+    "dsm": {
+      "hidden": 117,
+      "params": 150273
+    },
+    "dsm_slot": {
+      "hidden": 120,
+      "params": 149660
+    },
+    "gru": {
+      "hidden": 192,
+      "params": 149892
+    },
+    "lstm": {
+      "hidden": 163,
+      "params": 150744
+    },
+    "mamba": {
+      "hidden": 319,
+      "params": 150327
+    },
+    "mlp": {
+      "hidden": 355,
+      "params": 150297
+    }
+  },
+  "768": {
+    "cfc": {
+      "hidden": 1324,
+      "params": 479860
+    },
+    "deltanet": {
+      "hidden": 395,
+      "params": 480239
+    },
+    "dsm": {
+      "hidden": 191,
+      "params": 479877
+    },
+    "dsm_slot": {
+      "hidden": 194,
+      "params": 479748
+    },
+    "gru": {
+      "hidden": 169,
+      "params": 478627
+    },
+    "lstm": {
+      "hidden": 132,
+      "params": 478852
+    },
+    "mamba": {
+      "hidden": 246,
+      "params": 479381
+    },
+    "mlp": {
+      "hidden": 406,
+      "params": 479808
+    }
+  }
+}

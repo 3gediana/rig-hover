@@ -1,0 +1,517 @@
+{
+  "suite": "charades_v1",
+  "started": "2026-11-04 03:06:05",
+  "wall_s": 14.577935457229614,
+  "n_ok": 1,
+  "n_fail": 0,
+  "results": [
+    {
+      "run_id": "charades_event_feat__mlp__s0__smoke",
+      "rc": 0,
+      "wall_s": 14.572932720184326,
+      "metrics": {
+        "run_id": "charades_event_feat__mlp__s0__smoke",
+        "status": "complete",
+        "dataset": "charades_event_feat",
+        "task": "event",
+        "model": "mlp",
+        "variant": "base",
+        "seed": 0,
+        "params": 234678,
+        "code_hash": "b4195e92a622d0f8",
+        "manifest_sha": "24dff403bcd49d5066999db8af9e18094f83d2af",
+        "epochs_run": 2,
+        "wall_sec": 8.96,
+        "peak_vram_gb": 0.059,
+        "samples_per_sec": 3.57,
+        "backoff": [],
+        "backoffs": [],
+        "main_metric": "f1",
+        "main_metric_higher_is_better": true,
+        "tok_fusion": "none",
+        "in_dim": 768,
+        "feature_dim": 768,
+        "ms_per_step_train": 730.2788,
+        "ms_per_step_eval": 0.0633,
+        "notes": {
+          "train_windows": "random-start contiguous window of T_max; recurrent state carried across the window, reset only at window boundary",
+          "tok_fusion": "none",
+          "feature_dim": 768,
+          "in_dim": 768,
+          "tok_shape": null,
+          "ms_per_step_train": 730.2788,
+          "ms_per_step_eval": 0.0633,
+          "eval_wall_sec": 0.26,
+          "forward_ms_per_step": 0.0048,
+          "n_train_steps": 2
+        },
+        "curves": {
+          "epoch": [
+            1,
+            2
+          ],
+          "train_loss": [
+            0.6935665011405945,
+            0.6546475291252136
+          ],
+          "task_loss": [
+            0.6935474872589111,
+            0.6546424031257629
+          ],
+          "aux_loss": [
+            1.9009463358088396e-05,
+            5.101946499053156e-06
+          ],
+          "lr": [
+            2e-05,
+            2e-05
+          ],
+          "grad_norm": [
+            0.18513818085193634,
+            0.25876080989837646
+          ],
+          "val_main": [
+            0.07803624538371338,
+            0.07657030245857838
+          ],
+          "val": [
+            {
+              "f1": 0.07803624538371338,
+              "f1_macro": 0.4612091465064596,
+              "precision": 0.04466289960523087,
+              "recall": 0.3087212413054284,
+              "acc": 0.7337109375,
+              "n": 102400,
+              "main_metric": "f1",
+              "main_head": "event"
+            },
+            {
+              "f1": 0.07657030245857838,
+              "f1_macro": 0.4607802041015937,
+              "precision": 0.04385384645316768,
+              "recall": 0.3014981273407433,
+              "acc": 0.734541015625,
+              "n": 102400,
+              "main_metric": "f1",
+              "main_head": "event"
+            }
+          ],
+          "t_sec": [
+            1.4346039295196533,
+            0.02595376968383789
+          ],
+          "n_skips": [
+            0,
+            0
+          ],
+          "aux": {
+            "retrieval": [
+              0.0,
+              0.0
+            ],
+            "crosstalk": [
+              0.0,
+              0.0
+            ],
+            "write_budget": [
+              0.0,
+              0.0
+            ],
+            "long_horizon": [
+              0.0,
+              0.0
+            ],
+            "time_consistency": [
+              0.0003801892453338951,
+              0.00010203892452409491
+            ]
+          },
+          "main_metric": "f1",
+          "higher_is_better": true
+        },
+        "best": {
+          "epoch": 1,
+          "val": {
+            "f1": 0.07803624538371338,
+            "f1_macro": 0.4612091465064596,
+            "precision": 0.04466289960523087,
+            "recall": 0.3087212413054284,
+            "acc": 0.7337109375,
+            "n": 102400,
+            "main_metric": "f1",
+            "main_head": "event"
+          },
+          "test": {
+            "f1": 0.0791213329460986,
+            "f1_macro": 0.46347222543417405,
+            "precision": 0.04470295296268744,
+            "recall": 0.34390900927855617,
+            "acc": 0.73880859375,
+            "n": 102400,
+            "main_metric": "f1",
+            "main_head": "event"
+          },
+          "prefix": {
+            "p@0.125": 0.05833094514457605,
+            "p@0.25": 0.06290512560873181,
+            "p@0.375": 0.06715828370025927,
+            "p@0.5": 0.07457825291660983,
+            "p@0.625": 0.07595566881334807,
+            "p@0.75": 0.0775443756676686,
+            "p@0.875": 0.07742959204434216,
+            "p@1.0": 0.07615378770853931
+          },
+          "per_seq_test": {
+            "f1": {
+              "UK5AT": 0.1625441694005967,
+              "UX8NQ": 0.060606060321291955,
+              "V9RT3": 0.14814814786640687,
+              "VOTA7": 0.08538283026900588,
+              "W1KJ9": 0.0,
+              "WETXR": 0.02489110138978776,
+              "WPZQ7": 0.0,
+              "X0JKJ": 0.056304985199300314,
+              "XB4HN": 0.07910750490585078,
+              "XNXW6": 0.0633592347381745,
+              "XZGIR": 0.09454191002341936,
+              "YDLBN": 0.19469026513629945,
+              "YSBN0": 0.04981320044949744,
+              "Z6IAE": 0.0,
+              "ZKNCV": 0.11328976021500753,
+              "ZZ2SF": 0.08578143342199057
+            }
+          },
+          "per_seq_val": {
+            "f1": {
+              "P36YW": 0.11030176871020582,
+              "PHIIX": 0.03147835843233578,
+              "PVC93": 0.17581246637654085,
+              "Q7DEB": 0.10250696365573825,
+              "QLQNJ": 0.08156943699822787,
+              "QYF31": 0.05599104128505522,
+              "RE1M6": 0.0,
+              "RRNDQ": 0.06770833312955239,
+              "S1PWD": 0.1165152321506501,
+              "SFH7G": 0.0,
+              "SRTW8": 0.0,
+              "T5JY8": 0.1640346405245934,
+              "TIS3Z": 0.2377440343148982,
+              "TVS1P": 0.0,
+              "U79C9": 0.0,
+              "UJMNV": 0.027502750120845697
+            }
+          },
+          "per_gap": {
+            "0-0.1": {
+              "n": 0,
+              "f1": null
+            },
+            "0.1-0.25": {
+              "n": 0,
+              "f1": null
+            },
+            "0.25-0.5": {
+              "n": 0,
+              "f1": null
+            },
+            "0.5-1": {
+              "n": 0,
+              "f1": null
+            },
+            "1-2": {
+              "n": 0,
+              "f1": null
+            },
+            "2-4": {
+              "n": 0,
+              "f1": null
+            },
+            "4-8": {
+              "n": 0,
+              "f1": null
+            },
+            ">=8": {
+              "n": 0,
+              "f1": null
+            }
+          },
+          "per_dt": {
+            "0-0.02": {
+              "n": 800,
+              "f1": 0.06334841611703282,
+              "f1_macro": 0.456619820574984,
+              "precision": 0.034999999999825004,
+              "recall": 0.3333333333174603,
+              "acc": 0.74125
+            },
+            "0.02-0.0334": {
+              "n": 0,
+              "f1": null
+            },
+            "0.0334-0.05": {
+              "n": 0,
+              "f1": null
+            },
+            "0.05-0.1": {
+              "n": 0,
+              "f1": null
+            },
+            "0.1-0.2": {
+              "n": 26200,
+              "f1": 0.0600948864193694,
+              "f1_macro": 0.45047054391844066,
+              "precision": 0.035023041474649,
+              "recall": 0.21150278293115815,
+              "acc": 0.7277862595419847
+            },
+            "0.2-0.5": {
+              "n": 75400,
+              "f1": 0.08608429460745232,
+              "f1_macro": 0.4681492361637526,
+              "precision": 0.048122992681511705,
+              "recall": 0.4076717216768922,
+              "acc": 0.7426127320954907
+            },
+            "0.5-1": {
+              "n": 0,
+              "f1": null
+            },
+            ">=1": {
+              "n": 0,
+              "f1": null
+            }
+          },
+          "rollout": {
+            "1": {
+              "n": 101600,
+              "f1": 0.07924227159298737,
+              "f1_macro": 0.4635245173038621,
+              "precision": 0.044779045602476385,
+              "recall": 0.3439759036143542,
+              "acc": 0.7387893700787401
+            },
+            "3": {
+              "n": 100000,
+              "f1": 0.07942492667821668,
+              "f1_macro": 0.46359998268573627,
+              "precision": 0.04489860961714494,
+              "recall": 0.3438071995117926,
+              "acc": 0.73875
+            },
+            "5": {
+              "n": 98400,
+              "f1": 0.07963904584547998,
+              "f1_macro": 0.46372136665512204,
+              "precision": 0.04503482909444172,
+              "recall": 0.34384662956080897,
+              "acc": 0.73880081300813
+            },
+            "10": {
+              "n": 94400,
+              "f1": 0.08042975432664283,
+              "f1_macro": 0.46413181211247306,
+              "precision": 0.045519804070600224,
+              "recall": 0.3450704225351008,
+              "acc": 0.7388771186440678
+            }
+          },
+          "crosstalk_matrix": null,
+          "robust": {
+            "dense": {
+              "f1": 0.0791213329460986,
+              "f1_macro": 0.46347222543417405,
+              "precision": 0.04470295296268744,
+              "recall": 0.34390900927855617,
+              "acc": 0.73880859375,
+              "n": 102400
+            },
+            "stride2": {
+              "f1": 0.07964784352762277,
+              "f1_macro": 0.4636752321107361,
+              "precision": 0.04498135487880322,
+              "recall": 0.347330533893013,
+              "acc": 0.73865234375,
+              "n": 51200
+            },
+            "stride4": null,
+            "drop30": null,
+            "drop50": {
+              "f1": 0.07621182383665084,
+              "f1_macro": 0.46145288461018075,
+              "precision": 0.04306182221166444,
+              "recall": 0.3311016433351606,
+              "acc": 0.7370289132602194,
+              "n": 50150
+            },
+            "drop70": null,
+            "burst": {
+              "f1": 0.0682745378483489,
+              "f1_macro": 0.4578092696220017,
+              "precision": 0.03815974783716463,
+              "recall": 0.32384746727357777,
+              "acc": 0.737668918918919,
+              "n": 59200
+            },
+            "repeat": null,
+            "jitter": null,
+            "mixed": null,
+            "shuffled": {
+              "f1": 0.07939677709979641,
+              "f1_macro": 0.46363270633575726,
+              "precision": 0.04485857681982473,
+              "recall": 0.3451062556119889,
+              "acc": 0.73888671875,
+              "n": 102400
+            }
+          },
+          "robust_drop": {
+            "stride2": -0.00052651058152417,
+            "drop50": 0.002909509109447761,
+            "burst": 0.010846795097749704,
+            "shuffled": -0.00027544415369780417,
+            "dense": 0.0
+          },
+          "aux_stats": {},
+          "latency_ms_per_step": 0.00475364587752362,
+          "flops_per_step": 464128,
+          "params": 234678,
+          "failure_cases": "failure_cases/charades_event_feat__mlp__s0__smoke.json",
+          "event": {
+            "event_tp": 11.0,
+            "event_fp": 5.0,
+            "event_fn": 8.0,
+            "event_precision": 0.6874999999570313,
+            "event_recall": 0.5789473683905817,
+            "event_f1": 0.6285714280391836,
+            "event_mean_delay": 0.0,
+            "event_dup_rate": 0.0,
+            "event_false_per_min": 0.7620707217726939
+          },
+          "consistency": {
+            "checked": true,
+            "best_in_curve": 0.07803624538371338,
+            "final_val": 0.07803624538371338,
+            "delta": 0.0,
+            "ok": true,
+            "n_val_points": 2
+          }
+        },
+        "aux_weights": {
+          "retrieval": 0.1,
+          "crosstalk": 0.05,
+          "time_consistency": 0.05,
+          "write_budget": 0.01,
+          "long_horizon": 0.1
+        },
+        "aux_cfg": {
+          "long_horizon": {
+            "horizon": 5,
+            "tau": 1.0,
+            "write_thr": 0.1
+          },
+          "time_consistency": {
+            "factor": 2,
+            "kind": "cos"
+          },
+          "crosstalk": {
+            "w_shared": 1.0,
+            "w_balance": 0.1
+          },
+          "write_budget": {},
+          "retrieval": {}
+        },
+        "core_cfg_effective": {
+          "use_dt_feature": true,
+          "use_mask_feature": true,
+          "input_norm": true,
+          "use_dt_struct": "n/a (no state)",
+          "dt_const": 0.1,
+          "dt_scale": 1.0,
+          "n_layers": 2,
+          "model": "mlp",
+          "in_dim": 768,
+          "hidden": 192,
+          "inp_dim": 770
+        },
+        "core_cfg_unused": [],
+        "param_breakdown": {
+          "core": 186628,
+          "heads": 48050,
+          "total": 234678
+        },
+        "counts": {
+          "train": 16,
+          "val": 16,
+          "test": 16
+        },
+        "T_max": 128,
+        "train_windows": "random-start contiguous window of T_max; recurrent state carried across the window, reset only at window boundary",
+        "smoke": true,
+        "amp": true,
+        "config": {
+          "run_id": "charades_event_feat__mlp__s0",
+          "dataset": "charades_event_feat",
+          "manifest": "data_manifests/charades_event_feat.json",
+          "task": "event",
+          "model": {
+            "name": "mlp",
+            "hidden": 192,
+            "cfg": {}
+          },
+          "heads": {
+            "event": {
+              "kind": "bce",
+              "dim": 50,
+              "n_classes": 50
+            }
+          },
+          "loss": {
+            "aux_num_scale": 0.0,
+            "task": {
+              "event": 1.0
+            }
+          },
+          "train": {
+            "epochs": 12,
+            "batch": 32,
+            "lr": 0.002,
+            "wd": 0.0001,
+            "amp": true,
+            "grad_clip": 1.0,
+            "patience": 4,
+            "aug": "medium",
+            "tok_fusion": "none",
+            "T_max": 128,
+            "val_every": 1,
+            "warmup_epochs": 1,
+            "num_workers": 0,
+            "preload": true,
+            "preload_max_gb": 3.0
+          },
+          "eval": {
+            "robustness": [
+              "dense",
+              "stride2",
+              "drop50",
+              "burst",
+              "shuffled"
+            ]
+          },
+          "seed": 0,
+          "main_metric": "f1",
+          "suite": "charades_v1",
+          "round": "R5",
+          "notes": "无记忆下界",
+          "_run_dir": "D:\\robot_work\\stream_memory_research\\runs\\charades_event_feat__mlp__s0__smoke",
+          "_feature_dim": 768,
+          "_tok_dim": 0,
+          "_roi_dim": 0,
+          "_n_roi": 0,
+          "_n_tok": 0,
+          "_in_dim": 768
+        },
+        "finished_at": "2026-11-04 03:06:04"
+      }
+    }
+  ]
+}

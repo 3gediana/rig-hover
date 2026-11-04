@@ -1,0 +1,130 @@
+{
+  "name": "davis_v1",
+  "round": "R1",
+  "description": "真实视频任务 1/3：DAVIS 遮挡恢复。在真实视频上测长期记忆（维度 A）与多帧状态保持。ROI 可见帧是平凡可解的，科学指标是 per_gap（按『距上次观测的时长』分桶的 bbox 误差），即遮挡之后还能不能记住目标位置。注意 DAVIS 本身掩码从不为空，遮挡是人工注入的（见 manifest.extra.occlusion_simulation），报告里必须写明。",
+  "seeds": [
+    0,
+    1
+  ],
+  "defaults": {
+    "loss": {
+      "aux_num_scale": 0.0
+    },
+    "train": {
+      "epochs": 30,
+      "batch": 32,
+      "lr": 0.002,
+      "wd": 0.0001,
+      "amp": true,
+      "grad_clip": 1.0,
+      "patience": 8,
+      "aug": "none",
+      "tok_fusion": "none",
+      "T_max": 90,
+      "val_every": 1,
+      "warmup_epochs": 2,
+      "num_workers": 0,
+      "preload": true,
+      "preload_max_gb": 2.0
+    },
+    "eval": {
+      "robustness": [
+        "dense",
+        "stride2",
+        "stride4",
+        "drop50",
+        "burst",
+        "repeat",
+        "jitter",
+        "shuffled",
+        "mixed"
+      ]
+    }
+  },
+  "datasets": {
+    "davis_vos2": {
+      "task": "track",
+      "manifest": "data_manifests/davis_vos2.json",
+      "heads": {
+        "track": {
+          "kind": "mse",
+          "dim": 4
+        }
+      },
+      "main_metric": "mae",
+      "loss": {
+        "task": {
+          "track": 1.0
+        },
+        "aux_num_scale": 0.0
+      },
+      "train": {
+        "epochs": 30
+      }
+    }
+  },
+  "models": [
+    {
+      "name": "mlp",
+      "hidden": 192,
+      "variant": "base"
+    },
+    {
+      "name": "gru",
+      "hidden": 192,
+      "variant": "base"
+    },
+    {
+      "name": "lstm",
+      "hidden": 192,
+      "variant": "base"
+    },
+    {
+      "name": "cfc",
+      "hidden": 192,
+      "variant": "base",
+      "cfg": {
+        "backbone_units": 64
+      }
+    },
+    {
+      "name": "mamba",
+      "hidden": 192,
+      "variant": "base"
+    },
+    {
+      "name": "deltanet",
+      "hidden": 192,
+      "variant": "base",
+      "cfg": {
+        "mem_dim": 64
+      }
+    },
+    {
+      "name": "dsm",
+      "hidden": 192,
+      "variant": "base",
+      "cfg": {
+        "mem_dim": 128
+      }
+    },
+    {
+      "name": "dsm",
+      "hidden": 192,
+      "variant": "md256nd",
+      "cfg": {
+        "mem_dim": 256,
+        "decay": false
+      }
+    },
+    {
+      "name": "dsm_slot",
+      "hidden": 192,
+      "variant": "base",
+      "cfg": {
+        "n_slots": 8,
+        "slot_dim": 128
+      }
+    }
+  ]
+}

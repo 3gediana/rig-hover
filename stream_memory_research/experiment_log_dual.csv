@@ -1,0 +1,5 @@
+timestamp,round,suite,dataset,task,model,variant,seed,hidden,params,epochs,best_epoch,val_metric,test_metric,metric_name,wall_sec,peak_vram_gb,code_hash,manifest,status,notes
+2026-11-04 06:25:29,R8,dual_v1,synth_pattern_count,synth,dual,dual,0,128,504424,50,44,1.0,1.0,acc,116.4,0.476,61628c200ddaac87,data_manifests/synth_pattern_count.json,complete,retention(no-decay) + order(4-group decay) 两个快记忆并联
+2026-11-04 06:27:06,R8,dual_v1,synth_pattern_rate,synth,dual,dual,0,128,504424,41,1,0.5,0.5,acc,97.1,0.449,61628c200ddaac87,data_manifests/synth_pattern_rate.json,complete,retention(no-decay) + order(4-group decay) 两个快记忆并联
+2026-11-04 06:30:29,R8,dual_v1,synth_recall_multi,synth,dual,dual,0,128,535384,50,50,0.7460638246345991,0.7106686002819662,cos,202.6,0.89,61628c200ddaac87,data_manifests/synth_recall_multi.json,complete,retention(no-decay) + order(4-group decay) 两个快记忆并联
+2026-11-04 06:32:41,R8,dual_v1,synth_recall_single,synth,dual,dual,0,128,535384,50,49,0.9366904023458444,0.9302251551026757,cos,131.9,0.614,61628c200ddaac87,data_manifests/synth_recall_single.json,complete,retention(no-decay) + order(4-group decay) 两个快记忆并联

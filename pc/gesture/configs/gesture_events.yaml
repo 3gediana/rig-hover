@@ -1,0 +1,38 @@
+version: 1
+classes:
+- idle
+- wave
+- open_palm
+- thumbs_up
+- pointing
+- fist
+prob_smooth_tau_s: 0.1
+enter_thresh: 0.75
+exit_thresh: 0.52
+swap_margin: 0.15
+idle_dominant: 0.42
+per_class:
+  wave:
+    enter: 0.75
+    exit: 0.52
+  open_palm:
+    enter: 0.75
+    exit: 0.52
+  thumbs_up:
+    enter: 0.75
+    exit: 0.52
+  pointing:
+    enter: 0.75
+    exit: 0.52
+  fist:
+    enter: 0.75
+    exit: 0.52
+timing_s:
+  pending_hold: 0.1
+  release: 0.25
+  min_gesture: 0.45
+  return_clear: 0.35
+  min_gap: 0.25
+  return_timeout: 2.0
+  max_dt_s: 0.25
+gap_cap_s: 3600.0

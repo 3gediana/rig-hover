@@ -1,0 +1,196 @@
+{
+  "policy": {
+    "input_dim": 106,
+    "hidden": 64,
+    "n_params": 32320,
+    "fp32_bytes": 129280
+  },
+  "n_eval": 4102,
+  "uniform": [
+    {
+      "precision": "fp32",
+      "bits": 4.0,
+      "KiB": 126.25,
+      "head_err_max": 0.0,
+      "head_err_mean": 0.0,
+      "vyaw_err_max": 0.0,
+      "vyaw_err_mean": 0.0,
+      "vx_err_max": 0.0,
+      "mode_agree": 1.0
+    },
+    {
+      "precision": "bf16",
+      "bits": 2.0,
+      "KiB": 63.125,
+      "head_err_max": 0.043321624398231506,
+      "head_err_mean": 0.012762753292918205,
+      "vyaw_err_max": 0.13559237122535706,
+      "vyaw_err_mean": 0.07110601663589478,
+      "vx_err_max": 0.0006019715219736099,
+      "mode_agree": 0.999756216479766
+    },
+    {
+      "precision": "fp16",
+      "bits": 2.0,
+      "KiB": 63.125,
+      "head_err_max": 0.009819064289331436,
+      "head_err_mean": 0.0025640057865530252,
+      "vyaw_err_max": 0.025198347866535187,
+      "vyaw_err_mean": 0.005758163519203663,
+      "vx_err_max": 8.437196083832532e-05,
+      "mode_agree": 0.999756216479766
+    },
+    {
+      "precision": "int8/tensor",
+      "bits": 1.0,
+      "KiB": 31.5625,
+      "head_err_max": 0.3472243547439575,
+      "head_err_mean": 0.1465490162372589,
+      "vyaw_err_max": 0.8276022672653198,
+      "vyaw_err_mean": 0.309359610080719,
+      "vx_err_max": 0.00303804618306458,
+      "mode_agree": 0.999512432959532
+    },
+    {
+      "precision": "int8/channel",
+      "bits": 1.0,
+      "KiB": 31.5625,
+      "head_err_max": 0.4140758216381073,
+      "head_err_mean": 0.06549238413572311,
+      "vyaw_err_max": 0.29412248730659485,
+      "vyaw_err_mean": 0.12247954308986664,
+      "vx_err_max": 0.0011975527741014957,
+      "mode_agree": 0.999756216479766
+    }
+  ],
+  "sensitivity": [
+    {
+      "layer": "proj",
+      "floats": 6784,
+      "head": 0.05809931457042694,
+      "vyaw": 0.1786089688539505,
+      "mode_acc": 0.999756216479766
+    },
+    {
+      "layer": "bb",
+      "floats": 8192,
+      "head": 0.11226687580347061,
+      "vyaw": 0.1736140251159668,
+      "mode_acc": 0.9992686494392979
+    },
+    {
+      "layer": "ff1",
+      "floats": 4096,
+      "head": 0.07850423455238342,
+      "vyaw": 0.20385190844535828,
+      "mode_acc": 1.0
+    },
+    {
+      "layer": "ff2",
+      "floats": 4096,
+      "head": 0.08205120265483856,
+      "vyaw": 0.1577863097190857,
+      "mode_acc": 0.999756216479766
+    },
+    {
+      "layer": "ta",
+      "floats": 4096,
+      "head": 0.029682660475373268,
+      "vyaw": 0.0957442969083786,
+      "mode_acc": 0.999756216479766
+    },
+    {
+      "layer": "tb",
+      "floats": 4096,
+      "head": 0.047286003828048706,
+      "vyaw": 0.06542536616325378,
+      "mode_acc": 0.999756216479766
+    },
+    {
+      "layer": "heads",
+      "floats": 960,
+      "head": 0.3619781732559204,
+      "vyaw": 0.3101937770843506,
+      "mode_acc": 1.0
+    }
+  ],
+  "greedy": [
+    {
+      "n_layers": 1,
+      "KiB": 114.25,
+      "worst_rel": 0.001050800085067749,
+      "layers": [
+        "tb"
+      ]
+    },
+    {
+      "n_layers": 2,
+      "KiB": 102.25,
+      "worst_rel": 0.0013659969166231654,
+      "layers": [
+        "ta",
+        "tb"
+      ]
+    },
+    {
+      "n_layers": 3,
+      "KiB": 82.375,
+      "worst_rel": 0.0020225942134857178,
+      "layers": [
+        "proj",
+        "ta",
+        "tb"
+      ]
+    },
+    {
+      "n_layers": 4,
+      "KiB": 58.375,
+      "worst_rel": 0.003629729151725769,
+      "layers": [
+        "bb",
+        "proj",
+        "ta",
+        "tb"
+      ]
+    },
+    {
+      "n_layers": 5,
+      "KiB": 46.375,
+      "worst_rel": 0.0038596762551201713,
+      "layers": [
+        "bb",
+        "ff2",
+        "proj",
+        "ta",
+        "tb"
+      ]
+    },
+    {
+      "n_layers": 6,
+      "KiB": 34.375,
+      "worst_rel": 0.004672788249121772,
+      "layers": [
+        "bb",
+        "ff1",
+        "ff2",
+        "proj",
+        "ta",
+        "tb"
+      ]
+    },
+    {
+      "n_layers": 7,
+      "KiB": 31.5625,
+      "worst_rel": 0.009201684925291274,
+      "layers": [
+        "bb",
+        "ff1",
+        "ff2",
+        "heads",
+        "proj",
+        "ta",
+        "tb"
+      ]
+    }
+  ]
+}

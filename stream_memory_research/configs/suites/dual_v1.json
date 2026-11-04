@@ -1,0 +1,55 @@
+{
+  "name": "dual_v1",
+  "round": "R8",
+  "description": "ROUND 8：重设计后的 dual 核心。两个并联快记忆：(a) 无衰减 retention bank（管计数/保持），(b) 多时间常数 order bank（管顺序/方向），共享输入与慢状态，读出拼接后过融合 MLP。参数量 469,080，与 dsm(474,540)/gru(381,732) 同量级。先 1 seed 看方向，有效再补种子。",
+  "seeds": [0],
+  "defaults": {
+    "loss": {"aux_num_scale": 0.1},
+    "train": {
+      "epochs": 50, "batch": 64, "lr": 0.002, "wd": 0.0001, "amp": true,
+      "grad_clip": 1.0, "patience": 40, "aug": "none", "tok_fusion": "flatten",
+      "T_max": 64, "val_every": 1, "warmup_epochs": 3,
+      "num_workers": 0, "preload": true, "preload_max_gb": 6.0
+    },
+    "eval": {"robustness": ["dense", "stride2", "stride4", "drop50", "burst", "repeat", "jitter", "shuffled", "mixed"]}
+  },
+  "datasets": {
+    "synth_pattern_count": {
+      "task": "synth",
+      "manifest": "data_manifests/synth_pattern_count.json",
+      "heads": {"class": {"kind": "ce", "dim": 16, "n_classes": 16, "ignore": -1}},
+      "main_metric": "acc",
+      "loss": {"task": {"class": 1.0}},
+      "train": {"epochs": 50}
+    },
+    "synth_pattern_rate": {
+      "task": "synth",
+      "manifest": "data_manifests/synth_pattern_rate.json",
+      "heads": {"class": {"kind": "ce", "dim": 16, "n_classes": 16, "ignore": -1}},
+      "main_metric": "acc",
+      "loss": {"task": {"class": 1.0}},
+      "train": {"epochs": 50}
+    },
+    "synth_recall_multi": {
+      "task": "synth",
+      "manifest": "data_manifests/synth_recall_multi.json",
+      "heads": {"state": {"kind": "mse", "dim": 256}},
+      "main_metric": "cos",
+      "loss": {"task": {"state": 1.0}},
+      "train": {"epochs": 50}
+    },
+    "synth_recall_single": {
+      "task": "synth",
+      "manifest": "data_manifests/synth_recall_single.json",
+      "heads": {"state": {"kind": "mse", "dim": 256}},
+      "main_metric": "cos",
+      "loss": {"task": {"state": 1.0}},
+      "train": {"epochs": 50}
+    }
+  },
+  "models": [
+    {"name": "dual", "hidden": 128, "variant": "base",
+     "cfg": {"mem_dim": 64, "fusion": "mlp"},
+     "notes": "retention(no-decay) + order(4-group decay) 两个快记忆并联"}
+  ]
+}

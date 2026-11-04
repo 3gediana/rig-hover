@@ -1,0 +1,36 @@
+{
+  "name": "charades_v1",
+  "round": "R5",
+  "description": "真实视频任务 2/4：Charades 在线事件检测（50 类真实事件，真实 onset/offset 秒）。这是维度 C（事件理解）。正样本仅占 3.5%，所以主指标是 F1；同时报告 onset 延迟与重复触发率。全部模型同一冻结特征、同一 head、同一预算。",
+  "seeds": [0, 1],
+  "defaults": {
+    "loss": {"aux_num_scale": 0.0},
+    "train": {
+      "epochs": 12, "batch": 32, "lr": 0.002, "wd": 0.0001, "amp": true,
+      "grad_clip": 1.0, "patience": 4, "aug": "medium", "tok_fusion": "none",
+      "T_max": 128, "val_every": 1, "warmup_epochs": 1,
+      "num_workers": 0, "preload": true, "preload_max_gb": 3.0
+    },
+    "eval": {"robustness": ["dense", "stride2", "drop50", "burst", "shuffled"]}
+  },
+  "datasets": {
+    "charades_event_feat": {
+      "task": "event",
+      "manifest": "data_manifests/charades_event_feat.json",
+      "heads": {"event": {"kind": "bce", "dim": 50, "n_classes": 50}},
+      "main_metric": "f1",
+      "loss": {"task": {"event": 1.0}, "aux_num_scale": 0.0},
+      "train": {"epochs": 12}
+    }
+  },
+  "models": [
+    {"name": "mlp", "hidden": 192, "variant": "base", "notes": "无记忆下界"},
+    {"name": "gru", "hidden": 192, "variant": "base"},
+    {"name": "lstm", "hidden": 192, "variant": "base"},
+    {"name": "cfc", "hidden": 192, "variant": "base", "cfg": {"backbone_units": 64}, "notes": "用户原基线"},
+    {"name": "mamba", "hidden": 192, "variant": "base"},
+    {"name": "deltanet", "hidden": 192, "variant": "base", "cfg": {"mem_dim": 64}},
+    {"name": "dsm", "hidden": 192, "variant": "base", "cfg": {"mem_dim": 64}},
+    {"name": "dsm_slot", "hidden": 192, "variant": "base", "cfg": {"n_slots": 12, "slot_dim": 64}}
+  ]
+}

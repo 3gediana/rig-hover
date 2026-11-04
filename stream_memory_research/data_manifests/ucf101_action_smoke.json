@@ -1,0 +1,877 @@
+{
+  "dataset": "ucf101_action_smoke",
+  "task": "action",
+  "feature_dim": 768,
+  "tok_dim": 768,
+  "roi_dim": 0,
+  "n_roi": 0,
+  "encoder": {
+    "name": "openai/clip-vit-base-patch16",
+    "tag": "clip-vit-base-p16-224-f16-2x2tok-v1",
+    "input": 224,
+    "pool": "2x2",
+    "n_tok": 4,
+    "dtype": "float16",
+    "frozen": true,
+    "preprocess": "CLIPImageProcessor",
+    "aggregation": "CLS -> feat; patch 14x14 avgpool 2x2 -> tok"
+  },
+  "split_key": "source_id",
+  "label_specs": {
+    "lab_action": {
+      "kind": "ce",
+      "ignore": -1,
+      "n_classes": 101,
+      "dim": 1
+    }
+  },
+  "extra": {
+    "selection_rule": "official fold-1 train/test lists; per class: test=stride_pick(official test pool, 12); trainval=stride_pick(official train pool, 50); val=trainval[9::10] (5); train=trainval minus val (45).  stride_pick takes idx_i=floor(i*N/n) over lexicographically sorted clip ids.",
+    "quotas": {
+      "train_per_class": 45,
+      "val_per_class": 5,
+      "test_per_class": 12
+    },
+    "classes": [
+      "ApplyEyeMakeup",
+      "ApplyLipstick",
+      "Archery",
+      "BabyCrawling",
+      "BalanceBeam",
+      "BandMarching",
+      "BaseballPitch",
+      "Basketball",
+      "BasketballDunk",
+      "BenchPress",
+      "Biking",
+      "Billiards",
+      "BlowDryHair",
+      "BlowingCandles",
+      "BodyWeightSquats",
+      "Bowling",
+      "BoxingPunchingBag",
+      "BoxingSpeedBag",
+      "BreastStroke",
+      "BrushingTeeth",
+      "CleanAndJerk",
+      "CliffDiving",
+      "CricketBowling",
+      "CricketShot",
+      "CuttingInKitchen",
+      "Diving",
+      "Drumming",
+      "Fencing",
+      "FieldHockeyPenalty",
+      "FloorGymnastics",
+      "FrisbeeCatch",
+      "FrontCrawl",
+      "GolfSwing",
+      "Haircut",
+      "Hammering",
+      "HammerThrow",
+      "HandstandPushups",
+      "HandstandWalking",
+      "HeadMassage",
+      "HighJump",
+      "HorseRace",
+      "HorseRiding",
+      "HulaHoop",
+      "IceDancing",
+      "JavelinThrow",
+      "JugglingBalls",
+      "JumpingJack",
+      "JumpRope",
+      "Kayaking",
+      "Knitting",
+      "LongJump",
+      "Lunges",
+      "MilitaryParade",
+      "Mixing",
+      "MoppingFloor",
+      "Nunchucks",
+      "ParallelBars",
+      "PizzaTossing",
+      "PlayingCello",
+      "PlayingDaf",
+      "PlayingDhol",
+      "PlayingFlute",
+      "PlayingGuitar",
+      "PlayingPiano",
+      "PlayingSitar",
+      "PlayingTabla",
+      "PlayingViolin",
+      "PoleVault",
+      "PommelHorse",
+      "PullUps",
+      "Punch",
+      "PushUps",
+      "Rafting",
+      "RockClimbingIndoor",
+      "RopeClimbing",
+      "Rowing",
+      "SalsaSpin",
+      "ShavingBeard",
+      "Shotput",
+      "SkateBoarding",
+      "Skiing",
+      "Skijet",
+      "SkyDiving",
+      "SoccerJuggling",
+      "SoccerPenalty",
+      "StillRings",
+      "SumoWrestling",
+      "Surfing",
+      "Swing",
+      "TableTennisShot",
+      "TaiChi",
+      "TennisSwing",
+      "ThrowDiscus",
+      "TrampolineJumping",
+      "Typing",
+      "UnevenBars",
+      "VolleyballSpiking",
+      "WalkingWithDog",
+      "WallPushups",
+      "WritingOnBoard",
+      "YoYo"
+    ],
+    "class_index_map": {
+      "ApplyEyeMakeup": 0,
+      "ApplyLipstick": 1,
+      "Archery": 2,
+      "BabyCrawling": 3,
+      "BalanceBeam": 4,
+      "BandMarching": 5,
+      "BaseballPitch": 6,
+      "Basketball": 7,
+      "BasketballDunk": 8,
+      "BenchPress": 9,
+      "Biking": 10,
+      "Billiards": 11,
+      "BlowDryHair": 12,
+      "BlowingCandles": 13,
+      "BodyWeightSquats": 14,
+      "Bowling": 15,
+      "BoxingPunchingBag": 16,
+      "BoxingSpeedBag": 17,
+      "BreastStroke": 18,
+      "BrushingTeeth": 19,
+      "CleanAndJerk": 20,
+      "CliffDiving": 21,
+      "CricketBowling": 22,
+      "CricketShot": 23,
+      "CuttingInKitchen": 24,
+      "Diving": 25,
+      "Drumming": 26,
+      "Fencing": 27,
+      "FieldHockeyPenalty": 28,
+      "FloorGymnastics": 29,
+      "FrisbeeCatch": 30,
+      "FrontCrawl": 31,
+      "GolfSwing": 32,
+      "Haircut": 33,
+      "Hammering": 34,
+      "HammerThrow": 35,
+      "HandstandPushups": 36,
+      "HandstandWalking": 37,
+      "HeadMassage": 38,
+      "HighJump": 39,
+      "HorseRace": 40,
+      "HorseRiding": 41,
+      "HulaHoop": 42,
+      "IceDancing": 43,
+      "JavelinThrow": 44,
+      "JugglingBalls": 45,
+      "JumpingJack": 46,
+      "JumpRope": 47,
+      "Kayaking": 48,
+      "Knitting": 49,
+      "LongJump": 50,
+      "Lunges": 51,
+      "MilitaryParade": 52,
+      "Mixing": 53,
+      "MoppingFloor": 54,
+      "Nunchucks": 55,
+      "ParallelBars": 56,
+      "PizzaTossing": 57,
+      "PlayingCello": 58,
+      "PlayingDaf": 59,
+      "PlayingDhol": 60,
+      "PlayingFlute": 61,
+      "PlayingGuitar": 62,
+      "PlayingPiano": 63,
+      "PlayingSitar": 64,
+      "PlayingTabla": 65,
+      "PlayingViolin": 66,
+      "PoleVault": 67,
+      "PommelHorse": 68,
+      "PullUps": 69,
+      "Punch": 70,
+      "PushUps": 71,
+      "Rafting": 72,
+      "RockClimbingIndoor": 73,
+      "RopeClimbing": 74,
+      "Rowing": 75,
+      "SalsaSpin": 76,
+      "ShavingBeard": 77,
+      "Shotput": 78,
+      "SkateBoarding": 79,
+      "Skiing": 80,
+      "Skijet": 81,
+      "SkyDiving": 82,
+      "SoccerJuggling": 83,
+      "SoccerPenalty": 84,
+      "StillRings": 85,
+      "SumoWrestling": 86,
+      "Surfing": 87,
+      "Swing": 88,
+      "TableTennisShot": 89,
+      "TaiChi": 90,
+      "TennisSwing": 91,
+      "ThrowDiscus": 92,
+      "TrampolineJumping": 93,
+      "Typing": 94,
+      "UnevenBars": 95,
+      "VolleyballSpiking": 96,
+      "WalkingWithDog": 97,
+      "WallPushups": 98,
+      "WritingOnBoard": 99,
+      "YoYo": 100
+    },
+    "sampling": "96 uniformly spaced frame indices per clip, endpoints inclusive (idx_i=round(i*(N-1)/(T-1))); if the clip has fewer than 96 frames all frames are used",
+    "timestamp_rule": "t = frame_index / container average_rate (fps per sequence stored in meta.fps)",
+    "labels": "lab_action[T] int64 = class index, constant over the clip (single-label clip classification, causal online eval can read the label at every prefix)",
+    "source_urls": [
+      "https://huggingface.co/datasets/quchenyuan/UCF101-ZIP (UCF-101.zip, 6.96 GB)",
+      "https://huggingface.co/datasets/quchenyuan/UCF101-ZIP (UCF101TrainTestSplits-RecognitionTask.zip -- official fold files)",
+      "official: https://www.crcv.ucf.edu/data/UCF101/UCF101.rar (not used, cannot unrar)"
+    ],
+    "source": "HF quchenyuan/UCF101-ZIP (identical bytes to official UCF101.rar)",
+    "encoder_config": {
+      "model": "openai/clip-vit-base-patch16",
+      "input_size": 224,
+      "resize": "shortest_edge=224 bicubic",
+      "crop": "center 224",
+      "dtype": "float16",
+      "device": "cuda",
+      "batch_size": "128-256",
+      "normalize": "CLIP mean/std"
+    },
+    "seed": 0,
+    "deterministic": true,
+    "rng_used": false,
+    "split_unit": "video id (source_id); official fold-1 test set reserved for test, val carved from official train",
+    "subject_leakage_note": "UCF101 subjects span official train and test; split is by video, not subject. meta.subject stored for optional regrouping.",
+    "n_planned": 6262,
+    "n_extracted": 6260,
+    "skipped": {
+      "ThrowDiscus__v_ThrowDiscus_g13_c04": "InvalidDataError: [Errno 1094995529] Invalid data found when processing input: 'avcodec_send_packet()'; last error log: [mpeg4] header damaged",
+      "ShavingBeard__v_ShavingBeard_g18_c06": "InvalidDataError: [Errno 1094995529] Invalid data found when processing input: 'avcodec_send_packet()'; last error log: [mpeg4] header damaged"
+    },
+    "classes_missing": [],
+    "fixture": "tiny smoke fixture: first {'train': 20, 'val': 5, 'test': 5} sequences of each split of ucf101_action, identical npz files -- for <60 s end-to-end pipeline tests only",
+    "parent_dataset": "ucf101_action"
+  },
+  "seqs": [
+    {
+      "seq_id": "ApplyEyeMakeup__v_ApplyEyeMakeup_g08_c01",
+      "source_id": "v_ApplyEyeMakeup_g08_c01",
+      "split": "train",
+      "T": 96,
+      "path": "G:/stream_memory_data/features/ucf101_action/ApplyEyeMakeup__v_ApplyEyeMakeup_g08_c01.npz",
+      "labels": [
+        "action"
+      ],
+      "meta": {
+        "class": "ApplyEyeMakeup",
+        "class_index": 0,
+        "subject": "g08",
+        "clip_tag": "",
+        "relpath": "ApplyEyeMakeup/v_ApplyEyeMakeup_g08_c01.avi",
+        "fps": 25.0,
+        "n_frames_total": 120,
+        "n_frames_kept": 96
+      }
+    },
+    {
+      "seq_id": "ApplyEyeMakeup__v_ApplyEyeMakeup_g08_c03",
+      "source_id": "v_ApplyEyeMakeup_g08_c03",
+      "split": "train",
+      "T": 96,
+      "path": "G:/stream_memory_data/features/ucf101_action/ApplyEyeMakeup__v_ApplyEyeMakeup_g08_c03.npz",
+      "labels": [
+        "action"
+      ],
+      "meta": {
+        "class": "ApplyEyeMakeup",
+        "class_index": 0,
+        "subject": "g08",
+        "clip_tag": "",
+        "relpath": "ApplyEyeMakeup/v_ApplyEyeMakeup_g08_c03.avi",
+        "fps": 25.0,
+        "n_frames_total": 146,
+        "n_frames_kept": 96
+      }
+    },
+    {
+      "seq_id": "ApplyEyeMakeup__v_ApplyEyeMakeup_g08_c05",
+      "source_id": "v_ApplyEyeMakeup_g08_c05",
+      "split": "train",
+      "T": 96,
+      "path": "G:/stream_memory_data/features/ucf101_action/ApplyEyeMakeup__v_ApplyEyeMakeup_g08_c05.npz",
+      "labels": [
+        "action"
+      ],
+      "meta": {
+        "class": "ApplyEyeMakeup",
+        "class_index": 0,
+        "subject": "g08",
+        "clip_tag": "",
+        "relpath": "ApplyEyeMakeup/v_ApplyEyeMakeup_g08_c05.avi",
+        "fps": 25.0,
+        "n_frames_total": 276,
+        "n_frames_kept": 96
+      }
+    },
+    {
+      "seq_id": "ApplyEyeMakeup__v_ApplyEyeMakeup_g09_c02",
+      "source_id": "v_ApplyEyeMakeup_g09_c02",
+      "split": "train",
+      "T": 96,
+      "path": "G:/stream_memory_data/features/ucf101_action/ApplyEyeMakeup__v_ApplyEyeMakeup_g09_c02.npz",
+      "labels": [
+        "action"
+      ],
+      "meta": {
+        "class": "ApplyEyeMakeup",
+        "class_index": 0,
+        "subject": "g09",
+        "clip_tag": "",
+        "relpath": "ApplyEyeMakeup/v_ApplyEyeMakeup_g09_c02.avi",
+        "fps": 25.0,
+        "n_frames_total": 258,
+        "n_frames_kept": 96
+      }
+    },
+    {
+      "seq_id": "ApplyEyeMakeup__v_ApplyEyeMakeup_g09_c04",
+      "source_id": "v_ApplyEyeMakeup_g09_c04",
+      "split": "train",
+      "T": 96,
+      "path": "G:/stream_memory_data/features/ucf101_action/ApplyEyeMakeup__v_ApplyEyeMakeup_g09_c04.npz",
+      "labels": [
+        "action"
+      ],
+      "meta": {
+        "class": "ApplyEyeMakeup",
+        "class_index": 0,
+        "subject": "g09",
+        "clip_tag": "",
+        "relpath": "ApplyEyeMakeup/v_ApplyEyeMakeup_g09_c04.avi",
+        "fps": 25.0,
+        "n_frames_total": 191,
+        "n_frames_kept": 96
+      }
+    },
+    {
+      "seq_id": "ApplyEyeMakeup__v_ApplyEyeMakeup_g09_c06",
+      "source_id": "v_ApplyEyeMakeup_g09_c06",
+      "split": "train",
+      "T": 96,
+      "path": "G:/stream_memory_data/features/ucf101_action/ApplyEyeMakeup__v_ApplyEyeMakeup_g09_c06.npz",
+      "labels": [
+        "action"
+      ],
+      "meta": {
+        "class": "ApplyEyeMakeup",
+        "class_index": 0,
+        "subject": "g09",
+        "clip_tag": "",
+        "relpath": "ApplyEyeMakeup/v_ApplyEyeMakeup_g09_c06.avi",
+        "fps": 25.0,
+        "n_frames_total": 188,
+        "n_frames_kept": 96
+      }
+    },
+    {
+      "seq_id": "ApplyEyeMakeup__v_ApplyEyeMakeup_g10_c01",
+      "source_id": "v_ApplyEyeMakeup_g10_c01",
+      "split": "train",
+      "T": 96,
+      "path": "G:/stream_memory_data/features/ucf101_action/ApplyEyeMakeup__v_ApplyEyeMakeup_g10_c01.npz",
+      "labels": [
+        "action"
+      ],
+      "meta": {
+        "class": "ApplyEyeMakeup",
+        "class_index": 0,
+        "subject": "g10",
+        "clip_tag": "",
+        "relpath": "ApplyEyeMakeup/v_ApplyEyeMakeup_g10_c01.avi",
+        "fps": 25.0,
+        "n_frames_total": 153,
+        "n_frames_kept": 96
+      }
+    },
+    {
+      "seq_id": "ApplyEyeMakeup__v_ApplyEyeMakeup_g10_c03",
+      "source_id": "v_ApplyEyeMakeup_g10_c03",
+      "split": "train",
+      "T": 96,
+      "path": "G:/stream_memory_data/features/ucf101_action/ApplyEyeMakeup__v_ApplyEyeMakeup_g10_c03.npz",
+      "labels": [
+        "action"
+      ],
+      "meta": {
+        "class": "ApplyEyeMakeup",
+        "class_index": 0,
+        "subject": "g10",
+        "clip_tag": "",
+        "relpath": "ApplyEyeMakeup/v_ApplyEyeMakeup_g10_c03.avi",
+        "fps": 25.0,
+        "n_frames_total": 106,
+        "n_frames_kept": 96
+      }
+    },
+    {
+      "seq_id": "ApplyEyeMakeup__v_ApplyEyeMakeup_g10_c05",
+      "source_id": "v_ApplyEyeMakeup_g10_c05",
+      "split": "train",
+      "T": 96,
+      "path": "G:/stream_memory_data/features/ucf101_action/ApplyEyeMakeup__v_ApplyEyeMakeup_g10_c05.npz",
+      "labels": [
+        "action"
+      ],
+      "meta": {
+        "class": "ApplyEyeMakeup",
+        "class_index": 0,
+        "subject": "g10",
+        "clip_tag": "",
+        "relpath": "ApplyEyeMakeup/v_ApplyEyeMakeup_g10_c05.avi",
+        "fps": 25.0,
+        "n_frames_total": 120,
+        "n_frames_kept": 96
+      }
+    },
+    {
+      "seq_id": "ApplyEyeMakeup__v_ApplyEyeMakeup_g11_c04",
+      "source_id": "v_ApplyEyeMakeup_g11_c04",
+      "split": "train",
+      "T": 96,
+      "path": "G:/stream_memory_data/features/ucf101_action/ApplyEyeMakeup__v_ApplyEyeMakeup_g11_c04.npz",
+      "labels": [
+        "action"
+      ],
+      "meta": {
+        "class": "ApplyEyeMakeup",
+        "class_index": 0,
+        "subject": "g11",
+        "clip_tag": "",
+        "relpath": "ApplyEyeMakeup/v_ApplyEyeMakeup_g11_c04.avi",
+        "fps": 25.0,
+        "n_frames_total": 138,
+        "n_frames_kept": 96
+      }
+    },
+    {
+      "seq_id": "ApplyEyeMakeup__v_ApplyEyeMakeup_g12_c01",
+      "source_id": "v_ApplyEyeMakeup_g12_c01",
+      "split": "train",
+      "T": 96,
+      "path": "G:/stream_memory_data/features/ucf101_action/ApplyEyeMakeup__v_ApplyEyeMakeup_g12_c01.npz",
+      "labels": [
+        "action"
+      ],
+      "meta": {
+        "class": "ApplyEyeMakeup",
+        "class_index": 0,
+        "subject": "g12",
+        "clip_tag": "",
+        "relpath": "ApplyEyeMakeup/v_ApplyEyeMakeup_g12_c01.avi",
+        "fps": 25.0,
+        "n_frames_total": 226,
+        "n_frames_kept": 96
+      }
+    },
+    {
+      "seq_id": "ApplyEyeMakeup__v_ApplyEyeMakeup_g12_c03",
+      "source_id": "v_ApplyEyeMakeup_g12_c03",
+      "split": "train",
+      "T": 96,
+      "path": "G:/stream_memory_data/features/ucf101_action/ApplyEyeMakeup__v_ApplyEyeMakeup_g12_c03.npz",
+      "labels": [
+        "action"
+      ],
+      "meta": {
+        "class": "ApplyEyeMakeup",
+        "class_index": 0,
+        "subject": "g12",
+        "clip_tag": "",
+        "relpath": "ApplyEyeMakeup/v_ApplyEyeMakeup_g12_c03.avi",
+        "fps": 25.0,
+        "n_frames_total": 141,
+        "n_frames_kept": 96
+      }
+    },
+    {
+      "seq_id": "ApplyEyeMakeup__v_ApplyEyeMakeup_g12_c05",
+      "source_id": "v_ApplyEyeMakeup_g12_c05",
+      "split": "train",
+      "T": 96,
+      "path": "G:/stream_memory_data/features/ucf101_action/ApplyEyeMakeup__v_ApplyEyeMakeup_g12_c05.npz",
+      "labels": [
+        "action"
+      ],
+      "meta": {
+        "class": "ApplyEyeMakeup",
+        "class_index": 0,
+        "subject": "g12",
+        "clip_tag": "",
+        "relpath": "ApplyEyeMakeup/v_ApplyEyeMakeup_g12_c05.avi",
+        "fps": 25.0,
+        "n_frames_total": 127,
+        "n_frames_kept": 96
+      }
+    },
+    {
+      "seq_id": "ApplyEyeMakeup__v_ApplyEyeMakeup_g13_c01",
+      "source_id": "v_ApplyEyeMakeup_g13_c01",
+      "split": "train",
+      "T": 96,
+      "path": "G:/stream_memory_data/features/ucf101_action/ApplyEyeMakeup__v_ApplyEyeMakeup_g13_c01.npz",
+      "labels": [
+        "action"
+      ],
+      "meta": {
+        "class": "ApplyEyeMakeup",
+        "class_index": 0,
+        "subject": "g13",
+        "clip_tag": "",
+        "relpath": "ApplyEyeMakeup/v_ApplyEyeMakeup_g13_c01.avi",
+        "fps": 25.0,
+        "n_frames_total": 175,
+        "n_frames_kept": 96
+      }
+    },
+    {
+      "seq_id": "ApplyEyeMakeup__v_ApplyEyeMakeup_g13_c03",
+      "source_id": "v_ApplyEyeMakeup_g13_c03",
+      "split": "train",
+      "T": 96,
+      "path": "G:/stream_memory_data/features/ucf101_action/ApplyEyeMakeup__v_ApplyEyeMakeup_g13_c03.npz",
+      "labels": [
+        "action"
+      ],
+      "meta": {
+        "class": "ApplyEyeMakeup",
+        "class_index": 0,
+        "subject": "g13",
+        "clip_tag": "",
+        "relpath": "ApplyEyeMakeup/v_ApplyEyeMakeup_g13_c03.avi",
+        "fps": 25.0,
+        "n_frames_total": 168,
+        "n_frames_kept": 96
+      }
+    },
+    {
+      "seq_id": "ApplyEyeMakeup__v_ApplyEyeMakeup_g13_c05",
+      "source_id": "v_ApplyEyeMakeup_g13_c05",
+      "split": "train",
+      "T": 96,
+      "path": "G:/stream_memory_data/features/ucf101_action/ApplyEyeMakeup__v_ApplyEyeMakeup_g13_c05.npz",
+      "labels": [
+        "action"
+      ],
+      "meta": {
+        "class": "ApplyEyeMakeup",
+        "class_index": 0,
+        "subject": "g13",
+        "clip_tag": "",
+        "relpath": "ApplyEyeMakeup/v_ApplyEyeMakeup_g13_c05.avi",
+        "fps": 25.0,
+        "n_frames_total": 119,
+        "n_frames_kept": 96
+      }
+    },
+    {
+      "seq_id": "ApplyEyeMakeup__v_ApplyEyeMakeup_g14_c01",
+      "source_id": "v_ApplyEyeMakeup_g14_c01",
+      "split": "train",
+      "T": 96,
+      "path": "G:/stream_memory_data/features/ucf101_action/ApplyEyeMakeup__v_ApplyEyeMakeup_g14_c01.npz",
+      "labels": [
+        "action"
+      ],
+      "meta": {
+        "class": "ApplyEyeMakeup",
+        "class_index": 0,
+        "subject": "g14",
+        "clip_tag": "",
+        "relpath": "ApplyEyeMakeup/v_ApplyEyeMakeup_g14_c01.avi",
+        "fps": 25.0,
+        "n_frames_total": 185,
+        "n_frames_kept": 96
+      }
+    },
+    {
+      "seq_id": "ApplyEyeMakeup__v_ApplyEyeMakeup_g14_c03",
+      "source_id": "v_ApplyEyeMakeup_g14_c03",
+      "split": "train",
+      "T": 96,
+      "path": "G:/stream_memory_data/features/ucf101_action/ApplyEyeMakeup__v_ApplyEyeMakeup_g14_c03.npz",
+      "labels": [
+        "action"
+      ],
+      "meta": {
+        "class": "ApplyEyeMakeup",
+        "class_index": 0,
+        "subject": "g14",
+        "clip_tag": "",
+        "relpath": "ApplyEyeMakeup/v_ApplyEyeMakeup_g14_c03.avi",
+        "fps": 25.0,
+        "n_frames_total": 237,
+        "n_frames_kept": 96
+      }
+    },
+    {
+      "seq_id": "ApplyEyeMakeup__v_ApplyEyeMakeup_g15_c02",
+      "source_id": "v_ApplyEyeMakeup_g15_c02",
+      "split": "train",
+      "T": 96,
+      "path": "G:/stream_memory_data/features/ucf101_action/ApplyEyeMakeup__v_ApplyEyeMakeup_g15_c02.npz",
+      "labels": [
+        "action"
+      ],
+      "meta": {
+        "class": "ApplyEyeMakeup",
+        "class_index": 0,
+        "subject": "g15",
+        "clip_tag": "",
+        "relpath": "ApplyEyeMakeup/v_ApplyEyeMakeup_g15_c02.avi",
+        "fps": 25.0,
+        "n_frames_total": 193,
+        "n_frames_kept": 96
+      }
+    },
+    {
+      "seq_id": "ApplyEyeMakeup__v_ApplyEyeMakeup_g15_c04",
+      "source_id": "v_ApplyEyeMakeup_g15_c04",
+      "split": "train",
+      "T": 96,
+      "path": "G:/stream_memory_data/features/ucf101_action/ApplyEyeMakeup__v_ApplyEyeMakeup_g15_c04.npz",
+      "labels": [
+        "action"
+      ],
+      "meta": {
+        "class": "ApplyEyeMakeup",
+        "class_index": 0,
+        "subject": "g15",
+        "clip_tag": "",
+        "relpath": "ApplyEyeMakeup/v_ApplyEyeMakeup_g15_c04.avi",
+        "fps": 25.0,
+        "n_frames_total": 187,
+        "n_frames_kept": 96
+      }
+    },
+    {
+      "seq_id": "ApplyEyeMakeup__v_ApplyEyeMakeup_g11_c02",
+      "source_id": "v_ApplyEyeMakeup_g11_c02",
+      "split": "val",
+      "T": 96,
+      "path": "G:/stream_memory_data/features/ucf101_action/ApplyEyeMakeup__v_ApplyEyeMakeup_g11_c02.npz",
+      "labels": [
+        "action"
+      ],
+      "meta": {
+        "class": "ApplyEyeMakeup",
+        "class_index": 0,
+        "subject": "g11",
+        "clip_tag": "",
+        "relpath": "ApplyEyeMakeup/v_ApplyEyeMakeup_g11_c02.avi",
+        "fps": 25.0,
+        "n_frames_total": 178,
+        "n_frames_kept": 96
+      }
+    },
+    {
+      "seq_id": "ApplyEyeMakeup__v_ApplyEyeMakeup_g14_c05",
+      "source_id": "v_ApplyEyeMakeup_g14_c05",
+      "split": "val",
+      "T": 96,
+      "path": "G:/stream_memory_data/features/ucf101_action/ApplyEyeMakeup__v_ApplyEyeMakeup_g14_c05.npz",
+      "labels": [
+        "action"
+      ],
+      "meta": {
+        "class": "ApplyEyeMakeup",
+        "class_index": 0,
+        "subject": "g14",
+        "clip_tag": "",
+        "relpath": "ApplyEyeMakeup/v_ApplyEyeMakeup_g14_c05.avi",
+        "fps": 25.0,
+        "n_frames_total": 160,
+        "n_frames_kept": 96
+      }
+    },
+    {
+      "seq_id": "ApplyEyeMakeup__v_ApplyEyeMakeup_g18_c03",
+      "source_id": "v_ApplyEyeMakeup_g18_c03",
+      "split": "val",
+      "T": 96,
+      "path": "G:/stream_memory_data/features/ucf101_action/ApplyEyeMakeup__v_ApplyEyeMakeup_g18_c03.npz",
+      "labels": [
+        "action"
+      ],
+      "meta": {
+        "class": "ApplyEyeMakeup",
+        "class_index": 0,
+        "subject": "g18",
+        "clip_tag": "",
+        "relpath": "ApplyEyeMakeup/v_ApplyEyeMakeup_g18_c03.avi",
+        "fps": 25.0,
+        "n_frames_total": 157,
+        "n_frames_kept": 96
+      }
+    },
+    {
+      "seq_id": "ApplyEyeMakeup__v_ApplyEyeMakeup_g22_c03",
+      "source_id": "v_ApplyEyeMakeup_g22_c03",
+      "split": "val",
+      "T": 96,
+      "path": "G:/stream_memory_data/features/ucf101_action/ApplyEyeMakeup__v_ApplyEyeMakeup_g22_c03.npz",
+      "labels": [
+        "action"
+      ],
+      "meta": {
+        "class": "ApplyEyeMakeup",
+        "class_index": 0,
+        "subject": "g22",
+        "clip_tag": "",
+        "relpath": "ApplyEyeMakeup/v_ApplyEyeMakeup_g22_c03.avi",
+        "fps": 25.0,
+        "n_frames_total": 147,
+        "n_frames_kept": 96
+      }
+    },
+    {
+      "seq_id": "ApplyEyeMakeup__v_ApplyEyeMakeup_g25_c05",
+      "source_id": "v_ApplyEyeMakeup_g25_c05",
+      "split": "val",
+      "T": 93,
+      "path": "G:/stream_memory_data/features/ucf101_action/ApplyEyeMakeup__v_ApplyEyeMakeup_g25_c05.npz",
+      "labels": [
+        "action"
+      ],
+      "meta": {
+        "class": "ApplyEyeMakeup",
+        "class_index": 0,
+        "subject": "g25",
+        "clip_tag": "",
+        "relpath": "ApplyEyeMakeup/v_ApplyEyeMakeup_g25_c05.avi",
+        "fps": 25.0,
+        "n_frames_total": 93,
+        "n_frames_kept": 93
+      }
+    },
+    {
+      "seq_id": "ApplyEyeMakeup__v_ApplyEyeMakeup_g01_c01",
+      "source_id": "v_ApplyEyeMakeup_g01_c01",
+      "split": "test",
+      "T": 96,
+      "path": "G:/stream_memory_data/features/ucf101_action/ApplyEyeMakeup__v_ApplyEyeMakeup_g01_c01.npz",
+      "labels": [
+        "action"
+      ],
+      "meta": {
+        "class": "ApplyEyeMakeup",
+        "class_index": 0,
+        "subject": "g01",
+        "clip_tag": "",
+        "relpath": "ApplyEyeMakeup/v_ApplyEyeMakeup_g01_c01.avi",
+        "fps": 25.0,
+        "n_frames_total": 164,
+        "n_frames_kept": 96
+      }
+    },
+    {
+      "seq_id": "ApplyEyeMakeup__v_ApplyEyeMakeup_g01_c04",
+      "source_id": "v_ApplyEyeMakeup_g01_c04",
+      "split": "test",
+      "T": 96,
+      "path": "G:/stream_memory_data/features/ucf101_action/ApplyEyeMakeup__v_ApplyEyeMakeup_g01_c04.npz",
+      "labels": [
+        "action"
+      ],
+      "meta": {
+        "class": "ApplyEyeMakeup",
+        "class_index": 0,
+        "subject": "g01",
+        "clip_tag": "",
+        "relpath": "ApplyEyeMakeup/v_ApplyEyeMakeup_g01_c04.avi",
+        "fps": 25.0,
+        "n_frames_total": 235,
+        "n_frames_kept": 96
+      }
+    },
+    {
+      "seq_id": "ApplyEyeMakeup__v_ApplyEyeMakeup_g02_c02",
+      "source_id": "v_ApplyEyeMakeup_g02_c02",
+      "split": "test",
+      "T": 96,
+      "path": "G:/stream_memory_data/features/ucf101_action/ApplyEyeMakeup__v_ApplyEyeMakeup_g02_c02.npz",
+      "labels": [
+        "action"
+      ],
+      "meta": {
+        "class": "ApplyEyeMakeup",
+        "class_index": 0,
+        "subject": "g02",
+        "clip_tag": "",
+        "relpath": "ApplyEyeMakeup/v_ApplyEyeMakeup_g02_c02.avi",
+        "fps": 25.0,
+        "n_frames_total": 146,
+        "n_frames_kept": 96
+      }
+    },
+    {
+      "seq_id": "ApplyEyeMakeup__v_ApplyEyeMakeup_g03_c02",
+      "source_id": "v_ApplyEyeMakeup_g03_c02",
+      "split": "test",
+      "T": 96,
+      "path": "G:/stream_memory_data/features/ucf101_action/ApplyEyeMakeup__v_ApplyEyeMakeup_g03_c02.npz",
+      "labels": [
+        "action"
+      ],
+      "meta": {
+        "class": "ApplyEyeMakeup",
+        "class_index": 0,
+        "subject": "g03",
+        "clip_tag": "",
+        "relpath": "ApplyEyeMakeup/v_ApplyEyeMakeup_g03_c02.avi",
+        "fps": 25.0,
+        "n_frames_total": 134,
+        "n_frames_kept": 96
+      }
+    },
+    {
+      "seq_id": "ApplyEyeMakeup__v_ApplyEyeMakeup_g03_c05",
+      "source_id": "v_ApplyEyeMakeup_g03_c05",
+      "split": "test",
+      "T": 96,
+      "path": "G:/stream_memory_data/features/ucf101_action/ApplyEyeMakeup__v_ApplyEyeMakeup_g03_c05.npz",
+      "labels": [
+        "action"
+      ],
+      "meta": {
+        "class": "ApplyEyeMakeup",
+        "class_index": 0,
+        "subject": "g03",
+        "clip_tag": "",
+        "relpath": "ApplyEyeMakeup/v_ApplyEyeMakeup_g03_c05.avi",
+        "fps": 25.0,
+        "n_frames_total": 146,
+        "n_frames_kept": 96
+      }
+    }
+  ]
+}

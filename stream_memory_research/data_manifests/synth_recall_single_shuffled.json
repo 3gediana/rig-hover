@@ -1,0 +1,643 @@
+{
+  "dataset": "synth_recall_single_shuffled",
+  "task": "synth_mem",
+  "feature_dim": 64,
+  "tok_dim": 17,
+  "roi_dim": 0,
+  "n_roi": 0,
+  "encoder": {
+    "name": "synthetic_controlled",
+    "version": "synth-suite-v1",
+    "task": "recall_single"
+  },
+  "split_key": "source_id",
+  "label_specs": {
+    "state": {
+      "kind": "mse",
+      "dim": 256
+    },
+    "class": {
+      "kind": "ce",
+      "dim": 1,
+      "n_classes": 16,
+      "ignore": -1
+    },
+    "event": {
+      "kind": "bce",
+      "dim": 1,
+      "n_classes": 1
+    }
+  },
+  "extra": {
+    "generator": "src/synth",
+    "suite_format": "synth-suite-v1",
+    "task_id": "recall_single",
+    "seed_base": 20261103,
+    "split_policy": "split by episode generator seed group: train=[0,800), val=[800,1000), test=[1000,1200); source_id = 'ep<index>' (never split by frame); test episodes are generated independently",
+    "split_ranges": {
+      "train": [
+        0,
+        800
+      ],
+      "val": [
+        800,
+        1000
+      ],
+      "test": [
+        1000,
+        1200
+      ]
+    },
+    "nominal_dt": 0.1,
+    "layout": {
+      "layout_version": 1,
+      "KMAX": 16,
+      "V": 16,
+      "VC": 8,
+      "VA": 8,
+      "N_CODES": 16,
+      "tok_dim": 17,
+      "feat_dim": 64,
+      "feat_summary_dim": 16,
+      "C_EVENT": 4
+    },
+    "channel_layout": {
+      "feat": {
+        "shape": "[T, 64] float16",
+        "summary_channels": [
+          {
+            "idx": 0,
+            "name": "bias",
+            "meaning": "constant 1.0"
+          },
+          {
+            "idx": 1,
+            "name": "vis_frac",
+            "meaning": "number of currently observed object tokens / 16"
+          },
+          {
+            "idx": 2,
+            "name": "any_hidden",
+            "meaning": "1.0 if at least one existing object is currently hidden"
+          },
+          {
+            "idx": 3,
+            "name": "query",
+            "meaning": "1.0 on steps flagged as a recall query"
+          },
+          {
+            "idx": 4,
+            "name": "event_pulse",
+            "meaning": "1.0 on an event step (knock/wave impulse)"
+          },
+          {
+            "idx": 5,
+            "name": "event_type_norm",
+            "meaning": "event type / (C_EVENT-1) in [0,1]; 0 when no event"
+          },
+          {
+            "idx": 6,
+            "name": "elapsed_s_60",
+            "meaning": "physical elapsed time / 60 s (causal clock)"
+          },
+          {
+            "idx": 7,
+            "name": "event_age_s_60",
+            "meaning": "seconds since the last event / 60 s (0 if none yet)"
+          },
+          {
+            "idx": 8,
+            "name": "since_change_s_60",
+            "meaning": "seconds since any visible token value last changed / 60 s"
+          },
+          {
+            "idx": 9,
+            "name": "hidden_asked_frac",
+            "meaning": "number of object-slots that are existing+hidden / 16"
+          },
+          {
+            "idx": 10,
+            "name": "mean_vis_norm",
+            "meaning": "mean L2 norm of the currently observed token values"
+          },
+          {
+            "idx": 11,
+            "name": "n_existing_frac",
+            "meaning": "number of existing object slots / 16"
+          },
+          {
+            "idx": 12,
+            "name": "reserved",
+            "meaning": "0.0"
+          },
+          {
+            "idx": 13,
+            "name": "reserved",
+            "meaning": "0.0"
+          },
+          {
+            "idx": 14,
+            "name": "reserved",
+            "meaning": "0.0"
+          },
+          {
+            "idx": 15,
+            "name": "reserved",
+            "meaning": "0.0"
+          }
+        ],
+        "reserved": "channels 16..63 are always 0.0 (reserved)"
+      },
+      "tok": {
+        "shape": "[T, 16, 17] float16",
+        "channels_0_15": "that object's current 16-dim value (identity dims zeroed when visible-but-not-identifiable)",
+        "channel_16": "visibility flag: 1.0 iff the object is observed now; when not observed the entire token is 0"
+      },
+      "labels": {
+        "lab_state": "[T, 256] float32 = 16 slots x 16 state dims; true state scaled by lab_mask-independent knowability (0 where the slot is unused or its value is unknowable)",
+        "lab_mask": "[T, 16] float32 = 1.0 iff the slot is asked for (knowable but absent from the current observation); all metrics are computed on lab_mask==1",
+        "lab_class": "[T] int64 = -1 ignore; identity id (vanish_reappear) or event type (event_seq)",
+        "lab_event": "[T] float32 0/1 event indicator"
+      },
+      "identity_code": "state dims 0..7: signed one-hot (16 identities); dims 8..15: N(0,1) analogue"
+    },
+    "phases": {
+      "pre": 0,
+      "write": 1,
+      "gap": 2,
+      "query": 3,
+      "verify": 4
+    },
+    "main_metric": "cos",
+    "task_params": {
+      "pre_frames": 2,
+      "write_frames": 4,
+      "query_frames": 2,
+      "verify_frames": 3,
+      "gap_s": null,
+      "gap_min_s": 0.1,
+      "gap_max_s": 3.2
+    },
+    "eval_only": true,
+    "base_dataset": "synth_recall_single",
+    "base_task": "recall_single",
+    "sweep_gap_s": null,
+    "gap_s": null,
+    "capacity_k": null,
+    "sweep_role": "",
+    "layout_signature": "2b2bdc7b2b7c6a54",
+    "irregular": null,
+    "irregular_params": {},
+    "control": "temporal_shuffle",
+    "eval_manifests": [],
+    "eval_manifest_paths": [],
+    "notes": "LIT-BRIEF temporal-shuffle control: rows permuted in time, timestamps unchanged and labels kept per row",
+    "oracle_reference_definition": {
+      "perfect": "unbounded faithful memory reading only the observation (PerfectMemoryOracle) -> sanity upper bound 1.0",
+      "memoryless": "outputs the current observation only (ZeroMemoryOracle) -> memoryless bound",
+      "chance": "random read-out (RandomOracle) -> theoretical chance"
+    }
+  },
+  "seqs": [
+    {
+      "seq_id": "synth_recall_single_shuffled_test_001000",
+      "source_id": "ep001000",
+      "split": "test",
+      "T": 29,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_shuffled\\synth_recall_single_shuffled_test_001000.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1000,
+        "T": 29,
+        "control": "temporal_shuffle",
+        "base_seq": "C:\\Users\\sans\\AppData\\Local\\Temp\\dsh_synth_stage\\synth_recall_single\\synth_recall_single_test_001000.npz",
+        "labels_kept_per_row": true
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_shuffled_test_001001",
+      "source_id": "ep001001",
+      "split": "test",
+      "T": 16,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_shuffled\\synth_recall_single_shuffled_test_001001.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1001,
+        "T": 16,
+        "control": "temporal_shuffle",
+        "base_seq": "C:\\Users\\sans\\AppData\\Local\\Temp\\dsh_synth_stage\\synth_recall_single\\synth_recall_single_test_001001.npz",
+        "labels_kept_per_row": true
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_shuffled_test_001002",
+      "source_id": "ep001002",
+      "split": "test",
+      "T": 13,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_shuffled\\synth_recall_single_shuffled_test_001002.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1002,
+        "T": 13,
+        "control": "temporal_shuffle",
+        "base_seq": "C:\\Users\\sans\\AppData\\Local\\Temp\\dsh_synth_stage\\synth_recall_single\\synth_recall_single_test_001002.npz",
+        "labels_kept_per_row": true
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_shuffled_test_001003",
+      "source_id": "ep001003",
+      "split": "test",
+      "T": 14,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_shuffled\\synth_recall_single_shuffled_test_001003.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1003,
+        "T": 14,
+        "control": "temporal_shuffle",
+        "base_seq": "C:\\Users\\sans\\AppData\\Local\\Temp\\dsh_synth_stage\\synth_recall_single\\synth_recall_single_test_001003.npz",
+        "labels_kept_per_row": true
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_shuffled_test_001004",
+      "source_id": "ep001004",
+      "split": "test",
+      "T": 13,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_shuffled\\synth_recall_single_shuffled_test_001004.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1004,
+        "T": 13,
+        "control": "temporal_shuffle",
+        "base_seq": "C:\\Users\\sans\\AppData\\Local\\Temp\\dsh_synth_stage\\synth_recall_single\\synth_recall_single_test_001004.npz",
+        "labels_kept_per_row": true
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_shuffled_test_001005",
+      "source_id": "ep001005",
+      "split": "test",
+      "T": 14,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_shuffled\\synth_recall_single_shuffled_test_001005.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1005,
+        "T": 14,
+        "control": "temporal_shuffle",
+        "base_seq": "C:\\Users\\sans\\AppData\\Local\\Temp\\dsh_synth_stage\\synth_recall_single\\synth_recall_single_test_001005.npz",
+        "labels_kept_per_row": true
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_shuffled_test_001006",
+      "source_id": "ep001006",
+      "split": "test",
+      "T": 39,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_shuffled\\synth_recall_single_shuffled_test_001006.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1006,
+        "T": 39,
+        "control": "temporal_shuffle",
+        "base_seq": "C:\\Users\\sans\\AppData\\Local\\Temp\\dsh_synth_stage\\synth_recall_single\\synth_recall_single_test_001006.npz",
+        "labels_kept_per_row": true
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_shuffled_test_001007",
+      "source_id": "ep001007",
+      "split": "test",
+      "T": 33,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_shuffled\\synth_recall_single_shuffled_test_001007.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1007,
+        "T": 33,
+        "control": "temporal_shuffle",
+        "base_seq": "C:\\Users\\sans\\AppData\\Local\\Temp\\dsh_synth_stage\\synth_recall_single\\synth_recall_single_test_001007.npz",
+        "labels_kept_per_row": true
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_shuffled_test_001008",
+      "source_id": "ep001008",
+      "split": "test",
+      "T": 13,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_shuffled\\synth_recall_single_shuffled_test_001008.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1008,
+        "T": 13,
+        "control": "temporal_shuffle",
+        "base_seq": "C:\\Users\\sans\\AppData\\Local\\Temp\\dsh_synth_stage\\synth_recall_single\\synth_recall_single_test_001008.npz",
+        "labels_kept_per_row": true
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_shuffled_test_001009",
+      "source_id": "ep001009",
+      "split": "test",
+      "T": 17,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_shuffled\\synth_recall_single_shuffled_test_001009.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1009,
+        "T": 17,
+        "control": "temporal_shuffle",
+        "base_seq": "C:\\Users\\sans\\AppData\\Local\\Temp\\dsh_synth_stage\\synth_recall_single\\synth_recall_single_test_001009.npz",
+        "labels_kept_per_row": true
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_shuffled_test_001010",
+      "source_id": "ep001010",
+      "split": "test",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_shuffled\\synth_recall_single_shuffled_test_001010.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1010,
+        "T": 12,
+        "control": "temporal_shuffle",
+        "base_seq": "C:\\Users\\sans\\AppData\\Local\\Temp\\dsh_synth_stage\\synth_recall_single\\synth_recall_single_test_001010.npz",
+        "labels_kept_per_row": true
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_shuffled_test_001011",
+      "source_id": "ep001011",
+      "split": "test",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_shuffled\\synth_recall_single_shuffled_test_001011.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1011,
+        "T": 12,
+        "control": "temporal_shuffle",
+        "base_seq": "C:\\Users\\sans\\AppData\\Local\\Temp\\dsh_synth_stage\\synth_recall_single\\synth_recall_single_test_001011.npz",
+        "labels_kept_per_row": true
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_shuffled_test_001012",
+      "source_id": "ep001012",
+      "split": "test",
+      "T": 13,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_shuffled\\synth_recall_single_shuffled_test_001012.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1012,
+        "T": 13,
+        "control": "temporal_shuffle",
+        "base_seq": "C:\\Users\\sans\\AppData\\Local\\Temp\\dsh_synth_stage\\synth_recall_single\\synth_recall_single_test_001012.npz",
+        "labels_kept_per_row": true
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_shuffled_test_001013",
+      "source_id": "ep001013",
+      "split": "test",
+      "T": 15,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_shuffled\\synth_recall_single_shuffled_test_001013.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1013,
+        "T": 15,
+        "control": "temporal_shuffle",
+        "base_seq": "C:\\Users\\sans\\AppData\\Local\\Temp\\dsh_synth_stage\\synth_recall_single\\synth_recall_single_test_001013.npz",
+        "labels_kept_per_row": true
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_shuffled_test_001014",
+      "source_id": "ep001014",
+      "split": "test",
+      "T": 13,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_shuffled\\synth_recall_single_shuffled_test_001014.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1014,
+        "T": 13,
+        "control": "temporal_shuffle",
+        "base_seq": "C:\\Users\\sans\\AppData\\Local\\Temp\\dsh_synth_stage\\synth_recall_single\\synth_recall_single_test_001014.npz",
+        "labels_kept_per_row": true
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_shuffled_test_001015",
+      "source_id": "ep001015",
+      "split": "test",
+      "T": 18,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_shuffled\\synth_recall_single_shuffled_test_001015.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1015,
+        "T": 18,
+        "control": "temporal_shuffle",
+        "base_seq": "C:\\Users\\sans\\AppData\\Local\\Temp\\dsh_synth_stage\\synth_recall_single\\synth_recall_single_test_001015.npz",
+        "labels_kept_per_row": true
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_shuffled_test_001016",
+      "source_id": "ep001016",
+      "split": "test",
+      "T": 42,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_shuffled\\synth_recall_single_shuffled_test_001016.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1016,
+        "T": 42,
+        "control": "temporal_shuffle",
+        "base_seq": "C:\\Users\\sans\\AppData\\Local\\Temp\\dsh_synth_stage\\synth_recall_single\\synth_recall_single_test_001016.npz",
+        "labels_kept_per_row": true
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_shuffled_test_001017",
+      "source_id": "ep001017",
+      "split": "test",
+      "T": 13,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_shuffled\\synth_recall_single_shuffled_test_001017.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1017,
+        "T": 13,
+        "control": "temporal_shuffle",
+        "base_seq": "C:\\Users\\sans\\AppData\\Local\\Temp\\dsh_synth_stage\\synth_recall_single\\synth_recall_single_test_001017.npz",
+        "labels_kept_per_row": true
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_shuffled_test_001018",
+      "source_id": "ep001018",
+      "split": "test",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_shuffled\\synth_recall_single_shuffled_test_001018.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1018,
+        "T": 12,
+        "control": "temporal_shuffle",
+        "base_seq": "C:\\Users\\sans\\AppData\\Local\\Temp\\dsh_synth_stage\\synth_recall_single\\synth_recall_single_test_001018.npz",
+        "labels_kept_per_row": true
+      }
+    },
+    {
+      "seq_id": "synth_recall_single_shuffled_test_001019",
+      "source_id": "ep001019",
+      "split": "test",
+      "T": 12,
+      "path": "G:\\stream_memory_data\\synth\\synth_recall_single_shuffled\\synth_recall_single_shuffled_test_001019.npz",
+      "labels": [
+        "state",
+        "mask",
+        "class",
+        "event",
+        "age",
+        "gap_s"
+      ],
+      "meta": {
+        "episode": 1019,
+        "T": 12,
+        "control": "temporal_shuffle",
+        "base_seq": "C:\\Users\\sans\\AppData\\Local\\Temp\\dsh_synth_stage\\synth_recall_single\\synth_recall_single_test_001019.npz",
+        "labels_kept_per_row": true
+      }
+    }
+  ]
+}

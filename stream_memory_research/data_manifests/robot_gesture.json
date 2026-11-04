@@ -1,0 +1,550 @@
+{
+  "dataset": "robot_gesture",
+  "task": "action",
+  "feature_dim": 768,
+  "tok_dim": 768,
+  "roi_dim": 0,
+  "n_roi": 0,
+  "encoder": {
+    "name": "openai/clip-vit-base-patch16",
+    "input": 224,
+    "pool": "2x2",
+    "feats": "CLS + 4 pooled patch tokens"
+  },
+  "split_key": "source_id",
+  "label_specs": {
+    "class": {
+      "kind": "ce",
+      "ignore": -1,
+      "dim": 10
+    }
+  },
+  "extra": {
+    "note": "case study only; one session per class; sequences from the same session stay temporally adjacent -> absolute numbers optimistic",
+    "classes": [
+      "empty",
+      "face_close",
+      "fist",
+      "knock",
+      "lean_out",
+      "none",
+      "open_palm",
+      "pointing",
+      "thumbs_up",
+      "wave"
+    ],
+    "fps": 10.0,
+    "source": "D:\\robot_work\\evidence\\sessions",
+    "seq_len": 64,
+    "stride": 64,
+    "n_frames_encoded": 1987,
+    "encode_sec": 12.5,
+    "main_metric": "acc"
+  },
+  "seqs": [
+    {
+      "seq_id": "empty_d0.5_front_night_182201_k0",
+      "source_id": "empty_d0.5_front_night_182201_k0",
+      "split": "train",
+      "T": 64,
+      "path": "G:\\stream_memory_data\\features\\robot_gesture\\seq_empty_d0.5_front_night_182201_k0.npz",
+      "labels": [
+        "class"
+      ],
+      "meta": {
+        "session": "empty_d0.5_front_night_182201",
+        "task": "empty",
+        "cls": 0,
+        "chunk": 0,
+        "distance_m": 0.5,
+        "light": "night"
+      }
+    },
+    {
+      "seq_id": "empty_d0.5_front_night_182201_k1",
+      "source_id": "empty_d0.5_front_night_182201_k1",
+      "split": "val",
+      "T": 64,
+      "path": "G:\\stream_memory_data\\features\\robot_gesture\\seq_empty_d0.5_front_night_182201_k1.npz",
+      "labels": [
+        "class"
+      ],
+      "meta": {
+        "session": "empty_d0.5_front_night_182201",
+        "task": "empty",
+        "cls": 0,
+        "chunk": 1,
+        "distance_m": 0.5,
+        "light": "night"
+      }
+    },
+    {
+      "seq_id": "empty_d0.5_front_night_182201_k2",
+      "source_id": "empty_d0.5_front_night_182201_k2",
+      "split": "test",
+      "T": 64,
+      "path": "G:\\stream_memory_data\\features\\robot_gesture\\seq_empty_d0.5_front_night_182201_k2.npz",
+      "labels": [
+        "class"
+      ],
+      "meta": {
+        "session": "empty_d0.5_front_night_182201",
+        "task": "empty",
+        "cls": 0,
+        "chunk": 2,
+        "distance_m": 0.5,
+        "light": "night"
+      }
+    },
+    {
+      "seq_id": "face_close_d0.5_front_night_182232_k0",
+      "source_id": "face_close_d0.5_front_night_182232_k0",
+      "split": "train",
+      "T": 64,
+      "path": "G:\\stream_memory_data\\features\\robot_gesture\\seq_face_close_d0.5_front_night_182232_k0.npz",
+      "labels": [
+        "class"
+      ],
+      "meta": {
+        "session": "face_close_d0.5_front_night_182232",
+        "task": "face_close",
+        "cls": 1,
+        "chunk": 0,
+        "distance_m": 0.5,
+        "light": "night"
+      }
+    },
+    {
+      "seq_id": "face_close_d0.5_front_night_182232_k1",
+      "source_id": "face_close_d0.5_front_night_182232_k1",
+      "split": "val",
+      "T": 64,
+      "path": "G:\\stream_memory_data\\features\\robot_gesture\\seq_face_close_d0.5_front_night_182232_k1.npz",
+      "labels": [
+        "class"
+      ],
+      "meta": {
+        "session": "face_close_d0.5_front_night_182232",
+        "task": "face_close",
+        "cls": 1,
+        "chunk": 1,
+        "distance_m": 0.5,
+        "light": "night"
+      }
+    },
+    {
+      "seq_id": "face_close_d0.5_front_night_182232_k2",
+      "source_id": "face_close_d0.5_front_night_182232_k2",
+      "split": "test",
+      "T": 64,
+      "path": "G:\\stream_memory_data\\features\\robot_gesture\\seq_face_close_d0.5_front_night_182232_k2.npz",
+      "labels": [
+        "class"
+      ],
+      "meta": {
+        "session": "face_close_d0.5_front_night_182232",
+        "task": "face_close",
+        "cls": 1,
+        "chunk": 2,
+        "distance_m": 0.5,
+        "light": "night"
+      }
+    },
+    {
+      "seq_id": "fist_d0.5_front_night_181907_k0",
+      "source_id": "fist_d0.5_front_night_181907_k0",
+      "split": "train",
+      "T": 64,
+      "path": "G:\\stream_memory_data\\features\\robot_gesture\\seq_fist_d0.5_front_night_181907_k0.npz",
+      "labels": [
+        "class"
+      ],
+      "meta": {
+        "session": "fist_d0.5_front_night_181907",
+        "task": "fist",
+        "cls": 2,
+        "chunk": 0,
+        "distance_m": 0.5,
+        "light": "night"
+      }
+    },
+    {
+      "seq_id": "fist_d0.5_front_night_181907_k1",
+      "source_id": "fist_d0.5_front_night_181907_k1",
+      "split": "val",
+      "T": 64,
+      "path": "G:\\stream_memory_data\\features\\robot_gesture\\seq_fist_d0.5_front_night_181907_k1.npz",
+      "labels": [
+        "class"
+      ],
+      "meta": {
+        "session": "fist_d0.5_front_night_181907",
+        "task": "fist",
+        "cls": 2,
+        "chunk": 1,
+        "distance_m": 0.5,
+        "light": "night"
+      }
+    },
+    {
+      "seq_id": "fist_d0.5_front_night_181907_k2",
+      "source_id": "fist_d0.5_front_night_181907_k2",
+      "split": "test",
+      "T": 64,
+      "path": "G:\\stream_memory_data\\features\\robot_gesture\\seq_fist_d0.5_front_night_181907_k2.npz",
+      "labels": [
+        "class"
+      ],
+      "meta": {
+        "session": "fist_d0.5_front_night_181907",
+        "task": "fist",
+        "cls": 2,
+        "chunk": 2,
+        "distance_m": 0.5,
+        "light": "night"
+      }
+    },
+    {
+      "seq_id": "knock_d0.5_front_night_182129_k0",
+      "source_id": "knock_d0.5_front_night_182129_k0",
+      "split": "train",
+      "T": 64,
+      "path": "G:\\stream_memory_data\\features\\robot_gesture\\seq_knock_d0.5_front_night_182129_k0.npz",
+      "labels": [
+        "class"
+      ],
+      "meta": {
+        "session": "knock_d0.5_front_night_182129",
+        "task": "knock",
+        "cls": 3,
+        "chunk": 0,
+        "distance_m": 0.5,
+        "light": "night"
+      }
+    },
+    {
+      "seq_id": "knock_d0.5_front_night_182129_k1",
+      "source_id": "knock_d0.5_front_night_182129_k1",
+      "split": "val",
+      "T": 64,
+      "path": "G:\\stream_memory_data\\features\\robot_gesture\\seq_knock_d0.5_front_night_182129_k1.npz",
+      "labels": [
+        "class"
+      ],
+      "meta": {
+        "session": "knock_d0.5_front_night_182129",
+        "task": "knock",
+        "cls": 3,
+        "chunk": 1,
+        "distance_m": 0.5,
+        "light": "night"
+      }
+    },
+    {
+      "seq_id": "lean_out_d0.5_front_night_182257_k0",
+      "source_id": "lean_out_d0.5_front_night_182257_k0",
+      "split": "train",
+      "T": 64,
+      "path": "G:\\stream_memory_data\\features\\robot_gesture\\seq_lean_out_d0.5_front_night_182257_k0.npz",
+      "labels": [
+        "class"
+      ],
+      "meta": {
+        "session": "lean_out_d0.5_front_night_182257",
+        "task": "lean_out",
+        "cls": 4,
+        "chunk": 0,
+        "distance_m": 0.5,
+        "light": "night"
+      }
+    },
+    {
+      "seq_id": "lean_out_d0.5_front_night_182257_k1",
+      "source_id": "lean_out_d0.5_front_night_182257_k1",
+      "split": "val",
+      "T": 64,
+      "path": "G:\\stream_memory_data\\features\\robot_gesture\\seq_lean_out_d0.5_front_night_182257_k1.npz",
+      "labels": [
+        "class"
+      ],
+      "meta": {
+        "session": "lean_out_d0.5_front_night_182257",
+        "task": "lean_out",
+        "cls": 4,
+        "chunk": 1,
+        "distance_m": 0.5,
+        "light": "night"
+      }
+    },
+    {
+      "seq_id": "lean_out_d0.5_front_night_182257_k2",
+      "source_id": "lean_out_d0.5_front_night_182257_k2",
+      "split": "test",
+      "T": 64,
+      "path": "G:\\stream_memory_data\\features\\robot_gesture\\seq_lean_out_d0.5_front_night_182257_k2.npz",
+      "labels": [
+        "class"
+      ],
+      "meta": {
+        "session": "lean_out_d0.5_front_night_182257",
+        "task": "lean_out",
+        "cls": 4,
+        "chunk": 2,
+        "distance_m": 0.5,
+        "light": "night"
+      }
+    },
+    {
+      "seq_id": "none_d0.5_front_night_181841_k0",
+      "source_id": "none_d0.5_front_night_181841_k0",
+      "split": "train",
+      "T": 64,
+      "path": "G:\\stream_memory_data\\features\\robot_gesture\\seq_none_d0.5_front_night_181841_k0.npz",
+      "labels": [
+        "class"
+      ],
+      "meta": {
+        "session": "none_d0.5_front_night_181841",
+        "task": "none",
+        "cls": 5,
+        "chunk": 0,
+        "distance_m": 0.5,
+        "light": "night"
+      }
+    },
+    {
+      "seq_id": "none_d0.5_front_night_181841_k1",
+      "source_id": "none_d0.5_front_night_181841_k1",
+      "split": "val",
+      "T": 64,
+      "path": "G:\\stream_memory_data\\features\\robot_gesture\\seq_none_d0.5_front_night_181841_k1.npz",
+      "labels": [
+        "class"
+      ],
+      "meta": {
+        "session": "none_d0.5_front_night_181841",
+        "task": "none",
+        "cls": 5,
+        "chunk": 1,
+        "distance_m": 0.5,
+        "light": "night"
+      }
+    },
+    {
+      "seq_id": "none_d0.5_front_night_181841_k2",
+      "source_id": "none_d0.5_front_night_181841_k2",
+      "split": "test",
+      "T": 64,
+      "path": "G:\\stream_memory_data\\features\\robot_gesture\\seq_none_d0.5_front_night_181841_k2.npz",
+      "labels": [
+        "class"
+      ],
+      "meta": {
+        "session": "none_d0.5_front_night_181841",
+        "task": "none",
+        "cls": 5,
+        "chunk": 2,
+        "distance_m": 0.5,
+        "light": "night"
+      }
+    },
+    {
+      "seq_id": "open_palm_d0.5_front_night_181943_k0",
+      "source_id": "open_palm_d0.5_front_night_181943_k0",
+      "split": "train",
+      "T": 64,
+      "path": "G:\\stream_memory_data\\features\\robot_gesture\\seq_open_palm_d0.5_front_night_181943_k0.npz",
+      "labels": [
+        "class"
+      ],
+      "meta": {
+        "session": "open_palm_d0.5_front_night_181943",
+        "task": "open_palm",
+        "cls": 6,
+        "chunk": 0,
+        "distance_m": 0.5,
+        "light": "night"
+      }
+    },
+    {
+      "seq_id": "open_palm_d0.5_front_night_181943_k1",
+      "source_id": "open_palm_d0.5_front_night_181943_k1",
+      "split": "val",
+      "T": 64,
+      "path": "G:\\stream_memory_data\\features\\robot_gesture\\seq_open_palm_d0.5_front_night_181943_k1.npz",
+      "labels": [
+        "class"
+      ],
+      "meta": {
+        "session": "open_palm_d0.5_front_night_181943",
+        "task": "open_palm",
+        "cls": 6,
+        "chunk": 1,
+        "distance_m": 0.5,
+        "light": "night"
+      }
+    },
+    {
+      "seq_id": "open_palm_d0.5_front_night_181943_k2",
+      "source_id": "open_palm_d0.5_front_night_181943_k2",
+      "split": "test",
+      "T": 64,
+      "path": "G:\\stream_memory_data\\features\\robot_gesture\\seq_open_palm_d0.5_front_night_181943_k2.npz",
+      "labels": [
+        "class"
+      ],
+      "meta": {
+        "session": "open_palm_d0.5_front_night_181943",
+        "task": "open_palm",
+        "cls": 6,
+        "chunk": 2,
+        "distance_m": 0.5,
+        "light": "night"
+      }
+    },
+    {
+      "seq_id": "pointing_d0.5_front_night_182101_k0",
+      "source_id": "pointing_d0.5_front_night_182101_k0",
+      "split": "train",
+      "T": 64,
+      "path": "G:\\stream_memory_data\\features\\robot_gesture\\seq_pointing_d0.5_front_night_182101_k0.npz",
+      "labels": [
+        "class"
+      ],
+      "meta": {
+        "session": "pointing_d0.5_front_night_182101",
+        "task": "pointing",
+        "cls": 7,
+        "chunk": 0,
+        "distance_m": 0.5,
+        "light": "night"
+      }
+    },
+    {
+      "seq_id": "pointing_d0.5_front_night_182101_k1",
+      "source_id": "pointing_d0.5_front_night_182101_k1",
+      "split": "val",
+      "T": 64,
+      "path": "G:\\stream_memory_data\\features\\robot_gesture\\seq_pointing_d0.5_front_night_182101_k1.npz",
+      "labels": [
+        "class"
+      ],
+      "meta": {
+        "session": "pointing_d0.5_front_night_182101",
+        "task": "pointing",
+        "cls": 7,
+        "chunk": 1,
+        "distance_m": 0.5,
+        "light": "night"
+      }
+    },
+    {
+      "seq_id": "pointing_d0.5_front_night_182101_k2",
+      "source_id": "pointing_d0.5_front_night_182101_k2",
+      "split": "test",
+      "T": 64,
+      "path": "G:\\stream_memory_data\\features\\robot_gesture\\seq_pointing_d0.5_front_night_182101_k2.npz",
+      "labels": [
+        "class"
+      ],
+      "meta": {
+        "session": "pointing_d0.5_front_night_182101",
+        "task": "pointing",
+        "cls": 7,
+        "chunk": 2,
+        "distance_m": 0.5,
+        "light": "night"
+      }
+    },
+    {
+      "seq_id": "thumbs_up_d0.5_front_night_182007_k0",
+      "source_id": "thumbs_up_d0.5_front_night_182007_k0",
+      "split": "train",
+      "T": 64,
+      "path": "G:\\stream_memory_data\\features\\robot_gesture\\seq_thumbs_up_d0.5_front_night_182007_k0.npz",
+      "labels": [
+        "class"
+      ],
+      "meta": {
+        "session": "thumbs_up_d0.5_front_night_182007",
+        "task": "thumbs_up",
+        "cls": 8,
+        "chunk": 0,
+        "distance_m": 0.5,
+        "light": "night"
+      }
+    },
+    {
+      "seq_id": "thumbs_up_d0.5_front_night_182007_k1",
+      "source_id": "thumbs_up_d0.5_front_night_182007_k1",
+      "split": "val",
+      "T": 64,
+      "path": "G:\\stream_memory_data\\features\\robot_gesture\\seq_thumbs_up_d0.5_front_night_182007_k1.npz",
+      "labels": [
+        "class"
+      ],
+      "meta": {
+        "session": "thumbs_up_d0.5_front_night_182007",
+        "task": "thumbs_up",
+        "cls": 8,
+        "chunk": 1,
+        "distance_m": 0.5,
+        "light": "night"
+      }
+    },
+    {
+      "seq_id": "wave_d0.5_front_night_182035_k0",
+      "source_id": "wave_d0.5_front_night_182035_k0",
+      "split": "train",
+      "T": 64,
+      "path": "G:\\stream_memory_data\\features\\robot_gesture\\seq_wave_d0.5_front_night_182035_k0.npz",
+      "labels": [
+        "class"
+      ],
+      "meta": {
+        "session": "wave_d0.5_front_night_182035",
+        "task": "wave",
+        "cls": 9,
+        "chunk": 0,
+        "distance_m": 0.5,
+        "light": "night"
+      }
+    },
+    {
+      "seq_id": "wave_d0.5_front_night_182035_k1",
+      "source_id": "wave_d0.5_front_night_182035_k1",
+      "split": "val",
+      "T": 64,
+      "path": "G:\\stream_memory_data\\features\\robot_gesture\\seq_wave_d0.5_front_night_182035_k1.npz",
+      "labels": [
+        "class"
+      ],
+      "meta": {
+        "session": "wave_d0.5_front_night_182035",
+        "task": "wave",
+        "cls": 9,
+        "chunk": 1,
+        "distance_m": 0.5,
+        "light": "night"
+      }
+    },
+    {
+      "seq_id": "wave_d0.5_front_night_182035_k2",
+      "source_id": "wave_d0.5_front_night_182035_k2",
+      "split": "test",
+      "T": 64,
+      "path": "G:\\stream_memory_data\\features\\robot_gesture\\seq_wave_d0.5_front_night_182035_k2.npz",
+      "labels": [
+        "class"
+      ],
+      "meta": {
+        "session": "wave_d0.5_front_night_182035",
+        "task": "wave",
+        "cls": 9,
+        "chunk": 2,
+        "distance_m": 0.5,
+        "light": "night"
+      }
+    }
+  ]
+}

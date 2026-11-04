@@ -1,0 +1,107 @@
+{
+  "imgsz": 320,
+  "note": "\u5355\u5e27\u8017\u65f6\uff0c\u542b CUDA \u540c\u6b65\uff1b\u4e0d\u542b\u8bfb\u76d8/\u89e3\u7801",
+  "pose": {
+    "imgsz": 320,
+    "device": "cuda:0",
+    "n_images": 120,
+    "pose_bs1_cuda": {
+      "name": "pose_bs1_cuda",
+      "n": 120,
+      "mean_ms": 16.168,
+      "median_ms": 7.674,
+      "p90_ms": 12.589,
+      "min_ms": 6.817,
+      "max_ms": 847.908
+    },
+    "pose_bs8_cuda": {
+      "name": "pose_bs8_cuda",
+      "n": 15,
+      "mean_ms": 1.947,
+      "median_ms": 1.616,
+      "p90_ms": 2.2,
+      "min_ms": 1.419,
+      "max_ms": 5.106
+    }
+  },
+  "classifier_gpu": {
+    "feat": {
+      "name": "cls_feat_cuda",
+      "n": 300,
+      "mean_ms": 0.032,
+      "median_ms": 0.031,
+      "p90_ms": 0.033,
+      "min_ms": 0.03,
+      "max_ms": 0.179
+    },
+    "crop": {
+      "name": "cls_crop_cuda",
+      "n": 75,
+      "mean_ms": 0.043,
+      "median_ms": 0.042,
+      "p90_ms": 0.045,
+      "min_ms": 0.006,
+      "max_ms": 0.16
+    },
+    "net": {
+      "name": "cls_net_cuda",
+      "n": 300,
+      "mean_ms": 1.356,
+      "median_ms": 1.261,
+      "p90_ms": 1.728,
+      "min_ms": 1.098,
+      "max_ms": 2.491
+    },
+    "end_to_end": {
+      "name": "cls_end_to_end_cuda",
+      "n": 300,
+      "mean_ms": 1.521,
+      "median_ms": 1.568,
+      "p90_ms": 1.616,
+      "min_ms": 1.225,
+      "max_ms": 1.82
+    },
+    "n_params": 192791,
+    "device": "cuda:0"
+  },
+  "classifier_cpu": {
+    "feat": {
+      "name": "cls_feat_cpu",
+      "n": 75,
+      "mean_ms": 0.034,
+      "median_ms": 0.032,
+      "p90_ms": 0.035,
+      "min_ms": 0.031,
+      "max_ms": 0.102
+    },
+    "crop": {
+      "name": "cls_crop_cpu",
+      "n": 50,
+      "mean_ms": 0.046,
+      "median_ms": 0.043,
+      "p90_ms": 0.049,
+      "min_ms": 0.038,
+      "max_ms": 0.126
+    },
+    "net": {
+      "name": "cls_net_cpu",
+      "n": 75,
+      "mean_ms": 1.503,
+      "median_ms": 1.489,
+      "p90_ms": 1.621,
+      "min_ms": 1.138,
+      "max_ms": 1.939
+    },
+    "end_to_end": {
+      "name": "cls_end_to_end_cpu",
+      "n": 75,
+      "mean_ms": 1.529,
+      "median_ms": 1.567,
+      "p90_ms": 1.615,
+      "min_ms": 1.182,
+      "max_ms": 1.78
+    },
+    "n_params": 192791,
+    "device": "cpu"
+  }
+}

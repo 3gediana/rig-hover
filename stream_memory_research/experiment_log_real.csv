@@ -1,0 +1,106 @@
+timestamp,round,suite,dataset,task,model,variant,seed,hidden,params,epochs,best_epoch,val_metric,test_metric,metric_name,wall_sec,peak_vram_gb,code_hash,manifest,status,notes
+2026-11-04 00:37:23,R1,davis_v1,davis_vos2,track,mlp,mlp,0,192,228744,0,,,,mae,11.2,0.036,d2447c753036cfac,data_manifests/davis_vos2.json,failed,
+2026-11-04 00:37:34,R1,davis_v1,davis_vos2,track,mlp,mlp,1,192,228744,0,,,,mae,10.6,0.039,d2447c753036cfac,data_manifests/davis_vos2.json,failed,
+2026-11-04 00:37:45,R1,davis_v1,davis_vos2,track,gru,gru,0,192,598920,0,,,,mae,10.8,0.037,d2447c753036cfac,data_manifests/davis_vos2.json,failed,
+2026-11-04 00:37:58,R1,davis_v1,davis_vos2,track,gru,gru,1,192,598920,0,,,,mae,13.1,0.039,d2447c753036cfac,data_manifests/davis_vos2.json,failed,
+2026-11-04 00:38:13,R1,davis_v1,davis_vos2,track,lstm,lstm,0,192,784008,0,,,,mae,14.8,0.037,d2447c753036cfac,data_manifests/davis_vos2.json,failed,
+2026-11-04 00:38:24,R1,davis_v1,davis_vos2,track,lstm,lstm,1,192,784008,0,,,,mae,10.9,0.04,d2447c753036cfac,data_manifests/davis_vos2.json,failed,
+2026-11-04 00:38:35,R1,davis_v1,davis_vos2,track,cfc,cfc,0,192,155208,0,,,,mae,11.7,0.037,d2447c753036cfac,data_manifests/davis_vos2.json,failed,
+2026-11-04 00:38:47,R1,davis_v1,davis_vos2,track,cfc,cfc,1,192,155208,0,,,,mae,11.6,0.041,d2447c753036cfac,data_manifests/davis_vos2.json,failed,
+2026-11-04 01:18:35,R3,order_v1,ucf101_order,action,mlp,mlp,0,192,228486,6,1,0.5,0.5,acc,179.2,0.075,b4195e92a622d0f8,data_manifests/ucf101_order.json,complete,每帧 MLP（应≈50%）
+2026-11-04 01:20:12,R3,order_v1,ucf101_order,action,mlp,mlp,1,192,228486,6,1,0.5,0.5000515924881337,acc,97.6,0.075,b4195e92a622d0f8,data_manifests/ucf101_order.json,complete,每帧 MLP（应≈50%）
+2026-11-04 01:24:17,R3,order_v1,ucf101_order,action,gru,gru,0,192,598662,13,8,0.9619006849315068,0.9323966430487721,acc,244.6,0.085,b4195e92a622d0f8,data_manifests/ucf101_order.json,complete,
+2026-11-04 01:28:14,R3,order_v1,ucf101_order,action,gru,gru,1,192,598662,15,11,0.9427796803652968,0.9298170186420857,acc,237.6,0.085,b4195e92a622d0f8,data_manifests/ucf101_order.json,complete,
+2026-11-04 01:32:34,R3,order_v1,ucf101_order,action,lstm,lstm,0,192,783750,15,15,0.92537100456621,0.9284928114466534,acc,259.3,0.09,b4195e92a622d0f8,data_manifests/ucf101_order.json,complete,
+2026-11-04 01:36:29,R3,order_v1,ucf101_order,action,lstm,lstm,1,192,783750,15,11,0.9464897260273972,0.9205475682740593,acc,235.4,0.09,b4195e92a622d0f8,data_manifests/ucf101_order.json,complete,
+2026-11-04 01:39:21,R3,order_v1,ucf101_order,action,cfc,cfc,0,192,154950,6,1,0.5,0.5000687899841783,acc,172.0,0.078,b4195e92a622d0f8,data_manifests/ucf101_order.json,complete,
+2026-11-04 01:42:34,R3,order_v1,ucf101_order,action,cfc,cfc,1,192,154950,7,2,0.5009988584474886,0.5010662447547637,acc,192.9,0.078,b4195e92a622d0f8,data_manifests/ucf101_order.json,complete,
+2026-11-04 01:45:04,R3,order_v1,ucf101_order,action,mamba,mamba,0,192,411625,15,11,0.9272260273972602,0.9270654192749536,acc,149.9,0.174,b4195e92a622d0f8,data_manifests/ucf101_order.json,complete,
+2026-11-04 01:47:30,R3,order_v1,ucf101_order,action,mamba,mamba,1,192,411625,14,9,0.8431792237442922,0.8523766939533604,acc,146.5,0.174,b4195e92a622d0f8,data_manifests/ucf101_order.json,complete,
+2026-11-04 01:55:12,R3,order_v1,ucf101_order,action,deltanet,deltanet,0,192,278478,6,1,0.5005707762557078,0.49982802503955426,acc,461.3,0.209,b4195e92a622d0f8,data_manifests/ucf101_order.json,complete,
+2026-11-04 02:02:11,R3,order_v1,ucf101_order,action,deltanet,deltanet,1,192,278478,6,1,0.5,0.5,acc,419.4,0.209,b4195e92a622d0f8,data_manifests/ucf101_order.json,complete,
+2026-11-04 02:13:49,R3,order_v1,ucf101_order,action,dsm,dsm,0,192,525582,12,7,0.9570490867579908,0.9441597303432621,acc,698.2,0.231,b4195e92a622d0f8,data_manifests/ucf101_order.json,complete,
+2026-11-04 02:26:37,R3,order_v1,ucf101_order,action,dsm,dsm,1,192,525582,13,,,,acc,768.1,0.231,b4195e92a622d0f8,data_manifests/ucf101_order.json,failed,
+2026-11-04 02:34:23,R3,order_v1,ucf101_order,action,dsm,dsm,0,192,525579,6,1,0.5,0.5,acc,465.5,0.231,b4195e92a622d0f8,data_manifests/ucf101_order.json,complete,
+2026-11-04 02:37:15,R3,order_v1,ucf101_order,action,dsm,dsm,1,192,525582,13,8,0.96175799086758,0.9415801059365756,acc,834.9,0.231,b4195e92a622d0f8,data_manifests/ucf101_order.json,complete,
+2026-11-04 02:42:44,R3,order_v1,ucf101_order,action,dsm,dsm,1,192,525579,6,1,0.5,0.5,acc,501.5,0.231,b4195e92a622d0f8,data_manifests/ucf101_order.json,complete,
+2026-11-04 02:43:36,R3,order_v1,ucf101_order,action,dsm,dsm,0,192,525579,0,,,,acc,31.2,0.046,b4195e92a622d0f8,data_manifests/ucf101_order.json,failed,
+2026-11-04 02:44:34,R3,order_v1,ucf101_order,action,dsm,dsm,0,192,525579,6,1,0.5,0.5,acc,439.1,0.231,b4195e92a622d0f8,data_manifests/ucf101_order.json,complete,
+2026-11-04 02:45:57,R3,order_v1,ucf101_order,action,dsm,dsm,1,192,525579,0,,,,acc,83.4,0.046,b4195e92a622d0f8,data_manifests/ucf101_order.json,failed,
+2026-11-04 02:45:57,R3,order_v1,ucf101_order,action,dsm_slot,dsm_slot,0,192,513998,0,,,,acc,135.9,0.055,b4195e92a622d0f8,data_manifests/ucf101_order.json,failed,
+2026-11-04 02:48:16,R3,order_v1,ucf101_order,action,dsm_slot,dsm_slot,0,192,513998,0,,,,acc,138.9,0.055,b4195e92a622d0f8,data_manifests/ucf101_order.json,failed,
+2026-11-04 02:50:34,R3,order_v1,ucf101_order,action,dsm_slot,dsm_slot,1,192,513998,0,,,,acc,137.8,0.055,b4195e92a622d0f8,data_manifests/ucf101_order.json,failed,
+2026-11-04 02:57:42,R3,order_v1,ucf101_order,action,dsm_slot,dsm_slot,0,192,513998,13,8,0.9597602739726028,0.9482527344018711,acc,898.0,0.148,b4195e92a622d0f8,data_manifests/ucf101_order.json,complete,
+2026-11-04 03:04:01,R3,order_v1,ucf101_order,action,dsm_slot,dsm_slot,1,192,513998,4,,,,acc,1084.3,0.148,b4195e92a622d0f8,data_manifests/ucf101_order.json,failed,
+2026-11-04 03:08:57,R5,charades_v1,charades_event_feat,event,mlp,mlp,0,192,234678,0,,,,f1,72.5,0.04,b4195e92a622d0f8,data_manifests/charades_event_feat.json,failed,无记忆下界
+2026-11-04 03:10:03,R5,charades_v1,charades_event_feat,event,mlp,mlp,1,192,234678,0,,,,f1,66.7,0.04,b4195e92a622d0f8,data_manifests/charades_event_feat.json,failed,无记忆下界
+2026-11-04 03:11:35,R5,charades_v1,charades_event_feat,event,gru,gru,0,192,604854,5,,,,f1,91.5,0.125,b4195e92a622d0f8,data_manifests/charades_event_feat.json,failed,
+2026-11-04 03:12:32,R5,charades_v1,charades_event_feat,event,gru,gru,1,192,,0,,,,f1,57.3,0.0,,data_manifests/charades_event_feat.json,failed,
+2026-11-04 03:12:38,R3,order_v1,ucf101_order,action,dsm_slot,dsm_slot,1,192,513998,7,,,,acc,587.8,0.148,b4195e92a622d0f8,data_manifests/ucf101_order.json,running,
+2026-11-04 03:12:57,R5,davis_v1b,davis_vos3,track,mlp,mlp,0,192,228744,23,11,0.12882488968196829,0.11870141891919492,mae,18.8,0.074,b4195e92a622d0f8,data_manifests/davis_vos3.json,complete,无记忆下界（遮挡段必然失败）
+2026-11-04 03:13:16,R5,davis_v1b,davis_vos3,track,mlp,mlp,1,192,228744,33,21,0.1239808947805006,0.11060165750660435,mae,18.9,0.073,b4195e92a622d0f8,data_manifests/davis_vos3.json,complete,无记忆下界（遮挡段必然失败）
+2026-11-04 03:13:36,R5,davis_v1b,davis_vos3,track,mlp,mlp,2,192,228744,33,21,0.12667300882694044,0.11406291824625198,mae,19.6,0.073,b4195e92a622d0f8,data_manifests/davis_vos3.json,complete,无记忆下界（遮挡段必然失败）
+2026-11-04 03:13:56,R5,davis_v1b,davis_vos3,track,gru,gru,0,192,598920,34,22,0.1137002718086417,0.1131493766678327,mae,20.7,0.085,b4195e92a622d0f8,data_manifests/davis_vos3.json,complete,
+2026-11-04 03:14:16,R5,davis_v1b,davis_vos3,track,gru,gru,1,192,598920,32,20,0.12884328819870242,0.10935443845463746,mae,20.1,0.084,b4195e92a622d0f8,data_manifests/davis_vos3.json,complete,
+2026-11-04 03:14:35,R5,davis_v1b,davis_vos3,track,gru,gru,2,192,598920,26,14,0.11756594766947356,0.11681584278309402,mae,18.7,0.084,b4195e92a622d0f8,data_manifests/davis_vos3.json,complete,
+2026-11-04 03:14:55,R5,davis_v1b,davis_vos3,track,lstm,lstm,0,192,784008,30,18,0.13238276137046429,0.11167526309414903,mae,20.0,0.09,b4195e92a622d0f8,data_manifests/davis_vos3.json,complete,
+2026-11-04 03:15:16,R5,davis_v1b,davis_vos3,track,lstm,lstm,1,192,784008,42,30,0.12255807280569915,0.11687481931210766,mae,21.3,0.089,b4195e92a622d0f8,data_manifests/davis_vos3.json,complete,
+2026-11-04 03:15:33,R3,order_v1,ucf101_order,action,dsm_slot,dsm_slot,1,192,513998,13,,,,acc,1071.0,0.148,b4195e92a622d0f8,data_manifests/ucf101_order.json,failed,
+2026-11-04 03:15:40,R5,davis_v1b,davis_vos3,track,lstm,lstm,2,192,784008,27,15,0.12730430784403335,0.11441521587851208,mae,23.3,0.09,b4195e92a622d0f8,data_manifests/davis_vos3.json,complete,
+2026-11-04 03:15:59,R5,davis_v1b,davis_vos3,track,cfc,cfc,0,192,155208,22,10,0.1309512236740867,0.12266635310351141,mae,18.8,0.076,b4195e92a622d0f8,data_manifests/davis_vos3.json,complete,
+2026-11-04 03:16:20,R5,davis_v1b,davis_vos3,track,cfc,cfc,1,192,155208,35,23,0.11945930319900805,0.11265840817989686,mae,21.5,0.076,b4195e92a622d0f8,data_manifests/davis_vos3.json,complete,
+2026-11-04 03:16:43,R5,davis_v1b,davis_vos3,track,cfc,cfc,2,192,155208,42,30,0.11655526019986204,0.12165006386029975,mae,22.9,0.076,b4195e92a622d0f8,data_manifests/davis_vos3.json,complete,
+2026-11-04 03:17:15,R5,davis_v1b,davis_vos3,track,mamba,mamba,0,192,411883,20,8,0.13148640397302955,0.11675143899221507,mae,32.5,0.144,b4195e92a622d0f8,data_manifests/davis_vos3.json,complete,
+2026-11-04 03:17:46,R5,davis_v1b,davis_vos3,track,mamba,mamba,1,192,411883,35,23,0.11521737256157304,0.10914135408562343,mae,30.9,0.135,b4195e92a622d0f8,data_manifests/davis_vos3.json,complete,
+2026-11-04 03:18:16,R5,davis_v1b,davis_vos3,track,mamba,mamba,2,192,411883,24,12,0.12250781572412832,0.12697241870931672,mae,29.9,0.142,b4195e92a622d0f8,data_manifests/davis_vos3.json,complete,
+2026-11-04 03:18:51,R5,davis_v1b,davis_vos3,track,deltanet,deltanet,0,192,278736,47,35,0.12049774522248935,0.11074962908642925,mae,34.5,0.192,b4195e92a622d0f8,data_manifests/davis_vos3.json,complete,
+2026-11-04 03:19:20,R5,davis_v1b,davis_vos3,track,deltanet,deltanet,1,192,278736,39,27,0.12203999335616238,0.11170273241592507,mae,29.3,0.191,b4195e92a622d0f8,data_manifests/davis_vos3.json,complete,
+2026-11-04 03:19:55,R5,davis_v1b,davis_vos3,track,deltanet,deltanet,2,192,278736,34,22,0.11933492155738264,0.1096182560375842,mae,35.2,0.191,b4195e92a622d0f8,data_manifests/davis_vos3.json,complete,
+2026-11-04 03:20:39,R5,davis_v1b,davis_vos3,track,dsm,dsm,0,192,525840,47,35,0.11677795319482978,0.11040271844489506,mae,44.1,0.211,b4195e92a622d0f8,data_manifests/davis_vos3.json,complete,
+2026-11-04 03:21:22,R5,davis_v1b,davis_vos3,track,dsm,dsm,1,192,525840,52,40,0.12090106359259649,0.11073855351113128,mae,43.1,0.21,b4195e92a622d0f8,data_manifests/davis_vos3.json,complete,
+2026-11-04 03:21:49,R5,davis_v1b,davis_vos3,track,dsm,dsm,2,192,525840,27,15,0.12903291011310142,0.12002509102569993,mae,26.9,0.21,b4195e92a622d0f8,data_manifests/davis_vos3.json,complete,
+2026-11-04 03:22:15,R5,davis_v1b,davis_vos3,track,dsm,dsm,0,192,525840,26,14,0.12535834701901133,0.11711998893918021,mae,25.6,0.21,b4195e92a622d0f8,data_manifests/davis_vos3.json,complete,
+2026-11-04 03:22:38,R5,davis_v1b,davis_vos3,track,dsm,dsm,1,192,525840,22,10,0.12468939987949938,0.1230916801645627,mae,23.6,0.209,b4195e92a622d0f8,data_manifests/davis_vos3.json,complete,
+2026-11-04 03:23:04,R5,davis_v1b,davis_vos3,track,dsm,dsm,2,192,525840,23,11,0.12649785616092768,0.12780369534284267,mae,25.1,0.209,b4195e92a622d0f8,data_manifests/davis_vos3.json,complete,
+2026-11-04 03:23:52,R5,davis_v1b,davis_vos3,track,dsm_slot,dsm_slot,0,192,514000,46,34,0.11801782555200836,0.10896491307946428,mae,48.5,0.125,b4195e92a622d0f8,data_manifests/davis_vos3.json,complete,
+2026-11-04 03:24:46,R5,davis_v1b,davis_vos3,track,dsm_slot,dsm_slot,1,192,514000,60,50,0.12883317577302927,0.11116458970748445,mae,54.2,0.124,b4195e92a622d0f8,data_manifests/davis_vos3.json,complete,
+2026-11-04 03:25:29,R5,davis_v1b,davis_vos3,track,dsm_slot,dsm_slot,2,192,514000,44,32,0.12018449455057915,0.11040954598726115,mae,42.8,0.124,b4195e92a622d0f8,data_manifests/davis_vos3.json,complete,
+2026-11-04 03:31:46,R5,ucfa_v1,ucf101_action_feat,action,mlp,mlp,0,192,241257,12,10,0.9191020304137286,0.8159727156458718,acc,373.0,0.142,b4195e92a622d0f8,data_manifests/ucf101_action_feat.json,complete,无记忆下界（已实测 0.7516）
+2026-11-04 03:32:58,R5,ucfa_v1,ucf101_action_feat,action,mlp,mlp,1,192,241257,12,10,0.9223515419250701,0.807357538723888,acc,72.4,0.147,b4195e92a622d0f8,data_manifests/ucf101_action_feat.json,complete,无记忆下界（已实测 0.7516）
+2026-11-04 03:34:51,R5,ucfa_v1,ucf101_action_feat,action,gru,gru,0,192,611433,12,10,0.9403831450174157,0.8370576950405002,acc,112.4,0.17,b4195e92a622d0f8,data_manifests/ucf101_action_feat.json,complete,
+2026-11-04 03:36:47,R5,ucfa_v1,ucf101_action_feat,action,gru,gru,1,192,611433,12,11,0.9413176450598929,0.8493853915020605,acc,116.4,0.175,b4195e92a622d0f8,data_manifests/ucf101_action_feat.json,complete,
+2026-11-04 03:38:52,R5,ucfa_v1,ucf101_action_feat,action,lstm,lstm,0,192,796521,12,10,0.9322487469203976,0.8184950973426176,acc,125.0,0.184,b4195e92a622d0f8,data_manifests/ucf101_action_feat.json,complete,
+2026-11-04 03:40:47,R5,ucfa_v1,ucf101_action_feat,action,lstm,lstm,1,192,796521,12,10,0.9330558151389007,0.8237974278811994,acc,114.8,0.189,b4195e92a622d0f8,data_manifests/ucf101_action_feat.json,complete,
+2026-11-04 03:44:07,R5,ucfa_v1,ucf101_action_feat,action,cfc,cfc,0,192,167721,12,11,0.9128791096763231,0.8009005968452465,acc,200.4,0.155,b4195e92a622d0f8,data_manifests/ucf101_action_feat.json,complete,
+2026-11-04 03:47:25,R5,ucfa_v1,ucf101_action_feat,action,cfc,cfc,1,192,167721,12,10,0.9169144507688387,0.7905712661645588,acc,197.7,0.16,b4195e92a622d0f8,data_manifests/ucf101_action_feat.json,complete,
+2026-11-04 03:48:41,R5,ucfa_v1,ucf101_action_feat,action,mamba,mamba,0,192,424396,12,12,0.9369849630447711,0.8404327128037516,acc,76.3,0.524,b4195e92a622d0f8,data_manifests/ucf101_action_feat.json,complete,
+2026-11-04 03:50:00,R5,ucfa_v1,ucf101_action_feat,action,mamba,mamba,1,192,424396,12,12,0.9363478039249001,0.8362583487281512,acc,78.2,0.535,b4195e92a622d0f8,data_manifests/ucf101_action_feat.json,complete,
+2026-11-04 03:56:09,R5,ucfa_v1,ucf101_action_feat,action,deltanet,deltanet,0,192,291249,12,10,0.934797383399881,0.829410615319028,acc,369.1,0.702,b4195e92a622d0f8,data_manifests/ucf101_action_feat.json,complete,
+2026-11-04 04:01:27,R5,charades_v1,charades_event_feat,event,mlp,mlp,0,192,234678,5,1,0.0,0.0,f1,151.8,0.102,b4195e92a622d0f8,data_manifests/charades_event_feat.json,complete,无记忆下界
+2026-11-04 04:01:50,R5,charades_v1,charades_event_feat,event,mlp,mlp,1,192,234678,5,1,0.0,0.0,f1,22.5,0.101,b4195e92a622d0f8,data_manifests/charades_event_feat.json,complete,无记忆下界
+2026-11-04 04:02:25,R5,charades_v1,charades_event_feat,event,gru,gru,0,192,604854,5,1,0.0,0.0,f1,35.7,0.125,b4195e92a622d0f8,data_manifests/charades_event_feat.json,complete,
+2026-11-04 04:02:58,R5,charades_v1,charades_event_feat,event,gru,gru,1,192,604854,5,1,0.0,0.0,f1,32.5,0.122,b4195e92a622d0f8,data_manifests/charades_event_feat.json,complete,
+2026-11-04 04:03:37,R5,charades_v1,charades_event_feat,event,lstm,lstm,0,192,789942,5,1,0.0,0.0,f1,39.5,0.133,b4195e92a622d0f8,data_manifests/charades_event_feat.json,complete,
+2026-11-04 04:04:04,R3,order_v1,ucf101_order,action,mlp,mlp,2,192,228486,6,1,0.5,0.5,acc,315.3,0.075,b4195e92a622d0f8,data_manifests/ucf101_order.json,complete,每帧 MLP（应≈50%）
+2026-11-04 04:04:16,R5,charades_v1,charades_event_feat,event,lstm,lstm,1,192,789942,5,1,0.0,0.0,f1,38.2,0.132,b4195e92a622d0f8,data_manifests/charades_event_feat.json,complete,
+2026-11-04 04:05:19,R5,charades_v1,charades_event_feat,event,cfc,cfc,0,192,161142,5,1,0.0,0.0,f1,63.6,0.112,b4195e92a622d0f8,data_manifests/charades_event_feat.json,complete,用户原基线
+2026-11-04 04:06:26,R5,charades_v1,charades_event_feat,event,cfc,cfc,1,192,161142,5,1,0.0,0.0,f1,67.2,0.111,b4195e92a622d0f8,data_manifests/charades_event_feat.json,complete,用户原基线
+2026-11-04 04:06:34,R3,order_v1,ucf101_order,action,gru,gru,2,192,598662,10,5,0.9463470319634704,0.9216482080209122,acc,150.0,0.085,b4195e92a622d0f8,data_manifests/ucf101_order.json,complete,
+2026-11-04 04:07:14,R5,charades_v1,charades_event_feat,event,mamba,mamba,0,192,417817,5,1,0.0,0.0,f1,47.6,0.408,b4195e92a622d0f8,data_manifests/charades_event_feat.json,complete,
+2026-11-04 04:08:14,R5,charades_v1,charades_event_feat,event,mamba,mamba,1,192,417817,5,1,0.0,0.0,f1,60.2,0.404,b4195e92a622d0f8,data_manifests/charades_event_feat.json,complete,
+2026-11-04 04:08:43,R3,order_v1,ucf101_order,action,lstm,lstm,2,192,783750,6,1,0.5011415525114156,0.5002751599367132,acc,129.4,0.09,b4195e92a622d0f8,data_manifests/ucf101_order.json,complete,
+2026-11-04 04:27:18,R3,order_v1,ucf101_order,action,cfc,cfc,2,192,154950,6,1,0.5,0.5000171974960446,acc,158.0,0.078,b4195e92a622d0f8,data_manifests/ucf101_order.json,complete,
+2026-11-04 04:29:35,R3,order_v1,ucf101_order,action,mamba,mamba,2,192,411625,15,15,0.934931506849315,0.935440599848662,acc,136.9,0.174,b4195e92a622d0f8,data_manifests/ucf101_order.json,complete,
+2026-11-04 04:38:27,R5,ucfa_v1,ucf101_action_feat,action,mlp,mlp,2,192,241257,12,12,0.9203338713788123,0.808689782577803,acc,305.6,0.146,b4195e92a622d0f8,data_manifests/ucf101_action_feat.json,complete,无记忆下界（已实测 0.7516）
+2026-11-04 04:40:45,R5,ucfa_v1,ucf101_action_feat,action,gru,gru,2,192,611433,12,11,0.9372823039673774,0.8425554213443228,acc,138.5,0.175,b4195e92a622d0f8,data_manifests/ucf101_action_feat.json,complete,
+2026-11-04 04:43:14,R5,ucfa_v1,ucf101_action_feat,action,lstm,lstm,2,192,796521,12,12,0.9284470308385014,0.8235309791104164,acc,148.3,0.187,b4195e92a622d0f8,data_manifests/ucf101_action_feat.json,complete,
+2026-11-04 04:47:19,R5,ucfa_v1,ucf101_action_feat,action,cfc,cfc,2,192,167721,12,12,0.9125392914790587,0.8053325280659371,acc,245.0,0.161,b4195e92a622d0f8,data_manifests/ucf101_action_feat.json,complete,
+2026-11-04 04:48:47,R5,ucfa_v1,ucf101_action_feat,action,mamba,mamba,2,192,424396,12,12,0.9390875881403449,0.8422268011936905,acc,88.7,0.535,b4195e92a622d0f8,data_manifests/ucf101_action_feat.json,complete,
+2026-11-04 04:56:59,R5,ucfa_v1,ucf101_action_feat,action,deltanet,deltanet,2,192,291249,12,10,0.9336292583467845,0.8385942162853489,acc,491.4,0.718,b4195e92a622d0f8,data_manifests/ucf101_action_feat.json,complete,
+2026-11-04 05:03:01,R5,ucfa_v1,ucf101_action_feat,action,dsm,dsm,2,192,538353,0,,,,acc,362.0,0.065,b4195e92a622d0f8,data_manifests/ucf101_action_feat.json,failed,
+2026-11-04 05:25:56,R5,ucfa_v1,ucf101_action_feat,action,dsm_slot,dsm_slot,2,192,526769,12,12,0.9407654404893382,0.8395711951115532,acc,1374.8,0.448,b4195e92a622d0f8,data_manifests/ucf101_action_feat.json,complete,
+2026-11-04 05:29:10,R6,order_tuned_v1,ucf101_order,action,dsm,dsm,1,192,747534,1,,,,acc,191.2,2.112,b4195e92a622d0f8,data_manifests/ucf101_order.json,failed,R6 稳定化配置：mem256 + 无衰减 + lr1e-3 + warmup6
+2026-11-04 05:46:54,R6,order_tuned_v1,ucf101_order,action,dsm,dsm,2,192,747534,5,,,,acc,1064.2,2.112,b4195e92a622d0f8,data_manifests/ucf101_order.json,running,R6 稳定化配置：mem256 + 无衰减 + lr1e-3 + warmup6
+2026-11-04 06:00:31,R6,order_tuned_v1,ucf101_order,action,dsm,dsm,0,192,747534,7,,,,acc,816.7,2.129,b4195e92a622d0f8,data_manifests/ucf101_order.json,running,mem256 + 保留多时间常数 + lr1e-3
+2026-11-04 06:16:47,R6,order_tuned_v1,ucf101_order,action,dsm,dsm,1,192,747534,10,5,0.9460616438356164,0.9356813647932861,acc,976.3,2.129,b4195e92a622d0f8,data_manifests/ucf101_order.json,complete,mem256 + 保留多时间常数 + lr1e-3
+2026-11-04 06:21:54,R6,order_tuned_v1,ucf101_order,action,dsm,dsm,2,192,747534,3,,,,acc,306.4,2.129,b4195e92a622d0f8,data_manifests/ucf101_order.json,running,mem256 + 保留多时间常数 + lr1e-3

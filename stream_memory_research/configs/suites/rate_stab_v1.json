@@ -1,0 +1,40 @@
+{
+  "name": "rate_stab_v1",
+  "round": "R6",
+  "description": "ROUND 6：稳定化。pattern_rate 上 dsm(无衰减,mem128) 三个种子是 [1.000, 0.500, 1.000] —— 两个种子满分、一个塌到随机；GRU 是 [0.657,0.936,0.957] 从未到过 1.0。只要把那个塌掉的种子修好，本模型就在这个任务上以 ~1.0 vs 0.85 明确超过 GRU/LSTM/Mamba/DeltaNet。本轮只调稳定化相关的三个旋钮：lr、warmup、权重衰减。每个配置 3 seeds。",
+  "seeds": [0, 1, 2],
+  "defaults": {
+    "loss": {"aux_num_scale": 0.1},
+    "train": {
+      "epochs": 50, "batch": 64, "wd": 0.0001, "amp": true,
+      "grad_clip": 1.0, "patience": 40, "aug": "none", "tok_fusion": "flatten",
+      "T_max": 64, "val_every": 1, "num_workers": 0, "preload": true,
+      "preload_max_gb": 6.0
+    },
+    "eval": {"robustness": ["dense", "stride2", "stride4", "drop50", "burst", "repeat", "jitter", "shuffled", "mixed"]}
+  },
+  "datasets": {
+    "synth_pattern_rate": {
+      "task": "synth",
+      "manifest": "data_manifests/synth_pattern_rate.json",
+      "heads": {"class": {"kind": "ce", "dim": 16, "n_classes": 16, "ignore": -1}},
+      "main_metric": "acc",
+      "loss": {"task": {"class": 1.0}},
+      "train": {"epochs": 50}
+    }
+  },
+  "models": [
+    {"name": "dsm", "hidden": 192, "variant": "nd128_lr1e3",
+     "cfg": {"mem_dim": 128, "decay": false}, "train": {"lr": 0.001, "warmup_epochs": 6},
+     "notes": "lr 3e-3->1e-3, warmup 3->6"},
+    {"name": "dsm", "hidden": 192, "variant": "nd128_lr15e3",
+     "cfg": {"mem_dim": 128, "decay": false}, "train": {"lr": 0.0015, "warmup_epochs": 6},
+     "notes": "lr 1.5e-3, warmup 6"},
+    {"name": "dsm", "hidden": 192, "variant": "nd128_wd0",
+     "cfg": {"mem_dim": 128, "decay": false}, "train": {"lr": 0.002, "warmup_epochs": 8, "wd": 0.0},
+     "notes": "lr 2e-3, warmup 8, wd 0"},
+    {"name": "dsm", "hidden": 192, "variant": "nd256_lr1e3",
+     "cfg": {"mem_dim": 256, "decay": false}, "train": {"lr": 0.001, "warmup_epochs": 6},
+     "notes": "mem 256 + 稳定化"}
+  ]
+}

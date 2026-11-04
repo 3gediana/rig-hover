@@ -1,0 +1,33 @@
+{
+  "run_id": "fixture_synth__dsm__base__s0",
+  "dataset": "fixture_synth",
+  "manifest": "runs/_fixture_synth/manifest.json",
+  "task": "synth",
+  "model": {"name": "dsm", "hidden": 64, "cfg": {"mem_dim": 32, "n_decay_groups": 4}},
+  "heads": {
+    "state": {"kind": "mse", "dim": 64},
+    "class": {"kind": "ce", "dim": 6, "ignore": -1}
+  },
+  "loss": {
+    "task": {"state": 1.0, "class": 1.0},
+    "aux_num_scale": 0.1,
+    "aux": {"retrieval": 0.1, "crosstalk": 0.05, "time_consistency": 0.05,
+            "write_budget": 0.01, "long_horizon": 0.1},
+    "aux_cfg": {"long_horizon": {"horizon": 5, "tau": 1.0, "write_thr": 0.1}}
+  },
+  "train": {
+    "epochs": 4, "batch": 16, "lr": 0.003, "wd": 0.0001, "amp": true,
+    "grad_clip": 1.0, "patience": 4, "aug": "none", "T_max": 48,
+    "val_every": 1, "warmup_epochs": 1, "num_workers": 0, "preload": true,
+    "preload_max_gb": 2.0
+  },
+  "eval": {
+    "batch": 16,
+    "robustness": ["dense", "stride2", "stride4", "drop50", "burst", "repeat",
+                   "jitter", "mixed", "shuffled"],
+    "latency": true, "flops": true
+  },
+  "main_metric": "r2",
+  "seed": 0,
+  "notes": "synth-style fixture: per-slot lab_mask [T,8] vs lab_state [T,64], lab_age, lab_class=-1 -> reproduces the Lead's gate case (r2 / per_gap / rollout / two heads)"
+}

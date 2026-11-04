@@ -1,0 +1,56 @@
+{
+  "name": "dsm_capacity_v1",
+  "round": "R2",
+  "description": "ROUND2: 检验 DSM 的长期保持容量是否被 mem_dim 与衰减率初始化限制 (H1/H7)。GRU/LSTM 没有强制衰减，可以无限期保持状态；DSM 的 exp(-ΛΔt) 会主动遗忘——这正是文献警告的 'decay hurts memory retention'。本组实验把 mem_dim 放大，并加一个「只有慢状态」的对照。",
+  "seeds": [0],
+  "defaults": {
+    "loss": {"aux_num_scale": 0.1},
+    "train": {
+      "epochs": 50, "batch": 64, "lr": 0.003, "wd": 0.0001, "amp": true,
+      "grad_clip": 1.0, "patience": 40, "aug": "none", "tok_fusion": "flatten",
+      "T_max": 96, "val_every": 1, "warmup_epochs": 3,
+      "num_workers": 0, "preload": true, "preload_max_gb": 6.0
+    },
+    "eval": {"robustness": ["dense", "stride2", "stride4", "drop50", "burst", "repeat", "jitter", "shuffled", "mixed"]}
+  },
+  "datasets": {
+    "synth_recall_single": {
+      "task": "synth",
+      "manifest": "data_manifests/synth_recall_single.json",
+      "heads": {"state": {"kind": "mse", "dim": 256}},
+      "main_metric": "cos",
+      "loss": {"task": {"state": 1.0}},
+      "train": {"epochs": 50}
+    },
+    "synth_recall_multi": {
+      "task": "synth",
+      "manifest": "data_manifests/synth_recall_multi.json",
+      "heads": {"state": {"kind": "mse", "dim": 256}},
+      "main_metric": "cos",
+      "loss": {"task": {"state": 1.0}},
+      "train": {"epochs": 50}
+    },
+    "synth_change_detect": {
+      "task": "synth",
+      "manifest": "data_manifests/synth_change_detect.json",
+      "heads": {"state": {"kind": "mse", "dim": 256}},
+      "main_metric": "cos",
+      "loss": {"task": {"state": 1.0}},
+      "train": {"epochs": 50}
+    }
+  },
+  "models": [
+    {"name": "dsm", "hidden": 192, "variant": "md64", "cfg": {"mem_dim": 64}, "notes": "mem_dim=64 (baseline)"},
+    {"name": "dsm", "hidden": 192, "variant": "md128", "cfg": {"mem_dim": 128}, "notes": "mem_dim=128"},
+    {"name": "dsm", "hidden": 192, "variant": "md192", "cfg": {"mem_dim": 192}, "notes": "mem_dim=192"},
+    {"name": "dsm", "hidden": 192, "variant": "md256", "cfg": {"mem_dim": 256}, "notes": "mem_dim=256"},
+    {"name": "dsm", "hidden": 192, "variant": "md256nd", "cfg": {"mem_dim": 256, "decay": false}, "notes": "mem_dim=256 + 无时间衰减（文献：decay hurts retention）"},
+    {"name": "dsm", "hidden": 192, "variant": "md64nd", "cfg": {"mem_dim": 64, "decay": false}, "notes": "mem_dim=64 + 无衰减 (隔离容量与衰减两个因素)"},
+    {"name": "dsm_slot", "hidden": 192, "variant": "md64", "cfg": {"n_slots": 16, "slot_dim": 64}, "notes": "16 slots x 64"},
+    {"name": "dsm_slot", "hidden": 192, "variant": "md192", "cfg": {"n_slots": 16, "slot_dim": 192}, "notes": "16 slots x 192"},
+    {"name": "deltanet", "hidden": 192, "variant": "md64nd", "cfg": {"mem_dim": 64, "decay": false}, "notes": "纯快权、无慢状态、无衰减"},
+    {"name": "dsm", "hidden": 192, "variant": "slowonly", "cfg": {"mem_dim": 64, "mem_off": true}, "notes": "只有慢状态（无快记忆）"},
+    {"name": "dsm", "hidden": 192, "variant": "ntok", "cfg": {"mem_dim": 128, "use_tok": true}, "notes": "对象级 token 寻址 + mem_dim=128"},
+    {"name": "dsm", "hidden": 192, "variant": "tok256nd", "cfg": {"mem_dim": 256, "use_tok": true, "decay": false}, "notes": "对象寻址 + 256 + 无衰减（最可能的强配置）"}
+  ]
+}

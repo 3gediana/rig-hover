@@ -1,0 +1,399 @@
+{
+  "run_id": "charades_event_feat__cfc__s0",
+  "generated_at": "2026-11-04 04:05:18",
+  "split": "test",
+  "main_metric": "f1",
+  "higher_is_better": true,
+  "n_sequences": 210,
+  "global": {
+    "f1": 0.0,
+    "f1_macro": 0.49087052024405975,
+    "precision": 0.0,
+    "recall": 0.0,
+    "acc": 0.9641369047619047,
+    "n": 1344000,
+    "main_metric": "f1",
+    "main_head": "event"
+  },
+  "head": "event",
+  "worst": [
+    {
+      "rank": 1,
+      "seq_id": "UK5AT",
+      "source_id": "UK5AT",
+      "value": 0.0,
+      "T": 128,
+      "diagnosis": "short_sequence;all_onsets_missed",
+      "details": {
+        "T": 128,
+        "dt_cv": 0.0553,
+        "dt_mean": 0.288189,
+        "n_valid": 6400,
+        "pos_rate": 0.0317,
+        "tp": 0,
+        "fp": 0,
+        "fn": 203
+      }
+    },
+    {
+      "rank": 2,
+      "seq_id": "UKLQ1",
+      "source_id": "UKLQ1",
+      "value": 0.0,
+      "T": 128,
+      "diagnosis": "short_sequence;all_onsets_missed",
+      "details": {
+        "T": 128,
+        "dt_cv": 0.0547,
+        "dt_mean": 0.259051,
+        "n_valid": 6400,
+        "pos_rate": 0.0267,
+        "tp": 0,
+        "fp": 0,
+        "fn": 171
+      }
+    },
+    {
+      "rank": 3,
+      "seq_id": "ULAWO",
+      "source_id": "ULAWO",
+      "value": 0.0,
+      "T": 128,
+      "diagnosis": "short_sequence;rare_positive;all_onsets_missed",
+      "details": {
+        "T": 128,
+        "dt_cv": 0.0655,
+        "dt_mean": 0.245669,
+        "n_valid": 6400,
+        "pos_rate": 0.0034,
+        "tp": 0,
+        "fp": 0,
+        "fn": 22
+      }
+    },
+    {
+      "rank": 4,
+      "seq_id": "UN6O9",
+      "source_id": "UN6O9",
+      "value": 0.0,
+      "T": 128,
+      "diagnosis": "short_sequence;rare_positive;all_onsets_missed",
+      "details": {
+        "T": 128,
+        "dt_cv": 0.0902,
+        "dt_mean": 0.215118,
+        "n_valid": 6400,
+        "pos_rate": 0.0061,
+        "tp": 0,
+        "fp": 0,
+        "fn": 39
+      }
+    },
+    {
+      "rank": 5,
+      "seq_id": "UNQD7",
+      "source_id": "UNQD7",
+      "value": 0.0,
+      "T": 128,
+      "diagnosis": "short_sequence;rare_positive;all_onsets_missed",
+      "details": {
+        "T": 128,
+        "dt_cv": 0.0947,
+        "dt_mean": 0.251811,
+        "n_valid": 6400,
+        "pos_rate": 0.0148,
+        "tp": 0,
+        "fp": 0,
+        "fn": 95
+      }
+    },
+    {
+      "rank": 6,
+      "seq_id": "UPCQK",
+      "source_id": "UPCQK",
+      "value": 0.0,
+      "T": 128,
+      "diagnosis": "short_sequence;all_onsets_missed",
+      "details": {
+        "T": 128,
+        "dt_cv": 0.0344,
+        "dt_mean": 0.235433,
+        "n_valid": 6400,
+        "pos_rate": 0.037,
+        "tp": 0,
+        "fp": 0,
+        "fn": 237
+      }
+    },
+    {
+      "rank": 7,
+      "seq_id": "UPWTC",
+      "source_id": "UPWTC",
+      "value": 0.0,
+      "T": 128,
+      "diagnosis": "short_sequence;all_onsets_missed",
+      "details": {
+        "T": 128,
+        "dt_cv": 0.0421,
+        "dt_mean": 0.264557,
+        "n_valid": 6400,
+        "pos_rate": 0.0244,
+        "tp": 0,
+        "fp": 0,
+        "fn": 156
+      }
+    },
+    {
+      "rank": 8,
+      "seq_id": "UQPO0",
+      "source_id": "UQPO0",
+      "value": 0.0,
+      "T": 128,
+      "diagnosis": "short_sequence;rare_positive;all_onsets_missed",
+      "details": {
+        "T": 128,
+        "dt_cv": 0.0287,
+        "dt_mean": 0.395934,
+        "n_valid": 6400,
+        "pos_rate": 0.0067,
+        "tp": 0,
+        "fp": 0,
+        "fn": 43
+      }
+    },
+    {
+      "rank": 9,
+      "seq_id": "URG8B",
+      "source_id": "URG8B",
+      "value": 0.0,
+      "T": 128,
+      "diagnosis": "short_sequence;all_onsets_missed",
+      "details": {
+        "T": 128,
+        "dt_cv": 0.038,
+        "dt_mean": 0.235958,
+        "n_valid": 6400,
+        "pos_rate": 0.0628,
+        "tp": 0,
+        "fp": 0,
+        "fn": 402
+      }
+    },
+    {
+      "rank": 10,
+      "seq_id": "USNP1",
+      "source_id": "USNP1",
+      "value": 0.0,
+      "T": 128,
+      "diagnosis": "short_sequence;all_onsets_missed",
+      "details": {
+        "T": 128,
+        "dt_cv": 0.1115,
+        "dt_mean": 0.149493,
+        "n_valid": 6400,
+        "pos_rate": 0.0255,
+        "tp": 0,
+        "fp": 0,
+        "fn": 163
+      }
+    }
+  ],
+  "best": [
+    {
+      "rank": 1,
+      "seq_id": "UK5AT",
+      "source_id": "UK5AT",
+      "value": 0.0,
+      "T": 128,
+      "diagnosis": "short_sequence;all_onsets_missed",
+      "details": {
+        "T": 128,
+        "dt_cv": 0.0553,
+        "dt_mean": 0.288189,
+        "n_valid": 6400,
+        "pos_rate": 0.0317,
+        "tp": 0,
+        "fp": 0,
+        "fn": 203
+      }
+    },
+    {
+      "rank": 2,
+      "seq_id": "UKLQ1",
+      "source_id": "UKLQ1",
+      "value": 0.0,
+      "T": 128,
+      "diagnosis": "short_sequence;all_onsets_missed",
+      "details": {
+        "T": 128,
+        "dt_cv": 0.0547,
+        "dt_mean": 0.259051,
+        "n_valid": 6400,
+        "pos_rate": 0.0267,
+        "tp": 0,
+        "fp": 0,
+        "fn": 171
+      }
+    },
+    {
+      "rank": 3,
+      "seq_id": "ULAWO",
+      "source_id": "ULAWO",
+      "value": 0.0,
+      "T": 128,
+      "diagnosis": "short_sequence;rare_positive;all_onsets_missed",
+      "details": {
+        "T": 128,
+        "dt_cv": 0.0655,
+        "dt_mean": 0.245669,
+        "n_valid": 6400,
+        "pos_rate": 0.0034,
+        "tp": 0,
+        "fp": 0,
+        "fn": 22
+      }
+    },
+    {
+      "rank": 4,
+      "seq_id": "UN6O9",
+      "source_id": "UN6O9",
+      "value": 0.0,
+      "T": 128,
+      "diagnosis": "short_sequence;rare_positive;all_onsets_missed",
+      "details": {
+        "T": 128,
+        "dt_cv": 0.0902,
+        "dt_mean": 0.215118,
+        "n_valid": 6400,
+        "pos_rate": 0.0061,
+        "tp": 0,
+        "fp": 0,
+        "fn": 39
+      }
+    },
+    {
+      "rank": 5,
+      "seq_id": "UNQD7",
+      "source_id": "UNQD7",
+      "value": 0.0,
+      "T": 128,
+      "diagnosis": "short_sequence;rare_positive;all_onsets_missed",
+      "details": {
+        "T": 128,
+        "dt_cv": 0.0947,
+        "dt_mean": 0.251811,
+        "n_valid": 6400,
+        "pos_rate": 0.0148,
+        "tp": 0,
+        "fp": 0,
+        "fn": 95
+      }
+    },
+    {
+      "rank": 6,
+      "seq_id": "UPCQK",
+      "source_id": "UPCQK",
+      "value": 0.0,
+      "T": 128,
+      "diagnosis": "short_sequence;all_onsets_missed",
+      "details": {
+        "T": 128,
+        "dt_cv": 0.0344,
+        "dt_mean": 0.235433,
+        "n_valid": 6400,
+        "pos_rate": 0.037,
+        "tp": 0,
+        "fp": 0,
+        "fn": 237
+      }
+    },
+    {
+      "rank": 7,
+      "seq_id": "UPWTC",
+      "source_id": "UPWTC",
+      "value": 0.0,
+      "T": 128,
+      "diagnosis": "short_sequence;all_onsets_missed",
+      "details": {
+        "T": 128,
+        "dt_cv": 0.0421,
+        "dt_mean": 0.264557,
+        "n_valid": 6400,
+        "pos_rate": 0.0244,
+        "tp": 0,
+        "fp": 0,
+        "fn": 156
+      }
+    },
+    {
+      "rank": 8,
+      "seq_id": "UQPO0",
+      "source_id": "UQPO0",
+      "value": 0.0,
+      "T": 128,
+      "diagnosis": "short_sequence;rare_positive;all_onsets_missed",
+      "details": {
+        "T": 128,
+        "dt_cv": 0.0287,
+        "dt_mean": 0.395934,
+        "n_valid": 6400,
+        "pos_rate": 0.0067,
+        "tp": 0,
+        "fp": 0,
+        "fn": 43
+      }
+    },
+    {
+      "rank": 9,
+      "seq_id": "URG8B",
+      "source_id": "URG8B",
+      "value": 0.0,
+      "T": 128,
+      "diagnosis": "short_sequence;all_onsets_missed",
+      "details": {
+        "T": 128,
+        "dt_cv": 0.038,
+        "dt_mean": 0.235958,
+        "n_valid": 6400,
+        "pos_rate": 0.0628,
+        "tp": 0,
+        "fp": 0,
+        "fn": 402
+      }
+    },
+    {
+      "rank": 10,
+      "seq_id": "USNP1",
+      "source_id": "USNP1",
+      "value": 0.0,
+      "T": 128,
+      "diagnosis": "short_sequence;all_onsets_missed",
+      "details": {
+        "T": 128,
+        "dt_cv": 0.1115,
+        "dt_mean": 0.149493,
+        "n_valid": 6400,
+        "pos_rate": 0.0255,
+        "tp": 0,
+        "fp": 0,
+        "fn": 163
+      }
+    }
+  ],
+  "diagnosis_counts": {
+    "short_sequence": 20,
+    "all_onsets_missed": 20,
+    "rare_positive": 8
+  },
+  "extra": {
+    "split": "test",
+    "head": "event"
+  },
+  "kind": "bce",
+  "value_stats": {
+    "mean": 0.0,
+    "p10": 0.0,
+    "p90": 0.0
+  },
+  "path": "failure_cases/charades_event_feat__cfc__s0.json"
+}

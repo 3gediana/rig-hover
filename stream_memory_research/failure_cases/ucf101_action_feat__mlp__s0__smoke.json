@@ -1,0 +1,439 @@
+{
+  "run_id": "ucf101_action_feat__mlp__s0__smoke",
+  "generated_at": "2026-11-04 03:06:42",
+  "split": "test",
+  "main_metric": "acc",
+  "higher_is_better": true,
+  "n_sequences": 16,
+  "global": {
+    "acc": 0.21293800539083557,
+    "f1": 0.16035120496734412,
+    "f1_macro": 0.16035120496734412,
+    "precision": 0.12240862331677978,
+    "recall": 0.14311594202749472,
+    "n": 1484,
+    "main_metric": "acc",
+    "main_head": "action"
+  },
+  "head": "action",
+  "worst": [
+    {
+      "rank": 1,
+      "seq_id": "ApplyEyeMakeup__v_ApplyEyeMakeup_g01_c01",
+      "source_id": "v_ApplyEyeMakeup_g01_c01",
+      "value": 0.0,
+      "T": 96,
+      "diagnosis": "below_majority_baseline",
+      "details": {
+        "T": 96,
+        "dt_cv": 0.2629,
+        "dt_mean": 0.068632,
+        "n_valid": 96,
+        "pred_top_class": 80,
+        "pred_top_share": 0.875,
+        "n_true_classes": 1,
+        "true_top_class": 0,
+        "seq_majority_baseline": 1.0,
+        "acc": 0.0
+      }
+    },
+    {
+      "rank": 2,
+      "seq_id": "BaseballPitch__v_BaseballPitch_g06_c04",
+      "source_id": "v_BaseballPitch_g06_c04",
+      "value": 0.0,
+      "T": 47,
+      "diagnosis": "short_sequence;below_majority_baseline",
+      "details": {
+        "T": 47,
+        "dt_cv": 0.0,
+        "dt_mean": 0.033367,
+        "n_valid": 47,
+        "pred_top_class": 20,
+        "pred_top_share": 0.4468,
+        "n_true_classes": 1,
+        "true_top_class": 6,
+        "seq_majority_baseline": 1.0,
+        "acc": 0.0
+      }
+    },
+    {
+      "rank": 3,
+      "seq_id": "BlowingCandles__v_BlowingCandles_g04_c02",
+      "source_id": "v_BlowingCandles_g04_c02",
+      "value": 0.0,
+      "T": 93,
+      "diagnosis": "short_sequence;below_majority_baseline",
+      "details": {
+        "T": 93,
+        "dt_cv": 0.0,
+        "dt_mean": 0.04,
+        "n_valid": 93,
+        "pred_top_class": 87,
+        "pred_top_share": 0.4731,
+        "n_true_classes": 1,
+        "true_top_class": 13,
+        "seq_majority_baseline": 1.0,
+        "acc": 0.0
+      }
+    },
+    {
+      "rank": 4,
+      "seq_id": "Drumming__v_Drumming_g07_c04",
+      "source_id": "v_Drumming_g07_c04",
+      "value": 0.0,
+      "T": 96,
+      "diagnosis": "collapsed_prediction;below_majority_baseline",
+      "details": {
+        "T": 96,
+        "dt_cv": 0.1126,
+        "dt_mean": 0.125895,
+        "n_valid": 96,
+        "pred_top_class": 89,
+        "pred_top_share": 1.0,
+        "n_true_classes": 1,
+        "true_top_class": 26,
+        "seq_majority_baseline": 1.0,
+        "acc": 0.0
+      }
+    },
+    {
+      "rank": 5,
+      "seq_id": "Haircut__v_Haircut_g05_c04",
+      "source_id": "v_Haircut_g05_c04",
+      "value": 0.0,
+      "T": 96,
+      "diagnosis": "collapsed_prediction;below_majority_baseline",
+      "details": {
+        "T": 96,
+        "dt_cv": 0.1927,
+        "dt_mean": 0.041684,
+        "n_valid": 96,
+        "pred_top_class": 89,
+        "pred_top_share": 1.0,
+        "n_true_classes": 1,
+        "true_top_class": 33,
+        "seq_majority_baseline": 1.0,
+        "acc": 0.0
+      }
+    },
+    {
+      "rank": 6,
+      "seq_id": "HorseRace__v_HorseRace_g03_c04",
+      "source_id": "v_HorseRace_g03_c04",
+      "value": 0.0,
+      "T": 96,
+      "diagnosis": "collapsed_prediction;below_majority_baseline",
+      "details": {
+        "T": 96,
+        "dt_cv": 0.3127,
+        "dt_mean": 0.052684,
+        "n_valid": 96,
+        "pred_top_class": 87,
+        "pred_top_share": 0.9688,
+        "n_true_classes": 1,
+        "true_top_class": 40,
+        "seq_majority_baseline": 1.0,
+        "acc": 0.0
+      }
+    },
+    {
+      "rank": 7,
+      "seq_id": "JumpRope__v_JumpRope_g01_c04",
+      "source_id": "v_JumpRope_g01_c04",
+      "value": 0.0,
+      "T": 96,
+      "diagnosis": "below_majority_baseline",
+      "details": {
+        "T": 96,
+        "dt_cv": 0.169,
+        "dt_mean": 0.072002,
+        "n_valid": 96,
+        "pred_top_class": 89,
+        "pred_top_share": 0.7708,
+        "n_true_classes": 1,
+        "true_top_class": 47,
+        "seq_majority_baseline": 1.0,
+        "acc": 0.0
+      }
+    },
+    {
+      "rank": 8,
+      "seq_id": "Mixing__v_Mixing_g06_c04",
+      "source_id": "v_Mixing_g06_c04",
+      "value": 0.0,
+      "T": 96,
+      "diagnosis": "below_majority_baseline",
+      "details": {
+        "T": 96,
+        "dt_cv": 0.2868,
+        "dt_mean": 0.044632,
+        "n_valid": 96,
+        "pred_top_class": 89,
+        "pred_top_share": 0.875,
+        "n_true_classes": 1,
+        "true_top_class": 53,
+        "seq_majority_baseline": 1.0,
+        "acc": 0.0
+      }
+    },
+    {
+      "rank": 9,
+      "seq_id": "PlayingDhol__v_PlayingDhol_g05_c01",
+      "source_id": "v_PlayingDhol_g05_c01",
+      "value": 0.0,
+      "T": 96,
+      "diagnosis": "collapsed_prediction;below_majority_baseline",
+      "details": {
+        "T": 96,
+        "dt_cv": 0.0482,
+        "dt_mean": 0.119158,
+        "n_valid": 96,
+        "pred_top_class": 87,
+        "pred_top_share": 0.9688,
+        "n_true_classes": 1,
+        "true_top_class": 60,
+        "seq_majority_baseline": 1.0,
+        "acc": 0.0
+      }
+    },
+    {
+      "rank": 10,
+      "seq_id": "PoleVault__v_PoleVault_g02_c06",
+      "source_id": "v_PoleVault_g02_c06",
+      "value": 0.0,
+      "T": 96,
+      "diagnosis": "below_majority_baseline",
+      "details": {
+        "T": 96,
+        "dt_cv": 0.101,
+        "dt_mean": 0.033718,
+        "n_valid": 96,
+        "pred_top_class": 35,
+        "pred_top_share": 0.6458,
+        "n_true_classes": 1,
+        "true_top_class": 67,
+        "seq_majority_baseline": 1.0,
+        "acc": 0.0
+      }
+    }
+  ],
+  "best": [
+    {
+      "rank": 1,
+      "seq_id": "CleanAndJerk__v_CleanAndJerk_g02_c01",
+      "source_id": "v_CleanAndJerk_g02_c01",
+      "value": 1.0,
+      "T": 96,
+      "diagnosis": "collapsed_prediction",
+      "details": {
+        "T": 96,
+        "dt_cv": 0.2433,
+        "dt_mean": 0.042947,
+        "n_valid": 96,
+        "pred_top_class": 20,
+        "pred_top_share": 1.0,
+        "n_true_classes": 1,
+        "true_top_class": 20,
+        "seq_majority_baseline": 1.0,
+        "acc": 1.0
+      }
+    },
+    {
+      "rank": 2,
+      "seq_id": "Surfing__v_Surfing_g03_c04",
+      "source_id": "v_Surfing_g03_c04",
+      "value": 1.0,
+      "T": 96,
+      "diagnosis": "collapsed_prediction",
+      "details": {
+        "T": 96,
+        "dt_cv": 0.3499,
+        "dt_mean": 0.056,
+        "n_valid": 96,
+        "pred_top_class": 87,
+        "pred_top_share": 1.0,
+        "n_true_classes": 1,
+        "true_top_class": 87,
+        "seq_majority_baseline": 1.0,
+        "acc": 1.0
+      }
+    },
+    {
+      "rank": 3,
+      "seq_id": "Skiing__v_Skiing_g06_c02",
+      "source_id": "v_Skiing_g06_c02",
+      "value": 0.677083,
+      "T": 96,
+      "diagnosis": "below_majority_baseline",
+      "details": {
+        "T": 96,
+        "dt_cv": 0.1126,
+        "dt_mean": 0.125895,
+        "n_valid": 96,
+        "pred_top_class": 80,
+        "pred_top_share": 0.6771,
+        "n_true_classes": 1,
+        "true_top_class": 80,
+        "seq_majority_baseline": 1.0,
+        "acc": 0.6771
+      }
+    },
+    {
+      "rank": 4,
+      "seq_id": "RopeClimbing__v_RopeClimbing_g01_c01",
+      "source_id": "v_RopeClimbing_g01_c01",
+      "value": 0.34375,
+      "T": 96,
+      "diagnosis": "below_majority_baseline",
+      "details": {
+        "T": 96,
+        "dt_cv": 0.276,
+        "dt_mean": 0.067368,
+        "n_valid": 96,
+        "pred_top_class": 87,
+        "pred_top_share": 0.375,
+        "n_true_classes": 1,
+        "true_top_class": 74,
+        "seq_majority_baseline": 1.0,
+        "acc": 0.3438
+      }
+    },
+    {
+      "rank": 5,
+      "seq_id": "YoYo__v_YoYo_g07_c02",
+      "source_id": "v_YoYo_g07_c02",
+      "value": 0.270833,
+      "T": 96,
+      "diagnosis": "below_majority_baseline",
+      "details": {
+        "T": 96,
+        "dt_cv": 0.1913,
+        "dt_mean": 0.074105,
+        "n_valid": 96,
+        "pred_top_class": 89,
+        "pred_top_share": 0.4688,
+        "n_true_classes": 1,
+        "true_top_class": 100,
+        "seq_majority_baseline": 1.0,
+        "acc": 0.2708
+      }
+    },
+    {
+      "rank": 6,
+      "seq_id": "ApplyEyeMakeup__v_ApplyEyeMakeup_g01_c01",
+      "source_id": "v_ApplyEyeMakeup_g01_c01",
+      "value": 0.0,
+      "T": 96,
+      "diagnosis": "below_majority_baseline",
+      "details": {
+        "T": 96,
+        "dt_cv": 0.2629,
+        "dt_mean": 0.068632,
+        "n_valid": 96,
+        "pred_top_class": 80,
+        "pred_top_share": 0.875,
+        "n_true_classes": 1,
+        "true_top_class": 0,
+        "seq_majority_baseline": 1.0,
+        "acc": 0.0
+      }
+    },
+    {
+      "rank": 7,
+      "seq_id": "BaseballPitch__v_BaseballPitch_g06_c04",
+      "source_id": "v_BaseballPitch_g06_c04",
+      "value": 0.0,
+      "T": 47,
+      "diagnosis": "short_sequence;below_majority_baseline",
+      "details": {
+        "T": 47,
+        "dt_cv": 0.0,
+        "dt_mean": 0.033367,
+        "n_valid": 47,
+        "pred_top_class": 20,
+        "pred_top_share": 0.4468,
+        "n_true_classes": 1,
+        "true_top_class": 6,
+        "seq_majority_baseline": 1.0,
+        "acc": 0.0
+      }
+    },
+    {
+      "rank": 8,
+      "seq_id": "BlowingCandles__v_BlowingCandles_g04_c02",
+      "source_id": "v_BlowingCandles_g04_c02",
+      "value": 0.0,
+      "T": 93,
+      "diagnosis": "short_sequence;below_majority_baseline",
+      "details": {
+        "T": 93,
+        "dt_cv": 0.0,
+        "dt_mean": 0.04,
+        "n_valid": 93,
+        "pred_top_class": 87,
+        "pred_top_share": 0.4731,
+        "n_true_classes": 1,
+        "true_top_class": 13,
+        "seq_majority_baseline": 1.0,
+        "acc": 0.0
+      }
+    },
+    {
+      "rank": 9,
+      "seq_id": "Drumming__v_Drumming_g07_c04",
+      "source_id": "v_Drumming_g07_c04",
+      "value": 0.0,
+      "T": 96,
+      "diagnosis": "collapsed_prediction;below_majority_baseline",
+      "details": {
+        "T": 96,
+        "dt_cv": 0.1126,
+        "dt_mean": 0.125895,
+        "n_valid": 96,
+        "pred_top_class": 89,
+        "pred_top_share": 1.0,
+        "n_true_classes": 1,
+        "true_top_class": 26,
+        "seq_majority_baseline": 1.0,
+        "acc": 0.0
+      }
+    },
+    {
+      "rank": 10,
+      "seq_id": "Haircut__v_Haircut_g05_c04",
+      "source_id": "v_Haircut_g05_c04",
+      "value": 0.0,
+      "T": 96,
+      "diagnosis": "collapsed_prediction;below_majority_baseline",
+      "details": {
+        "T": 96,
+        "dt_cv": 0.1927,
+        "dt_mean": 0.041684,
+        "n_valid": 96,
+        "pred_top_class": 89,
+        "pred_top_share": 1.0,
+        "n_true_classes": 1,
+        "true_top_class": 33,
+        "seq_majority_baseline": 1.0,
+        "acc": 0.0
+      }
+    }
+  ],
+  "diagnosis_counts": {
+    "below_majority_baseline": 18,
+    "collapsed_prediction": 8,
+    "short_sequence": 4
+  },
+  "extra": {
+    "split": "test",
+    "head": "action"
+  },
+  "kind": "ce",
+  "value_stats": {
+    "mean": 0.20572916666666669,
+    "p10": 0.0,
+    "p90": 0.8385416666666667
+  },
+  "path": "failure_cases/ucf101_action_feat__mlp__s0__smoke.json"
+}

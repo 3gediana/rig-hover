@@ -1,0 +1,42 @@
+{
+  "epochs": 6,
+  "elapsed_s": 76.09600849999697,
+  "lambda_start": 0.04742587357759476,
+  "lambda_end": 0.04333702474832535,
+  "final_train": {
+    "mse": 0.004244142787791388,
+    "ce_mode": 0.02766097470697376,
+    "ce_emote": 0.012820773009431137,
+    "smooth": 0.00038651654747770396,
+    "lam": 0.04338288831935134,
+    "clip": 8.348497626733445e-07,
+    "total": 0.04517912863683637,
+    "mode_acc": NaN
+  },
+  "final_val": {
+    "mse": 0.004217590227199253,
+    "ce_mode": 0.034735207227640785,
+    "ce_emote": 0.013620812806038884,
+    "smooth": 0.00036220317235802213,
+    "lam": 0.04333702474832535,
+    "clip": 0.0,
+    "total": 0.053025090659502894,
+    "mode_acc": 0.9909375
+  },
+  "params": 32783,
+  "clip_ratio_train": 0.002547461124961286,
+  "clip_ratio_val": 0.003734947517547814,
+  "device": "cuda:0",
+  "train_sessions": [
+    "synth_s000.npz",
+    "synth_s001.npz",
+    "synth_s002.npz",
+    "synth_s003.npz",
+    "synth_s004.npz",
+    "synth_s005.npz"
+  ],
+  "val_sessions": [
+    "synth_s006.npz",
+    "synth_s007.npz"
+  ]
+}

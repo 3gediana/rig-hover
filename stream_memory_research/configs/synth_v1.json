@@ -1,0 +1,89 @@
+{
+  "version": "v1",
+  "seed_base": 20261103,
+  "nominal_dt": 0.1,
+  "split_ranges": {"train": [0, 800], "val": [800, 1000], "test": [1000, 1200]},
+  "counts": {"train": 200, "val": 20, "test": 20},
+  "tiny_counts": {"train": 12, "val": 4, "test": 4},
+  "eval_count": 40,
+  "tiny_eval_count": 3,
+  "shuffle_count": 30,
+  "tiny_shuffle_count": 3,
+  "irregular_counts": {"train": 60, "val": 8, "test": 8},
+  "tiny_irregular_counts": {"train": 2, "val": 1, "test": 1},
+  "tasks": {
+    "recall_single": {
+      "gap_min_s": 0.1,
+      "gap_max_s": 3.2
+    },
+    "recall_multi": {
+      "k_choices": [2, 3, 4, 6, 8],
+      "n_blocks": [3, 5],
+      "window_steps": [6, 12]
+    },
+    "capacity_scan": {
+      "retention_steps": [6, 10],
+      "query_frames": 3
+    },
+    "overwrite": {
+      "gap_after_v1": [4, 6],
+      "gap_after_v2": [4, 6],
+      "gap_after_return": [4, 8]
+    },
+    "vanish_reappear": {
+      "absence_steps": [6, 30],
+      "reappear_masked": 5
+    },
+    "change_detect": {
+      "hold_steps": [12, 30],
+      "post_steps": [10, 20]
+    },
+    "event_seq": {
+      "frames": [60, 90],
+      "min_gap": 12,
+      "max_gap": 25,
+      "p_target": 0.6,
+      "p_burst": 0.35
+    }
+  },
+  "plan": {
+    "base": ["recall_single", "recall_multi", "overwrite",
+             "vanish_reappear", "change_detect", "event_seq"],
+    "gap_sweeps": [
+      {"task": "recall_single", "base_dataset": "synth_recall_single",
+       "gaps_s": [0.1, 0.2, 0.4, 0.8, 1.6, 3.2], "params_extra": {},
+       "name_fmt": "synth_recall_single_gap{gap:g}s", "role": "single_gap"},
+      {"task": "recall_multi", "base_dataset": "synth_recall_multi",
+       "gaps_s": [0.1, 0.2, 0.4, 0.8, 1.6, 3.2],
+       "params_extra": {"gap_steps_fixed": "__GAP_STEPS__", "k_choices": [8]},
+       "name_fmt": "synth_recall_multi_gap{gap:g}s", "role": "multi_gap"},
+      {"task": "event_seq", "base_dataset": "synth_event_seq",
+       "gaps_s": [0.2, 0.4, 0.8, 1.6, 3.2, 6.4],
+       "params_extra": {"fixed_gap_steps": "__GAP_STEPS__"},
+       "name_fmt": "synth_event_seq_gap{gap:g}s", "role": "event_gap"}
+    ],
+    "capacity": {
+      "task": "capacity_scan",
+      "base_dataset": "synth_recall_multi",
+      "k_values": [1, 2, 4, 8, 12, 16],
+      "name_fmt": "synth_capacity_K{k}"
+    },
+    "shuffled": {"enabled": true, "suffix": "_shuffled"},
+    "irregular": {
+      "bases": ["recall_single", "recall_multi"],
+      "variants": [
+        {"name": "logdt", "op": "logdt", "params": {"cv": 0.5}},
+        {"name": "drop30", "op": "drop30", "params": {}},
+        {"name": "drop50", "op": "drop50", "params": {}},
+        {"name": "drop70", "op": "drop70", "params": {}},
+        {"name": "repeat", "op": "repeat", "params": {"prob": 0.3}},
+        {"name": "burst", "op": "burst", "params": {"n_bursts": 2, "burst_frac": 0.25}},
+        {"name": "stretch2", "op": "stretch2", "params": {}},
+        {"name": "stretch4", "op": "stretch4", "params": {}},
+        {"name": "stretch8", "op": "stretch8", "params": {}},
+        {"name": "mixed", "op": "mixed", "params": {"cv": 0.25}}
+      ],
+      "name_fmt": "synth_irregular_{base}_{variant}"
+    }
+  }
+}

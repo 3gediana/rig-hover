@@ -1,0 +1,39 @@
+{
+  "name": "pattern_v2",
+  "round": "R4",
+  "description": "ROUND 4：机制归因的直接后果。pattern_count 上实测 dsm(有衰减)=0.553、dsm(无衰减)=1.000、dsm(单时间常数)=0.333(chance)。多尺度衰减在『计数』任务上主动破坏了脉冲历史。因此本组把无衰减的 delta 记忆作为主配置，在真正需要物理时间语义的两个任务上（节律快慢、原生不规则+掉帧）与基线对比。",
+  "seeds": [0, 1, 2],
+  "defaults": {
+    "loss": {"aux_num_scale": 0.1},
+    "train": {
+      "epochs": 50, "batch": 64, "lr": 0.003, "wd": 0.0001, "amp": true,
+      "grad_clip": 1.0, "patience": 40, "aug": "none", "tok_fusion": "flatten",
+      "T_max": 64, "val_every": 1, "warmup_epochs": 3,
+      "num_workers": 0, "preload": true, "preload_max_gb": 6.0
+    },
+    "eval": {"robustness": ["dense", "stride2", "stride4", "drop50", "burst", "repeat", "jitter", "shuffled", "mixed"]}
+  },
+  "datasets": {
+    "synth_pattern_rate": {
+      "task": "synth",
+      "manifest": "data_manifests/synth_pattern_rate.json",
+      "heads": {"class": {"kind": "ce", "dim": 16, "n_classes": 16, "ignore": -1}},
+      "main_metric": "acc",
+      "loss": {"task": {"class": 1.0}},
+      "train": {"epochs": 50}
+    },
+    "synth_pattern_count_irregular": {
+      "task": "synth",
+      "manifest": "data_manifests/synth_pattern_count_irregular.json",
+      "heads": {"class": {"kind": "ce", "dim": 16, "n_classes": 16, "ignore": -1}},
+      "main_metric": "acc",
+      "loss": {"task": {"class": 1.0}},
+      "train": {"epochs": 50}
+    }
+  },
+  "models": [
+    {"name": "dsm", "hidden": 192, "variant": "nd", "cfg": {"mem_dim": 64, "decay": false}, "notes": "无时间衰减（delta 记忆 + 慢状态）"},
+    {"name": "dsm", "hidden": 192, "variant": "nd_md128", "cfg": {"mem_dim": 128, "decay": false}, "notes": "无衰减 + 更大记忆"},
+    {"name": "dsm_slot", "hidden": 192, "variant": "nd", "cfg": {"n_slots": 12, "slot_dim": 64, "decay": false}, "notes": "槽位快记忆 + 无衰减"}
+  ]
+}
