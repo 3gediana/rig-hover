@@ -8,7 +8,7 @@
   "raw_frames": 3736,
   "video_frames": 3191,
   "codec": "h264",
-  "annotated": false,
-  "annotation_count": 0,
-  "exported_at": "2026-11-07T13:55:41+00:00"
+  "annotated": true,
+  "annotation_count": 27,
+  "exported_at": "2026-11-07T18:14:29+00:00"
 }

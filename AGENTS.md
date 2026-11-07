@@ -86,6 +86,7 @@ idf.py -p COM3 -b 460800 app-flash
 | `dataset/docs/ROBOT-SETUP.md` | — | **新电脑/新操作者先读。** 电脑热点 `qasd`/`88888888`、重新配网、服务启动、红线 |
 | `dataset/docs/COLLECTION-AND-ANNOTATION.md` | — | 采什么、六类标签定义与易混对、数量目标、按 take 划分 |
 | `dataset/docs/EXAMPLE-TAKE.md` | — | 已标注范本 take 的逐区间表与自定义标签合并建议 |
+| `dataset/docs/TRAIN-PIPELINE.md` | — | **区间标注 → 逐帧敲击检测**的训练/评估流水线：数据流、标签合并、留一协议、命令与当前结果 |
 | `VIDEO-ANNOTATOR.md` | ~92 | 8780 采集/标注服务：启动、API、帧率与暂停语义 |
 | `WIFI-AUTOCONNECT-FIX.md` | ~108 | 机器人热点自动重连的根因、烧录记录与验证方法 |
 | **`RESEARCH-VideoCfC.md`** | ~580 | **当前科研课题。** 流式视觉决策的统一数学问题、CNN/RNN/LSTM/GRU/Transformer/Mamba/CfC 设计与方程、文献地图、待证明命题；当前阶段只做数学推导，不训练或实验 |
@@ -356,12 +357,20 @@ idf.py -p COM3 -b 460800 app-flash
   10 fps 每帧 100 ms 可能漏掉 50–100 ms 的敲击接触瞬间）。
   接口：`GET /api/recording`、`POST /api/record/{start,stop,pause,resume}`、
   `GET /api/preview`。
-- **2026-11-07：数据集样例入库**在 `dataset/`（2026-11-07 的 4 条 take）：
-  1 条 98.85 s / 28 区间作为**标注教材**，另 3 条未标注；2026-11-05 的两条调试片
-  有意排除。只放 MP4 + `annotation.json` + `meta.json`，原始 JPEG 帧不入库。
+- **2026-11-07：数据集样例入库**在 `dataset/`（2026-11-07 的 4 条 take，2026-11-08 全部补齐标注）：
+  `robot_20261107_204337_5ca36d`（12 区间）作为**标注教材**，另外三条也已标注（26/12/27 区间）；
+  2026-11-05 的两条调试片有意排除。只放 MP4 + `annotation.json` + `meta.json`，原始 JPEG 帧不入库。
   导出脚本 `pc/tools/export_take.py`（`--since` / `--exclude` / `--index`）；
   新电脑/队友上手先读 `dataset/docs/ROBOT-SETUP.md`，标注规范见
   `dataset/docs/COLLECTION-AND-ANNOTATION.md`。
+- **2026-11-08：区间标注 → 逐帧敲击检测的流水线跑通**（冒烟）：
+  `pc/tools/import_annotations.py` 把服务导出 JSON 拆回 per-video 标注；
+  `pc/train/interval_data.py` 做标签合并 + 区间→帧 + 窗口切分；
+  `pc/train/train_knock.py` 按 take 留一训练（frame 基线 / CNN+GRU），
+  输出帧级 F1/AUROC 与事件级 F1。4 条 take、77 个区间，留一结果：
+  GRU 帧级 F1 **0.613**、AUROC **0.847**、事件级 F1 **0.316**（frame 基线更低）。
+  这只说明链路能跑、标签能学，不能当泛化结论；阈值跨 take 会漂移。
+  说明与配置见 `dataset/docs/TRAIN-PIPELINE.md`。
 
 ### 6.2 这一轮的实测拆分（240×240 灰度，q=80）
 
