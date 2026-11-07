@@ -3,9 +3,9 @@
 > 给**下一个接手这个项目的 agent**。目标：你读完这一份，就知道
 > 东西在哪、怎么跑、别踩哪些坑、现在到哪一步了。
 >
-> 最后更新：2026-11-05。
+> 最后更新：2026-11-07。
 > 用户偏好见 §8，**动手前先读那一节**。
-> **GitHub 仓库**：https://github.com/3gediana/rig-hover （私有；本地工作副本即 `D:\robot_work`）
+> **GitHub 仓库**：https://github.com/3gediana/rig-hover （**public**；`dataset/` 里的视频会公开，本地工作副本即 `D:\robot_work`）
 
 ---
 
@@ -64,7 +64,7 @@ idf.py -p COM3 -b 460800 app-flash
 
 | 东西 | 位置 |
 |---|---|
-| GitHub 仓库 | https://github.com/3gediana/rig-hover（私有） |
+| GitHub 仓库 | https://github.com/3gediana/rig-hover（**public**；`dataset/` 里的视频会公开） |
 | PC 端代码 | `D:\robot_work\pc\` |
 | 固件 | `D:\robot_work\rig_omni\` |
 | 文档 | `D:\robot_work\*.md` |
@@ -82,6 +82,12 @@ idf.py -p COM3 -b 460800 app-flash
 |---|---|---|
 | **`AGENTS.md`（本文）** | — | **第一个读。** 索引 + 踩坑 + 纪律 |
 | **`COLLAB.md`** | — | **外部协作者（马伟坚）第一个读。** 分工、数据与标注约定、红线 |
+| `dataset/README.md` | — | 数据集样例目录：收录规则、导出命令、annotation 格式 |
+| `dataset/docs/ROBOT-SETUP.md` | — | **新电脑/新操作者先读。** 电脑热点 `qasd`/`88888888`、重新配网、服务启动、红线 |
+| `dataset/docs/COLLECTION-AND-ANNOTATION.md` | — | 采什么、六类标签定义与易混对、数量目标、按 take 划分 |
+| `dataset/docs/EXAMPLE-TAKE.md` | — | 已标注范本 take 的逐区间表与自定义标签合并建议 |
+| `VIDEO-ANNOTATOR.md` | ~92 | 8780 采集/标注服务：启动、API、帧率与暂停语义 |
+| `WIFI-AUTOCONNECT-FIX.md` | ~108 | 机器人热点自动重连的根因、烧录记录与验证方法 |
 | **`RESEARCH-VideoCfC.md`** | ~580 | **当前科研课题。** 流式视觉决策的统一数学问题、CNN/RNN/LSTM/GRU/Transformer/Mamba/CfC 设计与方程、文献地图、待证明命题；当前阶段只做数学推导，不训练或实验 |
 | `LATENCY-MAP.md` | ~250 | 改性能、查延迟、诊断网络瓶颈 |
 | `TECHNICAL-REPORT.md` | 1097 | 要写报告 / 要引用数字 / 查 bug 记录（§5 有 15 条） |
@@ -311,6 +317,13 @@ idf.py -p COM3 -b 460800 app-flash
 42. **同一个 COM3 不能同时被两个串口脚本打开**，第二个会 `PermissionError(13)`。
     要复位 + 抓启动日志，就在同一个脚本里先拉 EN 再读；空口 PASSIVE 监听前
     务必先把 DTR/RTS 置低再 `open()`（见第 30 条）。
+43. **改热点 SSID / 密码 = 必须重新给机器人配网。** 凭据在机器人 NVS 里，
+    改了电脑热点它只会一直扫旧名字。配网：开机单击 BOOT（状态还是 Starting
+    且未连上时），或长按 BOOT >3 s 擦 NVS 后重启；机器人开 AP `RIG-Omni-9BE0`，
+    电脑连它 → `http://192.168.4.1` 填新 SSID/密码。细节在
+    `dataset/docs/ROBOT-SETUP.md`。
+44. **仓库是 public，`dataset/` 里的视频会公开。** 导出 take 之前先确认内容
+    可以公开（操作者的手、桌面、房间背景都会进仓库），别把带隐私的画面推进去。
 
 ---
 
@@ -343,6 +356,12 @@ idf.py -p COM3 -b 460800 app-flash
   10 fps 每帧 100 ms 可能漏掉 50–100 ms 的敲击接触瞬间）。
   接口：`GET /api/recording`、`POST /api/record/{start,stop,pause,resume}`、
   `GET /api/preview`。
+- **2026-11-07：数据集样例入库**在 `dataset/`（2026-11-07 的 3 条 take）：
+  1 条 98.85 s / 28 区间作为**标注教材**，另两条未标注；2026-11-05 的两条调试片
+  有意排除。只放 MP4 + `annotation.json` + `meta.json`，原始 JPEG 帧不入库。
+  导出脚本 `pc/tools/export_take.py`（`--since` / `--exclude` / `--index`）；
+  新电脑/队友上手先读 `dataset/docs/ROBOT-SETUP.md`，标注规范见
+  `dataset/docs/COLLECTION-AND-ANNOTATION.md`。
 
 ### 6.2 这一轮的实测拆分（240×240 灰度，q=80）
 

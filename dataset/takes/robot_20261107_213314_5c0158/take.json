@@ -1,0 +1,14 @@
+{
+  "take_id": "robot_20261107_213314_5c0158",
+  "video": "take.mp4",
+  "source_video": "robot_20261107_213314_5c0158.mp4",
+  "duration_s": 190.7,
+  "fps": 20.0,
+  "capture_fps": 23.5,
+  "raw_frames": 4472,
+  "video_frames": 3814,
+  "codec": "h264",
+  "annotated": false,
+  "annotation_count": 0,
+  "exported_at": "2026-11-07T13:41:29+00:00"
+}

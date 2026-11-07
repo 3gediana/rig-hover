@@ -1,0 +1,204 @@
+{
+  "schema_version": 1,
+  "video": "robot_20261107_204337_5ca36d.mp4",
+  "duration_s": 98.85,
+  "annotations": [
+    {
+      "id": "seg_mw6emgio_ppx3n",
+      "label": "knock",
+      "start_s": 1.51,
+      "end_s": 2.83,
+      "note": ""
+    },
+    {
+      "id": "seg_mw6emq91_gwcv2",
+      "label": "knock",
+      "start_s": 3.32,
+      "end_s": 5.0,
+      "note": ""
+    },
+    {
+      "id": "seg_mw6en6ut_rf5bj",
+      "label": "knock",
+      "start_s": 6.03,
+      "end_s": 7.29,
+      "note": ""
+    },
+    {
+      "id": "seg_mw6enkgr_7wmf4",
+      "label": "fist_hold",
+      "start_s": 8.98,
+      "end_s": 10.3,
+      "note": ""
+    },
+    {
+      "id": "seg_mw6ewk9g_gnw39",
+      "label": "label_1794056475792",
+      "start_s": 10.36,
+      "end_s": 14.82,
+      "note": ""
+    },
+    {
+      "id": "seg_mw6exaoq_oqsii",
+      "label": "knock",
+      "start_s": 15.06,
+      "end_s": 16.15,
+      "note": ""
+    },
+    {
+      "id": "seg_mw6exlv9_6xas7",
+      "label": "knock",
+      "start_s": 18.43,
+      "end_s": 19.94,
+      "note": ""
+    },
+    {
+      "id": "seg_mw6ey09e_ezp12",
+      "label": "knock",
+      "start_s": 21.33,
+      "end_s": 22.17,
+      "note": ""
+    },
+    {
+      "id": "seg_mw6eyvte_5plme",
+      "label": "label_1794056584072",
+      "start_s": 23.61,
+      "end_s": 24.88,
+      "note": ""
+    },
+    {
+      "id": "seg_mw6ez9eo_kocz7",
+      "label": "knock",
+      "start_s": 25.42,
+      "end_s": 26.33,
+      "note": ""
+    },
+    {
+      "id": "seg_mw6eztfl_vh5ak",
+      "label": "fist_hold",
+      "start_s": 27.35,
+      "end_s": 28.19,
+      "note": ""
+    },
+    {
+      "id": "seg_mw6f0s8p_k9do7",
+      "label": "label_1794056672750",
+      "start_s": 28.98,
+      "end_s": 39.22,
+      "note": ""
+    },
+    {
+      "id": "seg_mw6f18oo_h9rk4",
+      "label": "fist_hold",
+      "start_s": 39.46,
+      "end_s": 41.68,
+      "note": ""
+    },
+    {
+      "id": "seg_mw6f1his_qcosq",
+      "label": "label_1794056475792",
+      "start_s": 41.99,
+      "end_s": 44.88,
+      "note": ""
+    },
+    {
+      "id": "seg_mw6f1yut_wtkej",
+      "label": "label_1794056475792",
+      "start_s": 45.18,
+      "end_s": 52.95,
+      "note": ""
+    },
+    {
+      "id": "seg_mw6f32ku_7c16e",
+      "label": "label_1794056779460",
+      "start_s": 53.13,
+      "end_s": 57.95,
+      "note": ""
+    },
+    {
+      "id": "seg_mw6f40lg_9hwcc",
+      "label": "label_1794056823547",
+      "start_s": 58.13,
+      "end_s": 58.97,
+      "note": ""
+    },
+    {
+      "id": "seg_mw6f4ha6_ul5f1",
+      "label": "label_1794056584072",
+      "start_s": 59.39,
+      "end_s": 60.66,
+      "note": ""
+    },
+    {
+      "id": "seg_mw6f4r2j_dlvp0",
+      "label": "label_1794056823547",
+      "start_s": 61.68,
+      "end_s": 63.55,
+      "note": ""
+    },
+    {
+      "id": "seg_mw6f5440_8mgtu",
+      "label": "knock",
+      "start_s": 65.3,
+      "end_s": 67.1,
+      "note": ""
+    },
+    {
+      "id": "seg_mw6f5h9k_nyxgu",
+      "label": "fist_hold",
+      "start_s": 67.77,
+      "end_s": 69.27,
+      "note": ""
+    },
+    {
+      "id": "seg_mw6f6xrf_1tyg6",
+      "label": "label_1794056779460",
+      "start_s": 69.63,
+      "end_s": 71.62,
+      "note": ""
+    },
+    {
+      "id": "seg_mw6f7mn2_zn215",
+      "label": "label_1794056672750",
+      "start_s": 72.28,
+      "end_s": 79.75,
+      "note": ""
+    },
+    {
+      "id": "seg_mw6f82ox_5bc8a",
+      "label": "label_1794056475792",
+      "start_s": 79.93,
+      "end_s": 88.73,
+      "note": ""
+    },
+    {
+      "id": "seg_mw6f878g_9uan7",
+      "label": "knock",
+      "start_s": 88.73,
+      "end_s": 90.05,
+      "note": ""
+    },
+    {
+      "id": "seg_mw6f8b23_8iqzv",
+      "label": "knock",
+      "start_s": 90.35,
+      "end_s": 91.92,
+      "note": ""
+    },
+    {
+      "id": "seg_mw6f8fu3_8zles",
+      "label": "knock",
+      "start_s": 93.19,
+      "end_s": 94.63,
+      "note": ""
+    },
+    {
+      "id": "seg_mw6f8jeo_2hojj",
+      "label": "knock",
+      "start_s": 95.65,
+      "end_s": 96.8,
+      "note": ""
+    }
+  ],
+  "updated_at": "2026-11-07T13:10:50+00:00"
+}
