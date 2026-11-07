@@ -356,8 +356,8 @@ idf.py -p COM3 -b 460800 app-flash
   10 fps 每帧 100 ms 可能漏掉 50–100 ms 的敲击接触瞬间）。
   接口：`GET /api/recording`、`POST /api/record/{start,stop,pause,resume}`、
   `GET /api/preview`。
-- **2026-11-07：数据集样例入库**在 `dataset/`（2026-11-07 的 3 条 take）：
-  1 条 98.85 s / 28 区间作为**标注教材**，另两条未标注；2026-11-05 的两条调试片
+- **2026-11-07：数据集样例入库**在 `dataset/`（2026-11-07 的 4 条 take）：
+  1 条 98.85 s / 28 区间作为**标注教材**，另 3 条未标注；2026-11-05 的两条调试片
   有意排除。只放 MP4 + `annotation.json` + `meta.json`，原始 JPEG 帧不入库。
   导出脚本 `pc/tools/export_take.py`（`--since` / `--exclude` / `--index`）；
   新电脑/队友上手先读 `dataset/docs/ROBOT-SETUP.md`，标注规范见

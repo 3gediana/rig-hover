@@ -95,9 +95,9 @@ curl.exe --noproxy '*' http://192.168.137.50/status
   派生量都能从原图重算，反过来不行，所以原图必须存。
   启动命令：`python pc/tools/video_annotator.py --port 8780 --root <数据目录> --robot 192.168.137.50 --fps 15`，
   然后浏览器开 `http://127.0.0.1:8780`；操作说明见 [`VIDEO-ANNOTATOR.md`](VIDEO-ANNOTATOR.md)。
-* 仓库里的数据集样例在 `dataset/`：目前是 2026-11-07 的 3 条 take，
+* 仓库里的数据集样例在 `dataset/`：目前是 2026-11-07 的 4 条 take，
   其中 `robot_20261107_204337_5ca36d`（98.85 s，28 个区间）是**标注教材**；
-  另外两条未标注，可当背景/负样本素材。只放 MP4 + `annotation.json` + `meta.json`，
+  另外三条未标注，可当背景/负样本素材。只放 MP4 + `annotation.json` + `meta.json`，
   原始 JPEG 帧不入库。新增 take 用
   `python pc/tools/export_take.py --since 2026-11-07 --exclude <不要的> --index` 导出；
   2026-11-05 的两条调试片是有意排除的，不要加回来。
@@ -126,7 +126,7 @@ curl.exe --noproxy '*' http://192.168.137.50/status
   `_fw_backup_20261105_old.bin`（不入库）。
 * 采集/标注服务已具备：预览、暂停、录完即标、区间框选跟随播放；
   采集自由跑 ~17–18 fps，按所选输出 fps 最近邻重采样，避免重复补帧。
-* 数据集：2026-11-07 的 3 条 take 已导出到 `dataset/`（1 条已标注作教材）；
+* 数据集：2026-11-07 的 4 条 take 已导出到 `dataset/`（1 条已标注作教材）；
   用户继续按 20–30 条的目标采集中。
 * **部署的决策模型是临时占位**，最终要用采的真机数据重训。
   不要拿占位模型的表现评价任何方案。
