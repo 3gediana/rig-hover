@@ -5,7 +5,7 @@
 > 项目全貌、命令、42 条踩坑记录在 [`AGENTS.md`](AGENTS.md)——那本手册是主文档，
 > 本文只讲协作分工相关的事。两份都要读，冲突时以 `AGENTS.md` 为准。
 >
-> 最后更新：2026-11-05。
+> 最后更新：2026-11-07。
 
 ---
 
@@ -52,17 +52,34 @@ PC/手机 端（GPU/算力）                机器人 ESP32-S3
 ## 2. 上手 30 分钟
 
 ```powershell
-# 1. 克隆本仓库后，先读完 AGENTS.md（索引+踩坑）和本文
-# 2. Python 环境：D:\smartcar\.venv\Scripts\python.exe（依赖见 pc/ 各目录 README）
+# 1. 克隆本仓库后，先读完 AGENTS.md（索引+踩坑）、本文、dataset/docs/ROBOT-SETUP.md
+# 2. Python 环境：本机用 G:\ai\python11\python.exe；你的机器用任意 Python 3.10+
+#    服务依赖：opencv-python、imageio-ffmpeg（或系统 ffmpeg）
 # 3. 确认机器人在线（机器人 IP 固定 192.168.137.50，PC 开 ICS 热点）
 curl.exe --noproxy '*' http://192.168.137.50/status
 # 4. 全部测试（23 个门禁 + 1 个诊断，不需要机器人在场，~160 秒）
-D:\smartcar\.venv\Scripts\python.exe D:\robot_work\run_all_tests.py
+& 'G:\ai\python11\python.exe' D:\robot_work\run_all_tests.py
 ```
 
-机器人连网：开机进配网模式会开热点 `RIG-Omni-xxxx`，网页里选 WiFi 输密码即可
-（改热点/换环境不用重烧固件；自动重连已验证：热点晚开 ~18 s 机器人会自己等，
-已连接时热点断了 ~85 s 后 ~8 s 自动重连）。细节见 [`WIFI-AUTOCONNECT-FIX.md`](WIFI-AUTOCONNECT-FIX.md)。
+**电脑热点必须配成**（机器人只认这一组凭据）：
+
+| 项 | 值 |
+|---|---|
+| SSID | `qasd`（全小写） |
+| 密码 | `88888888` |
+| 频段/安全 | **2.4 GHz + WPA2**（ESP32 不支持 5 GHz，也不支持 WPA2/WPA3 混合） |
+| PC 侧网卡 | `WLAN 3`，ICS 自动给 `192.168.137.1/24` |
+| 机器人 | 静态兜底 `192.168.137.50/24`，网关 `192.168.137.1` |
+
+**换了热点名/密码必须重新配网**：WiFi 凭据存在机器人 NVS 里，不会自动更新。
+进入配网模式：开机时单击 BOOT 键（状态还是 Starting、未连上时），
+或长按 BOOT >3 s 擦除 NVS 后重启；机器人会开配网热点 `RIG-Omni-9BE0`，
+电脑连它 → 浏览器打开 `http://192.168.4.1` → 填新的 SSID/密码。
+详细步骤、常见问题和红线都在 [`dataset/docs/ROBOT-SETUP.md`](dataset/docs/ROBOT-SETUP.md)。
+
+自动重连已验证：热点晚开 ~18 s 机器人会自己等；已连接时热点断了 ~85 s 后
+~8 s 自动重连；缺 DHCP 时 12 s 后自动用静态 IP。
+细节见 [`WIFI-AUTOCONNECT-FIX.md`](WIFI-AUTOCONNECT-FIX.md)。
 
 常用端点速查在 `AGENTS.md` §7：`/status`（遥测）、`/capture`（单帧 JPEG）、
 `/step`（主链路：送 116 维观测、取下一帧）、`/cfg`（运行时参数）、`/mode`（控制源切换）。
@@ -73,9 +90,21 @@ D:\smartcar\.venv\Scripts\python.exe D:\robot_work\run_all_tests.py
 ## 3. 数据与标注（马伟坚要注意的）
 
 * 录制+标注合并服务：`pc/tools/video_annotator.py`（端口 8780）。
-  录制走只读 `GET /capture`，默认 15 fps，支持暂停/继续；
+  录制走只读 `GET /capture`，默认 15 fps，支持预览/暂停/继续；
   发布 H.264 MP4，**原图帧 + `frames.jsonl` 旁车目录保留**——
   派生量都能从原图重算，反过来不行，所以原图必须存。
+  启动命令：`python pc/tools/video_annotator.py --port 8780 --root <数据目录> --robot 192.168.137.50 --fps 15`，
+  然后浏览器开 `http://127.0.0.1:8780`；操作说明见 [`VIDEO-ANNOTATOR.md`](VIDEO-ANNOTATOR.md)。
+* 仓库里的数据集样例在 `dataset/`：目前是 2026-11-07 的 3 条 take，
+  其中 `robot_20261107_204337_5ca36d`（98.85 s，28 个区间）是**标注教材**；
+  另外两条未标注，可当背景/负样本素材。只放 MP4 + `annotation.json` + `meta.json`，
+  原始 JPEG 帧不入库。新增 take 用
+  `python pc/tools/export_take.py --since 2026-11-07 --exclude <不要的> --index` 导出；
+  2026-11-05 的两条调试片是有意排除的，不要加回来。
+* 采集协议、六类标签定义、易混对、数量目标、按 take 划分的评估规则：
+  [`dataset/docs/COLLECTION-AND-ANNOTATION.md`](dataset/docs/COLLECTION-AND-ANNOTATION.md)；
+  已标注范本的逐区间表和自定义标签合并建议：
+  [`dataset/docs/EXAMPLE-TAKE.md`](dataset/docs/EXAMPLE-TAKE.md)。
 * 已确立的共识：旧的"一类一段+整段恒定标签"数据在结构上无法验收
   敲击计数/离开返回这类事件，**新数据必须按时间窗逐事件标注**。
 * 感知选型结论（已验证）：人脸用 YuNet（227 KB，24 px 召回 92%），
@@ -87,17 +116,26 @@ D:\smartcar\.venv\Scripts\python.exe D:\robot_work\run_all_tests.py
 
 ---
 
-## 4. 当前状态（2026-11-05）
+## 4. 当前状态（2026-11-07）
 
 * 真机链路已打通并优化：端到端 **42.8 ms p50 / 21.4 Hz**（240×240 灰度），
   拆分见 `AGENTS.md` §6.2——瓶颈在相机帧周期和软件 JPEG 编码，不在传输层。
+* **WiFi 自动重连已修好并烧录验证**（2026-11-05）：机器人不再在 60 s 超时后进配网模式，
+  找不到 AP 时按 5/10/15 s 持续扫描；热点晚开 ~18 s 自动上线，断线 ~8 s 重连。
+  详见 [`WIFI-AUTOCONNECT-FIX.md`](WIFI-AUTOCONNECT-FIX.md)。烧录前整片备份在
+  `_fw_backup_20261105_old.bin`（不入库）。
+* 采集/标注服务已具备：预览、暂停、录完即标、区间框选跟随播放；
+  采集自由跑 ~17–18 fps，按所选输出 fps 最近邻重采样，避免重复补帧。
+* 数据集：2026-11-07 的 3 条 take 已导出到 `dataset/`（1 条已标注作教材）；
+  用户继续按 20–30 条的目标采集中。
 * **部署的决策模型是临时占位**，最终要用采的真机数据重训。
   不要拿占位模型的表现评价任何方案。
 * 流式记忆研究（`stream_memory_research/`，437 个 run）的结论：
   纯特征流"记多久"不是优势任务（无衰减 GRU 结构上就赢）；
   优势在**需要整段时序结构**的任务（如数敲击次数），详见
   `stream_memory_research/reports/`。
-* 尚未完成：拳头 YOLO 底座、按时间窗标注的批量流水线、决策模型重训。
+* 尚未完成：拳头 YOLO 底座、逐区间监督的训练/评估流水线、决策模型重训；
+  多人/多距离数据还没有，不能声称跨人泛化。
 
 ---
 

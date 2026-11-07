@@ -1,0 +1,57 @@
+[
+  {
+    "id": "knock",
+    "name": "敲击",
+    "color": "#f97316"
+  },
+  {
+    "id": "fist_hold",
+    "name": "静止握拳",
+    "color": "#ef4444"
+  },
+  {
+    "id": "hand_raise",
+    "name": "抬手/举拳",
+    "color": "#eab308"
+  },
+  {
+    "id": "reach",
+    "name": "伸手但未敲",
+    "color": "#22c55e"
+  },
+  {
+    "id": "other",
+    "name": "其它动作",
+    "color": "#38bdf8"
+  },
+  {
+    "id": "background",
+    "name": "背景/无动作",
+    "color": "#64748b"
+  },
+  {
+    "id": "label_1794056475792",
+    "name": "伸拳在屏幕中间晃",
+    "color": "#4fff4d"
+  },
+  {
+    "id": "label_1794056584072",
+    "name": "单次敲击",
+    "color": "#4fff4d"
+  },
+  {
+    "id": "label_1794056672750",
+    "name": "没有拳头出现，看着机器人",
+    "color": "#4fff4d"
+  },
+  {
+    "id": "label_1794056779460",
+    "name": "其他手势（不敲击）",
+    "color": "#4fff4d"
+  },
+  {
+    "id": "label_1794056823547",
+    "name": "其它手势（敲击）",
+    "color": "#4fff4d"
+  }
+]

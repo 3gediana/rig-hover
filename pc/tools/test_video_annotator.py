@@ -70,6 +70,9 @@ class VideoAnnotatorStoreTests(unittest.TestCase):
             def request(self, *args, **kwargs):
                 pass
             def getresponse(self):
+                # 模拟机器人 /capture 的真实响应时间，避免自由采集循环把假连接
+                # 抽成无限帧（真实链路 p50 约 42–47 ms）。
+                time.sleep(.04)
                 return FakeResponse()
             def close(self):
                 pass
@@ -103,6 +106,29 @@ class VideoAnnotatorStoreTests(unittest.TestCase):
         recorder.stop()
 
     @unittest.skipIf(va.cv2 is None, "OpenCV required for recording test")
+    def test_preview_during_recording_reuses_last_captured_frame(self):
+        jpg = self._mock_jpeg()
+        base = self._fake_connection(jpg)
+        created = []
+
+        class CountingConnection(base):
+            def __init__(self, *args, **kwargs):
+                created.append(time.monotonic())
+                super().__init__(*args, **kwargs)
+
+        recorder = va.RobotRecorder(self.store, "192.168.137.50", 5)
+        recorder.connection_factory = CountingConnection
+        recorder.ffmpeg = None
+        started = recorder.start(fps=5)
+        self.assertTrue(started["ok"])
+        self._wait_for(lambda: recorder.status()["frames"] >= 2)
+        before = len(created)
+        self.assertEqual(recorder.preview(), jpg)  # 录制中直接给最近采集帧
+        self.assertEqual(len(created), before)     # 不新增 /capture 请求，不抢相机
+        stopped = recorder.stop()
+        self.assertEqual(stopped["phase"], "done")
+
+    @unittest.skipIf(va.cv2 is None, "OpenCV required for recording test")
     def test_robot_recorder_records_mock_frames_and_finalizes(self):
         jpg = self._mock_jpeg()
         recorder = va.RobotRecorder(self.store, "192.168.137.50", 5)
@@ -110,12 +136,13 @@ class VideoAnnotatorStoreTests(unittest.TestCase):
         recorder.ffmpeg = None  # exercise the dependency-free WebM path
         started = recorder.start()
         self.assertTrue(started["ok"])
-        self._wait_for(lambda: recorder.status()["frames"] >= 2)
+        self._wait_for(lambda: recorder.status()["frames"] >= 12)
         stopped = recorder.stop()
         self.assertEqual(stopped["phase"], "done")
         self.assertTrue(stopped["video"].endswith(".webm"))
-        self.assertGreaterEqual(stopped["frames"], 2)
-        self.assertGreaterEqual(stopped["video_frames"], stopped["frames"])
+        self.assertGreaterEqual(stopped["frames"], 12)
+        self.assertGreaterEqual(stopped["video_frames"], 2)
+        self.assertGreaterEqual(stopped["frames"], stopped["video_frames"])
         video = self.store.videos / stopped["video"]
         self.assertTrue(video.exists())
         source = self.store.videos / (started["id"] + "_source")
@@ -141,7 +168,7 @@ class VideoAnnotatorStoreTests(unittest.TestCase):
         started_at = time.monotonic()
         started = recorder.start(fps=8)
         self.assertTrue(started["ok"])
-        self._wait_for(lambda: recorder.status()["frames"] >= 2)
+        self._wait_for(lambda: recorder.status()["frames"] >= 6)
         paused = recorder.pause()
         self.assertTrue(paused["ok"])
         self.assertEqual(recorder.status()["phase"], "paused")
@@ -174,7 +201,7 @@ class VideoAnnotatorStoreTests(unittest.TestCase):
         self.assertTrue(recorder.ffmpeg)
         started = recorder.start()
         self.assertTrue(started["ok"])
-        self._wait_for(lambda: recorder.status()["frames"] >= 2)
+        self._wait_for(lambda: recorder.status()["frames"] >= 8)
         stopped = recorder.stop()
         self.assertEqual(stopped["phase"], "done")
         self.assertTrue(stopped["video"].endswith(".mp4"))
@@ -223,18 +250,24 @@ class VideoAnnotatorStoreTests(unittest.TestCase):
             status, started = get_json("/api/record/start", {"robot": "192.168.137.50", "fps": 5})
             self.assertEqual(status, 200)
             self.assertTrue(started["ok"])
-            self._wait_for(lambda: get_json("/api/recording")[1]["frames"] >= 2)
-            self.assertEqual(get_raw("/api/preview")[0], 502)
+            self._wait_for(lambda: get_json("/api/recording")[1]["frames"] >= 8)
+            in_recording = get_raw("/api/preview")
+            self.assertEqual(in_recording[0], 200)  # 录制中返回最近采集帧，不额外占用相机
+            self.assertEqual(in_recording[2], jpg)
             status, paused = get_json("/api/record/pause", {})
             self.assertEqual(status, 200)
             self.assertTrue(paused["ok"])
             self.assertEqual(get_json("/api/recording")[1]["phase"], "paused")
-            self.assertEqual(get_raw("/api/preview")[0], 200)
+            paused_preview = get_raw("/api/preview")
+            self.assertEqual(paused_preview[0], 200)
+            self.assertEqual(paused_preview[2], jpg)
             status, resumed = get_json("/api/record/resume", {})
             self.assertEqual(status, 200)
             self.assertTrue(resumed["ok"])
             self.assertEqual(get_json("/api/recording")[1]["phase"], "recording")
-            self.assertEqual(get_raw("/api/preview")[0], 502)
+            resumed_preview = get_raw("/api/preview")
+            self.assertEqual(resumed_preview[0], 200)
+            self.assertEqual(resumed_preview[2], jpg)
             status, stopped = get_json("/api/record/stop", {})
             self.assertEqual(status, 200)
             self.assertEqual(stopped["phase"], "done")

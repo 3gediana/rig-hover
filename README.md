@@ -9,6 +9,11 @@
 > 2026-11-03 夜的重要更新：端到端延迟从 121.5 ms 降到 **75.1 ms**、帧率
 > 8.0 → **12.9 Hz**（真因是 Nagle），详见 [`LATENCY-MAP.md`](LATENCY-MAP.md)。
 > 本文下方 §"一分钟看懂"里的策略指标是**旧占位模型**的，最终要重训。
+>
+> 2026-11-07 新增：真机数据集样例与标注规范在 [`dataset/`](dataset/)
+> （1 条已标注教材 + 2 条未标注 take）。**换电脑/换操作者先读
+> [`dataset/docs/ROBOT-SETUP.md`](dataset/docs/ROBOT-SETUP.md)**，
+> 协作分工与热点配置见 [`COLLAB.md`](COLLAB.md)。
 
 ---
 
