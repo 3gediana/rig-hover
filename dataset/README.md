@@ -109,7 +109,8 @@ dataset/
 `labels.json` 是标签表：`[{"id": "...", "name": "...", "color": "#rrggbb"}]`。
 默认六类：`knock` 敲击、`fist_hold` 静止握拳、`hand_raise` 抬手/举拳、
 `reach` 伸手但未敲、`other` 其它动作、`background` 背景/无动作。
-**新标注优先只用这六类**，含义与易混对见
+新标注使用这六类基础标签；经用户确认，本批数据另保留“连续敲击”标签。
+含义与易混对见
 [`docs/COLLECTION-AND-ANNOTATION.md`](docs/COLLECTION-AND-ANNOTATION.md)。
 
 ---
