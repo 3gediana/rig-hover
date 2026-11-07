@@ -129,10 +129,11 @@ curl.exe --noproxy '*' http://192.168.137.50/status
 * 数据集：2026-11-07 的 4 条 take 已导出到 `dataset/`，2026-11-08 全部补齐标注
   （204337 的 12 个区间作为标注教材，另外三条 26/12/27 个区间）；
   用户继续按 20–30 条的目标采集中。
-* **区间标注 → 逐帧敲击检测流水线已跑通（冒烟）**：4 条 take、77 个区间，
-  按 take 留一，GRU 帧级 F1 0.613 / AUROC 0.847 / 事件级 F1 0.316。
-  只说明链路能跑、标签能学；阈值跨 take 会漂移，不能当泛化结论。
-  说明见 [`dataset/docs/TRAIN-PIPELINE.md`](dataset/docs/TRAIN-PIPELINE.md)。
+* **区间标注 → 逐帧敲击检测流水线已跑通**：4 条 take、77 个区间，按 take 留一，
+  GRU + 新增强 + MixUp + z-score：帧级 F1 0.761 / AUROC 0.816 / 事件级 F1 0.427，
+  敲击区间命中率 98.4%，误报 2.9 次/分钟。误报率还太高，不能直接上机触发；
+  下一步是用单次敲击候选做"两下 vs 一下"的训练。说明见
+  [`dataset/docs/TRAIN-PIPELINE.md`](dataset/docs/TRAIN-PIPELINE.md)。
 * **部署的决策模型是临时占位**，最终要用采的真机数据重训。
   不要拿占位模型的表现评价任何方案。
 * 流式记忆研究（`stream_memory_research/`，437 个 run）的结论：
