@@ -18,6 +18,8 @@ pc/train/build/
 pc/train/out_*/
 pc/train/data/
 pc/train/data_*/
+runs_interval/
+runs_knock/
 pc/gesture/data/
 pc/escalate/data/
 # 253 MB，超 GitHub 100 MB 硬限制；需要时单独向用户取

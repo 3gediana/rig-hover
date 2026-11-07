@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "video": "robot_20261107_213314_5c0158.mp4",
+  "duration_s": 190.7,
+  "annotations": [
+    {
+      "id": "seg_mw6jsqkr_8zmim",
+      "label": "label_1794064784169",
+      "start_s": 6.31,
+      "end_s": 31.9,
+      "note": ""
+    },
+    {
+      "id": "seg_mw6jun1r_2ie43",
+      "label": "label_1794064784169",
+      "start_s": 34.43,
+      "end_s": 77.33,
+      "note": ""
+    },
+    {
+      "id": "seg_mw6jvgge_qpoza",
+      "label": "background",
+      "start_s": 79.67,
+      "end_s": 88.14,
+      "note": ""
+    },
+    {
+      "id": "seg_mw6jwgjz_e16u9",
+      "label": "reach",
+      "start_s": 88.32,
+      "end_s": 107.07,
+      "note": ""
+    },
+    {
+      "id": "seg_mw6jx4s3_xeyqb",
+      "label": "knock",
+      "start_s": 108.69,
+      "end_s": 118.78,
+      "note": ""
+    },
+    {
+      "id": "seg_mw6jxu7q_jzu87",
+      "label": "reach",
+      "start_s": 120.76,
+      "end_s": 129.96,
+      "note": ""
+    },
+    {
+      "id": "seg_mw6k0w0t_5ijfp",
+      "label": "label_1794064784169",
+      "start_s": 131.76,
+      "end_s": 142.39,
+      "note": "左手连续敲击 接触不确定"
+    },
+    {
+      "id": "seg_mw6k19n0_fjhrl",
+      "label": "label_1794064784169",
+      "start_s": 143.84,
+      "end_s": 148.34,
+      "note": ""
+    },
+    {
+      "id": "seg_mw6k1z3i_zvo2e",
+      "label": "label_1794064784169",
+      "start_s": 150.87,
+      "end_s": 154.83,
+      "note": ""
+    },
+    {
+      "id": "seg_mw6k2h3u_rnr9i",
+      "label": "hand_raise",
+      "start_s": 156.81,
+      "end_s": 160.6,
+      "note": ""
+    },
+    {
+      "id": "seg_mw6k2wzb_214ir",
+      "label": "label_1794064784169",
+      "start_s": 160.42,
+      "end_s": 173.4,
+      "note": ""
+    },
+    {
+      "id": "seg_mw6k3fkj_bgw4h",
+      "label": "hand_raise",
+      "start_s": 174.3,
+      "end_s": 188.9,
+      "note": ""
+    }
+  ]
+}
