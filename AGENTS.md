@@ -363,14 +363,19 @@ idf.py -p COM3 -b 460800 app-flash
   导出脚本 `pc/tools/export_take.py`（`--since` / `--exclude` / `--index`）；
   新电脑/队友上手先读 `dataset/docs/ROBOT-SETUP.md`，标注规范见
   `dataset/docs/COLLECTION-AND-ANNOTATION.md`。
-- **2026-11-08：区间标注 → 逐帧敲击检测的流水线跑通**（冒烟）：
+- **2026-11-08：区间标注 → 逐帧敲击检测的流水线跑通**：
   `pc/tools/import_annotations.py` 把服务导出 JSON 拆回 per-video 标注；
   `pc/train/interval_data.py` 做标签合并 + 区间→帧 + 窗口切分；
   `pc/train/train_knock.py` 按 take 留一训练（frame 基线 / CNN+GRU），
-  输出帧级 F1/AUROC 与事件级 F1。4 条 take、77 个区间，留一结果：
-  GRU 帧级 F1 **0.613**、AUROC **0.847**、事件级 F1 **0.316**（frame 基线更低）。
-  这只说明链路能跑、标签能学，不能当泛化结论；阈值跨 take 会漂移。
-  说明与配置见 `dataset/docs/TRAIN-PIPELINE.md`。
+  输出帧级 F1/AUROC、事件级 F1、命中率和误报/分钟；
+  `pc/train/detect_knocks.py` 对单条视频推理；
+  `pc/train/cut_knock_candidates.py` 自动切单次敲击候选并出检查图。
+  4 条 take、77 个区间，留一结果（GRU + 新增强 + MixUp + z-score）：
+  帧级 F1 **0.761**、AUROC **0.816**、事件级 F1 **0.427**、
+  敲击区间命中率 **98.4%**、误报 **2.9 次/分钟**。
+  比基线（0.613 / 0.847 / 0.316）好，但仍不能直接上机触发：
+  误报率太高，且没验证"数两下"。说明、命令和失败记录见
+  `dataset/docs/TRAIN-PIPELINE.md`。
 
 ### 6.2 这一轮的实测拆分（240×240 灰度，q=80）
 
