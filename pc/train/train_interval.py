@@ -42,10 +42,10 @@ NUM_CLASSES = len(CLASSES)
 
 
 class FrameEncoder(nn.Module):
-    def __init__(self, feat_dim: int = 192):
+    def __init__(self, feat_dim: int = 192, in_ch: int = 2):
         super().__init__()
         self.net = nn.Sequential(
-            nn.Conv2d(2, 16, 5, stride=2, padding=2), nn.BatchNorm2d(16), nn.ReLU(inplace=True),
+            nn.Conv2d(in_ch, 16, 5, stride=2, padding=2), nn.BatchNorm2d(16), nn.ReLU(inplace=True),
             nn.Conv2d(16, 32, 3, stride=2, padding=1), nn.BatchNorm2d(32), nn.ReLU(inplace=True),
             nn.Conv2d(32, 64, 3, stride=2, padding=1), nn.BatchNorm2d(64), nn.ReLU(inplace=True),
             nn.Conv2d(64, 96, 3, stride=2, padding=1), nn.BatchNorm2d(96), nn.ReLU(inplace=True),

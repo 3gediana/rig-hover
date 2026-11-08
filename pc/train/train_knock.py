@@ -49,9 +49,9 @@ from train_interval import FrameEncoder  # noqa: E402
 
 
 class KnockFrameCNN(nn.Module):
-    def __init__(self, feat_dim: int = 192):
+    def __init__(self, feat_dim: int = 192, in_ch: int = 2):
         super().__init__()
-        self.encoder = FrameEncoder(feat_dim)
+        self.encoder = FrameEncoder(feat_dim, in_ch)
         self.head = nn.Linear(feat_dim, 1)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
@@ -59,9 +59,9 @@ class KnockFrameCNN(nn.Module):
 
 
 class KnockCnnGRU(nn.Module):
-    def __init__(self, feat_dim: int = 192, hidden: int = 128):
+    def __init__(self, feat_dim: int = 192, hidden: int = 128, in_ch: int = 2):
         super().__init__()
-        self.encoder = FrameEncoder(feat_dim)
+        self.encoder = FrameEncoder(feat_dim, in_ch)
         self.gru = nn.GRU(feat_dim, hidden, batch_first=True)
         self.head = nn.Linear(hidden, 1)
 
@@ -74,9 +74,9 @@ class KnockCnnGRU(nn.Module):
 class KnockCnnTCN(nn.Module):
     """因果空洞卷积（TCN）时间头：只看过去与当前帧，部署时可流式运行。"""
 
-    def __init__(self, feat_dim: int = 192, hidden: int = 128):
+    def __init__(self, feat_dim: int = 192, hidden: int = 128, in_ch: int = 2):
         super().__init__()
-        self.encoder = FrameEncoder(feat_dim)
+        self.encoder = FrameEncoder(feat_dim, in_ch)
         self.dilations = (1, 2, 4, 8)
         convs = []
         for i, d in enumerate(self.dilations):
@@ -99,9 +99,9 @@ class KnockCnnTCN(nn.Module):
 class KnockCnnBiGRU(nn.Module):
     """双向 GRU：仅作离线诊断，用来看“未来信息”能把上限抬多高。"""
 
-    def __init__(self, feat_dim: int = 192, hidden: int = 128):
+    def __init__(self, feat_dim: int = 192, hidden: int = 128, in_ch: int = 2):
         super().__init__()
-        self.encoder = FrameEncoder(feat_dim)
+        self.encoder = FrameEncoder(feat_dim, in_ch)
         self.gru = nn.GRU(feat_dim, hidden, batch_first=True, bidirectional=True)
         self.head = nn.Linear(hidden * 2, 1)
 
@@ -111,15 +111,15 @@ class KnockCnnBiGRU(nn.Module):
         return self.head(out).squeeze(-1)
 
 
-def build_model(name: str) -> nn.Module:
+def build_model(name: str, in_ch: int = 2) -> nn.Module:
     if name == "frame":
-        return KnockFrameCNN()
+        return KnockFrameCNN(in_ch=in_ch)
     if name == "gru":
-        return KnockCnnGRU()
+        return KnockCnnGRU(in_ch=in_ch)
     if name == "tcn":
-        return KnockCnnTCN()
+        return KnockCnnTCN(in_ch=in_ch)
     if name == "bigru":
-        return KnockCnnBiGRU()
+        return KnockCnnBiGRU(in_ch=in_ch)
     raise ValueError(name)
 
 

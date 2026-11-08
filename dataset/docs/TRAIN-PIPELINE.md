@@ -122,6 +122,60 @@ cd pc\train; & $py -m unittest test_interval_data -v
 | `loo7` | + ROI 特写 + focal + 窗口/输入 96 | 0.774 / 0.794 / 0.875 / 0.797 |
 | `loo8`+`loo9` | gru / tcn / bigru 分头训练再集成 | 集成帧级 0.802、AUROC 0.892 |
 
+### 手部 ROI 输入（YOLO pose 腕点，2026-11-09）
+
+整帧输入下 1–2 米只有 10–21 px 的手，是被怀疑的分辨率瓶颈。这一轮把输入换成
+YOLO26n-pose 腕点裁出的 96×96 手部 ROI：
+
+```
+take.mp4 ──▶ pc/train/pose_roi.py ──▶ runs_knock/pose_roi/<take>.npz
+              （YOLO26n-pose 腕点 9/10，ROI 96 px，丢检测时沿用上一帧框）
+                    │
+                    ▼
+        pc/train/train_knock_roi.py（ROI CNN + GRU，留一 take）
+                    │
+                    ▼
+        pc/perception/knock_roi.py（推理 + 在线 z-score + 双峰 + 场景门控）
+```
+
+pose 检测成功率：4 条 take 分别 1971/1977、3807/3809、3789/3814、3191/3191 帧，
+平均腕点置信度 0.74–0.94。留一结果（阈值/平滑仍只在训练 take 上选）：
+
+| 输入 | 帧级 F1（各折 / 均值） | AUROC 均值 | 两敲命中 | 已标注负样本误报 | pair F1 |
+|---|---|---|---|---|---|
+| 整帧 96（gru，ROI 特写增强） | 0.703 / 0.766 / 0.844 / 0.742（0.764） | 0.868 | — | — | — |
+| 整帧集成（gru+tcn+bigru） | 0.782 / 0.802 / 0.847 / 0.779（**0.802**） | **0.892** | 41/46 | 0–9/分钟 | 0.897 |
+| 手部 ROI（96，2 通道） | 0.824 / 0.757 / 0.700 / 0.695（0.744） | 0.850 | 26/46 | 27 | 0.676 |
+| 手部 ROI + 整帧上下文（4 通道） | 0.844 / 0.726 / 0.692 / 0.654（0.729） | 0.833 | 29/46 | 52 | 0.695 |
+
+**结论：手部 ROI 没有变好，不采用为默认输入。** 逐折看 ROI 在 204337 上更好
+（0.824/0.844 vs 0.782），另外三折都更差；"ROI + 整帧上下文"也没有稳定收益。
+原因判断：把 10–21 px 的手放大到 96 px 只是插值，不能恢复丢失的细节；而裁掉整帧
+同时裁掉了桌沿/接触位置这些对"敲击"最关键的上下文。4 条 take 的折间方差也很大，
+不足以断言输入形式优劣。这一轮的价值是**把 ROI 链路和门控实现、跑通、可复现**，
+留给以后有更多数据/更高分辨率采集时再验证。
+
+推理/门控实现：`pc/perception/knock_roi.py`
+
+- `RoiBoxTracker`：腕点→ROI，丢检测沿用上一帧框，超时退回整帧；
+- `KnockRoiSignal`：逐帧打分 + 在线均值/方差 z-score（不需要标签）+ 双峰两敲触发；
+- **场景门控**：只有 `scenario_state == MODE_GAZE_FIST`（正在盯拳等待敲击）才把
+  触发交出去，其他状态计入 `rejected`；触发后强制冷却（默认 2 s）；
+- 单测 `pc/perception/test_knock_roi.py`（7 项：跟踪/裁剪/双峰/门控/冷却）。
+
+离线回放（用留出 take 的 fold checkpoint）：
+
+```powershell
+& 'G:\ai\python11\python.exe' pc/perception/knock_roi.py `
+  --model runs_knock/roi_ctx_20261109/fold_<held_out_take>.pt `
+  --take dataset/takes/<held_out_take>/take.mp4 `
+  --roi runs_knock/pose_roi/<held_out_take>.npz --device cuda:0 --gate-open
+```
+
+`--gate-open` 是"不做门控"的对照；正式用法要传场景状态，门控规则本身有单测，
+但**"门控能把误报降到多少"还没有真实场景状态时间线可测**——这需要在机器人上
+回放 `scenario_v2` 的完整状态，等真机可用时再做。
+
 ### 两敲触发（平滑 + 阈值都只在训练 take 上选）
 
 对每个留出 take：只在训练 take 上选 `(平滑, 阈值)`，再原样套到留出 take。
@@ -222,9 +276,9 @@ cd pc\train; & $py -m unittest test_interval_data -v
    无法训练/验证“数清楚一下还是两下”。`cut_knock_candidates.py`
    能自动切出候选接触帧和检查图，但**候选未经人工确认**，目前还没有用于训练
    “一下 vs 两下”。
-3. 模型看到的是整帧；手在画面里大时够用，但 1–2 m 部署距离下只有 10–21 px，
-   这条流水线的分辨率假设不成立。下一步应先加手部 ROI（YOLO 或现有感知链的
-   腕点）再裁图，或提高采集分辨率。
+3. 模型看到的输入已经支持手部 ROI（YOLO pose 腕点），但实测 ROI 输入不如整帧
+   集成（见"手部 ROI 输入"一节）：放大 10–21 px 的手不会恢复细节，还丢了桌沿
+   上下文。继续提升要么提高采集分辨率（640×480），要么更多 take/更细标注。
 4. 训练/推理帧率不一致（采集 23 fps、视频 20 fps、部署候选 15 fps）会改变
    时序统计；上机前要用目标帧率重新采样训练数据。
 5. 阈值在训练 take 上选，跨 take 会漂移（fold 204337 上 frame 阈值直接失效），
