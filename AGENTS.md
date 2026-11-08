@@ -384,6 +384,16 @@ idf.py -p COM3 -b 460800 app-flash
   “等敲击”的交互窗口再开检测，并加冷却；也还没有“一下 vs 两下”的人工接触标注。
   评测脚本 `pc/train/ensemble_honest.py`、`pc/train/honest_calibration.py`；
   说明、命令和失败记录见 `dataset/docs/TRAIN-PIPELINE.md`。
+- **2026-11-09：手部 ROI 链路 + 场景门控（实测 ROI 没有赢过整帧）**：
+  `pc/train/pose_roi.py` 用 YOLO26n-pose 腕点裁 96×96 手部 ROI（检出率 99%+），
+  `pc/train/train_knock_roi.py` 训练 ROI CNN+GRU 留一模型（2 通道；`--context`
+  加整帧下采样成 4 通道）；`pc/perception/knock_roi.py` 做推理 + 在线 z-score +
+  双峰两敲触发 + **只有 `MODE_GAZE_FIST` 才采纳**的场景门控 + 冷却，单测
+  `pc/perception/test_knock_roi.py`（7 项）。结果：ROI 2 通道帧级 F1 0.744 /
+  AUROC 0.850，ROI+上下文 0.729/0.833，均**低于**整帧集成 0.802/0.892；
+  逐折不一致（204337 更好、其余更差）。判断：放大 10–21 px 的手只是插值，
+  且 ROI 裁掉了桌沿接触上下文。ROI 链路保留为工具和接入路径，默认输入仍是整帧；
+  详见 `dataset/docs/TRAIN-PIPELINE.md`“手部 ROI 输入”一节。
 
 ### 6.2 这一轮的实测拆分（240×240 灰度，q=80）
 
