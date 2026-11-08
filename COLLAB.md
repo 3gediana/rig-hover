@@ -130,13 +130,13 @@ curl.exe --noproxy '*' http://192.168.137.50/status
   （204337 的 12 个区间作为标注教材，另外三条 26/12/27 个区间）；
   用户继续按 20–30 条的目标采集中。
 * **区间标注 → 逐帧敲击检测流水线已跑通**：4 条 take、77 个区间，按 take 留一，
-  gru/tcn/bigru 集成（ROI 特写增强 + focal + MixUp + 按 take z-score）：
-  帧级 F1 0.85（各折最优阈值）/ 集成 AUROC 0.892；两敲触发在 3 帧轻平滑下
-  阈值 z=0 时 46/46 敲击段全部命中（P 0.85、误报 4.7 次/分钟），
-  阈值 0.4 时 P 0.909、召回 0.826、误报 1.78 次/分钟。
-  常开误报仍偏高，不能直接上机触发；机器人上应只在交互窗口内开启并加冷却。
+  gru/tcn/bigru 集成（ROI 特写增强 + focal + MixUp + 按 take z-score）。
+  诚实口径（阈值/平滑只在训练 take 上选）：帧级 F1 0.802、集成 AUROC 0.892；
+  两敲触发总命中 41/46、均值 F1 0.897，但各折误报 0–9.1 次/分钟、波动很大。
+  不能常开上机触发；机器人上应只在交互窗口内开启并加冷却。
   下一步是用单次敲击候选做“两下 vs 一下”的人工接触标注。说明见
   [`dataset/docs/TRAIN-PIPELINE.md`](dataset/docs/TRAIN-PIPELINE.md)。
+  评测脚本：`pc/train/ensemble_honest.py`、`pc/train/honest_calibration.py`。
 * **部署的决策模型是临时占位**，最终要用采的真机数据重训。
   不要拿占位模型的表现评价任何方案。
 * 流式记忆研究（`stream_memory_research/`，437 个 run）的结论：
