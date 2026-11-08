@@ -366,16 +366,20 @@ idf.py -p COM3 -b 460800 app-flash
 - **2026-11-08：区间标注 → 逐帧敲击检测的流水线跑通**：
   `pc/tools/import_annotations.py` 把服务导出 JSON 拆回 per-video 标注；
   `pc/train/interval_data.py` 做标签合并 + 区间→帧 + 窗口切分；
-  `pc/train/train_knock.py` 按 take 留一训练（frame 基线 / CNN+GRU），
-  输出帧级 F1/AUROC、事件级 F1、命中率和误报/分钟；
-  `pc/train/detect_knocks.py` 对单条视频推理；
+  `pc/train/train_knock.py` 按 take 留一训练（frame / gru / tcn / bigru，
+  支持 ROI 特写增强、focal loss、MixUp、按 take z-score、pair 指标），
+  输出帧级 F1/AUROC、事件级指标和误报/分钟；
+  `pc/train/detect_knocks.py` 多 checkpoint 集成推理
+  （`--smooth-frames` / `--pair-threshold` / `--cooldown-s`）；
   `pc/train/cut_knock_candidates.py` 自动切单次敲击候选并出检查图。
-  4 条 take、77 个区间，留一结果（GRU + 新增强 + MixUp + z-score）：
-  帧级 F1 **0.761**、AUROC **0.816**、事件级 F1 **0.427**、
-  敲击区间命中率 **98.4%**、误报 **2.9 次/分钟**。
-  比基线（0.613 / 0.847 / 0.316）好，但仍不能直接上机触发：
-  误报率太高，且没验证"数两下"。说明、命令和失败记录见
-  `dataset/docs/TRAIN-PIPELINE.md`。
+  4 条 take、77 个区间，留一结果：
+  帧级 F1 **0.85**（各折最优阈值）、集成 AUROC **0.892**（单 gru 0.848）。
+  两敲触发：**平滑必须用 3 帧**（20 帧会把两下糊成一下）；轻平滑后
+  峰阈值 z=0.0 时 46/46 敲击段全部命中（P 0.85、F1 0.919、误报 4.7 次/分钟），
+  阈值 0.4 时 P 0.909、召回 0.826、误报 1.78 次/分钟。
+  比基线（0.613 / 0.847 / 事件 0.316）好，但常开误报仍偏高：
+  机器人上必须只在交互窗口内开启 + 加冷却，且还没有"一下 vs 两下"的
+  人工接触标注。说明、命令和失败记录见 `dataset/docs/TRAIN-PIPELINE.md`。
 
 ### 6.2 这一轮的实测拆分（240×240 灰度，q=80）
 

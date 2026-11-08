@@ -91,61 +91,86 @@ cd pc\train; & $py -m unittest test_interval_data -v
 
 `runs_knock/` 在 `.gitignore` 里，训练产物不入库；要看结果重新跑即可。
 
-## 当前结果（2026-11-08 增强 + 分数标准化）
+## 当前结果（2026-11-08 增强 + 集成）
 
-数据：4 条 take，77 个区间，10009 / 12791 帧有标注。
+数据：4 条 take，77 个区间，10009 / 12791 帧有标注。留一法（3 训 1 测），
+下面所有数字都是**留出 take** 上的。
 
-| 模型 | 帧级 F1 | AUROC | 事件级 F1 | 事件 P | 事件 R | 命中率 | 误报/分钟 |
-|---|---|---|---|---|---|---|---|
-| gru（主配置） | **0.7612 ± 0.0718** | 0.8162 ± 0.0837 | **0.4269 ± 0.1689** | 0.3462 | 0.6062 | **98.4%** | 2.9 |
+### 帧级 / 事件级
 
-配置：窗口 128、输入 96、20 epochs、batch 8、CPU、MixUp 0.2、
-`--normalize zscore`、`--max-gap-frames 10 --min-event-frames 8
---threshold-metric frame`。逐折明细见 `runs_knock/loo5_20261108/report.md`
-（本地生成，不入库）。
+| 模型 | 帧级 F1（各折最优阈值） | AUROC（各折） | 平均 AUROC |
+|---|---|---|---|
+| gru | 0.907 / 0.845 / 0.880 / 0.789 | 0.905 / 0.846 / 0.814 / 0.826 | 0.848 |
+| gru + tcn + bigru 集成 | — | 0.964 / 0.916 / 0.800 / 0.886 | **0.892** |
 
-同一数据上的演进（用来判断改动到底有没有用）：
+集成在每一条留出 take 上都优于单独的 gru（+2～6 点 AUROC）。
+配置：窗口 96、输入 96、2 通道（灰度 + 相邻帧差）、ROI 运动质心特写增强
+0.5–0.75×、focal loss（γ=2, α=0.25）、MixUp 0.2、按 take z-score、20 epochs、
+`--threshold-metric frame`。
 
-| run | 改了什么 | gru 帧级 F1 | gru 事件级 F1 | 命中率 |
+演进（同一批 4 条 take，用来判断改动到底有没有用）：
+
+| run | 改了什么 | gru 帧级 F1 | 事件级 F1 |
+|---|---|---|---|
+| `loo3` | 老增强（只动第一帧）+ 15 epochs | 0.613 | 0.316 |
+| `loo4` | 新增强（光照/缩放平移/时间抖动/遮挡）+ MixUp | 0.752 | 0.335 |
+| `loo5` | run4 + `--normalize zscore` | 0.761 | 0.427 |
+| `loo7` | + ROI 特写 + focal + 窗口/输入 96 | 0.774 / 0.794 / 0.875 / 0.797 | 四折命中率均 100% |
+| `loo8`+`loo9` | gru / tcn / bigru 分头训练再集成 | — | 集成 AUROC **0.892** |
+
+- 帧级涨幅主要来自新增强 + ROI 特写 + focal；AUROC 的稳定提升来自集成。
+- 表里的 `peaks` 是阈值以上的局部极大值数量，只能当诊断量，不能当“敲了几下”。
+
+### 两敲触发（平滑必须轻）
+
+之前用 1 秒平滑（20 帧），两个相隔 0.3–0.6 s 的敲击会被糊成一个包，事件 F1
+只有 0.43。改成 3 帧平滑（约 0.15 s）后，按“只有已标注的非敲击帧才算误报”的
+口径重新扫描（集成模型，留出 take）：
+
+| 峰阈值（z） | 精确率 | 召回（46 个敲击段） | F1 | 误报/分钟 |
 |---|---|---|---|---|
-| `loo3_20261108` | 老增强（只动第一帧）+ 15 epochs，无 MixUp | 0.6133 | 0.3157 | — |
-| `loo4_20261108` | 新增强（光照/缩放平移/时间抖动/遮挡）+ MixUp 0.2 | 0.7525 | 0.3353 | 95.3% |
-| `loo5_20261108` | 在 run4 基础上加 `--normalize zscore` | **0.7612** | **0.4269** | **98.4%** |
+| 0.0 | 0.850 | **1.000（46/46）** | 0.919 | 4.69 |
+| 0.2 | 0.876 | 0.891 | 0.884 | 3.10 |
+| 0.4 | **0.909** | 0.826 | 0.865 | **1.78** |
+| 0.6 | 0.930 | 0.739 | 0.824 | 0.94 |
 
-- 帧级 F1 的涨幅主要来自新增强；事件级 F1/命中率的涨幅主要来自
-  **按 take 做 z-score 标准化**——阈值在训练 take 的 z 空间里选，跨 take 不那么容易塌。
-- 命中率 98.4% = 几乎每个标注的敲击活动段都至少被检出一次；但**误报 2.9 次/分钟**
-  仍然是硬伤（190 s 的 take 上约 9 次误报）。机器人直接拿它当触发器会频繁误动作，
-  所以它现在是"可测的基线 + 可用的调试工具"，不是可上机的检测器。
-- 表里的 `peaks` 是阈值以上的局部极大值数量（每条约 100+），目前只能当诊断量，
-  不能当"敲了几下"。
+结论：轻平滑下**每个标注敲击段都能触发**（阈值 0.0），代价是常开状态
+4.7 次误报/分钟；抬到 0.4 后误报 1.8/min、召回 83%。
+“精确率”把同一个敲击段里的重复触发也算对，所以真实机器人要加冷却
+（`--cooldown-s`），并且**只在交互窗口内开启检测**（盯拳之后的几秒）；
+常开仍然不够。
 
 ### 一次必须记住的失败
 
-fold `val=204337` 上 frame 模型 AUC=0.941，但按训练集选出的阈值 0.90 在留出
-take 上一帧都不过线，帧级 F1 直接变成 0 —— **阈值跨 take 会漂移**。
-z-score 标准化缓解了这个问题（run5 该折事件 F1=0.667），但没有根除：
-fold `214950` 的 AUROC 仍然只有 0.68。
+1. **阈值跨 take 漂移**：fold `204337` 上 frame 模型 AUC=0.941，但按训练集选出的
+   阈值 0.90 在留出 take 上一帧都不过线，帧级 F1 直接变成 0。z-score 标准化缓解了
+   这个问题（run5 该折事件 F1=0.667），但没有根除：fold `214950` 的 AUROC 只有 0.68。
+2. **平滑窗口本身是评测的一部分**：用 20 帧平滑去评估“两下敲击”，等于一开始就把
+   两个峰糊掉；之前“两敲 F1 0.43”的结论主要来自这个错误，不是模型不行。
 
 ## 单条视频推理
 
-训练完（`--final-model`）会保存 `model_gru.pt`，可以直接对一条新视频跑：
+训练完（`--final-model`）会保存 `model_<结构>.pt`。部署模型 `runs_knock/deploy2_20261108/`
+是在全部 4 条 take 上训练的（自测数字偏乐观，泛化看上面的留一表），一次加载三个模型做集成：
 
 ```powershell
-& $py pc\train\train_knock.py --dataset dataset --out runs_knock/deploy_20261108 `
-    --epochs 20 --models gru --window 128 --size 96 --device cpu `
-    --max-gap-frames 10 --min-event-frames 8 --threshold-metric frame `
-    --mixup 0.2 --normalize zscore --final-model --skip-folds
+& $py pc\train\train_knock.py --dataset dataset --out runs_knock/deploy2_20261108 `
+    --window 96 --size 96 --epochs 20 --models gru,tcn,bigru --device cuda `
+    --roi-zoom 0.6 --loss focal --threshold-metric frame --normalize zscore `
+    --hard-negative 0 --pair-isolation-s 0 --final-model --skip-folds
 
 & $py pc\train\detect_knocks.py `
-    --model runs_knock\deploy_20261108\model_gru.pt `
+    --model runs_knock\deploy2_20261108\model_gru.pt,runs_knock\deploy2_20261108\model_tcn.pt,runs_knock\deploy2_20261108\model_bigru.pt `
     --video dataset\takes\robot_20261107_214950_1f30d1\take.mp4 `
-    --json runs_knock\deploy_20261108\detect_demo.json
+    --smooth-frames 3 --pair-threshold 0.4 --cooldown-s 4 `
+    --json runs_knock\deploy2_20261108\detect_demo.json
 ```
 
-输出：`events`（敲击活动段）、`peaks_s`（每次接触的候选时刻）、
-`two_knock_triggers`（相隔 0.25–2 s 的成对峰数）。
-注意这是**部署模型在训练 take 上的自测**，数字偏乐观；真正的泛化数字看上面的留一表。
+`--smooth-frames 3` 是两敲检测的关键（默认读 checkpoint 里的 20，会糊掉第二下）；
+`--pair-threshold` 按上面的表选（0.4 偏稳，0.0 偏召回）；`--cooldown-s` 让一段连续敲击
+只出第一个触发。输出：`events`（敲击活动段）、`peaks_s`（接触候选时刻）、
+`two_knock_triggers`（成对触发数）、`triggers`（每次触发的两峰时刻）。
+数字仍要在留出数据上复核；训练 take 上的自测只能证明代码跑通。
 
 ## 单次敲击候选（为"一下 vs 两下"准备数据）
 
@@ -166,10 +191,11 @@ fold `214950` 的 AUROC 仍然只有 0.68。
 
 1. **只有 4 条 take、1 个人、1 个房间**，留一就是 3 训 1 测；表里的均值方差
    没有统计意义，只能说明链路能跑、标签能学。
-2. 标注是**敲击活动段**（1–10 s），不是单次接触瞬间。所以事件级 F1 衡量的是
-   "能不能把这个活动段圈出来"，不是"数清楚敲了两下"。`cut_knock_candidates.py`
+2. 标注是**敲击活动段**（1–10 s），不是单次接触瞬间。两敲触发现在能给出
+   “0.25–1.5 s 内两个接触峰”的事件，但还没有“单次 vs 两次”的人工标注真值，
+   无法训练/验证“数清楚一下还是两下”。`cut_knock_candidates.py`
    能自动切出候选接触帧和检查图，但**候选未经人工确认**，目前还没有用于训练
-   "一下 vs 两下"；峰值数量也不能当敲击次数。
+   “一下 vs 两下”。
 3. 模型看到的是整帧；手在画面里大时够用，但 1–2 m 部署距离下只有 10–21 px，
    这条流水线的分辨率假设不成立。下一步应先加手部 ROI（YOLO 或现有感知链的
    腕点）再裁图，或提高采集分辨率。
