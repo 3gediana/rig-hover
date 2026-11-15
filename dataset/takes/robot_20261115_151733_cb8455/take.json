@@ -1,0 +1,14 @@
+{
+  "take_id": "robot_20261115_151733_cb8455",
+  "video": "take.mp4",
+  "source_video": "robot_20261115_151733_cb8455.mp4",
+  "duration_s": 160.8,
+  "fps": 15.0,
+  "capture_fps": 14.1,
+  "raw_frames": 2268,
+  "video_frames": 2412,
+  "codec": "h264",
+  "annotated": true,
+  "annotation_count": 44,
+  "exported_at": "2026-11-15T07:40:19+00:00"
+}

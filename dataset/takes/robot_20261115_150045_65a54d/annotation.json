@@ -1,0 +1,281 @@
+{
+  "schema_version": 1,
+  "video": "robot_20261115_150045_65a54d.mp4",
+  "duration_s": 102.866667,
+  "annotations": [
+    {
+      "id": "seg_mwhhnn9x_8pu1d",
+      "label": "hand_raise",
+      "start_s": 3.89,
+      "end_s": 5.83,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhhnuxi_qbgfs",
+      "label": "knock",
+      "start_s": 6.51,
+      "end_s": 8.07,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhho7tb_rbda7",
+      "label": "reach",
+      "start_s": 10.21,
+      "end_s": 13.42,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhhop22_6f7fy",
+      "label": "reach",
+      "start_s": 15.07,
+      "end_s": 19.93,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhhoyxh_evkbm",
+      "label": "label_1794064784169",
+      "start_s": 21.1,
+      "end_s": 24.11,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhhp97v_9y060",
+      "label": "knock",
+      "start_s": 26.06,
+      "end_s": 27.81,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhhpdfo_od1ka",
+      "label": "knock",
+      "start_s": 28.58,
+      "end_s": 29.95,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhhphrz_vm0mg",
+      "label": "knock",
+      "start_s": 30.82,
+      "end_s": 31.5,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhhqjhi_z98wf",
+      "label": "reach",
+      "start_s": 32.96,
+      "end_s": 34.13,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhhr2kj_hyhf4",
+      "label": "knock",
+      "start_s": 34.52,
+      "end_s": 35.0,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhhrddl_w0ov9",
+      "label": "reach",
+      "start_s": 36.75,
+      "end_s": 40.84,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhhrkw0_n2vgp",
+      "label": "knock",
+      "start_s": 41.22,
+      "end_s": 42.2,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhhrx3i_b25pr",
+      "label": "reach",
+      "start_s": 42.97,
+      "end_s": 44.63,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhhs5h4_mluud",
+      "label": "label_1794064784169",
+      "start_s": 44.72,
+      "end_s": 45.6,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhhsk1t_09ku5",
+      "label": "hand_raise",
+      "start_s": 46.86,
+      "end_s": 48.81,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhhsuh9_ow5he",
+      "label": "label_1794064784169",
+      "start_s": 49.0,
+      "end_s": 49.88,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhht71f_jarz7",
+      "label": "reach",
+      "start_s": 51.04,
+      "end_s": 52.5,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhhtfon_fdadt",
+      "label": "label_1794064784169",
+      "start_s": 52.99,
+      "end_s": 53.96,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhhttww_2sy1j",
+      "label": "hand_raise",
+      "start_s": 55.42,
+      "end_s": 56.29,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhhu2w0_l54ya",
+      "label": "label_1794064784169",
+      "start_s": 57.17,
+      "end_s": 58.53,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhhub7d_viquk",
+      "label": "hand_raise",
+      "start_s": 59.31,
+      "end_s": 60.57,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhhujvr_p7r3n",
+      "label": "label_1794064784169",
+      "start_s": 61.16,
+      "end_s": 62.81,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhhuuek_fgqwp",
+      "label": "background",
+      "start_s": 63.2,
+      "end_s": 69.42,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhhvklk_wwnd1",
+      "label": "reach",
+      "start_s": 69.61,
+      "end_s": 73.12,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhhv6f1_w6fo3",
+      "label": "reach",
+      "start_s": 69.91,
+      "end_s": 71.75,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhhvuge_ucuv9",
+      "label": "reach",
+      "start_s": 73.5,
+      "end_s": 74.96,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhhvzfb_xd2p9",
+      "label": "knock",
+      "start_s": 75.84,
+      "end_s": 76.81,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhhw9mk_48t6b",
+      "label": "hand_raise",
+      "start_s": 77.88,
+      "end_s": 80.12,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhhwevf_d6zqh",
+      "label": "knock",
+      "start_s": 80.5,
+      "end_s": 81.57,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhhwrud_zecvj",
+      "label": "hand_raise",
+      "start_s": 81.96,
+      "end_s": 83.32,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhhwydi_k8bwy",
+      "label": "knock",
+      "start_s": 83.62,
+      "end_s": 84.69,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhhx7e3_sf1k8",
+      "label": "knock",
+      "start_s": 85.56,
+      "end_s": 86.34,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhhxeg9_5ykl8",
+      "label": "hand_raise",
+      "start_s": 87.5,
+      "end_s": 88.19,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhhy6to_zvoq0",
+      "label": "hand_raise",
+      "start_s": 89.35,
+      "end_s": 91.49,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhhybjk_t3y68",
+      "label": "label_1794064784169",
+      "start_s": 91.49,
+      "end_s": 92.95,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhhyqlr_fssyp",
+      "label": "hand_raise",
+      "start_s": 93.24,
+      "end_s": 94.21,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhhyyki_i0nl7",
+      "label": "knock",
+      "start_s": 94.8,
+      "end_s": 95.77,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhhz854_r63ow",
+      "label": "label_1794064784169",
+      "start_s": 97.13,
+      "end_s": 98.59,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhhzf8h_jrpu4",
+      "label": "hand_raise",
+      "start_s": 98.98,
+      "end_s": 101.99,
+      "note": ""
+    }
+  ],
+  "updated_at": "2026-11-15T07:13:01+00:00"
+}

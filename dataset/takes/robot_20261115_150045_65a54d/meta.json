@@ -1,0 +1,15 @@
+{
+  "source": "robot_capture",
+  "robot": "192.168.137.137",
+  "fps": 15.0,
+  "frames": 1391,
+  "video_frames": 1543,
+  "duration_s": 102.8667,
+  "capture_fps": 13.5,
+  "codec": "h264",
+  "container": "mp4",
+  "frame_index_file": "robot_20261115_150045_65a54d_source\\frames.jsonl",
+  "raw_frame_dir": "robot_20261115_150045_65a54d_source\\frames",
+  "started_at": "2026-11-15T07:00:45+00:00",
+  "finished_at": "2026-11-15T07:02:57+00:00"
+}

@@ -1,0 +1,316 @@
+{
+  "schema_version": 1,
+  "video": "robot_20261115_151733_cb8455.mp4",
+  "duration_s": 160.8,
+  "annotations": [
+    {
+      "id": "seg_mwhiaeop_okhqq",
+      "label": "reach",
+      "start_s": 2.74,
+      "end_s": 7.14,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhialuy_k1paa",
+      "label": "knock",
+      "start_s": 7.45,
+      "end_s": 9.12,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhiatal_76mpt",
+      "label": "knock",
+      "start_s": 10.94,
+      "end_s": 12.92,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhib2v1_dpgdy",
+      "label": "background",
+      "start_s": 14.74,
+      "end_s": 19.15,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhibj61_lg6uj",
+      "label": "reach",
+      "start_s": 20.21,
+      "end_s": 23.1,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhibqlf_t4xmp",
+      "label": "label_1794064784169",
+      "start_s": 23.41,
+      "end_s": 25.38,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhic6ym_6kwr3",
+      "label": "reach",
+      "start_s": 26.75,
+      "end_s": 27.81,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhicxty_o13w8",
+      "label": "label_1794064784169",
+      "start_s": 28.42,
+      "end_s": 28.57,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhiddrv_cux4x",
+      "label": "knock",
+      "start_s": 30.85,
+      "end_s": 31.92,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhidirk_jk897",
+      "label": "knock",
+      "start_s": 33.74,
+      "end_s": 34.96,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhidsv6_vkibp",
+      "label": "reach",
+      "start_s": 36.63,
+      "end_s": 39.06,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhie047_af12h",
+      "label": "knock",
+      "start_s": 39.97,
+      "end_s": 40.12,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhiecx6_llzow",
+      "label": "knock",
+      "start_s": 43.32,
+      "end_s": 44.68,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhiermg_38qzm",
+      "label": "reach",
+      "start_s": 45.6,
+      "end_s": 47.27,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhif5a5_ztzb5",
+      "label": "knock",
+      "start_s": 47.42,
+      "end_s": 48.48,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhifnr9_0sreb",
+      "label": "reach",
+      "start_s": 50.16,
+      "end_s": 58.06,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhifywv_brat2",
+      "label": "background",
+      "start_s": 58.51,
+      "end_s": 62.62,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhig97r_ot6ab",
+      "label": "label_1794064784169",
+      "start_s": 63.53,
+      "end_s": 66.11,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhigj1a_6magb",
+      "label": "label_1794064784169",
+      "start_s": 68.09,
+      "end_s": 70.82,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhih0cr_70zbn",
+      "label": "reach",
+      "start_s": 70.98,
+      "end_s": 74.02,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhih6fo_zftyh",
+      "label": "knock",
+      "start_s": 74.93,
+      "end_s": 76.6,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhihkqk_jgn6l",
+      "label": "reach",
+      "start_s": 78.12,
+      "end_s": 83.59,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhihrk8_t8m0e",
+      "label": "label_1794064784169",
+      "start_s": 84.2,
+      "end_s": 86.63,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhii2ii_htozg",
+      "label": "hand_raise",
+      "start_s": 87.24,
+      "end_s": 90.13,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhii8nu_uhpr7",
+      "label": "label_1794064784169",
+      "start_s": 90.43,
+      "end_s": 91.95,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhiil0m_8ooaj",
+      "label": "reach",
+      "start_s": 93.62,
+      "end_s": 96.36,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhiit9d_8utgc",
+      "label": "knock",
+      "start_s": 97.27,
+      "end_s": 98.94,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhij18p_gdzkg",
+      "label": "reach",
+      "start_s": 100.46,
+      "end_s": 101.53,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhijtqg_o45q8",
+      "label": "knock",
+      "start_s": 101.68,
+      "end_s": 103.35,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhik6gm_hrz1s",
+      "label": "background",
+      "start_s": 105.02,
+      "end_s": 111.86,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhikh30_njz3v",
+      "label": "reach",
+      "start_s": 112.32,
+      "end_s": 113.84,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhikose_ck3zb",
+      "label": "label_1794064784169",
+      "start_s": 114.14,
+      "end_s": 116.42,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhikve8_kse9l",
+      "label": "label_1794064784169",
+      "start_s": 117.18,
+      "end_s": 118.85,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhila6t_09ew7",
+      "label": "hand_raise",
+      "start_s": 120.22,
+      "end_s": 123.87,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhilhea_7pjtn",
+      "label": "label_1794064784169",
+      "start_s": 124.63,
+      "end_s": 125.69,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhily5c_j5e7p",
+      "label": "hand_raise",
+      "start_s": 128.12,
+      "end_s": 134.51,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhim662_jf833",
+      "label": "knock",
+      "start_s": 134.66,
+      "end_s": 136.79,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhimlcl_0x4ct",
+      "label": "hand_raise",
+      "start_s": 136.79,
+      "end_s": 138.15,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhimyd0_6eesd",
+      "label": "label_1794064784169",
+      "start_s": 138.0,
+      "end_s": 139.07,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhinopd_gv1oy",
+      "label": "reach",
+      "start_s": 140.13,
+      "end_s": 145.75,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhinx4j_ddrqf",
+      "label": "label_1794064784169",
+      "start_s": 146.06,
+      "end_s": 148.95,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhio742_105vv",
+      "label": "label_1794064784169",
+      "start_s": 149.55,
+      "end_s": 152.44,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhiojl7_oxp6a",
+      "label": "reach",
+      "start_s": 152.59,
+      "end_s": 156.09,
+      "note": ""
+    },
+    {
+      "id": "seg_mwhionjd_ny2q9",
+      "label": "knock",
+      "start_s": 156.54,
+      "end_s": 157.91,
+      "note": ""
+    }
+  ],
+  "updated_at": "2026-11-15T07:32:37+00:00"
+}
