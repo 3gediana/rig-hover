@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "name": "hover-end-side-rl-ppo-v1",
+  "version": "2026.11.18-spatial-v2",
+  "task": "policy",
+  "input": {
+    "width": 0,
+    "height": 0,
+    "channels": 3,
+    "normalize": "unit"
+  },
+  "policy": {
+    "featureDim": 39,
+    "actionDim": 3
+  },
+  "sha256": "c102292b94852139eaa7d81e983fd8da5f74ff5f717e747812670371b018ca1b",
+  "notes": "SE(2) Spatial-Memory Residual Tanh Policy (39->160->160+Res->3) trained via BC + Asymmetric Privileged PPO across 8 complex 2D tabletop scenarios."
+}

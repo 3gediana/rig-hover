@@ -62,5 +62,7 @@ video_annotation_data/videos/*.webm
 /*.jpg
 
 # ===== 系统杂物 =====
+.superpowers/
+.worktrees/
 Thumbs.db
 desktop.ini

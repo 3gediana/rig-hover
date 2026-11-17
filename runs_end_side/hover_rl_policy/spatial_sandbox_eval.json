@@ -1,0 +1,401 @@
+{
+  "timestamp": "2026-11-18",
+  "device": "cuda",
+  "elapsed_sec": 179.75,
+  "architecture": {
+    "feature_dim": 39,
+    "hidden_dim": 160,
+    "use_residual": true,
+    "critic_privileged_dim": 51,
+    "zero_bias_max_err": 0.61445,
+    "tflite_max_abs_diff": 2.193450927734375e-05,
+    "tflite_sha256": "c102292b94852139eaa7d81e983fd8da5f74ff5f717e747812670371b018ca1b",
+    "tflite_bytes": 235096
+  },
+  "bc_loss_start_end": [
+    0.003219,
+    0.000165
+  ],
+  "ppo_history": [
+    {
+      "iter": 1,
+      "stage": "S2-Moderate",
+      "mean_return": 216.604,
+      "mean_final_dist_cm": 4.21
+    },
+    {
+      "iter": 2,
+      "stage": "S2-Moderate",
+      "mean_return": 205.355,
+      "mean_final_dist_cm": 5.77
+    },
+    {
+      "iter": 3,
+      "stage": "S2-Moderate",
+      "mean_return": 224.148,
+      "mean_final_dist_cm": 3.77
+    },
+    {
+      "iter": 4,
+      "stage": "S2-Moderate",
+      "mean_return": 223.603,
+      "mean_final_dist_cm": 3.74
+    },
+    {
+      "iter": 5,
+      "stage": "S2-Moderate",
+      "mean_return": 230.349,
+      "mean_final_dist_cm": 2.8
+    },
+    {
+      "iter": 6,
+      "stage": "S3-StressAll",
+      "mean_return": 214.649,
+      "mean_final_dist_cm": 6.88
+    },
+    {
+      "iter": 7,
+      "stage": "S3-StressAll",
+      "mean_return": 224.348,
+      "mean_final_dist_cm": 7.15
+    },
+    {
+      "iter": 8,
+      "stage": "S3-StressAll",
+      "mean_return": 221.631,
+      "mean_final_dist_cm": 5.83
+    },
+    {
+      "iter": 9,
+      "stage": "S3-StressAll",
+      "mean_return": 225.833,
+      "mean_final_dist_cm": 6.72
+    },
+    {
+      "iter": 10,
+      "stage": "S3-StressAll",
+      "mean_return": 220.25,
+      "mean_final_dist_cm": 6.53
+    },
+    {
+      "iter": 11,
+      "stage": "S3-StressAll",
+      "mean_return": 223.003,
+      "mean_final_dist_cm": 6.11
+    },
+    {
+      "iter": 12,
+      "stage": "S3-StressAll",
+      "mean_return": 220.059,
+      "mean_final_dist_cm": 6.21
+    },
+    {
+      "iter": 13,
+      "stage": "S3-StressAll",
+      "mean_return": 208.684,
+      "mean_final_dist_cm": 5.94
+    },
+    {
+      "iter": 14,
+      "stage": "S3-StressAll",
+      "mean_return": 217.86,
+      "mean_final_dist_cm": 7.5
+    }
+  ],
+  "classic_gaze_tracking": {
+    "eps_rms_deg": 5.42,
+    "success_pct": 98.68
+  },
+  "sandbox_8_scenarios": {
+    "naive_reactive": {
+      "overall_success_rate_pct": 0.0,
+      "mean_final_err_cm": 57.14,
+      "median_final_err_cm": 56.56,
+      "max_pitch_deg": 6.32,
+      "cliff_fall_count": 0,
+      "obstacle_collision_count": 0,
+      "per_scenario": {
+        "S1_blind_vanish": {
+          "success_rate": 0.0,
+          "mean_err_cm": 64.04,
+          "cliff_falls": 0,
+          "collisions": 0
+        },
+        "S2_bystander_distractor": {
+          "success_rate": 0.0,
+          "mean_err_cm": 64.38,
+          "cliff_falls": 0,
+          "collisions": 0
+        },
+        "S3_waving_decoy": {
+          "success_rate": 0.0,
+          "mean_err_cm": 37.2,
+          "cliff_falls": 0,
+          "collisions": 0
+        },
+        "S4_mid_reknock": {
+          "success_rate": 0.0,
+          "mean_err_cm": 48.58,
+          "cliff_falls": 0,
+          "collisions": 0
+        },
+        "S5_extreme_off_axis": {
+          "success_rate": 0.0,
+          "mean_err_cm": 63.45,
+          "cliff_falls": 0,
+          "collisions": 0
+        },
+        "S6_obstacle_detour": {
+          "success_rate": 0.0,
+          "mean_err_cm": 71.49,
+          "cliff_falls": 0,
+          "collisions": 0
+        },
+        "S7_cliff_guard": {
+          "success_rate": 0.0,
+          "mean_err_cm": 46.68,
+          "cliff_falls": 0,
+          "collisions": 0
+        },
+        "S8_latency_dropout_storm": {
+          "success_rate": 0.0,
+          "mean_err_cm": 61.33,
+          "cliff_falls": 0,
+          "collisions": 0
+        }
+      }
+    },
+    "scalar_1d_lock": {
+      "overall_success_rate_pct": 9.38,
+      "mean_final_err_cm": 52.24,
+      "median_final_err_cm": 54.48,
+      "max_pitch_deg": 8.68,
+      "cliff_fall_count": 0,
+      "obstacle_collision_count": 2,
+      "per_scenario": {
+        "S1_blind_vanish": {
+          "success_rate": 0.0,
+          "mean_err_cm": 65.91,
+          "cliff_falls": 0,
+          "collisions": 0
+        },
+        "S2_bystander_distractor": {
+          "success_rate": 0.0,
+          "mean_err_cm": 66.25,
+          "cliff_falls": 0,
+          "collisions": 0
+        },
+        "S3_waving_decoy": {
+          "success_rate": 0.0,
+          "mean_err_cm": 36.64,
+          "cliff_falls": 0,
+          "collisions": 0
+        },
+        "S4_mid_reknock": {
+          "success_rate": 0.0,
+          "mean_err_cm": 50.03,
+          "cliff_falls": 0,
+          "collisions": 0
+        },
+        "S5_extreme_off_axis": {
+          "success_rate": 0.0,
+          "mean_err_cm": 63.79,
+          "cliff_falls": 0,
+          "collisions": 0
+        },
+        "S6_obstacle_detour": {
+          "success_rate": 0.0,
+          "mean_err_cm": 58.41,
+          "cliff_falls": 0,
+          "collisions": 2
+        },
+        "S7_cliff_guard": {
+          "success_rate": 75.0,
+          "mean_err_cm": 14.47,
+          "cliff_falls": 0,
+          "collisions": 0
+        },
+        "S8_latency_dropout_storm": {
+          "success_rate": 0.0,
+          "mean_err_cm": 62.42,
+          "cliff_falls": 0,
+          "collisions": 0
+        }
+      }
+    },
+    "se2_nominal": {
+      "overall_success_rate_pct": 100.0,
+      "mean_final_err_cm": 3.61,
+      "median_final_err_cm": 3.83,
+      "max_pitch_deg": 6.58,
+      "cliff_fall_count": 0,
+      "obstacle_collision_count": 0,
+      "per_scenario": {
+        "S1_blind_vanish": {
+          "success_rate": 100.0,
+          "mean_err_cm": 4.01,
+          "cliff_falls": 0,
+          "collisions": 0
+        },
+        "S2_bystander_distractor": {
+          "success_rate": 100.0,
+          "mean_err_cm": 4.45,
+          "cliff_falls": 0,
+          "collisions": 0
+        },
+        "S3_waving_decoy": {
+          "success_rate": 100.0,
+          "mean_err_cm": 5.29,
+          "cliff_falls": 0,
+          "collisions": 0
+        },
+        "S4_mid_reknock": {
+          "success_rate": 100.0,
+          "mean_err_cm": 0.24,
+          "cliff_falls": 0,
+          "collisions": 0
+        },
+        "S5_extreme_off_axis": {
+          "success_rate": 100.0,
+          "mean_err_cm": 4.82,
+          "cliff_falls": 0,
+          "collisions": 0
+        },
+        "S6_obstacle_detour": {
+          "success_rate": 100.0,
+          "mean_err_cm": 6.01,
+          "cliff_falls": 0,
+          "collisions": 0
+        },
+        "S7_cliff_guard": {
+          "success_rate": 100.0,
+          "mean_err_cm": 1.92,
+          "cliff_falls": 0,
+          "collisions": 0
+        },
+        "S8_latency_dropout_storm": {
+          "success_rate": 100.0,
+          "mean_err_cm": 2.15,
+          "cliff_falls": 0,
+          "collisions": 0
+        }
+      }
+    },
+    "spatial_bc_v2": {
+      "overall_success_rate_pct": 100.0,
+      "mean_final_err_cm": 4.34,
+      "median_final_err_cm": 3.95,
+      "max_pitch_deg": 6.02,
+      "cliff_fall_count": 0,
+      "obstacle_collision_count": 0,
+      "per_scenario": {
+        "S1_blind_vanish": {
+          "success_rate": 100.0,
+          "mean_err_cm": 4.26,
+          "cliff_falls": 0,
+          "collisions": 0
+        },
+        "S2_bystander_distractor": {
+          "success_rate": 100.0,
+          "mean_err_cm": 4.2,
+          "cliff_falls": 0,
+          "collisions": 0
+        },
+        "S3_waving_decoy": {
+          "success_rate": 100.0,
+          "mean_err_cm": 3.85,
+          "cliff_falls": 0,
+          "collisions": 0
+        },
+        "S4_mid_reknock": {
+          "success_rate": 100.0,
+          "mean_err_cm": 6.53,
+          "cliff_falls": 0,
+          "collisions": 0
+        },
+        "S5_extreme_off_axis": {
+          "success_rate": 100.0,
+          "mean_err_cm": 3.89,
+          "cliff_falls": 0,
+          "collisions": 0
+        },
+        "S6_obstacle_detour": {
+          "success_rate": 100.0,
+          "mean_err_cm": 4.86,
+          "cliff_falls": 0,
+          "collisions": 0
+        },
+        "S7_cliff_guard": {
+          "success_rate": 100.0,
+          "mean_err_cm": 3.1,
+          "cliff_falls": 0,
+          "collisions": 0
+        },
+        "S8_latency_dropout_storm": {
+          "success_rate": 100.0,
+          "mean_err_cm": 4.07,
+          "cliff_falls": 0,
+          "collisions": 0
+        }
+      }
+    },
+    "spatial_ppo_v2": {
+      "overall_success_rate_pct": 100.0,
+      "mean_final_err_cm": 4.63,
+      "median_final_err_cm": 4.24,
+      "max_pitch_deg": 5.7,
+      "cliff_fall_count": 0,
+      "obstacle_collision_count": 0,
+      "per_scenario": {
+        "S1_blind_vanish": {
+          "success_rate": 100.0,
+          "mean_err_cm": 4.61,
+          "cliff_falls": 0,
+          "collisions": 0
+        },
+        "S2_bystander_distractor": {
+          "success_rate": 100.0,
+          "mean_err_cm": 4.52,
+          "cliff_falls": 0,
+          "collisions": 0
+        },
+        "S3_waving_decoy": {
+          "success_rate": 100.0,
+          "mean_err_cm": 4.05,
+          "cliff_falls": 0,
+          "collisions": 0
+        },
+        "S4_mid_reknock": {
+          "success_rate": 100.0,
+          "mean_err_cm": 6.9,
+          "cliff_falls": 0,
+          "collisions": 0
+        },
+        "S5_extreme_off_axis": {
+          "success_rate": 100.0,
+          "mean_err_cm": 4.27,
+          "cliff_falls": 0,
+          "collisions": 0
+        },
+        "S6_obstacle_detour": {
+          "success_rate": 100.0,
+          "mean_err_cm": 4.57,
+          "cliff_falls": 0,
+          "collisions": 0
+        },
+        "S7_cliff_guard": {
+          "success_rate": 100.0,
+          "mean_err_cm": 4.57,
+          "cliff_falls": 0,
+          "collisions": 0
+        },
+        "S8_latency_dropout_storm": {
+          "success_rate": 100.0,
+          "mean_err_cm": 3.55,
+          "cliff_falls": 0,
+          "collisions": 0
+        }
+      }
+    }
+  }
+}
