@@ -1,0 +1,45 @@
+{
+  "model_name": "hover-mono-depth-v1",
+  "version": "2026.11.18",
+  "input_shape": [
+    1,
+    96,
+    96,
+    3
+  ],
+  "output_shape": [
+    1,
+    48,
+    48,
+    2
+  ],
+  "train_synth_scenes": 3200,
+  "train_real_frames": 200,
+  "heldout_real_frames": 40,
+  "val_synth_scenes": 400,
+  "epochs": 56,
+  "train_time_sec": 245.95,
+  "cpu_latency_ms": 3.139,
+  "AbsRel": 0.0525,
+  "RMSE_m": 0.1145,
+  "MAE_m": 0.0603,
+  "delta_125": 0.9801,
+  "elev_F1": 0.9598,
+  "elev_precision": 0.9477,
+  "elev_recall": 0.9721,
+  "elev_IoU": 0.9226,
+  "fg_closer_rate": 1.0,
+  "tflite_bytes": 301508,
+  "max_abs_diff": 4.708766937255859e-06,
+  "sha256": "b128a5617f26b3a13d6d3e6055d7dd64e6f7550929fd336700fa9c31ff357370",
+  "artifacts": {
+    "tflite_path": "D:\\robot_work\\runs_end_side\\mono_depth\\hover_mono_depth_v1.tflite",
+    "json_path": "D:\\robot_work\\runs_end_side\\mono_depth\\hover_mono_depth_v1.json",
+    "zip_path": "D:\\robot_work\\runs_end_side\\mono_depth\\hover-mono-depth-v1-bundle.zip",
+    "android_assets": [
+      "G:\\robot_app\\android\\app\\src\\main\\assets\\models\\hover_mono_depth_v1.tflite",
+      "G:\\robot_app\\android\\app\\src\\main\\assets\\models\\hover_mono_depth_v1.json"
+    ],
+    "fig6_path": "D:\\robot_work\\docs\\showcase\\figs\\fig6_mono_depth_and_3d_splats.png"
+  }
+}

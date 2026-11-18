@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "name": "hover-mono-depth-v1",
+  "version": "2026.11.18",
+  "task": "depth",
+  "input": {
+    "width": 96,
+    "height": 96,
+    "channels": 3,
+    "normalize": "unit"
+  },
+  "output": {
+    "width": 48,
+    "height": 48,
+    "channels": 2,
+    "invDepthMin": 0.35,
+    "invDepthSpan": 4.15,
+    "depthMinM": 0.2222,
+    "depthMaxM": 2.8571,
+    "elevThresholdM": 0.03
+  },
+  "camera": {
+    "heightM": 0.115,
+    "fovHDeg": 60.0
+  },
+  "sha256": "b128a5617f26b3a13d6d3e6055d7dd64e6f7550929fd336700fa9c31ff357370",
+  "notes": "RIG-Hover Monocular Metric Depth & Obstacle Elevation Net (96x96x3 -> 48x48x2, TFLite v3 pure builtins)"
+}

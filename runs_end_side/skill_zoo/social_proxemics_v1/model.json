@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "name": "hover-skill-social-proxemics-v1",
+  "version": "2026.11.18-zoo-v1",
+  "task": "policy",
+  "input": {
+    "width": 0,
+    "height": 0,
+    "channels": 3,
+    "normalize": "unit"
+  },
+  "policy": {
+    "featureDim": 39,
+    "actionDim": 3
+  },
+  "sha256": "eb042903f1eddb2e9cd33b5e16d909fe82823cee50c4bba80c985f4a42dfa822",
+  "notes": "Elastic Social Proxemics companion maintaining d*=0.75m (h*=0.28) with pitch-damped back-off (vx<0) & approach (vx>0)."
+}

@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "name": "hover-skill-orbit-inspector-v1",
+  "version": "2026.11.18-zoo-v1",
+  "task": "policy",
+  "input": {
+    "width": 0,
+    "height": 0,
+    "channels": 3,
+    "normalize": "unit"
+  },
+  "policy": {
+    "featureDim": 39,
+    "actionDim": 3
+  },
+  "sha256": "24d325feebe3c60f37d8bcca0af5f77259c39ed66dd92afbb337962b48745f18",
+  "notes": "360-deg Orbit Inspector around detected/locked target (r*=0.48m, vx 28..45%, inward head +-38 deg, |pitch|<8 deg)."
+}

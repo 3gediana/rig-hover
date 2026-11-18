@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "name": "hover-skill-figure8-patrol-v1",
+  "version": "2026.11.18-zoo-v1",
+  "task": "policy",
+  "input": {
+    "width": 0,
+    "height": 0,
+    "channels": 3,
+    "normalize": "unit"
+  },
+  "policy": {
+    "featureDim": 39,
+    "actionDim": 3
+  },
+  "sha256": "ccb8be9f2e63b86800eabe2cb6d9aee89c60c69eb1b7c7c1f93ec73ebaabf5e0",
+  "notes": "Self-sustaining Figure-8 active search via internal IMU/wheel/head phase feedback + instant brake & gaze capture on target."
+}

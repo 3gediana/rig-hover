@@ -1,0 +1,225 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-11-18",
+  "device": "cuda",
+  "elapsedSec": 309.93,
+  "contract": {
+    "inputShape": [
+      1,
+      39
+    ],
+    "outputShape": [
+      1,
+      3
+    ],
+    "architecture": "EndSidePolicyNet(feature_dim=39, hidden_dim=128, action_dim=3, use_residual=True)"
+  },
+  "skills": {
+    "orbit_inspector": {
+      "model_name": "hover-skill-orbit-inspector-v1",
+      "asset_stem": "orbit_inspector_v1",
+      "version": "2026.11.18-zoo-v1",
+      "feature_dim": 39,
+      "hidden_dim": 128,
+      "action_dim": 3,
+      "use_residual": true,
+      "sha256": "24d325feebe3c60f37d8bcca0af5f77259c39ed66dd92afbb337962b48745f18",
+      "max_abs_err_pytorch_vs_tflite": 2.765655517578125e-05,
+      "tflite_path": "D:\\robot_work\\runs_end_side\\skill_zoo\\orbit_inspector_v1\\model.tflite",
+      "json_path": "D:\\robot_work\\runs_end_side\\skill_zoo\\orbit_inspector_v1\\model.json",
+      "zip_path": "D:\\robot_work\\runs_end_side\\skill_zoo\\hover-skill-orbit-inspector-v1-bundle.zip",
+      "android_tflite_path": "G:\\robot_app\\android\\app\\src\\main\\assets\\models\\orbit_inspector_v1.tflite",
+      "android_json_path": "G:\\robot_app\\android\\app\\src\\main\\assets\\models\\orbit_inspector_v1.json",
+      "bc_loss_start": 0.016754,
+      "bc_loss_end": 0.000448,
+      "ppo_history": [
+        {
+          "iter": 1,
+          "mean_return": 531.098
+        },
+        {
+          "iter": 2,
+          "mean_return": 539.636
+        },
+        {
+          "iter": 3,
+          "mean_return": 535.609
+        },
+        {
+          "iter": 4,
+          "mean_return": 534.475
+        },
+        {
+          "iter": 5,
+          "mean_return": 525.078
+        },
+        {
+          "iter": 6,
+          "mean_return": 540.356
+        },
+        {
+          "iter": 7,
+          "mean_return": 537.305
+        },
+        {
+          "iter": 8,
+          "mean_return": 526.293
+        },
+        {
+          "iter": 9,
+          "mean_return": 537.323
+        },
+        {
+          "iter": 10,
+          "mean_return": 548.108
+        }
+      ],
+      "benchmark": {
+        "desired_radius_m": 0.48,
+        "radial_rmse_cm_mean": 1.93,
+        "orbit_sweep_deg_mean": 342.3,
+        "mean_vx_pct": 36.55,
+        "steady_abs_head_deg": 36.98,
+        "max_abs_pitch_deg": 5.11
+      }
+    },
+    "social_proxemics": {
+      "model_name": "hover-skill-social-proxemics-v1",
+      "asset_stem": "social_proxemics_v1",
+      "version": "2026.11.18-zoo-v1",
+      "feature_dim": 39,
+      "hidden_dim": 128,
+      "action_dim": 3,
+      "use_residual": true,
+      "sha256": "eb042903f1eddb2e9cd33b5e16d909fe82823cee50c4bba80c985f4a42dfa822",
+      "max_abs_err_pytorch_vs_tflite": 2.002716064453125e-05,
+      "tflite_path": "D:\\robot_work\\runs_end_side\\skill_zoo\\social_proxemics_v1\\model.tflite",
+      "json_path": "D:\\robot_work\\runs_end_side\\skill_zoo\\social_proxemics_v1\\model.json",
+      "zip_path": "D:\\robot_work\\runs_end_side\\skill_zoo\\hover-skill-social-proxemics-v1-bundle.zip",
+      "android_tflite_path": "G:\\robot_app\\android\\app\\src\\main\\assets\\models\\social_proxemics_v1.tflite",
+      "android_json_path": "G:\\robot_app\\android\\app\\src\\main\\assets\\models\\social_proxemics_v1.json",
+      "bc_loss_start": 0.005783,
+      "bc_loss_end": 0.000231,
+      "ppo_history": [
+        {
+          "iter": 1,
+          "mean_return": 386.422
+        },
+        {
+          "iter": 2,
+          "mean_return": 363.232
+        },
+        {
+          "iter": 3,
+          "mean_return": 380.56
+        },
+        {
+          "iter": 4,
+          "mean_return": 373.904
+        },
+        {
+          "iter": 5,
+          "mean_return": 388.984
+        },
+        {
+          "iter": 6,
+          "mean_return": 372.935
+        },
+        {
+          "iter": 7,
+          "mean_return": 392.091
+        },
+        {
+          "iter": 8,
+          "mean_return": 378.247
+        },
+        {
+          "iter": 9,
+          "mean_return": 389.937
+        },
+        {
+          "iter": 10,
+          "mean_return": 371.603
+        }
+      ],
+      "benchmark": {
+        "desired_dist_m": 0.75,
+        "steady_dist_m_mean": 0.766,
+        "steady_dist_err_cm": 1.56,
+        "min_backoff_vx_pct": -45.58,
+        "max_approach_vx_pct": 41.27,
+        "gaze_rmse_deg": 0.96,
+        "max_abs_pitch_deg": 4.16
+      }
+    },
+    "figure8_patrol": {
+      "model_name": "hover-skill-figure8-patrol-v1",
+      "asset_stem": "figure8_patrol_v1",
+      "version": "2026.11.18-zoo-v1",
+      "feature_dim": 39,
+      "hidden_dim": 128,
+      "action_dim": 3,
+      "use_residual": true,
+      "sha256": "ccb8be9f2e63b86800eabe2cb6d9aee89c60c69eb1b7c7c1f93ec73ebaabf5e0",
+      "max_abs_err_pytorch_vs_tflite": 2.6702880859375e-05,
+      "tflite_path": "D:\\robot_work\\runs_end_side\\skill_zoo\\figure8_patrol_v1\\model.tflite",
+      "json_path": "D:\\robot_work\\runs_end_side\\skill_zoo\\figure8_patrol_v1\\model.json",
+      "zip_path": "D:\\robot_work\\runs_end_side\\skill_zoo\\hover-skill-figure8-patrol-v1-bundle.zip",
+      "android_tflite_path": "G:\\robot_app\\android\\app\\src\\main\\assets\\models\\figure8_patrol_v1.tflite",
+      "android_json_path": "G:\\robot_app\\android\\app\\src\\main\\assets\\models\\figure8_patrol_v1.json",
+      "bc_loss_start": 0.022174,
+      "bc_loss_end": 0.000166,
+      "ppo_history": [
+        {
+          "iter": 1,
+          "mean_return": 307.522
+        },
+        {
+          "iter": 2,
+          "mean_return": 312.431
+        },
+        {
+          "iter": 3,
+          "mean_return": 321.19
+        },
+        {
+          "iter": 4,
+          "mean_return": 326.354
+        },
+        {
+          "iter": 5,
+          "mean_return": 331.446
+        },
+        {
+          "iter": 6,
+          "mean_return": 334.531
+        },
+        {
+          "iter": 7,
+          "mean_return": 329.0
+        },
+        {
+          "iter": 8,
+          "mean_return": 345.372
+        },
+        {
+          "iter": 9,
+          "mean_return": 337.065
+        },
+        {
+          "iter": 10,
+          "mean_return": 345.759
+        }
+      ],
+      "benchmark": {
+        "patrol_bbox_x_m_mean": 0.489,
+        "patrol_bbox_y_m_mean": 0.306,
+        "head_sweep_p2p_deg_mean": 70.9,
+        "post_capture_abs_vx_pct": 1.19,
+        "captured_gaze_mae_deg": 2.4,
+        "max_abs_pitch_deg": 4.88
+      }
+    }
+  },
+  "figure_path": "D:\\robot_work\\docs\\showcase\\figs\\fig7_multi_skill_zoo.png"
+}

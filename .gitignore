@@ -66,3 +66,11 @@ video_annotation_data/videos/*.webm
 .worktrees/
 Thumbs.db
 desktop.ini
+
+# ===== 移动端镜像构建缓存与临时产物（源码与内置 TFLite 资产入库） =====
+mobile_app/android/.gradle/
+mobile_app/android/build/
+mobile_app/android/app/build/
+mobile_app/android/local.properties
+mobile_app/**/*.apk
+runs_end_side/uploaded_logs/
