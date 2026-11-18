@@ -1,0 +1,408 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-11-18",
+  "modelName": "ping-point-nav-v1",
+  "assetStem": "ping_point_nav_v1",
+  "version": "2026.11.18-ping-v1",
+  "task": "policy",
+  "device": "cuda",
+  "elapsedSec": 40.34,
+  "contract": {
+    "featureDim": 39,
+    "hiddenDim": 160,
+    "actionDim": 3,
+    "useResidual": true,
+    "inputShape": [
+      1,
+      39
+    ],
+    "outputShape": [
+      1,
+      3
+    ],
+    "actionBounds": {
+      "vx": [
+        -100.0,
+        100.0
+      ],
+      "vyaw": [
+        -100.0,
+        100.0
+      ],
+      "head": [
+        -75.0,
+        75.0
+      ]
+    }
+  },
+  "artifacts": {
+    "tflitePath": "D:\\robot_work\\runs_end_side\\skill_zoo\\ping_point_nav_v1\\model.tflite",
+    "jsonPath": "D:\\robot_work\\runs_end_side\\skill_zoo\\ping_point_nav_v1\\model.json",
+    "weightsPtPath": "D:\\robot_work\\runs_end_side\\skill_zoo\\ping_point_nav_v1\\policy_weights.pt",
+    "subBundleZipPath": "D:\\robot_work\\runs_end_side\\skill_zoo\\ping_point_nav_v1\\ping-point-nav-v1-bundle.zip",
+    "zooBundleZipPath": "D:\\robot_work\\runs_end_side\\skill_zoo\\hover-skill-ping-nav-v1-bundle.zip",
+    "androidTflitePath": "G:\\robot_app\\android\\app\\src\\main\\assets\\models\\ping_point_nav_v1.tflite",
+    "androidJsonPath": "G:\\robot_app\\android\\app\\src\\main\\assets\\models\\ping_point_nav_v1.json",
+    "figurePath": "D:\\robot_work\\docs\\showcase\\figs\\fig9_lol_ping_detour_rl.png",
+    "tfliteSizeBytes": 235096,
+    "sha256": "0d9136cd30433d7a6228f9f289b6f749b3031bb68770539c2cf1b2c58dc0fdc8"
+  },
+  "numericalParity": {
+    "maxAbsErrPyTorchVsTflite": 2.288818359375e-05,
+    "maxAbsErrNumpyVsTflite": 2.6702880859375e-05,
+    "maxAbsErrPyTorchVsNumpy": 1.9550323486328125e-05
+  },
+  "training": {
+    "expertDatasetSize": 42400,
+    "bcEpochs": 42,
+    "bcLossStart": 0.012176,
+    "bcLossEnd": 0.000652,
+    "ppoIters": 12,
+    "ppoHistory": [
+      {
+        "iter": 1,
+        "mean_return": 269.29,
+        "mean_arrival_err_cm": 2.86
+      },
+      {
+        "iter": 2,
+        "mean_return": 282.61,
+        "mean_arrival_err_cm": 3.01
+      },
+      {
+        "iter": 3,
+        "mean_return": 265.12,
+        "mean_arrival_err_cm": 3.03
+      },
+      {
+        "iter": 4,
+        "mean_return": 298.09,
+        "mean_arrival_err_cm": 1.79
+      },
+      {
+        "iter": 5,
+        "mean_return": 294.73,
+        "mean_arrival_err_cm": 2.06
+      },
+      {
+        "iter": 6,
+        "mean_return": 277.67,
+        "mean_arrival_err_cm": 2.07
+      },
+      {
+        "iter": 7,
+        "mean_return": 294.76,
+        "mean_arrival_err_cm": 1.86
+      },
+      {
+        "iter": 8,
+        "mean_return": 306.28,
+        "mean_arrival_err_cm": 2.05
+      },
+      {
+        "iter": 9,
+        "mean_return": 294.74,
+        "mean_arrival_err_cm": 2.09
+      },
+      {
+        "iter": 10,
+        "mean_return": 315.23,
+        "mean_arrival_err_cm": 1.51
+      },
+      {
+        "iter": 11,
+        "mean_return": 292.21,
+        "mean_arrival_err_cm": 2.17
+      },
+      {
+        "iter": 12,
+        "mean_return": 322.14,
+        "mean_arrival_err_cm": 1.14
+      }
+    ]
+  },
+  "controllers": {
+    "straight_baseline": {
+      "overall": {
+        "total_episodes": 72,
+        "arrival_err_cm_mean": 11.01,
+        "arrival_err_cm_p90": 17.05,
+        "success_rate_pct": 9.7,
+        "cup_collision_rate_pct": 16.7,
+        "danger_zone_violation_rate_pct": 33.3,
+        "cliff_fall_rate_pct": 16.7,
+        "overshoot_cm_mean": 10.92,
+        "max_abs_pitch_deg": 13.74,
+        "settle_time_s_mean": 7.58
+      },
+      "per_scenario": {
+        "P1_rear_165_turn": {
+          "n_episodes": 12,
+          "arrival_err_cm_mean": 4.4,
+          "arrival_err_cm_p90": 7.4,
+          "arrival_err_cm_max": 8.3,
+          "success_rate_pct": 58.3,
+          "cup_collision_rate_pct": 0.0,
+          "danger_zone_violation_rate_pct": 0.0,
+          "cliff_fall_rate_pct": 0.0,
+          "overshoot_cm_mean": 8.47,
+          "max_abs_pitch_deg": 9.11,
+          "settle_time_s_mean": 7.74
+        },
+        "P2_twin_cup_slalom": {
+          "n_episodes": 12,
+          "arrival_err_cm_mean": 14.46,
+          "arrival_err_cm_p90": 16.08,
+          "arrival_err_cm_max": 19.35,
+          "success_rate_pct": 0.0,
+          "cup_collision_rate_pct": 100.0,
+          "danger_zone_violation_rate_pct": 0.0,
+          "cliff_fall_rate_pct": 0.0,
+          "overshoot_cm_mean": 12.87,
+          "max_abs_pitch_deg": 13.74,
+          "settle_time_s_mean": 5.25
+        },
+        "P3_danger_zone_detour": {
+          "n_episodes": 12,
+          "arrival_err_cm_mean": 14.84,
+          "arrival_err_cm_p90": 17.02,
+          "arrival_err_cm_max": 18.39,
+          "success_rate_pct": 0.0,
+          "cup_collision_rate_pct": 0.0,
+          "danger_zone_violation_rate_pct": 100.0,
+          "cliff_fall_rate_pct": 0.0,
+          "overshoot_cm_mean": 13.31,
+          "max_abs_pitch_deg": 13.66,
+          "settle_time_s_mean": 5.2
+        },
+        "P4_cliff_edge_stop": {
+          "n_episodes": 12,
+          "arrival_err_cm_mean": 7.85,
+          "arrival_err_cm_p90": 7.97,
+          "arrival_err_cm_max": 8.2,
+          "success_rate_pct": 0.0,
+          "cup_collision_rate_pct": 0.0,
+          "danger_zone_violation_rate_pct": 0.0,
+          "cliff_fall_rate_pct": 100.0,
+          "overshoot_cm_mean": 7.68,
+          "max_abs_pitch_deg": 5.66,
+          "settle_time_s_mean": 13.44
+        },
+        "P5_dynamic_reping_chain": {
+          "n_episodes": 12,
+          "arrival_err_cm_mean": 15.25,
+          "arrival_err_cm_p90": 19.39,
+          "arrival_err_cm_max": 19.52,
+          "success_rate_pct": 0.0,
+          "cup_collision_rate_pct": 0.0,
+          "danger_zone_violation_rate_pct": 0.0,
+          "cliff_fall_rate_pct": 0.0,
+          "overshoot_cm_mean": 13.81,
+          "max_abs_pitch_deg": 13.25,
+          "settle_time_s_mean": 8.23
+        },
+        "P6_asymmetric_fault_storm": {
+          "n_episodes": 12,
+          "arrival_err_cm_mean": 9.26,
+          "arrival_err_cm_p90": 13.37,
+          "arrival_err_cm_max": 14.2,
+          "success_rate_pct": 0.0,
+          "cup_collision_rate_pct": 0.0,
+          "danger_zone_violation_rate_pct": 100.0,
+          "cliff_fall_rate_pct": 0.0,
+          "overshoot_cm_mean": 9.39,
+          "max_abs_pitch_deg": 11.33,
+          "settle_time_s_mean": 5.62
+        }
+      }
+    },
+    "classic_pn": {
+      "overall": {
+        "total_episodes": 72,
+        "arrival_err_cm_mean": 13.18,
+        "arrival_err_cm_p90": 19.83,
+        "success_rate_pct": 5.6,
+        "cup_collision_rate_pct": 16.7,
+        "danger_zone_violation_rate_pct": 26.4,
+        "cliff_fall_rate_pct": 16.7,
+        "overshoot_cm_mean": 13.78,
+        "max_abs_pitch_deg": 14.65,
+        "settle_time_s_mean": 7.93
+      },
+      "per_scenario": {
+        "P1_rear_165_turn": {
+          "n_episodes": 12,
+          "arrival_err_cm_mean": 6.47,
+          "arrival_err_cm_p90": 9.88,
+          "arrival_err_cm_max": 10.1,
+          "success_rate_pct": 33.3,
+          "cup_collision_rate_pct": 0.0,
+          "danger_zone_violation_rate_pct": 0.0,
+          "cliff_fall_rate_pct": 0.0,
+          "overshoot_cm_mean": 8.64,
+          "max_abs_pitch_deg": 10.25,
+          "settle_time_s_mean": 7.45
+        },
+        "P2_twin_cup_slalom": {
+          "n_episodes": 12,
+          "arrival_err_cm_mean": 17.12,
+          "arrival_err_cm_p90": 19.99,
+          "arrival_err_cm_max": 20.91,
+          "success_rate_pct": 0.0,
+          "cup_collision_rate_pct": 100.0,
+          "danger_zone_violation_rate_pct": 0.0,
+          "cliff_fall_rate_pct": 0.0,
+          "overshoot_cm_mean": 16.88,
+          "max_abs_pitch_deg": 14.52,
+          "settle_time_s_mean": 4.92
+        },
+        "P3_danger_zone_detour": {
+          "n_episodes": 12,
+          "arrival_err_cm_mean": 18.13,
+          "arrival_err_cm_p90": 20.36,
+          "arrival_err_cm_max": 21.74,
+          "success_rate_pct": 0.0,
+          "cup_collision_rate_pct": 0.0,
+          "danger_zone_violation_rate_pct": 100.0,
+          "cliff_fall_rate_pct": 0.0,
+          "overshoot_cm_mean": 17.28,
+          "max_abs_pitch_deg": 14.39,
+          "settle_time_s_mean": 4.93
+        },
+        "P4_cliff_edge_stop": {
+          "n_episodes": 12,
+          "arrival_err_cm_mean": 7.87,
+          "arrival_err_cm_p90": 7.93,
+          "arrival_err_cm_max": 8.31,
+          "success_rate_pct": 0.0,
+          "cup_collision_rate_pct": 0.0,
+          "danger_zone_violation_rate_pct": 0.0,
+          "cliff_fall_rate_pct": 100.0,
+          "overshoot_cm_mean": 7.61,
+          "max_abs_pitch_deg": 5.71,
+          "settle_time_s_mean": 13.44
+        },
+        "P5_dynamic_reping_chain": {
+          "n_episodes": 12,
+          "arrival_err_cm_mean": 14.62,
+          "arrival_err_cm_p90": 17.11,
+          "arrival_err_cm_max": 18.95,
+          "success_rate_pct": 0.0,
+          "cup_collision_rate_pct": 0.0,
+          "danger_zone_violation_rate_pct": 0.0,
+          "cliff_fall_rate_pct": 0.0,
+          "overshoot_cm_mean": 17.85,
+          "max_abs_pitch_deg": 14.65,
+          "settle_time_s_mean": 11.28
+        },
+        "P6_asymmetric_fault_storm": {
+          "n_episodes": 12,
+          "arrival_err_cm_mean": 14.85,
+          "arrival_err_cm_p90": 19.73,
+          "arrival_err_cm_max": 21.09,
+          "success_rate_pct": 0.0,
+          "cup_collision_rate_pct": 0.0,
+          "danger_zone_violation_rate_pct": 58.3,
+          "cliff_fall_rate_pct": 0.0,
+          "overshoot_cm_mean": 14.39,
+          "max_abs_pitch_deg": 13.37,
+          "settle_time_s_mean": 5.54
+        }
+      }
+    },
+    "ping_point_nav_v1": {
+      "overall": {
+        "total_episodes": 72,
+        "arrival_err_cm_mean": 1.24,
+        "arrival_err_cm_p90": 3.43,
+        "success_rate_pct": 98.6,
+        "cup_collision_rate_pct": 0.0,
+        "danger_zone_violation_rate_pct": 0.0,
+        "cliff_fall_rate_pct": 0.0,
+        "overshoot_cm_mean": 2.05,
+        "max_abs_pitch_deg": 9.25,
+        "settle_time_s_mean": 7.43
+      },
+      "per_scenario": {
+        "P1_rear_165_turn": {
+          "n_episodes": 12,
+          "arrival_err_cm_mean": 0.2,
+          "arrival_err_cm_p90": 0.35,
+          "arrival_err_cm_max": 0.42,
+          "success_rate_pct": 100.0,
+          "cup_collision_rate_pct": 0.0,
+          "danger_zone_violation_rate_pct": 0.0,
+          "cliff_fall_rate_pct": 0.0,
+          "overshoot_cm_mean": 1.68,
+          "max_abs_pitch_deg": 4.51,
+          "settle_time_s_mean": 6.96
+        },
+        "P2_twin_cup_slalom": {
+          "n_episodes": 12,
+          "arrival_err_cm_mean": 1.78,
+          "arrival_err_cm_p90": 2.85,
+          "arrival_err_cm_max": 3.49,
+          "success_rate_pct": 100.0,
+          "cup_collision_rate_pct": 0.0,
+          "danger_zone_violation_rate_pct": 0.0,
+          "cliff_fall_rate_pct": 0.0,
+          "overshoot_cm_mean": 2.45,
+          "max_abs_pitch_deg": 5.88,
+          "settle_time_s_mean": 8.2
+        },
+        "P3_danger_zone_detour": {
+          "n_episodes": 12,
+          "arrival_err_cm_mean": 0.68,
+          "arrival_err_cm_p90": 1.84,
+          "arrival_err_cm_max": 2.26,
+          "success_rate_pct": 100.0,
+          "cup_collision_rate_pct": 0.0,
+          "danger_zone_violation_rate_pct": 0.0,
+          "cliff_fall_rate_pct": 0.0,
+          "overshoot_cm_mean": 1.4,
+          "max_abs_pitch_deg": 4.69,
+          "settle_time_s_mean": 7.92
+        },
+        "P4_cliff_edge_stop": {
+          "n_episodes": 12,
+          "arrival_err_cm_mean": 3.01,
+          "arrival_err_cm_p90": 3.73,
+          "arrival_err_cm_max": 4.19,
+          "success_rate_pct": 100.0,
+          "cup_collision_rate_pct": 0.0,
+          "danger_zone_violation_rate_pct": 0.0,
+          "cliff_fall_rate_pct": 0.0,
+          "overshoot_cm_mean": 1.83,
+          "max_abs_pitch_deg": 5.04,
+          "settle_time_s_mean": 4.82
+        },
+        "P5_dynamic_reping_chain": {
+          "n_episodes": 12,
+          "arrival_err_cm_mean": 0.34,
+          "arrival_err_cm_p90": 0.59,
+          "arrival_err_cm_max": 0.71,
+          "success_rate_pct": 100.0,
+          "cup_collision_rate_pct": 0.0,
+          "danger_zone_violation_rate_pct": 0.0,
+          "cliff_fall_rate_pct": 0.0,
+          "overshoot_cm_mean": 3.69,
+          "max_abs_pitch_deg": 9.25,
+          "settle_time_s_mean": 7.68
+        },
+        "P6_asymmetric_fault_storm": {
+          "n_episodes": 12,
+          "arrival_err_cm_mean": 1.45,
+          "arrival_err_cm_p90": 1.55,
+          "arrival_err_cm_max": 5.62,
+          "success_rate_pct": 91.7,
+          "cup_collision_rate_pct": 0.0,
+          "danger_zone_violation_rate_pct": 0.0,
+          "cliff_fall_rate_pct": 0.0,
+          "overshoot_cm_mean": 1.25,
+          "max_abs_pitch_deg": 6.94,
+          "settle_time_s_mean": 9.01
+        }
+      }
+    }
+  }
+}

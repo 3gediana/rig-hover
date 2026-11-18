@@ -1,0 +1,369 @@
+{
+  "schema_version": 1,
+  "model_info": {
+    "model_name": "hover-gaussian-splat-v2",
+    "version": "2026.11.18",
+    "input_shape": [
+      1,
+      96,
+      96,
+      3
+    ],
+    "output_shape": [
+      1,
+      48,
+      48,
+      6
+    ],
+    "epochs": 48,
+    "train_synth_pairs": 2400,
+    "train_real_frames": 200,
+    "val_synth_pairs": 300,
+    "train_time_sec": 455.01,
+    "cpu_latency_ms": 2.381,
+    "tflite_bytes": 587480,
+    "max_abs_diff": 3.6954879760742188e-06,
+    "sha256": "15ca2da5669f49a5125f8b466d1b4deb1100f2fc125fe401510a2dfd7467afdd"
+  },
+  "validation_metrics": {
+    "AbsRel": 0.0345,
+    "RMSE_m": 0.0634,
+    "elev_F1": 0.9648,
+    "novel_view_psnr_db": 21.53,
+    "table_mean_scale_xy_mm": 16.53,
+    "table_mean_scale_z_mm": 6.2,
+    "table_anisotropy_sz_over_sxy": 0.375,
+    "object_mean_scale_xy_mm": 12.53,
+    "object_mean_scale_z_mm": 35.8,
+    "object_anisotropy_sz_over_sxy": 2.857,
+    "near_field_mean_precision_tau": 1789.4,
+    "far_field_mean_precision_tau": 31.8,
+    "uncertainty_error_corr": 0.2866
+  },
+  "spatial_memory_expansion_benchmark": {
+    "initial_area_m2": 0.4575,
+    "expanded_area_m2": 3.3025,
+    "area_expansion_ratio": 7.22,
+    "region_a_splat_retention_rate": 1.0,
+    "initial_cup_3d_rmse_m": 0.02168,
+    "final_kalman_cup_3d_rmse_m": 0.01205,
+    "multiview_position_error_reduction_pct": 44.42,
+    "initial_posterior_sigma_m": 0.04859,
+    "final_posterior_sigma_m": 0.02221,
+    "posterior_sigma_reduction_pct": 54.29,
+    "total_persistent_splats": 5348,
+    "kalman_fusion_updates": 11395,
+    "multi_sector_upgrades": 1125,
+    "return_to_region_a_goal_xy": [
+      0.12,
+      -0.14
+    ],
+    "ping_raycast_roundtrip_error_m": 5.551115123125783e-17,
+    "target_initially_out_of_fov": true,
+    "initial_target_bearing_deg": -178.31,
+    "return_reached": true,
+    "return_final_error_m": 0.02196,
+    "return_min_obstacle_clearance_m": 0.1126,
+    "ply_export": {
+      "ply_path": "D:\\robot_work\\runs_end_side\\neural_3dgs\\expanded_memory_map.ply",
+      "vertex_count": 5348,
+      "file_bytes": 425582,
+      "explored_area_m2": 3.3025
+    }
+  },
+  "exploration_step_history": [
+    {
+      "step": 0,
+      "robot_xy": [
+        0.0,
+        0.0
+      ],
+      "gaze_yaw_deg": 6.0,
+      "total_splats": 497,
+      "explored_area_m2": 0.4575,
+      "kalman_cup_rmse_m": 0.02168,
+      "single_view_cup_rmse_m": 0.02168,
+      "cup_mean_sectors": 1.0,
+      "cup_posterior_sigma_m": 0.04859,
+      "region_a_retention": 1.0
+    },
+    {
+      "step": 1,
+      "robot_xy": [
+        0.06,
+        -0.02
+      ],
+      "gaze_yaw_deg": -16.0,
+      "total_splats": 751,
+      "explored_area_m2": 0.6325,
+      "kalman_cup_rmse_m": 0.0182,
+      "single_view_cup_rmse_m": 0.01606,
+      "cup_mean_sectors": 1.0,
+      "cup_posterior_sigma_m": 0.03941,
+      "region_a_retention": 1.0
+    },
+    {
+      "step": 2,
+      "robot_xy": [
+        0.12,
+        0.0
+      ],
+      "gaze_yaw_deg": 30.0,
+      "total_splats": 1143,
+      "explored_area_m2": 0.885,
+      "kalman_cup_rmse_m": 0.01347,
+      "single_view_cup_rmse_m": 0.01044,
+      "cup_mean_sectors": 1.0,
+      "cup_posterior_sigma_m": 0.04187,
+      "region_a_retention": 1.0
+    },
+    {
+      "step": 3,
+      "robot_xy": [
+        0.2,
+        0.08
+      ],
+      "gaze_yaw_deg": 6.0,
+      "total_splats": 1435,
+      "explored_area_m2": 1.01,
+      "kalman_cup_rmse_m": 0.01096,
+      "single_view_cup_rmse_m": 0.00956,
+      "cup_mean_sectors": 1.42,
+      "cup_posterior_sigma_m": 0.03196,
+      "region_a_retention": 1.0
+    },
+    {
+      "step": 4,
+      "robot_xy": [
+        0.28,
+        0.24
+      ],
+      "gaze_yaw_deg": -22.0,
+      "total_splats": 1718,
+      "explored_area_m2": 1.17,
+      "kalman_cup_rmse_m": 0.01265,
+      "single_view_cup_rmse_m": 0.0163,
+      "cup_mean_sectors": 1.67,
+      "cup_posterior_sigma_m": 0.02522,
+      "region_a_retention": 1.0
+    },
+    {
+      "step": 5,
+      "robot_xy": [
+        0.4,
+        0.38
+      ],
+      "gaze_yaw_deg": -54.0,
+      "total_splats": 2008,
+      "explored_area_m2": 1.35,
+      "kalman_cup_rmse_m": 0.01262,
+      "single_view_cup_rmse_m": 0.01051,
+      "cup_mean_sectors": 2.2,
+      "cup_posterior_sigma_m": 0.02188,
+      "region_a_retention": 1.0
+    },
+    {
+      "step": 6,
+      "robot_xy": [
+        0.56,
+        0.44
+      ],
+      "gaze_yaw_deg": -88.0,
+      "total_splats": 2228,
+      "explored_area_m2": 1.47,
+      "kalman_cup_rmse_m": 0.01294,
+      "single_view_cup_rmse_m": 0.01275,
+      "cup_mean_sectors": 2.43,
+      "cup_posterior_sigma_m": 0.02199,
+      "region_a_retention": 1.0
+    },
+    {
+      "step": 7,
+      "robot_xy": [
+        0.7,
+        0.44
+      ],
+      "gaze_yaw_deg": -114.0,
+      "total_splats": 2427,
+      "explored_area_m2": 1.6125,
+      "kalman_cup_rmse_m": 0.01235,
+      "single_view_cup_rmse_m": 0.0093,
+      "cup_mean_sectors": 2.57,
+      "cup_posterior_sigma_m": 0.02492,
+      "region_a_retention": 1.0
+    },
+    {
+      "step": 8,
+      "robot_xy": [
+        0.82,
+        0.44
+      ],
+      "gaze_yaw_deg": -132.0,
+      "total_splats": 2632,
+      "explored_area_m2": 1.745,
+      "kalman_cup_rmse_m": 0.01205,
+      "single_view_cup_rmse_m": 0.00839,
+      "cup_mean_sectors": 2.53,
+      "cup_posterior_sigma_m": 0.02221,
+      "region_a_retention": 1.0
+    },
+    {
+      "step": 9,
+      "robot_xy": [
+        0.86,
+        0.44
+      ],
+      "gaze_yaw_deg": 22.0,
+      "total_splats": 3122,
+      "explored_area_m2": 2.1175,
+      "kalman_cup_rmse_m": 0.01205,
+      "single_view_cup_rmse_m": 0.02168,
+      "cup_mean_sectors": 2.53,
+      "cup_posterior_sigma_m": 0.02221,
+      "region_a_retention": 1.0
+    },
+    {
+      "step": 10,
+      "robot_xy": [
+        0.9,
+        0.45
+      ],
+      "gaze_yaw_deg": -6.0,
+      "total_splats": 3494,
+      "explored_area_m2": 2.3025,
+      "kalman_cup_rmse_m": 0.01205,
+      "single_view_cup_rmse_m": 0.02168,
+      "cup_mean_sectors": 2.53,
+      "cup_posterior_sigma_m": 0.02221,
+      "region_a_retention": 1.0
+    },
+    {
+      "step": 11,
+      "robot_xy": [
+        0.94,
+        0.46
+      ],
+      "gaze_yaw_deg": 54.0,
+      "total_splats": 3890,
+      "explored_area_m2": 2.6475,
+      "kalman_cup_rmse_m": 0.01205,
+      "single_view_cup_rmse_m": 0.02168,
+      "cup_mean_sectors": 2.53,
+      "cup_posterior_sigma_m": 0.02221,
+      "region_a_retention": 1.0
+    },
+    {
+      "step": 12,
+      "robot_xy": [
+        0.97,
+        0.46
+      ],
+      "gaze_yaw_deg": -14.0,
+      "total_splats": 4187,
+      "explored_area_m2": 2.7525,
+      "kalman_cup_rmse_m": 0.01205,
+      "single_view_cup_rmse_m": 0.02168,
+      "cup_mean_sectors": 2.53,
+      "cup_posterior_sigma_m": 0.02221,
+      "region_a_retention": 1.0
+    },
+    {
+      "step": 13,
+      "robot_xy": [
+        1.0,
+        0.47
+      ],
+      "gaze_yaw_deg": 58.0,
+      "total_splats": 4527,
+      "explored_area_m2": 2.9275,
+      "kalman_cup_rmse_m": 0.01205,
+      "single_view_cup_rmse_m": 0.02168,
+      "cup_mean_sectors": 2.53,
+      "cup_posterior_sigma_m": 0.02221,
+      "region_a_retention": 1.0
+    },
+    {
+      "step": 14,
+      "robot_xy": [
+        1.02,
+        0.47
+      ],
+      "gaze_yaw_deg": -18.0,
+      "total_splats": 4724,
+      "explored_area_m2": 3.0275,
+      "kalman_cup_rmse_m": 0.01205,
+      "single_view_cup_rmse_m": 0.02168,
+      "cup_mean_sectors": 2.53,
+      "cup_posterior_sigma_m": 0.02221,
+      "region_a_retention": 1.0
+    },
+    {
+      "step": 15,
+      "robot_xy": [
+        1.04,
+        0.48
+      ],
+      "gaze_yaw_deg": 64.0,
+      "total_splats": 4986,
+      "explored_area_m2": 3.1525,
+      "kalman_cup_rmse_m": 0.01205,
+      "single_view_cup_rmse_m": 0.02168,
+      "cup_mean_sectors": 2.53,
+      "cup_posterior_sigma_m": 0.02221,
+      "region_a_retention": 1.0
+    },
+    {
+      "step": 16,
+      "robot_xy": [
+        1.05,
+        0.48
+      ],
+      "gaze_yaw_deg": 14.0,
+      "total_splats": 5206,
+      "explored_area_m2": 3.2525,
+      "kalman_cup_rmse_m": 0.01205,
+      "single_view_cup_rmse_m": 0.02168,
+      "cup_mean_sectors": 2.53,
+      "cup_posterior_sigma_m": 0.02221,
+      "region_a_retention": 1.0
+    },
+    {
+      "step": 17,
+      "robot_xy": [
+        1.05,
+        0.48
+      ],
+      "gaze_yaw_deg": 32.0,
+      "total_splats": 5348,
+      "explored_area_m2": 3.3025,
+      "kalman_cup_rmse_m": 0.01205,
+      "single_view_cup_rmse_m": 0.02168,
+      "cup_mean_sectors": 2.53,
+      "cup_posterior_sigma_m": 0.02221,
+      "region_a_retention": 1.0
+    }
+  ],
+  "real_heldout_sequence_evaluation": {
+    "real_take_id": "robot_20261115_151733_cb8455",
+    "fused_real_frames": 12,
+    "real_memory_splats": 3609,
+    "real_explored_area_m2": 1.495,
+    "real_table_scale_xy_mm": 18.38,
+    "real_table_scale_z_mm": 4.98,
+    "real_fg_scale_xy_mm": 11.57,
+    "real_fg_scale_z_mm": 31.19,
+    "real_sigma_first_frame_m": 0.08294,
+    "real_sigma_final_frame_m": 0.09601
+  },
+  "artifacts": {
+    "tflite_path": "D:\\robot_work\\runs_end_side\\neural_3dgs\\hover_gaussian_splat_v2.tflite",
+    "json_path": "D:\\robot_work\\runs_end_side\\neural_3dgs\\hover_gaussian_splat_v2.json",
+    "zip_path": "D:\\robot_work\\runs_end_side\\neural_3dgs\\hover-gaussian-splat-v2-bundle.zip",
+    "android_assets": [
+      "G:\\robot_app\\android\\app\\src\\main\\assets\\models\\hover_gaussian_splat_v2.tflite",
+      "G:\\robot_app\\android\\app\\src\\main\\assets\\models\\hover_gaussian_splat_v2.json"
+    ],
+    "expanded_memory_ply": "D:\\robot_work\\runs_end_side\\neural_3dgs\\expanded_memory_map.ply",
+    "fig10_path": "D:\\robot_work\\docs\\showcase\\figs\\fig10_neural_3dgs_memory_expansion.png"
+  }
+}

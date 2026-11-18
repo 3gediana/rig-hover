@@ -30,6 +30,7 @@ from telemetry_flywheel import auto_calibrate_system_id, parse_blackbox_jsonl  #
 
 
 DEFAULT_SEARCH_DIRS = [
+    Path("D:/robot_work/runs_end_side/neural_3dgs"),
     Path("D:/robot_work/runs_end_side/hover_rl_policy"),
     Path("D:/robot_work/runs_knock/double_knock_20261115/bundle"),
     Path("D:/robot_work/runs_end_side/mono_depth"),

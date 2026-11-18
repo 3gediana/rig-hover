@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "name": "ping-point-nav-v1",
+  "version": "2026.11.18-ping-v1",
+  "task": "policy",
+  "input": {
+    "width": 0,
+    "height": 0,
+    "channels": 3,
+    "normalize": "unit"
+  },
+  "policy": {
+    "featureDim": 39,
+    "actionDim": 3
+  },
+  "sha256": "0d9136cd30433d7a6228f9f289b6f749b3031bb68770539c2cf1b2c58dc0fdc8",
+  "notes": "360-deg LoL Ground Ping Point-Goal & Virtual Danger-Zone Detour RL Policy (39->160->160+Res->3, TFLite v3 Builtin Ops, BC Warm-Start + Asymmetric Privileged PPO)."
+}

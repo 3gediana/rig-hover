@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "name": "hover-gaussian-splat-v2",
+  "version": "2026.11.18",
+  "task": "depth",
+  "input": {
+    "width": 96,
+    "height": 96,
+    "channels": 3,
+    "normalize": "unit"
+  },
+  "output": {
+    "width": 48,
+    "height": 48,
+    "channels": 6,
+    "channelNames": [
+      "inv_depth_01",
+      "elev_01",
+      "scale_xy_01",
+      "scale_z_01",
+      "opacity_01",
+      "precision_01"
+    ],
+    "invDepthMin": 0.35,
+    "invDepthSpan": 4.15,
+    "depthMinM": 0.2222,
+    "depthMaxM": 2.8571,
+    "elevThresholdM": 0.03,
+    "scaleXyMinM": 0.008,
+    "scaleXyMaxM": 0.046,
+    "scaleZMinM": 0.003,
+    "scaleZMaxM": 0.042,
+    "opacityMin": 0.02,
+    "opacityMax": 0.99,
+    "precisionMin": 25.0,
+    "precisionMax": 10000.0
+  },
+  "camera": {
+    "heightM": 0.115,
+    "fovHDeg": 60.0
+  },
+  "sha256": "15ca2da5669f49a5125f8b466d1b4deb1100f2fc125fe401510a2dfd7467afdd",
+  "notes": "RIG-Hover Feed-Forward 6-Channel Neural 3D Gaussian Splat Predictor (96x96x3 -> 48x48x6, TFLite v3 pure builtins)"
+}
