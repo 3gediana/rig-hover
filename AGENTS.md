@@ -524,3 +524,4 @@ dist_k=0.84 ⇒ f_px = 118.6 ⇒ FOV_V = 90°
 | [本机并发 torch 进程会伪造崩溃](.agents/experience/windows-concurrent-torch-limits.md) | 见到 `WinError 1455/1114`、`bad allocation`、`cudaErrorAlreadyMapped` 时。先查并发，再怀疑代码 |
 | [流式记忆网络实测结论](.agents/experience/cfc-and-temporal-memory-findings.md) | 再碰"视频流决策网络"之前。含 CfC 的致命数字、已验证的时序任务构造法、未解决的方向 |
 | [D: 盘大文件已搬到 G:（2026-11-04）](stream_memory_research/reports/DISK-OFFLOAD-2026-11-04.md) | 找不到 `runs/<run_id>/checkpoints/*.pt` 时。权重在 `G:\stream_memory_data\research_checkpoints`，`eval_manifests.py` 已加回退；D: 释放 6.15 GB |
+| [v18-v20 追捕/悬崖/双敲踩坑与实证](.agents/experience/end-side-pursuit-cliff-knock-findings.md) | 碰 pursuit tracker、悬崖检测、双敲评测、仿真调度前。含 14cm 关联门、幻影刷新、FOV 失联自旋、GeoNet 暗像素盲区、部署阈值即最优、BelowNormal 纪律 |
