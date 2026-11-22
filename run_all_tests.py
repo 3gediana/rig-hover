@@ -98,6 +98,10 @@ SUITES = [
     # hurting itself had only ever run on hardware.
     ("safety", "firmware safety shell (7 defences)", rf"{W}\pc\train\arbtest",
      ["build_and_run.py"], True),
+    # 2026-11-22/23 端侧具身大脑栈：GeoNet/双敲/SE(2) 重定位/CBF/活桌行为/
+    # 追捕/悬崖/LCD 表情生成器+桥接，共 56 个 pytest 门禁（~30 s）。
+    ("endside", "end-side embodied brain stack (56 pytest gates)", rf"{W}\pc\end_side",
+     ["-m", "pytest", ".", "-x", "-q", "-p", "no:cacheprovider"], True),
 ]
 
 FAIL_LINE_RE = re.compile(r"(?m)^\s*\[?(?:FAIL|FAILED)\b")
