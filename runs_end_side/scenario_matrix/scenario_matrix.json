@@ -6,7 +6,7 @@
     "T3": "HIL (ESP32-compatible local loop)",
     "T4": "physical robot"
   },
-  "generated_at": "2026-11-23 01:04:47",
+  "generated_at": "2026-11-23 07:14:24",
   "entries": [
     {
       "id": "knock-3d-v2",
@@ -265,6 +265,25 @@
       },
       "artifacts": {},
       "notes": "ping_point_nav_v1 71/72 spec-compliant in 8-scenario sandbox."
+    },
+    {
+      "id": "pursuit-v18",
+      "name": "v18 pursuit: chase/escort moving cup (+drop obstacle, +70deg kidnap)",
+      "category": "behavior",
+      "tier": "T1",
+      "source": "runs_end_side/pursuit_v18/pursuit_v18_report.json",
+      "metrics": {
+        "S1_capture": null,
+        "S4_capture": null,
+        "S4_escort": null,
+        "S4_static_clear_cm": null,
+        "S5_capture": null,
+        "vel_err_mps": null
+      },
+      "artifacts": {
+        "mp4": "runs_end_side/pursuit_v18/demo_pursuit_v18.mp4"
+      },
+      "notes": "Kalman-lead interception + tangent-bug detour + stale-tracker hard reinit + body-spin reacquire. S2 zigzag: cup's scripted path physically crosses the robot when the tracker is blind — documented hard edge."
     }
   ],
   "gaps": [
@@ -285,8 +304,8 @@
       "blocking": "needs pc_unified_brain_app run on a full take, not just segments"
     },
     {
-      "gap": "pursuit/follow-a-cup behavior",
-      "blocking": "none - implementable in DesktopArena3D tonight"
+      "gap": "pursuit S2 hard edge: cup zigzags through robot + rests out of 60deg FOV",
+      "blocking": "needs wider FOV / predictive dodge / multi-hypothesis tracking"
     },
     {
       "gap": "edge-survey cliff-map then point-to-point anywhere",

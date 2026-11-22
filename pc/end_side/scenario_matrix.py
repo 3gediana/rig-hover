@@ -296,6 +296,30 @@ def entries() -> list[dict]:
     })
 
     # ------------------------------------------------------------------
+    # v18 pursuit: chase & escort a moving cup
+    # ------------------------------------------------------------------
+    d = _load("pursuit_v18/pursuit_v18_report.json")
+    if d.get("scenarios"):
+        def _pm(sid, key):
+            sc = d["scenarios"].get(sid) or {}
+            return sc.get(key)
+        e.append({
+            "id": "pursuit-v18", "name": "v18 pursuit: chase/escort moving cup (+drop obstacle, +70deg kidnap)",
+            "category": "behavior", "tier": "T1",
+            "source": "runs_end_side/pursuit_v18/pursuit_v18_report.json",
+            "metrics": {
+                "S1_capture": _pm("S1_linear_chase", "capture_step"),
+                "S4_capture": _pm("S4_chaos_pursuit", "capture_step"),
+                "S4_escort": _pm("S4_chaos_pursuit", "escort_band_ratio"),
+                "S4_static_clear_cm": _pm("S4_chaos_pursuit", "min_static_clear_cm"),
+                "S5_capture": _pm("S5_drop_only", "capture_step"),
+                "vel_err_mps": _pm("S4_chaos_pursuit", "vel_err_mps"),
+            },
+            "artifacts": {"mp4": "runs_end_side/pursuit_v18/demo_pursuit_v18.mp4"},
+            "notes": "Kalman-lead interception + tangent-bug detour + stale-tracker hard reinit + body-spin reacquire. S2 zigzag: cup's scripted path physically crosses the robot when the tracker is blind — documented hard edge.",
+        })
+
+    # ------------------------------------------------------------------
     # Gaps / not-yet-run candidates
     # ------------------------------------------------------------------
     gaps = [
@@ -303,7 +327,7 @@ def entries() -> list[dict]:
         {"gap": "camera intrinsics calibration (FOV_H=60deg vs dist_k=0.84 contradiction)", "blocking": "needs printed checkerboard + 5min capture on the real robot"},
         {"gap": "double-knock recall still ~65-77% under strict streaming", "blocking": "ensemble/rhythm-filter experiments below; more low-fps takes"},
         {"gap": "full E2E real-video scenario (face->fist->knock->dock->lookback) on recorded take", "blocking": "needs pc_unified_brain_app run on a full take, not just segments"},
-        {"gap": "pursuit/follow-a-cup behavior", "blocking": "none - implementable in DesktopArena3D tonight"},
+        {"gap": "pursuit S2 hard edge: cup zigzags through robot + rests out of 60deg FOV", "blocking": "needs wider FOV / predictive dodge / multi-hypothesis tracking"},
         {"gap": "edge-survey cliff-map then point-to-point anywhere", "blocking": "none - implementable in DesktopArena3D tonight"},
         {"gap": "Android TFLite on-device run of the GeoNet+knock bundle", "blocking": "needs G:\\robot_app build + phone"},
     ]

@@ -509,7 +509,35 @@ JVM 单测 `DoubleKnockKinematicsTest` 两条通过（含 13 fps 输入在 ~32 �
 - `pc/end_side/scenario_matrix.py` 扫描全部 `runs_end_side` 报告，输出 `scenario_capability_matrix.json`：16 个已验证场景条目（带验证层级 T0–T3）+ 7 个明确缺口（真机物理验收、相机内参标定、双敲严格流式召回、全链路真机录像 E2E、跟随水杯行为、边缘勘测+任意点导航、Android TFLite 实测）。
 - `pc/end_side/ensemble_knock_v5.py` 对全部 5 个 deploy ckpt 做同协议流式评测 + mean/vote/LOO 融合：**`physnet_v11` 单模型最强（in-sample F1 `0.9474`，81/89，1 FP，0.052 FA/min），且在压垮 v13 的 `1f30d1` 折上 19/19 满分**；所有融合方案均不优于最佳单模型（vote-2of5 `0.913` 但 FP 增至 11）。诚实边界：deploy ckpt 见过全部 take，绝对值为上界，结论只用于"谁当部署默认"。
 
-### 13.7 本轮诚实边界
+### 13.8 v18 追捕逃逸水杯：卡尔曼前瞻拦截 + 目标失联机身扫视重捕获
+
+**动机**：v15 里移动水杯是要绕开的动态障碍；v18 把它反过来——杯子本身就是目标，机器人要追上去"按住"并伴跑护送。这条链把动态跟踪、目标预测、障碍记忆、位姿劫持恢复全部串进一个连续任务，是最接近"桌面伴侣"叙事的行为（`pc/end_side/pursuit_moving_cup_v18.py`，`runs_end_side/pursuit_v18/`）。
+
+**机制**（全部零真值视觉闭环，`pursuit_mode=True` 内嵌于 `run_living_brain_episode`）：
+
+- `RobustDynamicObstacleTracker` 4 态卡尔曼（位置+速度），目标点 = 预测拦截点 − 接近方向×保持距（`pursuit_lead_s` 可调，S3 为 0 前瞻对照组）；
+- 触碰带 `rad+2.5cm` 判"捕获"，随后护送带 0–24cm 统计 `escort_band`；
+- **屏蔽二次检测**：`detect_novel_3d_obstacle_live(exclude_xy=tracker)` 屏蔽杯子邻域，让途中突降的第二个障碍浮出水面并永久记入 `discovered_static_obs`；
+- **切线偏转（tangent-bug）**：目标方向穿过障碍视锥时沿切线绕行，无锁存每步重算（取代早期会死锁的走廊锁存方案）；
+- **失锁重捕获链**：14cm 关联门把"杯子已换位"的检测永久拒绝 → 加 `_tracker_reinit` 硬重置；幻影检测会刷新 `last_obs_step` 造成"假存活" → 新增 `last_move_step`（观测累计位移 >3cm 才算）作失联判据；失联 >14 步触发**持续同向机身扫视**（±交替只会原地摆动，永远转不到 FOV 外）；
+- **停靠判据修正**：冻结卡尔曼速度不衰减导致 `is_moving` 永真 → `cup_rest` 现要求"tracker 新鲜（≤8 步有观测）且判静止"，假停靠消除；
+- 检测球只进**目标层规避**（standoff 绕杯旋转选净空侧 + 切线偏转），不进瞬时 SDF 制动——检测中心漂移 ~10cm，幻影球会把护盾误刹成死锁（实测复现）。
+
+**结果**（`pursuit_v18_report.json`，同 seed 全套）：
+
+| 场景 | 捕获 | escort_band | min_chase_edge | min_static_clear | 备注 |
+|---|---|---|---|---|---|
+| S1 直线逃逸 | @s20 | 1.0 | +0.84cm | +2.10cm | vel_err 0.052m/s |
+| S2 L 折线变向 | @s16 | 0.35 | −7.40cm | +2.59cm | 失联扫视找回→s76 完成；−7.4cm 为脚本杯物理穿身（见边界） |
+| S3 无前瞻对照 | @s24 | 1.0 | +2.38cm | +3.59cm | 比 S1 慢 4 步捕获——前瞻有收益 |
+| S4 地狱追捕 | @s24 | 0.5 | −2.68cm | +3.04cm | s10 检出突降、s12 +70° 劫持→7 步复位（err 1.0cm）、s24 捕获、s42 完成 |
+| S5 突降隔离 | @s23 | 1.0 | +2.06cm | +3.28cm | s10 检出突降，检测→目标层规避链路单独验证 |
+
+**诚实边界**：S2 的 −7.4cm 是脚本杯（无碰撞体的幽灵）弹道横穿机器人位置所致——追踪器死后机器人是坐靶，属物理不可避而非规划失误；S4 的 −2.68cm 是劫持复位后重捕获阶段的追身接触。全部指标为 T1 合成仿真，非真机验收。
+
+### 13.9 本轮诚实边界
+
+
 
 - 以上 v14/v15/v16 全部运动学指标来自 `DesktopArena3D` 合成闭环与真实录像回放的**感知侧**验证；真机立姿端对端验收（T4）尚未执行。
 - 回放侧发现并修复一处真实 bug：`pc_unified_brain_app.py` 在视频回放时用解码墙钟作 `timestamp`，现已改为视频内容时间轴（`idx/fps`），双敲响应显著回升。

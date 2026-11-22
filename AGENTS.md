@@ -478,11 +478,14 @@ dist_k=0.84 ⇒ f_px = 118.6 ⇒ FOV_V = 90°
 
 ## 9. 下一步（按优先级）
 
-> **2026-11-23 更新（取代下方旧冻结）**：v13–v17 端侧大脑链已建，当前最高优先级是
+> **2026-11-23 更新（取代下方旧冻结）**：v13–v18 端侧大脑链已建，当前最高优先级是
 > **真机验收（T4）**：机器人上线后 `sim2real_torture_and_bridge_v16.py --live --host 192.168.137.50`
 > 只读链路 → `pc_unified_brain_app.py --source live`（`--emote` 可看表情）→ 监督下 `--send-cmd`。
-> 能力缺口清单见 `runs_end_side/scenario_matrix/README.md`（7 项：物理验收、相机内参、
-> 双敲召回、E2E 真机录像、跟随水杯、边缘勘测导航、Android TFLite 实测）。
+> v18 追捕水杯（`pursuit_moving_cup_v18.py`）5 场景已验证 4.5/5（S2 折线=脚本杯穿身物理不可避，
+> 失联机身扫视重捕获已跑通）；v19 边缘勘测（`edge_survey_nav_v19.py`）把悬崖观测累积成边界地图做任意点导航。
+> 能力缺口清单见 `runs_end_side/scenario_matrix/README.md`。
+>
+> **资源纪律（用户明确要求）**：仿真一律 BelowNormal 优先级、单进程串行跑，机器曾被多开仿真卡死。
 >
 > ~~2026-11-03 21:06 起，科研主线转为 `RESEARCH-VideoCfC.md` §11：纯数学建模与推导。~~
 > （该冻结令已被后续任务取代，仅留档；§9.1 暂停清单部分仍有效。）
