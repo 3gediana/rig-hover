@@ -34,6 +34,8 @@
 
 **当前阶段**：端侧双敲识别模型（`DoubleKnockNet`）已完成 4 折留一与跨数据集零误报压力测试，端侧 39 维闭环强化学习策略（`BC Warm-Start + PPO`）已完成 5 控制器对比评测并导出真 FlatBuffers `.tflite` 部署包（详见 `SHOWCASE-REPORT-FOR-ADVISOR.md`）。
 
+**2026-11-22/23 状态更新（v13–v17）**：端侧大脑已串成端到端闭环并完成多轮压测——v13 严格自审（同架构 2D/3D 双敲消融增益仅 `+0.0217`，暴露跨场次校准退化）→ v14 具身大脑（真实录像双敲触发→3D 锁定→无里程计停靠 `3.97 cm`，30 局蒙特卡洛中位误差 `3.80 cm`）→ v15 活体桌面行为（视觉悬崖刹停、假动作免疫、物体恒存 NBV 探头、三连拷打）→ v16 Sim2Real 拷打（黑垫/悬崖视差区分、WiFi 延迟丢包、25 局全真蒙特卡洛碰撞率 `4%` vs 基线 `28%`）+ ESP32 HTTP HIL 16 周期中位 `35.6 ms` → v17 自研 EAF 表情生成器 + `/emote` 大脑状态表情桥（`brain_knock/brain_lock/brain_cliff_alert`）。统一入口 `pc/end_side/pc_unified_brain_app.py`（`--scenario 1|2`，`--source frames|video|live`，`--send-cmd` 显式授权，`--emote` 表情镜像）。**全部指标止于 T0–T3（仿真/回放/外部分布/HIL），尚无 T4 真机验收。** 完整细节见 `SHOWCASE-REPORT-FOR-ADVISOR.md` §13 与 `runs_end_side/scenario_matrix/`。
+
 ---
 
 ## 1. 五分钟上手
@@ -454,6 +456,7 @@ dist_k=0.84 ⇒ f_px = 118.6 ⇒ FOV_V = 90°
 | `/model` | POST | blob 热更新（`?slot=N`） |
 | `/mode` | POST | 控制源切换（`?src=manual`） |
 | `/cmd` | GET | 手动控制 |
+| `/emote` | GET/POST | LCD 表情：`POST /emote?name=brain_knock` 或 `?i=0..30`（v17 新增 3 个大脑表情，见 §0 更新） |
 
 > ⚠️ 所有 HTTP 测试都要加 **`curl.exe --noproxy '*'`**，本机有代理会返回 502。
 
@@ -475,8 +478,14 @@ dist_k=0.84 ⇒ f_px = 118.6 ⇒ FOV_V = 90°
 
 ## 9. 下一步（按优先级）
 
-> 2026-11-03 21:06 起，科研主线转为 `RESEARCH-VideoCfC.md` §11：**纯数学建模与推导**。
-> 用户要求上下文压缩后先研究各类网络的数学设计理由，当前不得跑训练、数据探针、模型测试或真机实验。
+> **2026-11-23 更新（取代下方旧冻结）**：v13–v17 端侧大脑链已建，当前最高优先级是
+> **真机验收（T4）**：机器人上线后 `sim2real_torture_and_bridge_v16.py --live --host 192.168.137.50`
+> 只读链路 → `pc_unified_brain_app.py --source live`（`--emote` 可看表情）→ 监督下 `--send-cmd`。
+> 能力缺口清单见 `runs_end_side/scenario_matrix/README.md`（7 项：物理验收、相机内参、
+> 双敲召回、E2E 真机录像、跟随水杯、边缘勘测导航、Android TFLite 实测）。
+>
+> ~~2026-11-03 21:06 起，科研主线转为 `RESEARCH-VideoCfC.md` §11：纯数学建模与推导。~~
+> （该冻结令已被后续任务取代，仅留档；§9.1 暂停清单部分仍有效。）
 
 1. **定义流式问题与性质**：输入时间戳序列、因果输出、隐状态语义、采样细化/稀疏采样、时间一致性和误差度量。见 `RESEARCH-VideoCfC.md` §2、§11。
 2. **推导线性连续状态转移与半群关系**，再与按观测次数更新的普通离散 RNN 比较。明确证明所需假设和反例边界。
