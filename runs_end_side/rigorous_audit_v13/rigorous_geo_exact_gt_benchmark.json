@@ -1,0 +1,32 @@
+{
+  "MoGe-2-ViT-B (419MB Teacher)": {
+    "model": "MoGe-2-ViT-B (419MB Teacher)",
+    "all_depth_abs_rel": 0.2218,
+    "near_tabletop_abs_rel": 0.2628,
+    "near_tabletop_rmse_mm": 118.18,
+    "desk_z_mae_mm": 11.0,
+    "object_3d_relief_z_mae_mm": 36.76,
+    "cup_125mm_top_err_mm": 39.75,
+    "mouse_36mm_top_err_mm": 40.4
+  },
+  "HoverGeoNet-v3 (27MB Distilled)": {
+    "model": "HoverGeoNet-v3 (27MB Distilled)",
+    "all_depth_abs_rel": 0.1125,
+    "near_tabletop_abs_rel": 0.0489,
+    "near_tabletop_rmse_mm": 41.3,
+    "desk_z_mae_mm": 4.02,
+    "object_3d_relief_z_mae_mm": 9.9,
+    "cup_125mm_top_err_mm": 13.94,
+    "mouse_36mm_top_err_mm": 13.36
+  },
+  "HoverGeoNet-MV-SelfSup v4 (27MB)": {
+    "model": "HoverGeoNet-MV-SelfSup v4 (27MB)",
+    "all_depth_abs_rel": 0.117,
+    "near_tabletop_abs_rel": 0.0651,
+    "near_tabletop_rmse_mm": 51.23,
+    "desk_z_mae_mm": 6.58,
+    "object_3d_relief_z_mae_mm": 10.15,
+    "cup_125mm_top_err_mm": 17.54,
+    "mouse_36mm_top_err_mm": 12.09
+  }
+}
