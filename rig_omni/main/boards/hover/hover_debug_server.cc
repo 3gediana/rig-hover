@@ -1018,6 +1018,7 @@ static const char *const kEmoteNames[] = {
     "confident", "delicious", "kiss", "relaxed", "shocked", "silly",
     "icon_speaker_zzz", "listen", "nvs_reset", "wificonfig", "calibration",
     "scanning", "launch", "remote_mode",
+    "brain_knock", "brain_lock", "brain_cliff_alert",
 };
 #define EMOTE_COUNT ((int)(sizeof(kEmoteNames) / sizeof(kEmoteNames[0])))
 

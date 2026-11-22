@@ -312,6 +312,7 @@ def main() -> None:
     ap.add_argument("--headless", action="store_true", help="No GUI window (batch/test mode)")
     ap.add_argument("--max-frames", type=int, default=60)
     ap.add_argument("--click-xy", type=str, default="", help="Optional auto-click target 'x,y' in meters for headless Scenario 2")
+    ap.add_argument("--emote", action="store_true", help="Live mode only: mirror brain state onto the robot LCD via POST /emote")
     args = ap.parse_args()
 
     brain = UnifiedRobotBrain(use_lite_geonet=args.lite, enable_knock=(args.scenario == 1))
@@ -326,6 +327,7 @@ def main() -> None:
         frames_iter = [cv2.imread(str(j)) for j in jpgs[: args.max_frames] if cv2.imread(str(j)) is not None]
     elif args.source == "video":
         cap = cv2.VideoCapture(args.input)
+        video_fps = float(cap.get(cv2.CAP_PROP_FPS) or 15.0) or 15.0
 
     cam = OrbitCamera3D(azimuth_deg=-150.0, elevation_deg=34.0, distance_m=0.88, target_x=0.44, target_y=0.0, target_z=0.06)
     scenario = args.scenario
@@ -365,6 +367,11 @@ def main() -> None:
 
     t0 = time.perf_counter()
     auto_clicked = False
+    bridge = None
+    if args.emote and args.source == "live":
+        from emote_bridge import EmoteBridge
+        bridge = EmoteBridge(args.base, verbose=True)
+    prev_mode = ""
     for idx in range(args.max_frames):
         if args.source == "frames":
             if idx >= len(frames_iter):
@@ -386,7 +393,20 @@ def main() -> None:
             print("[AUTO-CLICK]", brain.set_3d_target(cx_s, cy_s), flush=True)
             auto_clicked = True
 
-        info = brain.step(bgr, telemetry=tel, scenario=scenario, timestamp_s=time.perf_counter() - t0, auto_level=(tel is None))
+        if args.source == "video":
+            ts = idx / video_fps  # 内容时间轴：与 15fps 采集时间一致，而非解码墙钟
+        else:
+            ts = time.perf_counter() - t0
+        info = brain.step(bgr, telemetry=tel, scenario=scenario, timestamp_s=ts, auto_level=(tel is None))
+
+        if bridge is not None:
+            if info["knock"]["fired"]:
+                bridge.event("knock")
+            elif info["mode"] == "APPROACH" and prev_mode != "APPROACH":
+                bridge.event("lock")
+            else:
+                bridge.update_mode(info["mode"])
+            prev_mode = info["mode"]
 
         if args.source == "live" and args.send_cmd:
             import urllib.request
@@ -413,6 +433,9 @@ def main() -> None:
 
     if cap is not None:
         cap.release()
+    if bridge is not None:
+        print(f"[emote] sent={bridge.sent} failed={bridge.failed}", flush=True)
+        bridge.close()
     if not args.headless:
         cv2.destroyAllWindows()
 

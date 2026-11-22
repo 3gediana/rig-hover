@@ -26,5 +26,8 @@
     {"emote": "calibration", "src": "calibration.eaf", "loop": true, "fps": 30},
     {"emote": "scanning", "src": "scanning.eaf", "loop": true, "fps": 30},
     {"emote": "launch", "src": "launch.eaf", "loop": true, "fps": 30},
-    {"emote": "remote_mode", "src": "remote_mode.eaf", "loop": true, "fps": 30}
+    {"emote": "remote_mode", "src": "remote_mode.eaf", "loop": true, "fps": 30},
+    {"emote": "brain_knock", "src": "brain_knock.eaf", "loop": true, "fps": 20},
+    {"emote": "brain_lock", "src": "brain_lock.eaf", "loop": true, "fps": 20},
+    {"emote": "brain_cliff_alert", "src": "brain_cliff_alert.eaf", "loop": true, "fps": 15}
 ]

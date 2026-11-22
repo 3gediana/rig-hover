@@ -1,0 +1,38 @@
+{
+  "generator": "pc/end_side/make_brain_emotes_v17.py",
+  "format": "0x89EAF / 240x240 / bit_depth=8 palette / 8x32-row RLE blocks",
+  "verification": [
+    {
+      "file": "D:\\robot_work\\rig_omni\\main\\boards\\hover\\emoji\\brain_knock.eaf",
+      "frames_checked": 20,
+      "bytes": 61593,
+      "emote": "brain_knock"
+    },
+    {
+      "file": "D:\\robot_work\\rig_omni\\main\\boards\\hover\\emoji\\brain_lock.eaf",
+      "frames_checked": 18,
+      "bytes": 41492,
+      "emote": "brain_lock"
+    },
+    {
+      "file": "D:\\robot_work\\rig_omni\\main\\boards\\hover\\emoji\\brain_cliff_alert.eaf",
+      "frames_checked": 14,
+      "bytes": 48495,
+      "emote": "brain_cliff_alert"
+    }
+  ],
+  "emote_schedule": {
+    "IDLE": "neutral",
+    "GAZE_FACE": "loving",
+    "GAZE_FIST": "scanning",
+    "KNOCK_TRIGGER": "brain_knock",
+    "TARGET_LOCKED": "brain_lock",
+    "APPROACH": "thinking",
+    "DWELL_LOOKBACK": "winking",
+    "CLIFF_REFUSAL": "brain_cliff_alert",
+    "KIDNAP_RECOVERING": "confused",
+    "SEARCH_FACE": "scanning",
+    "LOW_BATTERY": "sleepy"
+  },
+  "deploy": "files dropped into rig_omni/main/boards/hover/emoji/ + emote.json entries; robot endpoint POST /emote?name=brain_knock"
+}
