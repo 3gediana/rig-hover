@@ -1,0 +1,7 @@
+=== v18 PURSUIT: chase & escort the runaway cup ===
+
+--- S4_chaos_pursuit: S4: Chaos Pursuit (drop obstacle + +70deg kidnap mid-chase) ---
+  captured=True@s24 | escort_band=0.5 | min_edge=-2.68cm | min_static_clear=3.04cm | vel_err=-1.0m/s
+
+Saved v18 report -> D:\robot_work\runs_end_side\pursuit_v18\pursuit_v18_report.json
+Saved v18 cinema MP4 -> D:\robot_work\runs_end_side\pursuit_v18\demo_pursuit_v18.mp4

@@ -1,0 +1,19 @@
+=== v18 PURSUIT: chase & escort the runaway cup ===
+
+--- S1_linear_chase: S1: Linear Escape Cup -> Kalman-Lead Pursuit + Escort ---
+  captured=True@s20 | escort_band=1.0 | min_edge=0.84cm | min_static_clear=2.1cm | vel_err=0.052m/s
+
+--- S2_zigzag_chase: S2: Zigzag L-Turn Escape -> Velocity Re-Estimation ---
+  captured=True@s16 | escort_band=0.35 | min_edge=-7.4cm | min_static_clear=2.59cm | vel_err=0.059m/s
+
+--- S3_baseline_no_lead: S3: BASELINE No-Velocity-Lead (chases raw position) ---
+  captured=True@s24 | escort_band=1.0 | min_edge=2.38cm | min_static_clear=3.59cm | vel_err=0.055m/s
+
+--- S5_drop_only: S5: Pursuit + Sudden Drop Obstacle (no kidnap) ---
+  captured=True@s22 | escort_band=1.0 | min_edge=1.8cm | min_static_clear=2.55cm | vel_err=-1.0m/s
+
+--- S4_chaos_pursuit: S4: Chaos Pursuit (drop obstacle + +70deg kidnap mid-chase) ---
+  captured=True@s22 | escort_band=1.0 | min_edge=1.8cm | min_static_clear=2.55cm | vel_err=-1.0m/s
+
+Saved v18 report -> D:\robot_work\runs_end_side\pursuit_v18\pursuit_v18_report.json
+Saved v18 cinema MP4 -> D:\robot_work\runs_end_side\pursuit_v18\demo_pursuit_v18.mp4
