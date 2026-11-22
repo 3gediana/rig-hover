@@ -1,0 +1,101 @@
+{
+  "own_vit_ckpt": "D:\\robot_work\\runs_end_side\\hover_geonet_vit_240\\hover_geonet_vit_b1_fp16.pt",
+  "own_vit_fp16_mb": 27.01,
+  "own_ppo_policy": "D:\\robot_work\\runs_end_side\\skill_zoo\\ping_point_nav_v1\\policy_weights.pt",
+  "part_ab_real_heldout": {
+    "scenes": {
+      "empty_d05": {
+        "vit_avg_ms": 17.94,
+        "vit_static_pts": 225023,
+        "vit_dyn_pts": 17113,
+        "vit_density": {
+          "total_pts": 225023,
+          "vox_size_mm": 2.0,
+          "near_0.25_0.55m": {
+            "pts": 84527,
+            "median_spacing_mm": 1.83,
+            "p90_spacing_mm": 2.71,
+            "surface_density_pts_per_cm2": 29.7
+          },
+          "mid_0.55_0.90m": {
+            "pts": 78588,
+            "median_spacing_mm": 2.08,
+            "p90_spacing_mm": 3.66,
+            "surface_density_pts_per_cm2": 23.1
+          },
+          "desk_plane_mad_mm": 1.48
+        },
+        "viewer_html": "D:\\robot_work\\runs_end_side\\scenario2_own_models_e2e\\viewer_own_vit240_empty_d05.html",
+        "real_frame_reloc": {
+          "ok": true,
+          "injected_drift_mm": 90.5,
+          "injected_rot_deg": 10.0,
+          "recovered_cam_err_mm": 5.8,
+          "recovered_rot_err_deg": 0.55,
+          "target_rel_err_mm": 6.9,
+          "sift_matches": 121,
+          "ransac_inliers": 112,
+          "icp_res_mm": 2.21
+        }
+      },
+      "cb8455": {
+        "vit_avg_ms": 17.82,
+        "vit_static_pts": 266599,
+        "vit_dyn_pts": 19570,
+        "vit_density": {
+          "total_pts": 266599,
+          "vox_size_mm": 2.0,
+          "near_0.25_0.55m": {
+            "pts": 77300,
+            "median_spacing_mm": 1.73,
+            "p90_spacing_mm": 2.78,
+            "surface_density_pts_per_cm2": 33.3
+          },
+          "mid_0.55_0.90m": {
+            "pts": 88550,
+            "median_spacing_mm": 3.1,
+            "p90_spacing_mm": 4.06,
+            "surface_density_pts_per_cm2": 10.4
+          },
+          "desk_plane_mad_mm": 2.47
+        },
+        "viewer_html": "D:\\robot_work\\runs_end_side\\scenario2_own_models_e2e\\viewer_own_vit240_cb8455.html",
+        "real_frame_reloc": {
+          "ok": true,
+          "injected_drift_mm": 90.5,
+          "injected_rot_deg": 10.0,
+          "recovered_cam_err_mm": 6.6,
+          "recovered_rot_err_deg": 1.11,
+          "target_rel_err_mm": 6.6,
+          "sift_matches": 79,
+          "ransac_inliers": 62,
+          "icp_res_mm": 2.74
+        }
+      }
+    },
+    "showcase_png": "D:\\robot_work\\runs_end_side\\scenario2_own_models_e2e\\showcase_own_vit240_vs_moge2_v8.png"
+  },
+  "part_c_closed_loop_own_models": {
+    "vit_avg_ms": 15.74,
+    "static_map_pts_2mm": 50336,
+    "blind_odom": {
+      "steps": 49,
+      "final_err_cm": 30.93,
+      "mean_pose_err_cm": 13.28,
+      "mean_yaw_err_deg": 28.82,
+      "min_clearance_cm": -5.35,
+      "collision": true
+    },
+    "own_models": {
+      "steps": 66,
+      "final_err_cm": 4.12,
+      "mean_pose_err_cm": 5.94,
+      "mean_yaw_err_deg": 1.87,
+      "min_clearance_cm": 4.46,
+      "collision": false
+    },
+    "improvement_factor": 7.51,
+    "showcase_png": "D:\\robot_work\\runs_end_side\\scenario2_own_models_e2e\\showcase_scenario2_own_models_e2e.png",
+    "demo_mp4": "D:\\robot_work\\runs_end_side\\scenario2_own_models_e2e\\demo_scenario2_own_models_e2e.mp4"
+  }
+}

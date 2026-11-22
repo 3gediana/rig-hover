@@ -1,0 +1,438 @@
+{
+  "recognition": {
+    "real_robot_adversarial_negatives": {
+      "robot_9neg_minutes": 3.01,
+      "robot_9neg_raw_fp": 3,
+      "robot_9neg_gated_fp": 1,
+      "robot_9neg_gated_fa_per_min": 0.333,
+      "all_29neg_minutes": 5.48,
+      "all_29neg_raw_fp": 4,
+      "all_29neg_gated_fp": 2,
+      "all_29neg_gated_fa_per_min": 0.365,
+      "charades_10_fp": [
+        0,
+        0
+      ],
+      "ucf101_10_fp": [
+        1,
+        1
+      ],
+      "cb8455_max_face_area_ratio": 0.0,
+      "sessions": [
+        {
+          "source": "evidence_sessions",
+          "task": "none",
+          "clip": "none_d0.5_front_night_181841",
+          "duration_s": 20.05,
+          "raw_fp": 0,
+          "brain_gated_fp": 0
+        },
+        {
+          "source": "evidence_sessions",
+          "task": "fist",
+          "clip": "fist_d0.5_front_night_181907",
+          "duration_s": 20.0,
+          "raw_fp": 0,
+          "brain_gated_fp": 0
+        },
+        {
+          "source": "evidence_sessions",
+          "task": "open_palm",
+          "clip": "open_palm_d0.5_front_night_181943",
+          "duration_s": 20.05,
+          "raw_fp": 0,
+          "brain_gated_fp": 0
+        },
+        {
+          "source": "evidence_sessions",
+          "task": "thumbs_up",
+          "clip": "thumbs_up_d0.5_front_night_182007",
+          "duration_s": 20.05,
+          "raw_fp": 0,
+          "brain_gated_fp": 0
+        },
+        {
+          "source": "evidence_sessions",
+          "task": "wave",
+          "clip": "wave_d0.5_front_night_182035",
+          "duration_s": 20.0,
+          "raw_fp": 0,
+          "brain_gated_fp": 0
+        },
+        {
+          "source": "evidence_sessions",
+          "task": "pointing",
+          "clip": "pointing_d0.5_front_night_182101",
+          "duration_s": 20.05,
+          "raw_fp": 0,
+          "brain_gated_fp": 0
+        },
+        {
+          "source": "evidence_sessions",
+          "task": "empty",
+          "clip": "empty_d0.5_front_night_182201",
+          "duration_s": 20.1,
+          "raw_fp": 0,
+          "brain_gated_fp": 0
+        },
+        {
+          "source": "evidence_sessions",
+          "task": "face_close",
+          "clip": "face_close_d0.5_front_night_182232",
+          "duration_s": 20.1,
+          "raw_fp": 3,
+          "brain_gated_fp": 1
+        },
+        {
+          "source": "evidence_sessions",
+          "task": "lean_out",
+          "clip": "lean_out_d0.5_front_night_182257",
+          "duration_s": 20.05,
+          "raw_fp": 0,
+          "brain_gated_fp": 0
+        },
+        {
+          "source": "charades_table",
+          "task": "table_interaction_negative",
+          "clip": "charades_S6MPZ",
+          "duration_s": 8.0,
+          "raw_fp": 0,
+          "brain_gated_fp": 0
+        },
+        {
+          "source": "charades_table",
+          "task": "table_interaction_negative",
+          "clip": "charades_8WJIR",
+          "duration_s": 8.0,
+          "raw_fp": 0,
+          "brain_gated_fp": 0
+        },
+        {
+          "source": "charades_table",
+          "task": "table_interaction_negative",
+          "clip": "charades_MGCM8",
+          "duration_s": 8.0,
+          "raw_fp": 0,
+          "brain_gated_fp": 0
+        },
+        {
+          "source": "charades_table",
+          "task": "table_interaction_negative",
+          "clip": "charades_XC9EY",
+          "duration_s": 8.0,
+          "raw_fp": 0,
+          "brain_gated_fp": 0
+        },
+        {
+          "source": "charades_table",
+          "task": "table_interaction_negative",
+          "clip": "charades_RK9II",
+          "duration_s": 8.0,
+          "raw_fp": 0,
+          "brain_gated_fp": 0
+        },
+        {
+          "source": "charades_table",
+          "task": "table_interaction_negative",
+          "clip": "charades_CUCBN",
+          "duration_s": 8.0,
+          "raw_fp": 0,
+          "brain_gated_fp": 0
+        },
+        {
+          "source": "charades_table",
+          "task": "table_interaction_negative",
+          "clip": "charades_VHIG7",
+          "duration_s": 8.0,
+          "raw_fp": 0,
+          "brain_gated_fp": 0
+        },
+        {
+          "source": "charades_table",
+          "task": "table_interaction_negative",
+          "clip": "charades_0R6K4",
+          "duration_s": 8.0,
+          "raw_fp": 0,
+          "brain_gated_fp": 0
+        },
+        {
+          "source": "charades_table",
+          "task": "table_interaction_negative",
+          "clip": "charades_FXRMG",
+          "duration_s": 8.0,
+          "raw_fp": 0,
+          "brain_gated_fp": 0
+        },
+        {
+          "source": "charades_table",
+          "task": "table_interaction_negative",
+          "clip": "charades_DWHPO",
+          "duration_s": 8.0,
+          "raw_fp": 0,
+          "brain_gated_fp": 0
+        },
+        {
+          "source": "ucf101_distractor",
+          "task": "Drumming",
+          "clip": "v_Drumming_g10_c03",
+          "duration_s": 8.0,
+          "raw_fp": 0,
+          "brain_gated_fp": 0
+        },
+        {
+          "source": "ucf101_distractor",
+          "task": "Drumming",
+          "clip": "v_Drumming_g20_c04",
+          "duration_s": 8.0,
+          "raw_fp": 0,
+          "brain_gated_fp": 0
+        },
+        {
+          "source": "ucf101_distractor",
+          "task": "CuttingInKitchen",
+          "clip": "v_CuttingInKitchen_g12_c02",
+          "duration_s": 5.5,
+          "raw_fp": 0,
+          "brain_gated_fp": 0
+        },
+        {
+          "source": "ucf101_distractor",
+          "task": "CuttingInKitchen",
+          "clip": "v_CuttingInKitchen_g17_c02",
+          "duration_s": 8.0,
+          "raw_fp": 0,
+          "brain_gated_fp": 0
+        },
+        {
+          "source": "ucf101_distractor",
+          "task": "WritingOnBoard",
+          "clip": "v_WritingOnBoard_g06_c04",
+          "duration_s": 8.0,
+          "raw_fp": 0,
+          "brain_gated_fp": 0
+        },
+        {
+          "source": "ucf101_distractor",
+          "task": "WritingOnBoard",
+          "clip": "v_WritingOnBoard_g03_c07",
+          "duration_s": 4.7,
+          "raw_fp": 0,
+          "brain_gated_fp": 0
+        },
+        {
+          "source": "ucf101_distractor",
+          "task": "Typing",
+          "clip": "v_Typing_g08_c03",
+          "duration_s": 8.0,
+          "raw_fp": 0,
+          "brain_gated_fp": 0
+        },
+        {
+          "source": "ucf101_distractor",
+          "task": "TableTennisShot",
+          "clip": "v_TableTennisShot_g15_c02",
+          "duration_s": 8.0,
+          "raw_fp": 0,
+          "brain_gated_fp": 0
+        },
+        {
+          "source": "ucf101_distractor",
+          "task": "TableTennisShot",
+          "clip": "v_TableTennisShot_g09_c03",
+          "duration_s": 3.85,
+          "raw_fp": 1,
+          "brain_gated_fp": 1
+        },
+        {
+          "source": "ucf101_distractor",
+          "task": "Hammering",
+          "clip": "v_Hammering_g17_c03",
+          "duration_s": 6.3,
+          "raw_fp": 0,
+          "brain_gated_fp": 0
+        }
+      ]
+    },
+    "honest_6fold_loo_comparison": {
+      "2d_stream_f1": 0.7135,
+      "3d_stream_f1": 0.9064,
+      "2d_stream_hits": 57,
+      "3d_stream_hits": 79,
+      "2d_ungated_f1": 0.7523,
+      "3d_ungated_f1": 0.8776,
+      "2d_gated_f1": 0.8193,
+      "3d_gated_f1": 0.9225,
+      "cb8455_fp_2d_to_3d": [
+        16,
+        2
+      ],
+      "take_65a54d_stream_f1_2d_to_3d": [
+        0.3333,
+        0.878
+      ]
+    }
+  },
+  "behavior_missions": {
+    "mission1_scenario1_5phases": {
+      "all_5_phases_completed": true,
+      "protocol_note": "Approach/Dwell/Lookback evaluated in DesktopArena3D zero-odom simulator using ONLY online visual pose (zero GT fyaw prior); Phase 1-3 perception verified on real robot takes.",
+      "phases": [
+        "MODE_GAZE_FACE",
+        "MODE_GAZE_FIST",
+        "DOUBLE_KNOCK_LOCKED",
+        "MODE_APPROACH_FIST_GONE",
+        "MODE_DWELL_AND_LOOKBACK_FACE"
+      ],
+      "knock_target_xy": [
+        0.48,
+        -0.22
+      ],
+      "final_err_cm": 3.92,
+      "mean_cam_pose_err_cm": 1.35,
+      "mean_base_pose_err_cm": 1.58,
+      "mean_yaw_err_deg": 0.34,
+      "min_clearance_cm": 7.74,
+      "collision": false,
+      "lookback_face_err_deg": 1.54,
+      "head_lookback_cmd_deg": -45.0
+    },
+    "mission2_scenario2_ablation": {
+      "blind_odom": {
+        "mode": "blind",
+        "steps": 81,
+        "final_err_cm": 32.66,
+        "mean_cam_pose_err_cm": 18.66,
+        "mean_base_pose_err_cm": 18.6,
+        "mean_yaw_err_deg": 44.36,
+        "mean_reproj_px": -1.0,
+        "mean_inliers": 0.0,
+        "min_clearance_cm": -5.37,
+        "collision": true,
+        "path_max_turn_deg": 42.0,
+        "est_slip_mean": -1.0,
+        "final_est_pose": [
+          0.5985,
+          -0.2469,
+          -7.42
+        ]
+      },
+      "v9_unconstrained_pnp": {
+        "mode": "v9_pnp",
+        "steps": 82,
+        "final_err_cm": 4.87,
+        "mean_cam_pose_err_cm": 8.26,
+        "mean_base_pose_err_cm": 8.29,
+        "mean_yaw_err_deg": 1.02,
+        "mean_reproj_px": -1.0,
+        "mean_inliers": 156.6,
+        "min_clearance_cm": 4.79,
+        "collision": false,
+        "path_max_turn_deg": 42.0,
+        "est_slip_mean": 0.858,
+        "final_est_pose": [
+          0.6001,
+          -0.2464,
+          -14.2
+        ]
+      },
+      "v9_unconstrained_pnp_same_finev3_ctrl": {
+        "mode": "v9_pnp_finev3",
+        "steps": 135,
+        "final_err_cm": 183.62,
+        "mean_cam_pose_err_cm": 77.11,
+        "mean_base_pose_err_cm": 77.13,
+        "mean_yaw_err_deg": 46.61,
+        "mean_reproj_px": -1.0,
+        "mean_inliers": 54.1,
+        "min_clearance_cm": -5.5,
+        "collision": true,
+        "path_max_turn_deg": 42.0,
+        "est_slip_mean": 0.63,
+        "final_est_pose": [
+          0.5269,
+          -0.4244,
+          -58.31
+        ]
+      },
+      "v11_planar_bundle_neural_cbf_finev3": {
+        "mode": "v11_subcm",
+        "steps": 38,
+        "final_err_cm": 2.11,
+        "mean_cam_pose_err_cm": 1.18,
+        "mean_base_pose_err_cm": 1.42,
+        "mean_yaw_err_deg": 0.27,
+        "mean_reproj_px": 0.97,
+        "mean_inliers": 219.1,
+        "min_clearance_cm": 3.06,
+        "collision": false,
+        "path_max_turn_deg": 20.4,
+        "est_slip_mean": 0.798,
+        "final_est_pose": [
+          0.6265,
+          -0.2488,
+          3.16
+        ]
+      },
+      "gain_vs_blind_x": 15.5,
+      "gain_vs_v9_x": 2.31,
+      "gain_vs_v9_same_ctrl_x": 87.02
+    },
+    "mission3_reknock_preemption": {
+      "mission": "Mid-Course Re-Knock Target Preemption",
+      "spot_a": [
+        0.44,
+        -0.22
+      ],
+      "spot_b": [
+        0.62,
+        -0.26
+      ],
+      "preempt_step": 13,
+      "preempt_pose": [
+        0.23072989505433567,
+        -0.14593553795681619
+      ],
+      "final_err_to_b_cm": 2.06,
+      "mean_cam_pose_err_cm": 1.25,
+      "min_clearance_cm": 4.82,
+      "collision": false
+    },
+    "mission4_sudden_obstacle_reflex": {
+      "mission": "100% Camera-Detected Sudden Dynamic Obstacle Reflex & Live HoverSDF Detour (ZERO Oracle)",
+      "dyn_obstacle_xyr": [
+        0.41,
+        -0.22,
+        0.038
+      ],
+      "visual_est_obstacle_xyr": [
+        0.4426,
+        -0.2385,
+        0.032
+      ],
+      "visual_obstacle_loc_err_cm": 3.75,
+      "drop_step": 9,
+      "visual_detect_step": 9,
+      "detect_latency_steps": 0,
+      "reflex_brake_triggered": true,
+      "online_sdf_replan_s": 9.8,
+      "final_err_cm": 1.79,
+      "mean_cam_pose_err_cm": 6.37,
+      "min_clearance_cm": 0.23,
+      "collision": false
+    },
+    "mission5_20ep_randomized_stress": {
+      "n_episodes": 20,
+      "mean_arrival_err_cm": 2.25,
+      "median_arrival_err_cm": 2.15,
+      "p90_arrival_err_cm": 3.74,
+      "max_arrival_err_cm": 6.62,
+      "sub_1cm_rate_pct": 20.0,
+      "sub_1_5cm_rate_pct": 25.0,
+      "mean_cam_pose_err_cm": 1.52,
+      "mean_yaw_err_deg": 1.16,
+      "collision_count": 0,
+      "collision_rate_pct": 0.0
+    }
+  },
+  "poster_png": "D:\\robot_work\\runs_end_side\\robot_brain_behavior_v12\\showcase_v12_robot_recognition_and_behavior.png"
+}

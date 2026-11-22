@@ -1,0 +1,238 @@
+{
+  "models": {
+    "geo_360": "hover_room_geonet_360_fp16.pt",
+    "geo_360_mb": 27.01,
+    "self_corrector": "room_self_corrector_v12.pt",
+    "self_corrector_mb": 3.25,
+    "runtime_moge2": false
+  },
+  "unseen_heldout_rooms": [
+    "hotel_room",
+    "reading_room",
+    "lythwood_lounge"
+  ],
+  "benchmark_4a_natural_zeroshot": [
+    {
+      "room": "hotel_room",
+      "mode": "NATURAL-ZEROSHOT",
+      "n_views": 36,
+      "geo_infer_ms": 522.46,
+      "pass1": {
+        "psnr_db": 27.36,
+        "l1": 0.0143,
+        "coverage_pct": 99.9,
+        "hole_sector_coverage_pct": 99.9,
+        "seam_err_cm": 14.14,
+        "loop360_gap_cm": 12.38,
+        "n_pts": 380959
+      },
+      "pass2": {
+        "psnr_db": 28.46,
+        "l1": 0.0134,
+        "coverage_pct": 99.99,
+        "hole_sector_coverage_pct": 99.99,
+        "seam_err_cm": 8.65,
+        "loop360_gap_cm": 5.2,
+        "n_pts": 667077
+      },
+      "pass3": {
+        "psnr_db": 28.47,
+        "l1": 0.0134,
+        "coverage_pct": 99.99,
+        "hole_sector_coverage_pct": 99.99,
+        "seam_err_cm": 8.67,
+        "loop360_gap_cm": 5.27,
+        "n_pts": 690720
+      },
+      "self_correction_recovery": {
+        "ghosts_injected": 0,
+        "ghost_eviction_pct": 100.0,
+        "bulge_error_reduction_pct": 100.0,
+        "hole_45deg_before_pct": 99.9,
+        "hole_45deg_after_pct": 99.99,
+        "pose_twist_injected_deg": 0.0,
+        "pose_twist_residual_deg": 0.0,
+        "psnr_gain_db": 1.11
+      }
+    },
+    {
+      "room": "reading_room",
+      "mode": "NATURAL-ZEROSHOT",
+      "n_views": 36,
+      "geo_infer_ms": 11.82,
+      "pass1": {
+        "psnr_db": 25.42,
+        "l1": 0.0218,
+        "coverage_pct": 99.89,
+        "hole_sector_coverage_pct": 99.89,
+        "seam_err_cm": 16.45,
+        "loop360_gap_cm": 17.48,
+        "n_pts": 398620
+      },
+      "pass2": {
+        "psnr_db": 26.2,
+        "l1": 0.0207,
+        "coverage_pct": 99.98,
+        "hole_sector_coverage_pct": 99.98,
+        "seam_err_cm": 8.16,
+        "loop360_gap_cm": 13.04,
+        "n_pts": 676901
+      },
+      "pass3": {
+        "psnr_db": 26.2,
+        "l1": 0.0207,
+        "coverage_pct": 99.99,
+        "hole_sector_coverage_pct": 99.99,
+        "seam_err_cm": 8.2,
+        "loop360_gap_cm": 13.13,
+        "n_pts": 714683
+      },
+      "self_correction_recovery": {
+        "ghosts_injected": 0,
+        "ghost_eviction_pct": 100.0,
+        "bulge_error_reduction_pct": 100.0,
+        "hole_45deg_before_pct": 99.89,
+        "hole_45deg_after_pct": 99.99,
+        "pose_twist_injected_deg": 0.0,
+        "pose_twist_residual_deg": 0.0,
+        "psnr_gain_db": 0.78
+      }
+    },
+    {
+      "room": "lythwood_lounge",
+      "mode": "NATURAL-ZEROSHOT",
+      "n_views": 36,
+      "geo_infer_ms": 11.9,
+      "pass1": {
+        "psnr_db": 25.6,
+        "l1": 0.0197,
+        "coverage_pct": 99.88,
+        "hole_sector_coverage_pct": 99.88,
+        "seam_err_cm": 15.9,
+        "loop360_gap_cm": 19.59,
+        "n_pts": 448836
+      },
+      "pass2": {
+        "psnr_db": 26.05,
+        "l1": 0.019,
+        "coverage_pct": 99.97,
+        "hole_sector_coverage_pct": 99.97,
+        "seam_err_cm": 10.38,
+        "loop360_gap_cm": 14.49,
+        "n_pts": 809373
+      },
+      "pass3": {
+        "psnr_db": 26.05,
+        "l1": 0.0191,
+        "coverage_pct": 99.97,
+        "hole_sector_coverage_pct": 99.97,
+        "seam_err_cm": 10.42,
+        "loop360_gap_cm": 14.56,
+        "n_pts": 850054
+      },
+      "self_correction_recovery": {
+        "ghosts_injected": 0,
+        "ghost_eviction_pct": 100.0,
+        "bulge_error_reduction_pct": 100.0,
+        "hole_45deg_before_pct": 99.88,
+        "hole_45deg_after_pct": 99.97,
+        "pose_twist_injected_deg": 0.0,
+        "pose_twist_residual_deg": 0.0,
+        "psnr_gain_db": 0.45
+      }
+    }
+  ],
+  "benchmark_4b_sabotage_recovery": {
+    "hotel_room": {
+      "room": "hotel_room",
+      "mode": "SABOTAGED-4DEFECT",
+      "n_views": 36,
+      "geo_infer_ms": 14.53,
+      "pass1": {
+        "psnr_db": 15.89,
+        "l1": 0.0688,
+        "coverage_pct": 96.33,
+        "hole_sector_coverage_pct": 78.69,
+        "seam_err_cm": 23.48,
+        "loop360_gap_cm": 12.38,
+        "n_pts": 356119
+      },
+      "pass2": {
+        "psnr_db": 24.34,
+        "l1": 0.0186,
+        "coverage_pct": 100.0,
+        "hole_sector_coverage_pct": 99.99,
+        "seam_err_cm": 9.3,
+        "loop360_gap_cm": 5.44,
+        "n_pts": 694104
+      },
+      "pass3": {
+        "psnr_db": 27.88,
+        "l1": 0.0138,
+        "coverage_pct": 99.98,
+        "hole_sector_coverage_pct": 99.99,
+        "seam_err_cm": 9.33,
+        "loop360_gap_cm": 5.49,
+        "n_pts": 428948
+      },
+      "self_correction_recovery": {
+        "ghosts_injected": 6000,
+        "ghost_eviction_pct": 90.83,
+        "bulge_error_reduction_pct": 52.4,
+        "hole_45deg_before_pct": 78.69,
+        "hole_45deg_after_pct": 99.99,
+        "pose_twist_injected_deg": 10.0,
+        "pose_twist_residual_deg": 0.18,
+        "psnr_gain_db": 11.99
+      }
+    },
+    "reading_room": {
+      "room": "reading_room",
+      "mode": "SABOTAGED-4DEFECT",
+      "n_views": 36,
+      "geo_infer_ms": 15.02,
+      "pass1": {
+        "psnr_db": 16.12,
+        "l1": 0.0708,
+        "coverage_pct": 96.3,
+        "hole_sector_coverage_pct": 78.55,
+        "seam_err_cm": 28.83,
+        "loop360_gap_cm": 17.48,
+        "n_pts": 357424
+      },
+      "pass2": {
+        "psnr_db": 23.42,
+        "l1": 0.0257,
+        "coverage_pct": 99.98,
+        "hole_sector_coverage_pct": 99.96,
+        "seam_err_cm": 8.17,
+        "loop360_gap_cm": 12.85,
+        "n_pts": 671319
+      },
+      "pass3": {
+        "psnr_db": 25.44,
+        "l1": 0.022,
+        "coverage_pct": 99.96,
+        "hole_sector_coverage_pct": 99.96,
+        "seam_err_cm": 8.16,
+        "loop360_gap_cm": 12.85,
+        "n_pts": 418255
+      },
+      "self_correction_recovery": {
+        "ghosts_injected": 6000,
+        "ghost_eviction_pct": 90.82,
+        "bulge_error_reduction_pct": 87.6,
+        "hole_45deg_before_pct": 78.55,
+        "hole_45deg_after_pct": 99.96,
+        "pose_twist_injected_deg": 10.0,
+        "pose_twist_residual_deg": 0.09,
+        "psnr_gain_db": 9.32
+      }
+    }
+  },
+  "artifacts": {
+    "poster_png": "D:\\robot_work\\runs_end_side\\room360_self_correct_v12\\showcase_v12_room360_self_correction.png",
+    "viewer_hotel_html": "D:\\robot_work\\runs_end_side\\room360_self_correct_v12\\viewer_room360_hotel_self_correct_v12.html",
+    "viewer_reading_html": "D:\\robot_work\\runs_end_side\\room360_self_correct_v12\\viewer_room360_reading_self_correct_v12.html"
+  }
+}

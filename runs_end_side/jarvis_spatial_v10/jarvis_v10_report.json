@@ -1,0 +1,204 @@
+{
+  "engine": "RIG-Hover JARVIS 4D Spatial Intelligence Engine (v10)",
+  "total_runtime_s": 67.4,
+  "scene_a_empty_d05": {
+    "n_gaussians": 472035,
+    "auto_3d_obbs": [
+      {
+        "id": 1,
+        "archetype": "Wall / Monitor",
+        "center_xyz": [
+          0.5893,
+          0.1108,
+          0.0888
+        ],
+        "dims_cm": [
+          53.4,
+          45.5,
+          16.0
+        ],
+        "z_min_m": 0.0089,
+        "z_max_m": 0.1687,
+        "yaw_deg": -70.1,
+        "corners_xy": [
+          [
+            0.7123,
+            0.4392
+          ],
+          [
+            0.2848,
+            0.2847
+          ],
+          [
+            0.4664,
+            -0.2177
+          ],
+          [
+            0.8939,
+            -0.0632
+          ]
+        ],
+        "area_cm2": 1207.1,
+        "n_pts": 77556,
+        "dist_m": 0.6
+      },
+      {
+        "id": 2,
+        "archetype": "Wall / Monitor",
+        "center_xyz": [
+          0.5308,
+          -0.2187,
+          0.0929
+        ],
+        "dims_cm": [
+          29.0,
+          13.7,
+          16.0
+        ],
+        "z_min_m": 0.0131,
+        "z_max_m": 0.1726,
+        "yaw_deg": -78.3,
+        "corners_xy": [
+          [
+            0.659,
+            -0.1221
+          ],
+          [
+            0.3747,
+            -0.1811
+          ],
+          [
+            0.4026,
+            -0.3153
+          ],
+          [
+            0.6869,
+            -0.2563
+          ]
+        ],
+        "area_cm2": 172.8,
+        "n_pts": 46544,
+        "dist_m": 0.574
+      },
+      {
+        "id": 3,
+        "archetype": "Mouse / Compact Obj",
+        "center_xyz": [
+          0.2217,
+          -0.112,
+          0.0145
+        ],
+        "dims_cm": [
+          10.2,
+          5.4,
+          1.7
+        ],
+        "z_min_m": 0.006,
+        "z_max_m": 0.0229,
+        "yaw_deg": -32.1,
+        "corners_xy": [
+          [
+            0.1926,
+            -0.062
+          ],
+          [
+            0.164,
+            -0.1075
+          ],
+          [
+            0.2507,
+            -0.162
+          ],
+          [
+            0.2793,
+            -0.1165
+          ]
+        ],
+        "area_cm2": 43.9,
+        "n_pts": 13298,
+        "dist_m": 0.248
+      }
+    ],
+    "hover_sdf_net": {
+      "mae_mm": 2.34,
+      "eikonal_err": 0.1121,
+      "params": 23714,
+      "train_s": 1.62
+    },
+    "neural_cbf_traj": {
+      "min_sdf_m": 0.093,
+      "path_length_m": 1.0591,
+      "max_step_turn_deg": 17.48,
+      "safe": true
+    }
+  },
+  "scene_b_cb8455_4d": {
+    "n_static_gaussians": 432507,
+    "n_4d_dynamic_hand_frames": 15,
+    "auto_3d_obbs": [
+      {
+        "id": 1,
+        "archetype": "Cup / Bottle",
+        "center_xyz": [
+          0.5944,
+          -0.313,
+          0.1208
+        ],
+        "dims_cm": [
+          15.2,
+          11.0,
+          21.2
+        ],
+        "z_min_m": 0.0148,
+        "z_max_m": 0.2268,
+        "yaw_deg": -31.4,
+        "corners_xy": [
+          [
+            0.558,
+            -0.2265
+          ],
+          [
+            0.5008,
+            -0.32
+          ],
+          [
+            0.6309,
+            -0.3995
+          ],
+          [
+            0.6881,
+            -0.3059
+          ]
+        ],
+        "area_cm2": 117.4,
+        "n_pts": 22438,
+        "dist_m": 0.672
+      }
+    ],
+    "hover_sdf_net": {
+      "mae_mm": 2.09,
+      "eikonal_err": 0.0877,
+      "params": 23714,
+      "train_s": 1.16
+    },
+    "neural_cbf_traj": {
+      "min_sdf_m": 0.0938,
+      "path_length_m": 0.497,
+      "max_step_turn_deg": 2.33,
+      "safe": true
+    }
+  },
+  "desktop_arena_neural_cbf_vs_astar": {
+    "hover_sdf_mae_mm": 3.14,
+    "neural_cbf_max_turn_deg": 22.1,
+    "grid_astar_staircase_max_turn_deg": 90.0,
+    "true_min_clearance_cm": 2.35,
+    "collision": false
+  },
+  "deliverables": {
+    "poster_png": "D:\\robot_work\\runs_end_side\\jarvis_spatial_v10\\showcase_jarvis_spatial_intelligence_v10.png",
+    "movie_mp4": "D:\\robot_work\\runs_end_side\\jarvis_spatial_v10\\demo_jarvis_4d_holo_brain_v10.mp4",
+    "interactive_webgl_deck_html": "D:\\robot_work\\runs_end_side\\jarvis_spatial_v10\\jarvis_holo_command_deck_v10.html",
+    "interactive_webgl_deck_mb": 7.41
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "h_cam_m": 0.135,
+  "hover_geonet_avg_ms": 11.05,
+  "static_map_pts_2mm": 51974,
+  "target_xy": [
+    0.62,
+    -0.25
+  ],
+  "mode_a_blind_odometry": {
+    "steps": 40,
+    "final_true_pose": [
+      0.5048,
+      -0.0329,
+      31.22
+    ],
+    "final_true_err_to_target_cm": 24.58,
+    "mean_pose_err_cm": 12.15,
+    "max_pose_err_cm": 25.81,
+    "mean_yaw_err_deg": 24.04,
+    "min_obstacle_clearance_cm": -3.73,
+    "collision": true,
+    "reloc_sources": {}
+  },
+  "mode_b_visual_3d_reloc": {
+    "steps": 50,
+    "final_true_pose": [
+      0.5774,
+      -0.2706,
+      -5.32
+    ],
+    "final_true_err_to_target_cm": 4.73,
+    "mean_pose_err_cm": 3.93,
+    "max_pose_err_cm": 12.56,
+    "mean_yaw_err_deg": 2.6,
+    "min_obstacle_clearance_cm": 0.46,
+    "collision": false,
+    "reloc_sources": {
+      "pnp2d3d+icp": 44,
+      "icp_track_only": 7
+    }
+  },
+  "improvement_factor": 5.2,
+  "showcase_png": "D:\\robot_work\\runs_end_side\\scenario2_closed_loop_v7\\showcase_scenario2_closed_loop_v7.png",
+  "demo_mp4": "D:\\robot_work\\runs_end_side\\scenario2_closed_loop_v7\\demo_scenario2_visual_reloc_v7.mp4"
+}
