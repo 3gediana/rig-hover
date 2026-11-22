@@ -506,7 +506,7 @@ JVM 单测 `DoubleKnockKinematicsTest` 两条通过（含 13 fps 输入在 ~32 �
 
 ### 13.6 场景能力矩阵与全模型集成评测（v5）
 
-- `pc/end_side/scenario_matrix.py` 扫描全部 `runs_end_side` 报告，输出 `scenario_capability_matrix.json`：16 个已验证场景条目（带验证层级 T0–T3）+ 7 个明确缺口（真机物理验收、相机内参标定、双敲严格流式召回、全链路真机录像 E2E、跟随水杯行为、边缘勘测+任意点导航、Android TFLite 实测）。
+- `pc/end_side/scenario_matrix.py` 扫描全部 `runs_end_side` 报告，输出 `scenario_capability_matrix.json`：18 个已验证场景条目（带验证层级 T0–T3）+ 7 个明确缺口（真机物理验收、相机内参标定、全链路真机录像 E2E、Android TFLite 实测等，v18/v19 追捕与边缘勘测已转入已验证条目）。
 - `pc/end_side/ensemble_knock_v5.py` 对全部 5 个 deploy ckpt 做同协议流式评测 + mean/vote/LOO 融合：**`physnet_v11` 单模型最强（in-sample F1 `0.9474`，81/89，1 FP，0.052 FA/min），且在压垮 v13 的 `1f30d1` 折上 19/19 满分**；所有融合方案均不优于最佳单模型（vote-2of5 `0.913` 但 FP 增至 11）。诚实边界：deploy ckpt 见过全部 take，绝对值为上界，结论只用于"谁当部署默认"。
 
 ### 13.7 v18 追捕逃逸水杯：卡尔曼前瞻拦截 + 目标失联机身扫视重捕获
