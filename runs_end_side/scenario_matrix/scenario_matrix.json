@@ -1,0 +1,300 @@
+{
+  "tiers": {
+    "T0": "synthetic-sim (zero-oracle)",
+    "T1": "real-video replay",
+    "T2": "external-distribution stress",
+    "T3": "HIL (ESP32-compatible local loop)",
+    "T4": "physical robot"
+  },
+  "generated_at": "2026-11-23 01:04:47",
+  "entries": [
+    {
+      "id": "knock-3d-v2",
+      "name": "DoubleKnock3D-PhysNet v2 (strict stream)",
+      "category": "perception",
+      "tier": "T1",
+      "source": "runs_end_side/double_knock_3d_v2_extreme/double_knock_3d_v2_extreme_report.json",
+      "metrics": {
+        "gt_events": 89,
+        "hits": 59,
+        "fp": 23,
+        "f1": 0.6901,
+        "fa_per_min": 1.466
+      },
+      "artifacts": {},
+      "notes": "6-fold LOO, nested Inner-OOF calibration, strict 1-to-1 matching."
+    },
+    {
+      "id": "knock-3d-v2-ext",
+      "name": "DoubleKnock3D-PhysNet v2 on 30 external clips",
+      "category": "perception",
+      "tier": "T2",
+      "source": "runs_end_side/double_knock_3d_v2_extreme/double_knock_3d_v2_extreme_report.json",
+      "metrics": {
+        "neg_minutes": 5.48,
+        "3d_str_fp": 0,
+        "knock_d05_detected": {
+          "2d_str": true,
+          "3d_str": false
+        }
+      },
+      "artifacts": {},
+      "notes": "0 streaming false alarms on 30 out-of-distribution clips; missed the d0.5 boundary positive."
+    },
+    {
+      "id": "knock-3d-v4",
+      "name": "DoubleKnock3D v4 Sim2Real (GeM + rocking/ISO/JPEG aug)",
+      "category": "perception",
+      "tier": "T1",
+      "source": "runs_end_side/double_knock_3d_v4_sim2real/double_knock_3d_v4_sim2real_report.json",
+      "metrics": {
+        "hits": 58,
+        "fp": 18,
+        "f1": 0.703,
+        "fa_per_min": 1.229
+      },
+      "artifacts": {},
+      "notes": "Robustness-augmented variant; recall-lower but cleanest FA/min."
+    },
+    {
+      "id": "knock-ablation",
+      "name": "2D-vs-3D same-architecture ablation (v13 audit)",
+      "category": "perception",
+      "tier": "T1",
+      "source": "runs_end_side/rigorous_audit_v13/rigorous_knock_2d_vs_3d_ablation.json",
+      "metrics": {
+        "samearch_2d_f1": 0.7024,
+        "samearch_3d_f1": 0.7241,
+        "pure_3d_delta": 0.0217
+      },
+      "artifacts": {},
+      "notes": "3D adds only +0.0217 F1 over identical 2D arch; fold-level calibration collapse documented."
+    },
+    {
+      "id": "geo-exact-gt",
+      "name": "HoverGeoNet vs MoGe-2 on exact ray-traced GT",
+      "category": "geometry",
+      "tier": "T0",
+      "source": "runs_end_side/rigorous_audit_v13/rigorous_geo_exact_gt_benchmark.json",
+      "metrics": {
+        "geonet_v3_near_absrel": 0.0489,
+        "geonet_v3_near_rmse_mm": 41.3,
+        "cup_125mm_err_mm": 13.94,
+        "moge2_near_rmse_mm": 118.18
+      },
+      "artifacts": {
+        "png": "runs_end_side/geonet240_vs_moge2_v7/showcase_geonet240_vs_moge2_v7.png"
+      },
+      "notes": "27MB distilled student beats 419MB teacher near tabletop after calibration."
+    },
+    {
+      "id": "planar-se2-v11",
+      "name": "Odometry-free SE(2) planar visual relocalization + Neural-SDF CBF",
+      "category": "geometry",
+      "tier": "T0",
+      "source": "runs_end_side/planar_se2_subcm_v11/planar_se2_subcm_v11_report.json",
+      "metrics": {
+        "episodes": 20,
+        "mean_arrival_err_cm": 2.25,
+        "median_arrival_err_cm": 2.15,
+        "collisions": 0
+      },
+      "artifacts": {
+        "png": "runs_end_side/showcase_v11_three_breakthroughs.png"
+      },
+      "notes": "Zero wheel odometry, random wheel slip 0.69-0.90, gyro drift; sub-cm-scale arrival."
+    },
+    {
+      "id": "room360-v12",
+      "name": "Room-360 self-correcting relocalization (real panoramas)",
+      "category": "geometry",
+      "tier": "T1",
+      "source": "runs_end_side/room360_self_correct_v12/room360_self_correct_v12_report.json",
+      "metrics": {
+        "heldout_rooms": [
+          "hotel_room",
+          "reading_room",
+          "lythwood_lounge"
+        ],
+        "zeroshot_pass2_psnr_db": 28.46,
+        "sabotage_rooms": [
+          "hotel_room",
+          "reading_room"
+        ]
+      },
+      "artifacts": {
+        "png": "runs_end_side/room360_self_correct_v12/showcase_v12_room360_self_correction.png"
+      },
+      "notes": "Zero-shot self-corrector on unseen held-out rooms; sabotage-recovery benchmark."
+    },
+    {
+      "id": "v14-realvideo-e2e",
+      "name": "v14 real-video knock -> 3D lock -> visual dock",
+      "category": "behavior",
+      "tier": "T1",
+      "source": "runs_end_side/embodied_brain_v14/embodied_brain_v14_report.json",
+      "metrics": {
+        "distractor_fp_40s": 0,
+        "final_err_cm": 3.97,
+        "lookback_face_err_deg": 1.81
+      },
+      "artifacts": {
+        "mp4": "runs_end_side/embodied_brain_v14/demo_embodied_brain_v14.mp4",
+        "png": "runs_end_side/embodied_brain_v14/showcase_v14_extreme_robot_brain.png"
+      },
+      "notes": "40s real distractor segment with zero false launches, then real knock triggers docking."
+    },
+    {
+      "id": "v14-kidnap",
+      "name": "v14 kidnap self-recovery (+95deg blind rotate + 12cm shove)",
+      "category": "behavior",
+      "tier": "T0",
+      "source": "runs_end_side/embodied_brain_v14/embodied_brain_v14_report.json",
+      "metrics": {
+        "final_err_cm": 5.45,
+        "baseline_final_err_cm": 109.04
+      },
+      "artifacts": {},
+      "notes": "Global SIFT+PnP relocalization within 2 steps of the shove."
+    },
+    {
+      "id": "v14-stress30",
+      "name": "v14 30-episode brutal stress (slip + kidnap + obstacles)",
+      "category": "behavior",
+      "tier": "T0",
+      "source": "runs_end_side/embodied_brain_v14/embodied_brain_v14_report.json",
+      "metrics": {
+        "episodes": 30,
+        "mean_err_cm": 5.38,
+        "median_err_cm": 3.8,
+        "collision_rate_pct": 3.3
+      },
+      "artifacts": {},
+      "notes": "1/30 collision under worst-case disturbances."
+    },
+    {
+      "id": "v15-cliff",
+      "name": "v15 visual-cliff refusal (pure vision, no prior map)",
+      "category": "behavior",
+      "tier": "T0",
+      "source": "runs_end_side/living_brain_v15/living_brain_v15_report.json",
+      "metrics": {
+        "cliff_y_true_m": -0.36,
+        "v15_min_margin_cm": 12.81,
+        "baseline_fell": true
+      },
+      "artifacts": {
+        "mp4": "runs_end_side/living_brain_v15/demo_living_brain_v15.mp4",
+        "html": "runs_end_side/living_brain_v15/wenwen_living_brain_v15.html"
+      },
+      "notes": "Detected cliff at step 17, est -0.394m drop, refused to cross."
+    },
+    {
+      "id": "v15-chaos",
+      "name": "v15 triple-chaos gauntlet (moving + sudden obstacle + kidnap, one mission)",
+      "category": "behavior",
+      "tier": "T0",
+      "source": "runs_end_side/living_brain_v15/living_brain_v15_report.json",
+      "metrics": {
+        "final_err_cm": 12.98,
+        "min_clearance_cm": 6.52
+      },
+      "artifacts": {},
+      "notes": "All three attacks detected at first visual contact; mission still completed."
+    },
+    {
+      "id": "v16-montecarlo",
+      "name": "v16 full-reality-gap Monte Carlo (25 eps)",
+      "category": "deploy",
+      "tier": "T0",
+      "source": "runs_end_side/sim2real_v16/sim2real_v16_report.json",
+      "metrics": {
+        "median_err_cm": 4.59,
+        "p90_err_cm": 9.46,
+        "collision_rate_pct": 4.0,
+        "naive_collision_rate_pct": 28.0
+      },
+      "artifacts": {
+        "mp4": "runs_end_side/sim2real_v16/demo_sim2real_reality_v16.mp4",
+        "png": "runs_end_side/sim2real_v16/showcase_v16_sim2real_gap_crushed.png"
+      },
+      "notes": "Latency/dropout/dead-zone/yaw-pull all injected; naive baseline collides 28%."
+    },
+    {
+      "id": "v16-hil",
+      "name": "v16 ESP32 HTTP hardware-in-the-loop (/status+/capture+/cmd+watchdog)",
+      "category": "deploy",
+      "tier": "T3",
+      "source": "runs_end_side/sim2real_v16/sim2real_v16_report.json",
+      "metrics": {
+        "closed_loop_cycles": 16,
+        "median_e2e_ms": 35.6,
+        "blackout_handled": true,
+        "watchdog_saved": 1
+      },
+      "artifacts": {},
+      "notes": "Same endpoints the real firmware exposes; --live --host flag ready."
+    },
+    {
+      "id": "v16-blackmat",
+      "name": "v16 black-mat vs real-cliff parallax discrimination",
+      "category": "deploy",
+      "tier": "T0",
+      "source": "runs_end_side/sim2real_v16/sim2real_v16_report.json",
+      "metrics": {
+        "mat_parallax": 0.896,
+        "cliff_parallax": 0.313,
+        "mat_safely_crossed": true,
+        "naive_false_alarm": true
+      },
+      "artifacts": {},
+      "notes": "Naive brightness cliff detector false-alarms on the mat; flow-parallax does not."
+    },
+    {
+      "id": "skill-zoo",
+      "name": "RL skill zoo (orbit / social-proxemics / figure8 / ping-point-nav)",
+      "category": "policy",
+      "tier": "T0",
+      "source": "runs_end_side/skill_zoo/skill_zoo_metrics.json",
+      "metrics": {
+        "skills": [
+          "orbit_inspector",
+          "social_proxemics",
+          "figure8_patrol"
+        ]
+      },
+      "artifacts": {},
+      "notes": "ping_point_nav_v1 71/72 spec-compliant in 8-scenario sandbox."
+    }
+  ],
+  "gaps": [
+    {
+      "gap": "physical-robot acceptance of ANY v14-v16 scenario",
+      "blocking": "robot offline; needs --live run with watchdog supervision"
+    },
+    {
+      "gap": "camera intrinsics calibration (FOV_H=60deg vs dist_k=0.84 contradiction)",
+      "blocking": "needs printed checkerboard + 5min capture on the real robot"
+    },
+    {
+      "gap": "double-knock recall still ~65-77% under strict streaming",
+      "blocking": "ensemble/rhythm-filter experiments below; more low-fps takes"
+    },
+    {
+      "gap": "full E2E real-video scenario (face->fist->knock->dock->lookback) on recorded take",
+      "blocking": "needs pc_unified_brain_app run on a full take, not just segments"
+    },
+    {
+      "gap": "pursuit/follow-a-cup behavior",
+      "blocking": "none - implementable in DesktopArena3D tonight"
+    },
+    {
+      "gap": "edge-survey cliff-map then point-to-point anywhere",
+      "blocking": "none - implementable in DesktopArena3D tonight"
+    },
+    {
+      "gap": "Android TFLite on-device run of the GeoNet+knock bundle",
+      "blocking": "needs G:\\robot_app build + phone"
+    }
+  ]
+}
