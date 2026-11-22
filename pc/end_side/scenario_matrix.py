@@ -343,6 +343,27 @@ def entries() -> list[dict]:
             "notes": "void-majority line fixed a real blindness: brightness+border conjunction dies when void fills >50% view (last ~12cm). Now refuses ~20-25cm early on all approach angles; refusal envelope is conservative (16cm targets also refused).",
         })
 
+    d21 = RUNS / "e2e_replay" / "robot_20261115_151733_cb8455_summary.json"
+    if d21.exists():
+        d = json.loads(d21.read_text(encoding="utf-8"))
+        gn = d.get("geonet_ms") or {}
+        e.append({
+            "id": "v21-e2e-fulltake", "name": "v21 full-take real-video E2E replay (knock -> 3D lock -> nav cmd)",
+            "category": "behavior", "tier": "T2",
+            "source": "runs_end_side/e2e_replay/robot_20261115_151733_cb8455_summary.json",
+            "metrics": {
+                "frames": d.get("n_frames_logged"),
+                "gt_knocks": d.get("gt_knocks"),
+                "fires": d.get("fires"),
+                "fp": len(d.get("false_positives") or []),
+                "misses": len(d.get("misses") or []),
+                "reloc_inliers_med": d.get("reloc_inliers_median"),
+                "geonet_ms_med": gn.get("median"),
+            },
+            "artifacts": _art("e2e_replay/robot_20261115_151733_cb8455_summary.json"),
+            "notes": "pc_unified_brain_app --source video on full 2412f take; replay tier (odometry static).",
+        })
+
     # ------------------------------------------------------------------
     # Gaps / not-yet-run candidates
     # ------------------------------------------------------------------
@@ -350,7 +371,7 @@ def entries() -> list[dict]:
         {"gap": "physical-robot acceptance of ANY v14-v16 scenario", "blocking": "robot offline; needs --live run with watchdog supervision"},
         {"gap": "camera intrinsics calibration (FOV_H=60deg vs dist_k=0.84 contradiction)", "blocking": "needs printed checkerboard + 5min capture on the real robot"},
         {"gap": "double-knock recall still ~65-77% under strict streaming", "blocking": "v20 autopsy: deploy threshold is grid-optimal; misses need data not tuning"},
-        {"gap": "full E2E real-video scenario (face->fist->knock->dock->lookback) on recorded take", "blocking": "needs pc_unified_brain_app run on a full take, not just segments"},
+        {"gap": "full E2E real-video scenario on a SECOND take + physical live run", "blocking": "v21 replay covers take cb8455; physical live run still blocked by robot offline"},
         {"gap": "pursuit S2 hard edge: cup zigzags through robot + rests out of 60deg FOV", "blocking": "needs wider FOV / predictive dodge / multi-hypothesis tracking"},
         {"gap": "GeoNet depth blind to synthetic dark pixels (void->z~0): geometric cliff/depth cues unreliable", "blocking": "depth augmentation with dark-floor renders; affects any z<0 cue"},
         {"gap": "Android TFLite on-device run of the GeoNet+knock bundle", "blocking": "needs G:\\robot_app build + phone"},

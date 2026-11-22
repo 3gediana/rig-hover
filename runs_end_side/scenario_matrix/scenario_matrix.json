@@ -6,7 +6,7 @@
     "T3": "HIL (ESP32-compatible local loop)",
     "T4": "physical robot"
   },
-  "generated_at": "2026-11-23 07:43:07",
+  "generated_at": "2026-11-23 07:47:06",
   "entries": [
     {
       "id": "knock-3d-v2",
@@ -318,8 +318,8 @@
       "blocking": "v20 autopsy: deploy threshold is grid-optimal; misses need data not tuning"
     },
     {
-      "gap": "full E2E real-video scenario (face->fist->knock->dock->lookback) on recorded take",
-      "blocking": "needs pc_unified_brain_app run on a full take, not just segments"
+      "gap": "full E2E real-video scenario on a SECOND take + physical live run",
+      "blocking": "v21 replay covers take cb8455; physical live run still blocked by robot offline"
     },
     {
       "gap": "pursuit S2 hard edge: cup zigzags through robot + rests out of 60deg FOV",
