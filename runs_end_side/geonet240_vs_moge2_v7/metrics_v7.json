@@ -1,0 +1,130 @@
+{
+  "h_cam_m": 0.135,
+  "fov_h_deg": 65.0,
+  "scenes": {
+    "empty_d05": {
+      "geonet240": {
+        "avg_infer_ms": 10.01,
+        "static_pts": 235214,
+        "dyn_pts_last": 19947,
+        "carved_ghosts_total": 6686,
+        "density": {
+          "total_pts": 235214,
+          "vox_size_mm": 2.0,
+          "near_0.25_0.55m": {
+            "pts": 70235,
+            "median_spacing_mm": 1.75,
+            "p90_spacing_mm": 2.69,
+            "surface_density_pts_per_cm2": 32.6
+          },
+          "mid_0.55_0.90m": {
+            "pts": 82073,
+            "median_spacing_mm": 3.11,
+            "p90_spacing_mm": 4.88,
+            "surface_density_pts_per_cm2": 10.4
+          },
+          "desk_plane_mad_mm": 1.32
+        },
+        "roi_bump": {
+          "pts": 64214,
+          "z_p50_mm": 1.2,
+          "z_p95_mm": 33.3,
+          "z_max_mm": 140.0
+        },
+        "viewer_html": "D:\\robot_work\\runs_end_side\\geonet240_vs_moge2_v7\\viewer_geonet240_empty_d05_v7.html"
+      },
+      "moge2_vitb": {
+        "avg_infer_ms": 193.76,
+        "static_pts": 731199,
+        "dyn_pts_last": 36800,
+        "carved_ghosts_total": 62084,
+        "density": {
+          "total_pts": 731199,
+          "vox_size_mm": 2.0,
+          "near_0.25_0.55m": {
+            "pts": 105906,
+            "median_spacing_mm": 1.46,
+            "p90_spacing_mm": 1.94,
+            "surface_density_pts_per_cm2": 47.0
+          },
+          "mid_0.55_0.90m": {
+            "pts": 185875,
+            "median_spacing_mm": 1.82,
+            "p90_spacing_mm": 2.27,
+            "surface_density_pts_per_cm2": 30.1
+          },
+          "desk_plane_mad_mm": 2.25
+        },
+        "roi_bump": {
+          "pts": 106436,
+          "z_p50_mm": 1.1,
+          "z_p95_mm": 28.3,
+          "z_max_mm": 139.2
+        },
+        "viewer_html": "D:\\robot_work\\runs_end_side\\geonet240_vs_moge2_v7\\viewer_moge2_dynablox_empty_d05_v7.html"
+      }
+    },
+    "cb8455": {
+      "geonet240": {
+        "avg_infer_ms": 10.23,
+        "static_pts": 296992,
+        "dyn_pts_last": 19297,
+        "carved_ghosts_total": 17684,
+        "density": {
+          "total_pts": 296992,
+          "vox_size_mm": 2.0,
+          "near_0.25_0.55m": {
+            "pts": 101716,
+            "median_spacing_mm": 1.82,
+            "p90_spacing_mm": 2.64,
+            "surface_density_pts_per_cm2": 30.3
+          },
+          "mid_0.55_0.90m": {
+            "pts": 81285,
+            "median_spacing_mm": 3.2,
+            "p90_spacing_mm": 4.57,
+            "surface_density_pts_per_cm2": 9.8
+          },
+          "desk_plane_mad_mm": 1.61
+        },
+        "roi_bump": {
+          "pts": 76460,
+          "z_p50_mm": 7.8,
+          "z_p95_mm": 226.9,
+          "z_max_mm": 280.0
+        },
+        "viewer_html": "D:\\robot_work\\runs_end_side\\geonet240_vs_moge2_v7\\viewer_geonet240_cb8455_v7.html"
+      },
+      "moge2_vitb": {
+        "avg_infer_ms": 170.71,
+        "static_pts": 828415,
+        "dyn_pts_last": 82374,
+        "carved_ghosts_total": 125403,
+        "density": {
+          "total_pts": 828415,
+          "vox_size_mm": 2.0,
+          "near_0.25_0.55m": {
+            "pts": 118892,
+            "median_spacing_mm": 1.4,
+            "p90_spacing_mm": 1.86,
+            "surface_density_pts_per_cm2": 51.4
+          },
+          "mid_0.55_0.90m": {
+            "pts": 190193,
+            "median_spacing_mm": 1.8,
+            "p90_spacing_mm": 2.37,
+            "surface_density_pts_per_cm2": 30.9
+          },
+          "desk_plane_mad_mm": 3.03
+        },
+        "roi_bump": {
+          "pts": 83843,
+          "z_p50_mm": 1.7,
+          "z_p95_mm": 37.5,
+          "z_max_mm": 280.0
+        },
+        "viewer_html": "D:\\robot_work\\runs_end_side\\geonet240_vs_moge2_v7\\viewer_moge2_dynablox_cb8455_v7.html"
+      }
+    }
+  }
+}

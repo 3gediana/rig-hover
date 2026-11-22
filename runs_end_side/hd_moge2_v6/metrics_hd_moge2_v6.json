@@ -1,0 +1,172 @@
+{
+  "model": "Ruicheng/moge-2-vitb-normal",
+  "device": "cuda",
+  "scenes": [
+    {
+      "scene": "empty_d0.5: Mouse + Keyboard + Desk Corners",
+      "old_static_pts": 4190,
+      "hd_total_pts": 693634,
+      "moge2_ms_per_frame": 1705.3,
+      "density": {
+        "total_pts": 693634,
+        "vox_size_mm": 2.0,
+        "near_0.25_0.55m": {
+          "pts": 114614,
+          "median_spacing_mm": 1.47,
+          "p90_spacing_mm": 2.13,
+          "surface_density_pts_per_cm2": 46.2
+        },
+        "mid_0.55_0.90m": {
+          "pts": 161887,
+          "median_spacing_mm": 1.64,
+          "p90_spacing_mm": 2.0,
+          "surface_density_pts_per_cm2": 37.3
+        },
+        "desk_plane_mad_mm": 2.64
+      },
+      "roi_relief": {
+        "mouse+keyboard": {
+          "pts": 106868,
+          "z_p50_mm": 4.7,
+          "z_p95_mm": 101.9,
+          "z_max_mm": 140.1
+        }
+      },
+      "exports": {
+        "ply_path": "D:\\robot_work\\runs_end_side\\hd_moge2_v6\\empty_d05_hd_green.ply",
+        "ply_kb": 18289.4,
+        "html_path": "D:\\robot_work\\runs_end_side\\hd_moge2_v6\\viewer_empty_d05_hd_green.html",
+        "html_kb": 1633.2,
+        "html_pts": 138727
+      }
+    },
+    {
+      "scene": "cb8455: Cup + Notebook + Arm + Person",
+      "old_static_pts": 4454,
+      "hd_total_pts": 878676,
+      "moge2_ms_per_frame": 164.3,
+      "density": {
+        "total_pts": 878676,
+        "vox_size_mm": 2.0,
+        "near_0.25_0.55m": {
+          "pts": 221202,
+          "median_spacing_mm": 1.42,
+          "p90_spacing_mm": 1.96,
+          "surface_density_pts_per_cm2": 49.9
+        },
+        "mid_0.55_0.90m": {
+          "pts": 177301,
+          "median_spacing_mm": 1.92,
+          "p90_spacing_mm": 2.62,
+          "surface_density_pts_per_cm2": 27.2
+        },
+        "desk_plane_mad_mm": 2.72
+      },
+      "roi_relief": {
+        "cup+notebook+hand": {
+          "pts": 155811,
+          "z_p50_mm": 42.7,
+          "z_p95_mm": 247.5,
+          "z_max_mm": 280.0
+        }
+      },
+      "exports": {
+        "ply_path": "D:\\robot_work\\runs_end_side\\hd_moge2_v6\\cb8455_hd_green.ply",
+        "ply_kb": 23168.4,
+        "html_path": "D:\\robot_work\\runs_end_side\\hd_moge2_v6\\viewer_cb8455_hd_green.html",
+        "html_kb": 1478.5,
+        "html_pts": 125526
+      }
+    },
+    {
+      "scene": "004630: Smartphone + Knocking Hand + Keyboard",
+      "old_static_pts": 9794,
+      "hd_total_pts": 613937,
+      "moge2_ms_per_frame": 162.8,
+      "density": {
+        "total_pts": 613937,
+        "vox_size_mm": 2.0,
+        "near_0.25_0.55m": {
+          "pts": 204016,
+          "median_spacing_mm": 1.35,
+          "p90_spacing_mm": 1.96,
+          "surface_density_pts_per_cm2": 54.7
+        },
+        "mid_0.55_0.90m": {
+          "pts": 162221,
+          "median_spacing_mm": 1.56,
+          "p90_spacing_mm": 2.13,
+          "surface_density_pts_per_cm2": 41.2
+        },
+        "desk_plane_mad_mm": 2.21
+      },
+      "roi_relief": {
+        "phone+hand": {
+          "pts": 103807,
+          "z_p50_mm": 9.4,
+          "z_p95_mm": 239.8,
+          "z_max_mm": 280.0
+        }
+      },
+      "exports": null
+    },
+    {
+      "scene": "5ca36d: Dark Blazer + Fist + Keyboard Corners",
+      "old_static_pts": 14533,
+      "hd_total_pts": 497112,
+      "moge2_ms_per_frame": 162.9,
+      "density": {
+        "total_pts": 497112,
+        "vox_size_mm": 2.0,
+        "near_0.25_0.55m": {
+          "pts": 183891,
+          "median_spacing_mm": 1.35,
+          "p90_spacing_mm": 1.9,
+          "surface_density_pts_per_cm2": 55.1
+        },
+        "mid_0.55_0.90m": {
+          "pts": 40922,
+          "median_spacing_mm": 1.53,
+          "p90_spacing_mm": 2.4,
+          "surface_density_pts_per_cm2": 42.8
+        },
+        "desk_plane_mad_mm": 3.41
+      },
+      "roi_relief": {
+        "fist+keyboard": {
+          "pts": 167157,
+          "z_p50_mm": 78.6,
+          "z_p95_mm": 253.4,
+          "z_max_mm": 280.0
+        }
+      },
+      "exports": null
+    }
+  ],
+  "visual_relocalization": [
+    {
+      "scene": "empty_d05",
+      "trials": 5,
+      "target_world_xy": [
+        0.38,
+        -0.02
+      ],
+      "mean_cam_pos_err_mm": 30.0,
+      "mean_rot_err_deg": 2.46,
+      "mean_relative_target_err_mm": 24.4,
+      "max_relative_target_err_mm": 47.4
+    },
+    {
+      "scene": "cb8455",
+      "trials": 5,
+      "target_world_xy": [
+        0.42,
+        0.06
+      ],
+      "mean_cam_pos_err_mm": 31.4,
+      "mean_rot_err_deg": 2.74,
+      "mean_relative_target_err_mm": 22.0,
+      "max_relative_target_err_mm": 35.1
+    }
+  ]
+}

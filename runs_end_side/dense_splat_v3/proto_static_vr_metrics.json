@@ -1,0 +1,17 @@
+{
+  "tflite_bytes": 550144,
+  "fusion": {
+    "frames": 200,
+    "frames_aligned": 200,
+    "raw_inv01_std": 0.02658075839281082,
+    "median_residual": 0.03067505545914173,
+    "shift_px96_p95": 3.3023435354232764,
+    "cloud_points": 182237,
+    "pitch_deg": -0.0,
+    "z_bias": 0.017512410879135132,
+    "green_cells": 139,
+    "red_cells": 203,
+    "teacher_depth": false
+  },
+  "total_elapsed_s": 50.7
+}

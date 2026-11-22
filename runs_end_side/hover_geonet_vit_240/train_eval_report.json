@@ -1,0 +1,172 @@
+{
+  "model": "HoverGeoNet-240 (vit_b1, 7ch physics-conditioned, H_cam=0.135m)",
+  "arch": "vit_b1",
+  "h_cam_m": 0.135,
+  "fov_h_deg": 65.0,
+  "params": 14059545,
+  "ckpt_fp32_mb": 53.85,
+  "ckpt_fp16_mb": 27.01,
+  "gpu_fp16_ms": 22.58,
+  "gpu_fp16_fps": 44.3,
+  "best_epoch": 5,
+  "train_seconds": 520.9,
+  "val_internal": {
+    "n_frames": 100,
+    "abs_rel": 0.1509,
+    "z_mae_mm": 35.08,
+    "desk_z_mad_mm": 2.93,
+    "micro_obj_z_mae_mm": 6.36,
+    "normal_cos": 0.9319,
+    "normal_angle_deg": 16.33
+  },
+  "heldout_empty_d05_with_imu": {
+    "n_frames": 40,
+    "abs_rel": 0.1847,
+    "z_mae_mm": 39.17,
+    "desk_z_mad_mm": 1.45,
+    "micro_obj_z_mae_mm": 6.01,
+    "normal_cos": 0.9023,
+    "normal_angle_deg": 17.26
+  },
+  "heldout_empty_d05_no_imu_autolevel": {
+    "n_frames": 40,
+    "abs_rel": 0.1972,
+    "z_mae_mm": 45.03,
+    "desk_z_mad_mm": 0.9,
+    "micro_obj_z_mae_mm": 9.19,
+    "normal_cos": 0.9021,
+    "normal_angle_deg": 17.61
+  },
+  "heldout_cb8455_with_imu": {
+    "n_frames": 40,
+    "abs_rel": 0.1647,
+    "z_mae_mm": 38.09,
+    "desk_z_mad_mm": 3.37,
+    "micro_obj_z_mae_mm": 10.35,
+    "normal_cos": 0.9245,
+    "normal_angle_deg": 18.37
+  },
+  "heldout_cb8455_no_imu_autolevel": {
+    "n_frames": 40,
+    "abs_rel": 0.2119,
+    "z_mae_mm": 70.28,
+    "desk_z_mad_mm": 1.81,
+    "micro_obj_z_mae_mm": 40.35,
+    "normal_cos": 0.9181,
+    "normal_angle_deg": 18.77
+  },
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 1.3519,
+      "train_z_mm": 15.85,
+      "val": {
+        "n_frames": 100,
+        "abs_rel": 0.1551,
+        "z_mae_mm": 33.5,
+        "desk_z_mad_mm": 4.09,
+        "micro_obj_z_mae_mm": 7.38,
+        "normal_cos": 0.9238,
+        "normal_angle_deg": 17.87
+      }
+    },
+    {
+      "epoch": 2,
+      "train_loss": 1.0609,
+      "train_z_mm": 15.08,
+      "val": {
+        "n_frames": 100,
+        "abs_rel": 0.1529,
+        "z_mae_mm": 34.97,
+        "desk_z_mad_mm": 3.27,
+        "micro_obj_z_mae_mm": 6.77,
+        "normal_cos": 0.9291,
+        "normal_angle_deg": 17.04
+      }
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.9592,
+      "train_z_mm": 13.76,
+      "val": {
+        "n_frames": 100,
+        "abs_rel": 0.1488,
+        "z_mae_mm": 32.46,
+        "desk_z_mad_mm": 2.94,
+        "micro_obj_z_mae_mm": 6.49,
+        "normal_cos": 0.9248,
+        "normal_angle_deg": 17.01
+      }
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.9396,
+      "train_z_mm": 13.98,
+      "val": {
+        "n_frames": 100,
+        "abs_rel": 0.1718,
+        "z_mae_mm": 39.58,
+        "desk_z_mad_mm": 3.81,
+        "micro_obj_z_mae_mm": 7.7,
+        "normal_cos": 0.9292,
+        "normal_angle_deg": 16.76
+      }
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.8961,
+      "train_z_mm": 13.47,
+      "val": {
+        "n_frames": 100,
+        "abs_rel": 0.1509,
+        "z_mae_mm": 35.08,
+        "desk_z_mad_mm": 2.93,
+        "micro_obj_z_mae_mm": 6.36,
+        "normal_cos": 0.9319,
+        "normal_angle_deg": 16.33
+      }
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.8864,
+      "train_z_mm": 13.38,
+      "val": {
+        "n_frames": 100,
+        "abs_rel": 0.1638,
+        "z_mae_mm": 37.8,
+        "desk_z_mad_mm": 3.79,
+        "micro_obj_z_mae_mm": 6.58,
+        "normal_cos": 0.9265,
+        "normal_angle_deg": 16.92
+      }
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.868,
+      "train_z_mm": 12.84,
+      "val": {
+        "n_frames": 100,
+        "abs_rel": 0.157,
+        "z_mae_mm": 36.34,
+        "desk_z_mad_mm": 3.23,
+        "micro_obj_z_mae_mm": 6.21,
+        "normal_cos": 0.929,
+        "normal_angle_deg": 16.7
+      }
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.8476,
+      "train_z_mm": 12.27,
+      "val": {
+        "n_frames": 100,
+        "abs_rel": 0.1588,
+        "z_mae_mm": 37.24,
+        "desk_z_mad_mm": 3.39,
+        "micro_obj_z_mae_mm": 6.31,
+        "normal_cos": 0.9286,
+        "normal_angle_deg": 16.52
+      }
+    }
+  ]
+}

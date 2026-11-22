@@ -1,0 +1,94 @@
+{
+  "tflite_bytes": 550144,
+  "cb8455_total_frames": 2412,
+  "scene_showcase": [
+    {
+      "scene": "cb8455 HELD-OUT: cup + notebook + arm",
+      "voxels": 31934,
+      "green_cells": 50,
+      "red_cells": 167,
+      "astar_accepted": true,
+      "astar_path_len": 9,
+      "red_click_accepted": false,
+      "red_click_reason": "blocked_obstacle"
+    },
+    {
+      "scene": "empty_d0.5 HELD-OUT: keyboard + mouse",
+      "voxels": 33097,
+      "green_cells": 177,
+      "red_cells": 227,
+      "astar_accepted": true,
+      "astar_path_len": 20,
+      "red_click_accepted": false,
+      "red_click_reason": "blocked_obstacle"
+    },
+    {
+      "scene": "5ca36d train: fist + keyboard + person",
+      "voxels": 25569,
+      "green_cells": 105,
+      "red_cells": 96,
+      "astar_accepted": true,
+      "astar_path_len": 16,
+      "red_click_accepted": false,
+      "red_click_reason": "blocked_obstacle"
+    },
+    {
+      "scene": "004630 train: phone + knocking hand",
+      "voxels": 23854,
+      "green_cells": 126,
+      "red_cells": 133,
+      "astar_accepted": true,
+      "astar_path_len": 29,
+      "red_click_accepted": false,
+      "red_click_reason": "blocked_obstacle"
+    }
+  ],
+  "raycarve": {
+    "stream_start": 1110,
+    "peak_frame": 1190,
+    "moments": [
+      {
+        "frame_index": 1113,
+        "label": "t1 arm reaches toward camera",
+        "carved_this_frame": 110,
+        "fg_vox": 19477,
+        "green_cells": 39
+      },
+      {
+        "frame_index": 1190,
+        "label": "t2 hand/fist closest: peak foreground",
+        "carved_this_frame": 570,
+        "fg_vox": 37856,
+        "green_cells": 61
+      },
+      {
+        "frame_index": 1232,
+        "label": "t3 withdraw/knock: ray-carve burst",
+        "carved_this_frame": 16312,
+        "fg_vox": 23694,
+        "green_cells": 68
+      },
+      {
+        "frame_index": 1269,
+        "label": "t4 settled: ghost carved, green reopened",
+        "carved_this_frame": 1000,
+        "fg_vox": 30091,
+        "green_cells": 78
+      }
+    ]
+  },
+  "demo_video": {
+    "frames": 240,
+    "fps": 15,
+    "duration_s": 16.0,
+    "avg_infer_ms": 56.3,
+    "avg_render_ms": 78.9,
+    "total_build_s": 35.1,
+    "red_click_accepted": false,
+    "red_click_reason": "blocked_obstacle",
+    "green_plan_accepted": true,
+    "green_path_len": 11,
+    "file_bytes": 6565929
+  },
+  "total_elapsed_s": 67.7
+}

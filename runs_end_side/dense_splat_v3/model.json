@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "name": "hover-dense-splat-v3",
+  "version": "2026.11.18",
+  "task": "depth",
+  "input": {
+    "width": 96,
+    "height": 96,
+    "channels": 3,
+    "normalize": "unit"
+  },
+  "output": {
+    "width": 96,
+    "height": 96,
+    "channels": 6,
+    "invDepthMin": 0.35,
+    "invDepthSpan": 6.65,
+    "elevThresholdM": 0.03
+  },
+  "camera": {
+    "heightM": 0.115,
+    "fovHDeg": 72.0
+  },
+  "sha256": "9f170e56826e64ffa1e2956d495474bcbef0e830e32cddc6d0f32954793cc0b0",
+  "notes": "Distilled 96x96->96x96x6 MobileNetV2-UNet 3D Gaussian student (<1MB, CPU real-time)"
+}

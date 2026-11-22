@@ -1,0 +1,103 @@
+{
+  "model": "HoverGeoNet-MV-SelfSup v4 (27.0 MB FP16, Multi-View Self-Supervised)",
+  "train_seconds": 359.4,
+  "n_real_unlabeled_triplets": 746,
+  "ckpt_fp16": "D:\\robot_work\\runs_end_side\\hover_geonet_mv_v4\\hover_geonet_mv_v4_fp16.pt",
+  "ckpt_fp16_mb": 27.01,
+  "objective_real_video_benchmark": {
+    "empty_d05": {
+      "MoGe-2-ViT-B (419MB Teacher)": {
+        "model": "MoGe-2-ViT-B (419MB Teacher)",
+        "scene": "heldout_empty_d05",
+        "infer_ms": 172.97,
+        "fps": 5.8,
+        "temporal_3d_z_jitter_mm": 20.74,
+        "temporal_3d_depth_jitter_mm": 40.47,
+        "temporal_normal_flicker_deg": 3.91,
+        "desk_plane_flatness_mad_mm": 1.93,
+        "multiview_reproj_psnr_db": 13.98,
+        "multiview_reproj_l1": 0.11,
+        "zero_odom_reloc_err_mm": 39.67,
+        "zero_odom_reloc_rot_deg": 2.21,
+        "reloc_inliers": 75
+      },
+      "HoverGeoNet-v3 (27MB Distilled)": {
+        "model": "HoverGeoNet-v3 (27MB Distilled)",
+        "scene": "heldout_empty_d05",
+        "infer_ms": 14.31,
+        "fps": 69.9,
+        "temporal_3d_z_jitter_mm": 6.41,
+        "temporal_3d_depth_jitter_mm": 9.16,
+        "temporal_normal_flicker_deg": 2.51,
+        "desk_plane_flatness_mad_mm": 0.91,
+        "multiview_reproj_psnr_db": 12.71,
+        "multiview_reproj_l1": 0.1421,
+        "zero_odom_reloc_err_mm": 8.78,
+        "zero_odom_reloc_rot_deg": 1.41,
+        "reloc_inliers": 88
+      },
+      "HoverGeoNet-MV-SelfSup v4 (27MB)": {
+        "model": "HoverGeoNet-MV-SelfSup v4 (27MB)",
+        "scene": "heldout_empty_d05",
+        "infer_ms": 14.94,
+        "fps": 66.9,
+        "temporal_3d_z_jitter_mm": 4.2,
+        "temporal_3d_depth_jitter_mm": 7.41,
+        "temporal_normal_flicker_deg": 2.81,
+        "desk_plane_flatness_mad_mm": 1.64,
+        "multiview_reproj_psnr_db": 12.28,
+        "multiview_reproj_l1": 0.1521,
+        "zero_odom_reloc_err_mm": 40.53,
+        "zero_odom_reloc_rot_deg": 2.71,
+        "reloc_inliers": 84
+      }
+    },
+    "cb8455": {
+      "MoGe-2-ViT-B (419MB Teacher)": {
+        "model": "MoGe-2-ViT-B (419MB Teacher)",
+        "scene": "heldout_cb8455",
+        "infer_ms": 165.97,
+        "fps": 6.0,
+        "temporal_3d_z_jitter_mm": 12.67,
+        "temporal_3d_depth_jitter_mm": 48.36,
+        "temporal_normal_flicker_deg": 4.18,
+        "desk_plane_flatness_mad_mm": 2.97,
+        "multiview_reproj_psnr_db": 14.5,
+        "multiview_reproj_l1": 0.1157,
+        "zero_odom_reloc_err_mm": 57.13,
+        "zero_odom_reloc_rot_deg": 2.53,
+        "reloc_inliers": 48
+      },
+      "HoverGeoNet-v3 (27MB Distilled)": {
+        "model": "HoverGeoNet-v3 (27MB Distilled)",
+        "scene": "heldout_cb8455",
+        "infer_ms": 16.74,
+        "fps": 59.7,
+        "temporal_3d_z_jitter_mm": 4.67,
+        "temporal_3d_depth_jitter_mm": 6.67,
+        "temporal_normal_flicker_deg": 2.05,
+        "desk_plane_flatness_mad_mm": 1.78,
+        "multiview_reproj_psnr_db": 14.0,
+        "multiview_reproj_l1": 0.1265,
+        "zero_odom_reloc_err_mm": 30.34,
+        "zero_odom_reloc_rot_deg": 4.48,
+        "reloc_inliers": 58
+      },
+      "HoverGeoNet-MV-SelfSup v4 (27MB)": {
+        "model": "HoverGeoNet-MV-SelfSup v4 (27MB)",
+        "scene": "heldout_cb8455",
+        "infer_ms": 13.5,
+        "fps": 74.1,
+        "temporal_3d_z_jitter_mm": 3.03,
+        "temporal_3d_depth_jitter_mm": 7.66,
+        "temporal_normal_flicker_deg": 1.98,
+        "desk_plane_flatness_mad_mm": 1.05,
+        "multiview_reproj_psnr_db": 13.44,
+        "multiview_reproj_l1": 0.1393,
+        "zero_odom_reloc_err_mm": 30.24,
+        "zero_odom_reloc_rot_deg": 2.73,
+        "reloc_inliers": 75
+      }
+    }
+  }
+}

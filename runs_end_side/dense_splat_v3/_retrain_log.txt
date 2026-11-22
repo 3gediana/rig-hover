@@ -1,0 +1,21 @@
+正在使用 Depth-Anything-V2-Small + YOLOE Z=0 标定离线生成真实蒸馏缓存（仅在 PC 运行）...
+xFormers not available
+xFormers not available
+  [train take] robot_20261107_204337_5ca36d: 145 frames
+  [train take] robot_20261107_212119_67f0c1: 145 frames
+  [train take] robot_20261107_213314_5c0158: 145 frames
+  [train take] robot_20261107_214950_1f30d1: 145 frames
+  [train take] robot_20261115_150045_65a54d: 145 frames
+  [train vid] robot_20261105_004630_ef1d19.mp4: 200 frames
+  [train sessions] total real frames so far: 1087
+  [held-out cache] 复用现有 real_distill_heldout_v3.npz（不重新标注）
+  [synth cache] 复用现有 synth_96x96_cache_v3.npz（不重新生成）
+ep 01/48: tr_loss=1.2274 | internal_val_AbsRel=0.4391
+ep 10/48: tr_loss=0.3200 | internal_val_AbsRel=0.1199
+ep 20/48: tr_loss=0.2555 | internal_val_AbsRel=0.1141
+ep 32/48: tr_loss=0.2200 | internal_val_AbsRel=0.1035
+ep 48/48: tr_loss=0.2033 | internal_val_AbsRel=0.1021
+
+=== ZERO-SHOT HELD-OUT SUMMARY (cb8455 + empty_d0.5) ===
+Old v2: {}
+New v3: {'params': 136862, 'macs': 141929856, 'mmacs': 141.93, 'mflops': 283.86, 'cpu_ms': 7.11, 'heldout_AbsRel': 0.1012, 'heldout_RMSE_m': 0.1333, 'heldout_grad_L1': 0.0086, 'heldout_elev_F1': 0.966, 'tflite_kb': 537.25, 'tflite_parity_max_err': 2.205371856689453e-06, 'train_elapsed_s': 107.3}

@@ -1,0 +1,102 @@
+{
+  "real_hardware_params": {
+    "rock_hz": 1.16,
+    "pitch_amp_deg": 3.2,
+    "roll_bias_deg": -4.37,
+    "roll_amp_deg": 0.8,
+    "wheel_surge_m": 0.018,
+    "imu_lag_ms": 40.0,
+    "head_hyst_deg": 3.5
+  },
+  "results": [
+    {
+      "case": "HELD-OUT empty_d0.5 (static desk+keyboard under real 1.16Hz +/-3.2deg rock + -4.4deg roll + 1.8cm surge + 40ms lag)",
+      "modes": {
+        "naive": {
+          "mode": "naive",
+          "static_pts": 7652,
+          "desk_z_std_mm": 19.5,
+          "desk_z_mad_mm": 10.42,
+          "blocked_frames": 0,
+          "shock_blocked": false,
+          "normal_rock_frames_accepted": 23,
+          "icp_mean_rot_corr_deg": 0.0,
+          "green_cells_mean": 61.5,
+          "green_cells_min": 15,
+          "astar_success_rate": 1.0
+        },
+        "imu_only": {
+          "mode": "imu_only",
+          "static_pts": 8722,
+          "desk_z_std_mm": 11.24,
+          "desk_z_mad_mm": 4.85,
+          "blocked_frames": 0,
+          "shock_blocked": false,
+          "normal_rock_frames_accepted": 23,
+          "icp_mean_rot_corr_deg": 0.0,
+          "green_cells_mean": 69.9,
+          "green_cells_min": 44,
+          "astar_success_rate": 1.0
+        },
+        "full_stack": {
+          "mode": "full_stack",
+          "static_pts": 10062,
+          "desk_z_std_mm": 10.3,
+          "desk_z_mad_mm": 3.32,
+          "blocked_frames": 1,
+          "shock_blocked": true,
+          "normal_rock_frames_accepted": 23,
+          "icp_mean_rot_corr_deg": 3.38,
+          "green_cells_mean": 77.0,
+          "green_cells_min": 56,
+          "astar_success_rate": 1.0
+        }
+      }
+    },
+    {
+      "case": "HELD-OUT cb8455 (cup+notebook+arm under real 1.16Hz +/-3.2deg rock + -4.4deg roll + 1.8cm surge + 40ms lag)",
+      "modes": {
+        "naive": {
+          "mode": "naive",
+          "static_pts": 6556,
+          "desk_z_std_mm": 16.46,
+          "desk_z_mad_mm": 7.72,
+          "blocked_frames": 0,
+          "shock_blocked": false,
+          "normal_rock_frames_accepted": 23,
+          "icp_mean_rot_corr_deg": 0.0,
+          "green_cells_mean": 52.5,
+          "green_cells_min": 37,
+          "astar_success_rate": 1.0
+        },
+        "imu_only": {
+          "mode": "imu_only",
+          "static_pts": 11567,
+          "desk_z_std_mm": 10.87,
+          "desk_z_mad_mm": 2.68,
+          "blocked_frames": 0,
+          "shock_blocked": false,
+          "normal_rock_frames_accepted": 23,
+          "icp_mean_rot_corr_deg": 0.0,
+          "green_cells_mean": 50.6,
+          "green_cells_min": 41,
+          "astar_success_rate": 1.0
+        },
+        "full_stack": {
+          "mode": "full_stack",
+          "static_pts": 9436,
+          "desk_z_std_mm": 11.3,
+          "desk_z_mad_mm": 1.72,
+          "blocked_frames": 1,
+          "shock_blocked": true,
+          "normal_rock_frames_accepted": 23,
+          "icp_mean_rot_corr_deg": 1.72,
+          "green_cells_mean": 45.2,
+          "green_cells_min": 32,
+          "astar_success_rate": 1.0
+        }
+      }
+    }
+  ],
+  "elapsed_s": 8.2
+}

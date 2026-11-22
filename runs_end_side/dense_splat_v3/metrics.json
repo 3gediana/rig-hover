@@ -1,0 +1,32 @@
+{
+  "train_real_frames": 1087,
+  "heldout_real_frames": 100,
+  "heldout_sources": [
+    "robot_20261115_151733_cb8455",
+    "empty_d0.5_front_night_182201",
+    "fov_sweep"
+  ],
+  "old_v2": {},
+  "new_v3": {
+    "params": 136862,
+    "macs": 141929856,
+    "mmacs": 141.93,
+    "mflops": 283.86,
+    "cpu_ms": 8.48,
+    "heldout_AbsRel": 0.2118,
+    "heldout_RMSE_m": 0.3473,
+    "heldout_grad_L1": 0.007,
+    "heldout_elev_F1": 0.9682,
+    "tflite_kb": 537.25,
+    "tflite_parity_max_err": 1.6987323760986328e-06,
+    "train_elapsed_s": 122.1
+  },
+  "bundle": {
+    "tflite_path": "D:\\robot_work\\runs_end_side\\dense_splat_v3\\model.tflite",
+    "json_path": "D:\\robot_work\\runs_end_side\\dense_splat_v3\\model.json",
+    "zip_path": "D:\\robot_work\\runs_end_side\\dense_splat_v3\\hover-dense-splat-v3-bundle.zip",
+    "tflite_bytes": 550144,
+    "sha256": "9f170e56826e64ffa1e2956d495474bcbef0e830e32cddc6d0f32954793cc0b0",
+    "max_abs_err": 1.6987323760986328e-06
+  }
+}

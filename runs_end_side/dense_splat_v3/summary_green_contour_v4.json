@@ -1,0 +1,102 @@
+{
+  "tflite": "D:\\robot_work\\runs_end_side\\dense_splat_v3\\model.tflite",
+  "teacher_depth": false,
+  "green_contour_scenes": [
+    {
+      "scene": "cb8455 HELD-OUT: cup + notebook + arm",
+      "static_pts": 10805,
+      "dyn_pts": 6660,
+      "ever_free_voxels": 20431,
+      "desk_z_mad_mm": 2.94,
+      "desk_z_std_mm": 13.14,
+      "green_cells": 49,
+      "red_cells": 68,
+      "astar_wp": 8
+    },
+    {
+      "scene": "empty_d0.5 HELD-OUT: keyboard + mouse + desk",
+      "static_pts": 8964,
+      "dyn_pts": 3480,
+      "ever_free_voxels": 17167,
+      "desk_z_mad_mm": 4.69,
+      "desk_z_std_mm": 9.47,
+      "green_cells": 77,
+      "red_cells": 93,
+      "astar_wp": 12
+    },
+    {
+      "scene": "5ca36d: dark shirt person + fist + keyboard",
+      "static_pts": 22436,
+      "dyn_pts": 3653,
+      "ever_free_voxels": 17712,
+      "desk_z_mad_mm": 10.35,
+      "desk_z_std_mm": 18.9,
+      "green_cells": 78,
+      "red_cells": 74,
+      "astar_wp": 14
+    },
+    {
+      "scene": "004630: phone + knocking hand + desk",
+      "static_pts": 14680,
+      "dyn_pts": 6024,
+      "ever_free_voxels": 14545,
+      "desk_z_mad_mm": 6.56,
+      "desk_z_std_mm": 15.76,
+      "green_cells": 37,
+      "red_cells": 94,
+      "astar_wp": 8
+    }
+  ],
+  "disturbance_ablation": [
+    {
+      "case": "HELD-OUT empty_d0.5 (static keyboard+mouse under +/-4.2deg sway + 2 blur + 8.8deg shock)",
+      "naive": {
+        "static_pts": 3934,
+        "desk_z_std_mm": 14.08,
+        "desk_z_mad_mm": 5.07,
+        "blocked_frames": 0,
+        "mean_icp_rot_corr_deg": 0.0,
+        "max_icp_rot_corr_deg": 0.0,
+        "ever_free_voxels": 0
+      },
+      "robust": {
+        "static_pts": 4898,
+        "desk_z_std_mm": 8.61,
+        "desk_z_mad_mm": 4.82,
+        "blocked_frames": 5,
+        "mean_icp_rot_corr_deg": 2.9,
+        "max_icp_rot_corr_deg": 4.3,
+        "ever_free_voxels": 14740
+      }
+    },
+    {
+      "case": "HELD-OUT cb8455 (cup+notebook+arm under +/-4.2deg sway + 2 blur + 8.8deg shock)",
+      "naive": {
+        "static_pts": 5232,
+        "desk_z_std_mm": 22.05,
+        "desk_z_mad_mm": 11.53,
+        "blocked_frames": 0,
+        "mean_icp_rot_corr_deg": 0.0,
+        "max_icp_rot_corr_deg": 0.0,
+        "ever_free_voxels": 0
+      },
+      "robust": {
+        "static_pts": 6176,
+        "desk_z_std_mm": 9.11,
+        "desk_z_mad_mm": 2.38,
+        "blocked_frames": 5,
+        "mean_icp_rot_corr_deg": 3.64,
+        "max_icp_rot_corr_deg": 6.31,
+        "ever_free_voxels": 21874
+      }
+    }
+  ],
+  "demo_video": {
+    "path": "D:\\robot_work\\runs_end_side\\dense_splat_v3\\demo_green_contour_slam_v4.mp4",
+    "frames": 210,
+    "size_kb": 6598.3,
+    "elapsed_s": 21.6,
+    "blocked_shocks": 1,
+    "final_desk_mad_mm": 3.51
+  }
+}

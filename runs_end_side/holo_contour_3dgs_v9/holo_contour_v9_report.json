@@ -1,0 +1,236 @@
+{
+  "engine": "HoverGeoNet-ViT-HD v3 + HoloContour-3DGS (v9)",
+  "model_ckpt": "D:\\robot_work\\runs_end_side\\hover_geonet_vit_240\\hover_geonet_vit_b1_fp16.pt",
+  "upscale_resolution": "720x720 (518,400 3D Gaussians per frame, 9x density vs 240x240)",
+  "showcase_png": "D:\\robot_work\\runs_end_side\\holo_contour_3dgs_v9\\showcase_holo_contour_3dgs_v9.png",
+  "scenes": [
+    {
+      "scene_id": "empty_d05_mouse_kb",
+      "title": "Held-Out 桌面鼠标(3.5cm)+键盘+90°桌角",
+      "frame_file": "00045.jpg",
+      "geonet_v3_infer_ms": 20.11,
+      "holo_total_build_ms": 258.83,
+      "n_valid_3d_gaussians": 472035,
+      "contour_p95": 0.876,
+      "callouts_3d": [
+        {
+          "xyz": [
+            0.4070083200931549,
+            -0.06844264268875122,
+            -0.0018443141598254442
+          ],
+          "label": "Mouse (+3.5cm)",
+          "offset_px": [
+            -45,
+            -28
+          ]
+        },
+        {
+          "xyz": [
+            0.4421144723892212,
+            -0.011890154331922531,
+            0.02735503949224949
+          ],
+          "label": "Mouse Cable",
+          "offset_px": [
+            12,
+            -24
+          ]
+        },
+        {
+          "xyz": [
+            0.3339531719684601,
+            0.11241656541824341,
+            -0.0030401016119867563
+          ],
+          "label": "Keyboard Keys",
+          "offset_px": [
+            -55,
+            -28
+          ]
+        },
+        {
+          "xyz": [
+            0.9422103762626648,
+            0.02378110960125923,
+            0.3799057602882385
+          ],
+          "label": "90deg Wall Corner",
+          "offset_px": [
+            -40,
+            22
+          ]
+        },
+        {
+          "xyz": [
+            0.24636775255203247,
+            -0.09562323242425919,
+            -0.0013343780301511288
+          ],
+          "label": "Desk (Z=0.0m)",
+          "offset_px": [
+            8,
+            -20
+          ]
+        }
+      ],
+      "html_viewer": "D:\\robot_work\\runs_end_side\\holo_contour_3dgs_v9\\viewer_holo_3dgs_empty_d05_v9.html"
+    },
+    {
+      "scene_id": "cb8455_cup_note_hand",
+      "title": "Held-Out 水杯+笔记本+人体+手部交互",
+      "frame_file": "robot_20261115_151733_cb8455_f0405.jpg",
+      "geonet_v3_infer_ms": 20.59,
+      "holo_total_build_ms": 225.48,
+      "n_valid_3d_gaussians": 468152,
+      "contour_p95": 0.8388,
+      "callouts_3d": [
+        {
+          "xyz": [
+            0.4957517385482788,
+            -0.17147308588027954,
+            0.07213959842920303
+          ],
+          "label": "Water Cup",
+          "offset_px": [
+            -15,
+            -28
+          ]
+        },
+        {
+          "xyz": [
+            0.39818355441093445,
+            0.041407231241464615,
+            -0.008607698604464531
+          ],
+          "label": "Notebook/Pad",
+          "offset_px": [
+            -20,
+            -26
+          ]
+        },
+        {
+          "xyz": [
+            0.6234377026557922,
+            -0.03126989305019379,
+            0.21353749930858612
+          ],
+          "label": "Person/Torso",
+          "offset_px": [
+            -30,
+            -24
+          ]
+        },
+        {
+          "xyz": [
+            0.7134760618209839,
+            0.23685503005981445,
+            0.09872904419898987
+          ],
+          "label": "Hand/Arm",
+          "offset_px": [
+            -45,
+            -24
+          ]
+        }
+      ],
+      "html_viewer": "D:\\robot_work\\runs_end_side\\holo_contour_3dgs_v9\\viewer_holo_3dgs_cb8455_v9.html"
+    },
+    {
+      "scene_id": "004630_phone_hand",
+      "title": "桌面智能手机+手掌+近距桌沿",
+      "frame_file": "videos_f0180.jpg",
+      "geonet_v3_infer_ms": 20.97,
+      "holo_total_build_ms": 198.44,
+      "n_valid_3d_gaussians": 391989,
+      "contour_p95": 0.9142,
+      "callouts_3d": [
+        {
+          "xyz": [
+            0.48233896493911743,
+            -0.003905168967321515,
+            -0.029633624479174614
+          ],
+          "label": "Smartphone",
+          "offset_px": [
+            -30,
+            -28
+          ]
+        },
+        {
+          "xyz": [
+            0.7515637278556824,
+            0.0532333105802536,
+            0.15521873533725739
+          ],
+          "label": "Hand/Fingers",
+          "offset_px": [
+            14,
+            -24
+          ]
+        },
+        {
+          "xyz": [
+            0.2959110736846924,
+            -0.10818934440612793,
+            -0.010758818127214909
+          ],
+          "label": "Desk Plane Z=0",
+          "offset_px": [
+            8,
+            -22
+          ]
+        }
+      ],
+      "html_viewer": "D:\\robot_work\\runs_end_side\\holo_contour_3dgs_v9\\viewer_holo_3dgs_004630_v9.html"
+    },
+    {
+      "scene_id": "5ca36d_person_fist_kb",
+      "title": "西装人体+握拳敲击桌面+键盘棱边",
+      "frame_file": "robot_20261107_204337_5ca36d_f0088.jpg",
+      "geonet_v3_infer_ms": 34.24,
+      "holo_total_build_ms": 228.8,
+      "n_valid_3d_gaussians": 376533,
+      "contour_p95": 0.8955,
+      "callouts_3d": [
+        {
+          "xyz": [
+            0.5423253178596497,
+            -0.014030985534191132,
+            0.053430672734975815
+          ],
+          "label": "Knocking Fist",
+          "offset_px": [
+            -35,
+            -28
+          ]
+        },
+        {
+          "xyz": [
+            0.6405102014541626,
+            0.0005585490143857896,
+            0.2814311683177948
+          ],
+          "label": "Person Blazer",
+          "offset_px": [
+            -35,
+            -22
+          ]
+        },
+        {
+          "xyz": [
+            0.3072669208049774,
+            0.11179113388061523,
+            0.01931658945977688
+          ],
+          "label": "Desk Objects",
+          "offset_px": [
+            -50,
+            -24
+          ]
+        }
+      ],
+      "html_viewer": null
+    }
+  ]
+}
