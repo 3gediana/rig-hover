@@ -24,6 +24,8 @@ pc/gesture/data/
 pc/escalate/data/
 # 253 MB，超 GitHub 100 MB 硬限制；需要时单独向用户取
 pc/bench/mobileclip2_b.ts
+mobileclip2_b.ts
+pc/bench/_teacher_cache/
 
 # ===== 流式记忆研究的大产物（权重已搬 G:，报告与源码入库） =====
 stream_memory_research/runs/
@@ -74,3 +76,28 @@ mobile_app/android/app/build/
 mobile_app/android/local.properties
 mobile_app/**/*.apk
 runs_end_side/uploaded_logs/
+
+# ===== 本地凭据（永不入库） =====
+labelstudio/.ls_token
+
+# ===== 端侧实验产物：权重/点云/帧缓存可由训练脚本重新生成，不入库 =====
+runs_end_side/**/_*/
+runs_end_side/**/*_fp32.pt
+runs_end_side/**/*_fp16.pt
+runs_end_side/**/*.pth
+runs_end_side/**/*.ply
+runs_end_side/**/*.npz
+runs_end_side/room360_self_correct_v12/viewer_room360_*.html
+
+# ===== PC 端大型特征/训练缓存 =====
+pc/bench/_knock3d_cache_v4/
+pc/bench/_room360_real_panos/
+pc/bench/_room360_train_cache/
+
+# ===== 测试运行期再生成的二进制与日志（源码已入库，产物不入库） =====
+pc/cfc_host/*.obj
+pc/cfc_host/*.exe
+pc/train/arbtest/build/
+pc/agent_bridge/robot_notes.log
+pc/escalate/artifacts/metrics_test.json
+pc/sim/results.json
