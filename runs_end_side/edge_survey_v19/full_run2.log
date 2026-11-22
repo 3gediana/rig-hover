@@ -1,0 +1,19 @@
+=== v19 EDGE SURVEY: map the rim, then navigate anywhere ===
+
+--- S1_survey_to_rim: S1: Survey Leg -> accumulate rim samples en-route ---
+  steps=28 | final_err=21.75cm | cliff_det=True@s14 | margin=20.19cm | fell=False | survey={'n': 28, 'median_err_cm': 2.51, 'p90_abs_err_cm': 13.92, 'median_y_est': -0.3399}
+
+--- S2_nav_anywhere_safe: S2: Navigate Anywhere -> safe point 16cm off rim ---
+  steps=25 | final_err=31.21cm | cliff_det=True@s11 | margin=25.06cm | fell=False | survey={}
+
+--- S3a_nav_void_instinct: S3a: Navigate to VOID target -> visual refusal (v19) ---
+  steps=25 | final_err=41.97cm | cliff_det=True@s11 | margin=25.06cm | fell=False | survey={}
+
+--- S3b_nav_void_baseline: S3b: VOID target, instinct OFF -> baseline falls ---
+  steps=23 | final_err=15.1cm | cliff_det=False@s-1 | margin=-0.32cm | fell=True | survey={}
+
+--- S4_survey_zigzag: S4: Zigzag survey (2-leg rim coverage) ---
+  steps=24 | final_err=20.36cm | cliff_det=True@s10 | margin=26.87cm | fell=False | survey={'n': 24, 'median_err_cm': 2.28, 'p90_abs_err_cm': 3.26, 'median_y_est': -0.3396}
+
+Saved v19 report -> D:\robot_work\runs_end_side\edge_survey_v19\edge_survey_v19_report.json
+Saved v19 cinema MP4 -> D:\robot_work\runs_end_side\edge_survey_v19\demo_edge_v19.mp4

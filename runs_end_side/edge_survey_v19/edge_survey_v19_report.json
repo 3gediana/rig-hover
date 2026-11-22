@@ -1,0 +1,3479 @@
+{
+  "scenarios": {
+    "S1_survey_to_rim": {
+      "steps": 28,
+      "final_err_cm": 21.75,
+      "mean_cam_pose_err_cm": 1.22,
+      "min_clearance_cm": 7.94,
+      "collision": false,
+      "cliff_detected": true,
+      "cliff_refusal_step": 14,
+      "cliff_y_est_m": -0.2173,
+      "fell_off_cliff": false,
+      "min_cliff_margin_cm": 20.19,
+      "fakeout_ignored": false,
+      "target_switched": false,
+      "human_found_new_seat": false,
+      "final_face_gaze_err_deg": -1.0,
+      "nbv_peeks_done": false,
+      "nbv_peek_xy": null,
+      "attack1_moving_det_step": -1,
+      "attack2_drop_det_step": -1,
+      "attack3_kidnap_recovered": false,
+      "attack3_kidnap_recov_steps": -1,
+      "attack3_kidnap_recov_err_cm": -1.0,
+      "pursuit_mode": false,
+      "pursuit_captured": false,
+      "capture_step": -1,
+      "escort_band_ratio": 0.0,
+      "min_chase_edge_cm": null,
+      "min_static_clear_cm": null,
+      "mean_moving_vel_err_mps": -1.0,
+      "mean_drop_loc_err_cm": -1.0,
+      "traj_true": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0076,
+          -0.0003,
+          -2.56
+        ],
+        [
+          0.0228,
+          -0.0023,
+          -7.28
+        ],
+        [
+          0.0452,
+          -0.007,
+          -12.0
+        ],
+        [
+          0.068,
+          -0.0139,
+          -16.72
+        ],
+        [
+          0.0901,
+          -0.0226,
+          -21.44
+        ],
+        [
+          0.1114,
+          -0.033,
+          -26.16
+        ],
+        [
+          0.1318,
+          -0.0452,
+          -30.88
+        ],
+        [
+          0.1511,
+          -0.0591,
+          -35.6
+        ],
+        [
+          0.1692,
+          -0.0744,
+          -40.32
+        ],
+        [
+          0.1861,
+          -0.0911,
+          -44.67
+        ],
+        [
+          0.2022,
+          -0.1087,
+          -47.49
+        ],
+        [
+          0.2184,
+          -0.126,
+          -46.95
+        ],
+        [
+          0.2355,
+          -0.1425,
+          -43.84
+        ],
+        [
+          0.2535,
+          -0.1581,
+          -41.09
+        ],
+        [
+          0.2535,
+          -0.1581,
+          -40.29
+        ],
+        [
+          0.2535,
+          -0.1581,
+          -39.49
+        ],
+        [
+          0.2535,
+          -0.1581,
+          -38.69
+        ],
+        [
+          0.2535,
+          -0.1581,
+          -37.89
+        ],
+        [
+          0.2535,
+          -0.1581,
+          -37.09
+        ],
+        [
+          0.2535,
+          -0.1581,
+          -36.29
+        ],
+        [
+          0.2535,
+          -0.1581,
+          -35.49
+        ],
+        [
+          0.2535,
+          -0.1581,
+          -34.69
+        ],
+        [
+          0.2535,
+          -0.1581,
+          -33.89
+        ],
+        [
+          0.2535,
+          -0.1581,
+          -33.09
+        ],
+        [
+          0.2535,
+          -0.1581,
+          -29.51
+        ],
+        [
+          0.2535,
+          -0.1581,
+          -26.6
+        ],
+        [
+          0.2535,
+          -0.1581,
+          -24.2
+        ],
+        [
+          0.2535,
+          -0.1581,
+          -22.14
+        ]
+      ],
+      "survey": {
+        "n": 28,
+        "median_err_cm": 2.51,
+        "p90_abs_err_cm": 13.92,
+        "median_y_est": -0.3399
+      },
+      "survey_samples": [
+        {
+          "step": 1,
+          "y_est": -0.3411,
+          "ex": 0.015590412456892792,
+          "ey": -0.0010204472072681712,
+          "eyaw": -2.399460702423994,
+          "dist_to_rim_m": 0.6605
+        },
+        {
+          "step": 2,
+          "y_est": -0.3415,
+          "ex": 0.028587093526816508,
+          "ey": -0.004250707003374155,
+          "eyaw": -6.956997800637396,
+          "dist_to_rim_m": 0.5842
+        },
+        {
+          "step": 3,
+          "y_est": -0.342,
+          "ex": 0.04061041283348071,
+          "ey": -0.007641594872291942,
+          "eyaw": -11.705006224579193,
+          "dist_to_rim_m": 0.5276
+        },
+        {
+          "step": 4,
+          "y_est": -0.3428,
+          "ex": 0.054373266667232474,
+          "ey": -0.012527347729588205,
+          "eyaw": -16.389625892154385,
+          "dist_to_rim_m": 0.483
+        },
+        {
+          "step": 5,
+          "y_est": -0.3284,
+          "ex": 0.08298202903503947,
+          "ey": -0.024318999220314046,
+          "eyaw": -21.102433262655353,
+          "dist_to_rim_m": 0.4139
+        },
+        {
+          "step": 6,
+          "y_est": -0.3382,
+          "ex": 0.11417097824900584,
+          "ey": -0.031230353075962357,
+          "eyaw": -26.16887572691479,
+          "dist_to_rim_m": 0.3854
+        },
+        {
+          "step": 7,
+          "y_est": -0.3395,
+          "ex": 0.13267118296784244,
+          "ey": -0.04241688093061212,
+          "eyaw": -30.94954536661905,
+          "dist_to_rim_m": 0.3528
+        },
+        {
+          "step": 8,
+          "y_est": -0.3404,
+          "ex": 0.14409954627755966,
+          "ey": -0.05048191530984845,
+          "eyaw": -35.578698129356525,
+          "dist_to_rim_m": 0.3354
+        },
+        {
+          "step": 9,
+          "y_est": -0.3364,
+          "ex": 0.15715973269368855,
+          "ey": -0.05993885527798036,
+          "eyaw": -40.428470710994816,
+          "dist_to_rim_m": 0.3124
+        },
+        {
+          "step": 10,
+          "y_est": -0.3729,
+          "ex": 0.17258694584579087,
+          "ey": -0.07489343232412787,
+          "eyaw": -44.75700728852385,
+          "dist_to_rim_m": 0.7586
+        },
+        {
+          "step": 11,
+          "y_est": -0.45,
+          "ex": 0.19400032688354976,
+          "ey": -0.09774700829500418,
+          "eyaw": -47.75838870719434,
+          "dist_to_rim_m": 0.7188
+        },
+        {
+          "step": 12,
+          "y_est": -0.4998,
+          "ex": 0.2127269357701656,
+          "ey": -0.11808674018948917,
+          "eyaw": -47.27301637618484,
+          "dist_to_rim_m": 0.6641
+        },
+        {
+          "step": 13,
+          "y_est": -0.4172,
+          "ex": 0.2295120458983901,
+          "ey": -0.13131481759900207,
+          "eyaw": -44.35168684081552,
+          "dist_to_rim_m": 0.7398
+        },
+        {
+          "step": 14,
+          "y_est": -0.2173,
+          "ex": 0.24152336459677806,
+          "ey": -0.13943585572400854,
+          "eyaw": -41.685526122116926,
+          "dist_to_rim_m": 0.08
+        },
+        {
+          "step": 15,
+          "y_est": -0.2127,
+          "ex": 0.2377628543151906,
+          "ey": -0.1364863892787987,
+          "eyaw": -40.82409655996784,
+          "dist_to_rim_m": 0.08
+        },
+        {
+          "step": 16,
+          "y_est": -0.2211,
+          "ex": 0.24352408945469894,
+          "ey": -0.14111334624270355,
+          "eyaw": -40.030036149906266,
+          "dist_to_rim_m": 0.08
+        },
+        {
+          "step": 17,
+          "y_est": -0.4193,
+          "ex": 0.2509604015943818,
+          "ey": -0.147916063303593,
+          "eyaw": -39.233088113620255,
+          "dist_to_rim_m": 0.7191
+        },
+        {
+          "step": 18,
+          "y_est": -0.4166,
+          "ex": 0.2525090821240416,
+          "ey": -0.14722776387012917,
+          "eyaw": -38.490260017276114,
+          "dist_to_rim_m": 0.7162
+        },
+        {
+          "step": 19,
+          "y_est": -0.3582,
+          "ex": 0.24506507316284243,
+          "ey": -0.14347588891216206,
+          "eyaw": -37.616771081080344,
+          "dist_to_rim_m": 0.7521
+        },
+        {
+          "step": 20,
+          "y_est": -0.3513,
+          "ex": 0.23885468902576518,
+          "ey": -0.13885021302072853,
+          "eyaw": -36.81515554985509,
+          "dist_to_rim_m": 0.7372
+        },
+        {
+          "step": 21,
+          "y_est": -0.3295,
+          "ex": 0.24097792331495152,
+          "ey": -0.1417980087706622,
+          "eyaw": -35.93749891169185,
+          "dist_to_rim_m": 0.7454
+        },
+        {
+          "step": 22,
+          "y_est": -0.3326,
+          "ex": 0.24996076495549088,
+          "ey": -0.1449444523303763,
+          "eyaw": -35.24970759773757,
+          "dist_to_rim_m": 0.7238
+        },
+        {
+          "step": 23,
+          "y_est": -0.3865,
+          "ex": 0.25420156404801125,
+          "ey": -0.14853542548228468,
+          "eyaw": -34.415390557098675,
+          "dist_to_rim_m": 0.6649
+        },
+        {
+          "step": 24,
+          "y_est": -0.2263,
+          "ex": 0.25016695328051064,
+          "ey": -0.1451404645205992,
+          "eyaw": -33.682750403388724,
+          "dist_to_rim_m": 0.08
+        },
+        {
+          "step": 25,
+          "y_est": -0.2566,
+          "ex": 0.2413006911076322,
+          "ey": -0.14055228710286846,
+          "eyaw": -30.175739983499113,
+          "dist_to_rim_m": 0.7622
+        },
+        {
+          "step": 26,
+          "y_est": -0.3374,
+          "ex": 0.23779321026566694,
+          "ey": -0.14015667858478384,
+          "eyaw": -27.174015417452694,
+          "dist_to_rim_m": 0.2676
+        },
+        {
+          "step": 27,
+          "y_est": -0.3367,
+          "ex": 0.2468140573188564,
+          "ey": -0.14304403383470246,
+          "eyaw": -24.843912917214652,
+          "dist_to_rim_m": 0.2514
+        },
+        {
+          "step": 28,
+          "y_est": -0.3373,
+          "ex": 0.2541021105334168,
+          "ey": -0.14852871664475703,
+          "eyaw": -22.664634462841576,
+          "dist_to_rim_m": 0.2448
+        }
+      ],
+      "replay_frames": [
+        {
+          "step": 0,
+          "tx": 0.0,
+          "ty": 0.0,
+          "tyaw": 0.0,
+          "head": -28.0,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.44,
+            -0.27
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 26.56,
+          "cliff_y_est": null
+        },
+        {
+          "step": 1,
+          "tx": 0.0076,
+          "ty": -0.0003,
+          "tyaw": -2.56,
+          "head": -28.0,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.44,
+            -0.27
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 25.79,
+          "cliff_y_est": null
+        },
+        {
+          "step": 2,
+          "tx": 0.0228,
+          "ty": -0.0023,
+          "tyaw": -7.28,
+          "head": -28.0,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.44,
+            -0.27
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 24.27,
+          "cliff_y_est": null
+        },
+        {
+          "step": 3,
+          "tx": 0.0452,
+          "ty": -0.007,
+          "tyaw": -12.0,
+          "head": -28.0,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.44,
+            -0.27
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 22.01,
+          "cliff_y_est": null
+        },
+        {
+          "step": 4,
+          "tx": 0.068,
+          "ty": -0.0139,
+          "tyaw": -16.72,
+          "head": -26.7,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.44,
+            -0.27
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 19.71,
+          "cliff_y_est": null
+        },
+        {
+          "step": 5,
+          "tx": 0.0901,
+          "ty": -0.0226,
+          "tyaw": -21.44,
+          "head": -25.7,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.44,
+            -0.27
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 17.49,
+          "cliff_y_est": null
+        },
+        {
+          "step": 6,
+          "tx": 0.1114,
+          "ty": -0.033,
+          "tyaw": -26.16,
+          "head": -27.0,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.44,
+            -0.27
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 15.39,
+          "cliff_y_est": null
+        },
+        {
+          "step": 7,
+          "tx": 0.1318,
+          "ty": -0.0452,
+          "tyaw": -30.88,
+          "head": -22.1,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.44,
+            -0.27
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 13.46,
+          "cliff_y_est": null
+        },
+        {
+          "step": 8,
+          "tx": 0.1511,
+          "ty": -0.0591,
+          "tyaw": -35.6,
+          "head": -15.3,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.44,
+            -0.27
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 11.75,
+          "cliff_y_est": null
+        },
+        {
+          "step": 9,
+          "tx": 0.1692,
+          "ty": -0.0744,
+          "tyaw": -40.32,
+          "head": -8.7,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.44,
+            -0.27
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 10.34,
+          "cliff_y_est": null
+        },
+        {
+          "step": 10,
+          "tx": 0.1861,
+          "ty": -0.0911,
+          "tyaw": -44.67,
+          "head": -5.7,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.44,
+            -0.27
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 9.29,
+          "cliff_y_est": null
+        },
+        {
+          "step": 11,
+          "tx": 0.2022,
+          "ty": -0.1087,
+          "tyaw": -47.49,
+          "head": 4.2,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.44,
+            -0.27
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 8.6,
+          "cliff_y_est": null
+        },
+        {
+          "step": 12,
+          "tx": 0.2184,
+          "ty": -0.126,
+          "tyaw": -46.95,
+          "head": 7.5,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.44,
+            -0.27
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 8.19,
+          "cliff_y_est": null
+        },
+        {
+          "step": 13,
+          "tx": 0.2355,
+          "ty": -0.1425,
+          "tyaw": -43.84,
+          "head": 6.4,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.44,
+            -0.27
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 7.96,
+          "cliff_y_est": null
+        },
+        {
+          "step": 14,
+          "tx": 0.2535,
+          "ty": -0.1581,
+          "tyaw": -41.09,
+          "head": -28.0,
+          "mood": "REFUSE_CLIFF",
+          "text": "WHOA! CLIFF! NOPE - SHAKING HEAD!",
+          "tgt": [
+            0.44,
+            -0.27
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 7.94,
+          "cliff_y_est": -0.2173
+        },
+        {
+          "step": 15,
+          "tx": 0.2535,
+          "ty": -0.1581,
+          "tyaw": -40.29,
+          "head": -28.0,
+          "mood": "REFUSE_CLIFF",
+          "text": "WHOA! CLIFF! NOPE - SHAKING HEAD!",
+          "tgt": [
+            0.44,
+            -0.27
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 7.94,
+          "cliff_y_est": -0.2173
+        },
+        {
+          "step": 16,
+          "tx": 0.2535,
+          "ty": -0.1581,
+          "tyaw": -39.49,
+          "head": 28.0,
+          "mood": "REFUSE_CLIFF",
+          "text": "WHOA! CLIFF! NOPE - SHAKING HEAD!",
+          "tgt": [
+            0.44,
+            -0.27
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 7.94,
+          "cliff_y_est": -0.2173
+        },
+        {
+          "step": 17,
+          "tx": 0.2535,
+          "ty": -0.1581,
+          "tyaw": -38.69,
+          "head": 28.0,
+          "mood": "REFUSE_CLIFF",
+          "text": "WHOA! CLIFF! NOPE - SHAKING HEAD!",
+          "tgt": [
+            0.44,
+            -0.27
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 7.94,
+          "cliff_y_est": -0.2173
+        },
+        {
+          "step": 18,
+          "tx": 0.2535,
+          "ty": -0.1581,
+          "tyaw": -37.89,
+          "head": -24.0,
+          "mood": "REFUSE_CLIFF",
+          "text": "WHOA! CLIFF! NOPE - SHAKING HEAD!",
+          "tgt": [
+            0.44,
+            -0.27
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 7.94,
+          "cliff_y_est": -0.2173
+        },
+        {
+          "step": 19,
+          "tx": 0.2535,
+          "ty": -0.1581,
+          "tyaw": -37.09,
+          "head": -24.0,
+          "mood": "REFUSE_CLIFF",
+          "text": "WHOA! CLIFF! NOPE - SHAKING HEAD!",
+          "tgt": [
+            0.44,
+            -0.27
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 7.94,
+          "cliff_y_est": -0.2173
+        },
+        {
+          "step": 20,
+          "tx": 0.2535,
+          "ty": -0.1581,
+          "tyaw": -36.29,
+          "head": 22.0,
+          "mood": "REFUSE_CLIFF",
+          "text": "WHOA! CLIFF! NOPE - SHAKING HEAD!",
+          "tgt": [
+            0.44,
+            -0.27
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 7.94,
+          "cliff_y_est": -0.2173
+        },
+        {
+          "step": 21,
+          "tx": 0.2535,
+          "ty": -0.1581,
+          "tyaw": -35.49,
+          "head": 22.0,
+          "mood": "REFUSE_CLIFF",
+          "text": "WHOA! CLIFF! NOPE - SHAKING HEAD!",
+          "tgt": [
+            0.44,
+            -0.27
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 7.94,
+          "cliff_y_est": -0.2173
+        },
+        {
+          "step": 22,
+          "tx": 0.2535,
+          "ty": -0.1581,
+          "tyaw": -34.69,
+          "head": -14.0,
+          "mood": "REFUSE_CLIFF",
+          "text": "WHOA! CLIFF! NOPE - SHAKING HEAD!",
+          "tgt": [
+            0.44,
+            -0.27
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 7.94,
+          "cliff_y_est": -0.2173
+        },
+        {
+          "step": 23,
+          "tx": 0.2535,
+          "ty": -0.1581,
+          "tyaw": -33.89,
+          "head": 0.0,
+          "mood": "REFUSE_CLIFF",
+          "text": "WHOA! CLIFF! NOPE - SHAKING HEAD!",
+          "tgt": [
+            0.44,
+            -0.27
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 7.94,
+          "cliff_y_est": -0.2173
+        },
+        {
+          "step": 24,
+          "tx": 0.2535,
+          "ty": -0.1581,
+          "tyaw": -33.09,
+          "head": 32.0,
+          "mood": "STARE_HUMAN",
+          "text": "Refused cliff! Looking back at human",
+          "tgt": [
+            0.44,
+            -0.27
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 7.94,
+          "cliff_y_est": -0.2173
+        },
+        {
+          "step": 25,
+          "tx": 0.2535,
+          "ty": -0.1581,
+          "tyaw": -29.51,
+          "head": 32.0,
+          "mood": "STARE_HUMAN",
+          "text": "Refused cliff! Looking back at human",
+          "tgt": [
+            0.44,
+            -0.27
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 7.94,
+          "cliff_y_est": -0.2173
+        },
+        {
+          "step": 26,
+          "tx": 0.2535,
+          "ty": -0.1581,
+          "tyaw": -26.6,
+          "head": 32.0,
+          "mood": "STARE_HUMAN",
+          "text": "Refused cliff! Looking back at human",
+          "tgt": [
+            0.44,
+            -0.27
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 7.94,
+          "cliff_y_est": -0.2173
+        },
+        {
+          "step": 27,
+          "tx": 0.2535,
+          "ty": -0.1581,
+          "tyaw": -24.2,
+          "head": 32.0,
+          "mood": "STARE_HUMAN",
+          "text": "Refused cliff! Looking back at human",
+          "tgt": [
+            0.44,
+            -0.27
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 7.94,
+          "cliff_y_est": -0.2173
+        },
+        {
+          "step": 28,
+          "tx": 0.2535,
+          "ty": -0.1581,
+          "tyaw": -22.14,
+          "head": 32.0,
+          "mood": "STARE_HUMAN",
+          "text": "Refused cliff! Looking back at human",
+          "tgt": [
+            0.44,
+            -0.27
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 7.94,
+          "cliff_y_est": -0.2173
+        }
+      ]
+    },
+    "S2_nav_anywhere_safe": {
+      "steps": 25,
+      "final_err_cm": 31.21,
+      "mean_cam_pose_err_cm": 1.01,
+      "min_clearance_cm": 8.71,
+      "collision": false,
+      "cliff_detected": true,
+      "cliff_refusal_step": 11,
+      "cliff_y_est_m": -0.183,
+      "fell_off_cliff": false,
+      "min_cliff_margin_cm": 25.06,
+      "fakeout_ignored": false,
+      "target_switched": false,
+      "human_found_new_seat": false,
+      "final_face_gaze_err_deg": -1.0,
+      "nbv_peeks_done": false,
+      "nbv_peek_xy": null,
+      "attack1_moving_det_step": -1,
+      "attack2_drop_det_step": -1,
+      "attack3_kidnap_recovered": false,
+      "attack3_kidnap_recov_steps": -1,
+      "attack3_kidnap_recov_err_cm": -1.0,
+      "pursuit_mode": false,
+      "pursuit_captured": false,
+      "capture_step": -1,
+      "escort_band_ratio": 0.0,
+      "min_chase_edge_cm": null,
+      "min_static_clear_cm": null,
+      "mean_moving_vel_err_mps": -1.0,
+      "mean_drop_loc_err_cm": -1.0,
+      "traj_true": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0076,
+          -0.0003,
+          -2.56
+        ],
+        [
+          0.0228,
+          -0.0023,
+          -7.28
+        ],
+        [
+          0.0452,
+          -0.007,
+          -12.0
+        ],
+        [
+          0.068,
+          -0.0139,
+          -16.72
+        ],
+        [
+          0.0901,
+          -0.0226,
+          -21.44
+        ],
+        [
+          0.1114,
+          -0.033,
+          -26.16
+        ],
+        [
+          0.1318,
+          -0.0452,
+          -30.88
+        ],
+        [
+          0.1511,
+          -0.0591,
+          -35.6
+        ],
+        [
+          0.1692,
+          -0.0744,
+          -40.32
+        ],
+        [
+          0.186,
+          -0.0913,
+          -45.04
+        ],
+        [
+          0.2014,
+          -0.1094,
+          -49.76
+        ],
+        [
+          0.2014,
+          -0.1094,
+          -48.96
+        ],
+        [
+          0.2014,
+          -0.1094,
+          -48.16
+        ],
+        [
+          0.2014,
+          -0.1094,
+          -47.36
+        ],
+        [
+          0.2014,
+          -0.1094,
+          -46.56
+        ],
+        [
+          0.2014,
+          -0.1094,
+          -45.76
+        ],
+        [
+          0.2014,
+          -0.1094,
+          -44.96
+        ],
+        [
+          0.2014,
+          -0.1094,
+          -44.16
+        ],
+        [
+          0.2014,
+          -0.1094,
+          -43.36
+        ],
+        [
+          0.2014,
+          -0.1094,
+          -42.56
+        ],
+        [
+          0.2014,
+          -0.1094,
+          -41.76
+        ],
+        [
+          0.2014,
+          -0.1094,
+          -37.39
+        ],
+        [
+          0.2014,
+          -0.1094,
+          -33.64
+        ],
+        [
+          0.2014,
+          -0.1094,
+          -30.52
+        ],
+        [
+          0.2014,
+          -0.1094,
+          -27.99
+        ]
+      ],
+      "survey": {},
+      "survey_samples": [],
+      "replay_frames": [
+        {
+          "step": 0,
+          "tx": 0.0,
+          "ty": 0.0,
+          "tyaw": 0.0,
+          "head": -28.0,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.5,
+            -0.2
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 26.56,
+          "cliff_y_est": null
+        },
+        {
+          "step": 1,
+          "tx": 0.0076,
+          "ty": -0.0003,
+          "tyaw": -2.56,
+          "head": -28.0,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.5,
+            -0.2
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 25.79,
+          "cliff_y_est": null
+        },
+        {
+          "step": 2,
+          "tx": 0.0228,
+          "ty": -0.0023,
+          "tyaw": -7.28,
+          "head": -28.0,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.5,
+            -0.2
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 24.27,
+          "cliff_y_est": null
+        },
+        {
+          "step": 3,
+          "tx": 0.0452,
+          "ty": -0.007,
+          "tyaw": -12.0,
+          "head": -28.0,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.5,
+            -0.2
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 22.01,
+          "cliff_y_est": null
+        },
+        {
+          "step": 4,
+          "tx": 0.068,
+          "ty": -0.0139,
+          "tyaw": -16.72,
+          "head": -28.0,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.5,
+            -0.2
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 19.71,
+          "cliff_y_est": null
+        },
+        {
+          "step": 5,
+          "tx": 0.0901,
+          "ty": -0.0226,
+          "tyaw": -21.44,
+          "head": -28.0,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.5,
+            -0.2
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 17.49,
+          "cliff_y_est": null
+        },
+        {
+          "step": 6,
+          "tx": 0.1114,
+          "ty": -0.033,
+          "tyaw": -26.16,
+          "head": -28.0,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.5,
+            -0.2
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 15.39,
+          "cliff_y_est": null
+        },
+        {
+          "step": 7,
+          "tx": 0.1318,
+          "ty": -0.0452,
+          "tyaw": -30.88,
+          "head": -28.0,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.5,
+            -0.2
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 13.46,
+          "cliff_y_est": null
+        },
+        {
+          "step": 8,
+          "tx": 0.1511,
+          "ty": -0.0591,
+          "tyaw": -35.6,
+          "head": -28.0,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.5,
+            -0.2
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 11.75,
+          "cliff_y_est": null
+        },
+        {
+          "step": 9,
+          "tx": 0.1692,
+          "ty": -0.0744,
+          "tyaw": -40.32,
+          "head": -28.0,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.5,
+            -0.2
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 10.34,
+          "cliff_y_est": null
+        },
+        {
+          "step": 10,
+          "tx": 0.186,
+          "ty": -0.0913,
+          "tyaw": -45.04,
+          "head": -28.0,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.5,
+            -0.2
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 9.3,
+          "cliff_y_est": null
+        },
+        {
+          "step": 11,
+          "tx": 0.2014,
+          "ty": -0.1094,
+          "tyaw": -49.76,
+          "head": -28.0,
+          "mood": "REFUSE_CLIFF",
+          "text": "WHOA! CLIFF! NOPE - SHAKING HEAD!",
+          "tgt": [
+            0.5,
+            -0.2
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 8.71,
+          "cliff_y_est": -0.183
+        },
+        {
+          "step": 12,
+          "tx": 0.2014,
+          "ty": -0.1094,
+          "tyaw": -48.96,
+          "head": -28.0,
+          "mood": "REFUSE_CLIFF",
+          "text": "WHOA! CLIFF! NOPE - SHAKING HEAD!",
+          "tgt": [
+            0.5,
+            -0.2
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 8.71,
+          "cliff_y_est": -0.183
+        },
+        {
+          "step": 13,
+          "tx": 0.2014,
+          "ty": -0.1094,
+          "tyaw": -48.16,
+          "head": 28.0,
+          "mood": "REFUSE_CLIFF",
+          "text": "WHOA! CLIFF! NOPE - SHAKING HEAD!",
+          "tgt": [
+            0.5,
+            -0.2
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 8.71,
+          "cliff_y_est": -0.183
+        },
+        {
+          "step": 14,
+          "tx": 0.2014,
+          "ty": -0.1094,
+          "tyaw": -47.36,
+          "head": 28.0,
+          "mood": "REFUSE_CLIFF",
+          "text": "WHOA! CLIFF! NOPE - SHAKING HEAD!",
+          "tgt": [
+            0.5,
+            -0.2
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 8.71,
+          "cliff_y_est": -0.183
+        },
+        {
+          "step": 15,
+          "tx": 0.2014,
+          "ty": -0.1094,
+          "tyaw": -46.56,
+          "head": -24.0,
+          "mood": "REFUSE_CLIFF",
+          "text": "WHOA! CLIFF! NOPE - SHAKING HEAD!",
+          "tgt": [
+            0.5,
+            -0.2
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 8.71,
+          "cliff_y_est": -0.183
+        },
+        {
+          "step": 16,
+          "tx": 0.2014,
+          "ty": -0.1094,
+          "tyaw": -45.76,
+          "head": -24.0,
+          "mood": "REFUSE_CLIFF",
+          "text": "WHOA! CLIFF! NOPE - SHAKING HEAD!",
+          "tgt": [
+            0.5,
+            -0.2
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 8.71,
+          "cliff_y_est": -0.183
+        },
+        {
+          "step": 17,
+          "tx": 0.2014,
+          "ty": -0.1094,
+          "tyaw": -44.96,
+          "head": 22.0,
+          "mood": "REFUSE_CLIFF",
+          "text": "WHOA! CLIFF! NOPE - SHAKING HEAD!",
+          "tgt": [
+            0.5,
+            -0.2
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 8.71,
+          "cliff_y_est": -0.183
+        },
+        {
+          "step": 18,
+          "tx": 0.2014,
+          "ty": -0.1094,
+          "tyaw": -44.16,
+          "head": 22.0,
+          "mood": "REFUSE_CLIFF",
+          "text": "WHOA! CLIFF! NOPE - SHAKING HEAD!",
+          "tgt": [
+            0.5,
+            -0.2
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 8.71,
+          "cliff_y_est": -0.183
+        },
+        {
+          "step": 19,
+          "tx": 0.2014,
+          "ty": -0.1094,
+          "tyaw": -43.36,
+          "head": -14.0,
+          "mood": "REFUSE_CLIFF",
+          "text": "WHOA! CLIFF! NOPE - SHAKING HEAD!",
+          "tgt": [
+            0.5,
+            -0.2
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 8.71,
+          "cliff_y_est": -0.183
+        },
+        {
+          "step": 20,
+          "tx": 0.2014,
+          "ty": -0.1094,
+          "tyaw": -42.56,
+          "head": 0.0,
+          "mood": "REFUSE_CLIFF",
+          "text": "WHOA! CLIFF! NOPE - SHAKING HEAD!",
+          "tgt": [
+            0.5,
+            -0.2
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 8.71,
+          "cliff_y_est": -0.183
+        },
+        {
+          "step": 21,
+          "tx": 0.2014,
+          "ty": -0.1094,
+          "tyaw": -41.76,
+          "head": 32.0,
+          "mood": "STARE_HUMAN",
+          "text": "Refused cliff! Looking back at human",
+          "tgt": [
+            0.5,
+            -0.2
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 8.71,
+          "cliff_y_est": -0.183
+        },
+        {
+          "step": 22,
+          "tx": 0.2014,
+          "ty": -0.1094,
+          "tyaw": -37.39,
+          "head": 32.0,
+          "mood": "STARE_HUMAN",
+          "text": "Refused cliff! Looking back at human",
+          "tgt": [
+            0.5,
+            -0.2
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 8.71,
+          "cliff_y_est": -0.183
+        },
+        {
+          "step": 23,
+          "tx": 0.2014,
+          "ty": -0.1094,
+          "tyaw": -33.64,
+          "head": 32.0,
+          "mood": "STARE_HUMAN",
+          "text": "Refused cliff! Looking back at human",
+          "tgt": [
+            0.5,
+            -0.2
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 8.71,
+          "cliff_y_est": -0.183
+        },
+        {
+          "step": 24,
+          "tx": 0.2014,
+          "ty": -0.1094,
+          "tyaw": -30.52,
+          "head": 32.0,
+          "mood": "STARE_HUMAN",
+          "text": "Refused cliff! Looking back at human",
+          "tgt": [
+            0.5,
+            -0.2
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 8.71,
+          "cliff_y_est": -0.183
+        },
+        {
+          "step": 25,
+          "tx": 0.2014,
+          "ty": -0.1094,
+          "tyaw": -27.99,
+          "head": 32.0,
+          "mood": "STARE_HUMAN",
+          "text": "Refused cliff! Looking back at human",
+          "tgt": [
+            0.5,
+            -0.2
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 8.71,
+          "cliff_y_est": -0.183
+        }
+      ]
+    },
+    "S3a_nav_void_instinct": {
+      "steps": 25,
+      "final_err_cm": 41.97,
+      "mean_cam_pose_err_cm": 1.13,
+      "min_clearance_cm": 8.71,
+      "collision": false,
+      "cliff_detected": true,
+      "cliff_refusal_step": 11,
+      "cliff_y_est_m": -0.1795,
+      "fell_off_cliff": false,
+      "min_cliff_margin_cm": 25.06,
+      "fakeout_ignored": false,
+      "target_switched": false,
+      "human_found_new_seat": false,
+      "final_face_gaze_err_deg": -1.0,
+      "nbv_peeks_done": false,
+      "nbv_peek_xy": null,
+      "attack1_moving_det_step": -1,
+      "attack2_drop_det_step": -1,
+      "attack3_kidnap_recovered": false,
+      "attack3_kidnap_recov_steps": -1,
+      "attack3_kidnap_recov_err_cm": -1.0,
+      "pursuit_mode": false,
+      "pursuit_captured": false,
+      "capture_step": -1,
+      "escort_band_ratio": 0.0,
+      "min_chase_edge_cm": null,
+      "min_static_clear_cm": null,
+      "mean_moving_vel_err_mps": -1.0,
+      "mean_drop_loc_err_cm": -1.0,
+      "traj_true": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0076,
+          -0.0003,
+          -2.56
+        ],
+        [
+          0.0228,
+          -0.0023,
+          -7.28
+        ],
+        [
+          0.0452,
+          -0.007,
+          -12.0
+        ],
+        [
+          0.068,
+          -0.0139,
+          -16.72
+        ],
+        [
+          0.0901,
+          -0.0226,
+          -21.44
+        ],
+        [
+          0.1114,
+          -0.033,
+          -26.16
+        ],
+        [
+          0.1318,
+          -0.0452,
+          -30.88
+        ],
+        [
+          0.1511,
+          -0.0591,
+          -35.6
+        ],
+        [
+          0.1692,
+          -0.0744,
+          -40.32
+        ],
+        [
+          0.186,
+          -0.0913,
+          -45.04
+        ],
+        [
+          0.2014,
+          -0.1094,
+          -49.76
+        ],
+        [
+          0.2014,
+          -0.1094,
+          -48.96
+        ],
+        [
+          0.2014,
+          -0.1094,
+          -48.16
+        ],
+        [
+          0.2014,
+          -0.1094,
+          -47.36
+        ],
+        [
+          0.2014,
+          -0.1094,
+          -46.56
+        ],
+        [
+          0.2014,
+          -0.1094,
+          -45.76
+        ],
+        [
+          0.2014,
+          -0.1094,
+          -44.96
+        ],
+        [
+          0.2014,
+          -0.1094,
+          -44.16
+        ],
+        [
+          0.2014,
+          -0.1094,
+          -43.36
+        ],
+        [
+          0.2014,
+          -0.1094,
+          -42.56
+        ],
+        [
+          0.2014,
+          -0.1094,
+          -41.76
+        ],
+        [
+          0.2014,
+          -0.1094,
+          -37.48
+        ],
+        [
+          0.2014,
+          -0.1094,
+          -33.81
+        ],
+        [
+          0.2014,
+          -0.1094,
+          -30.72
+        ],
+        [
+          0.2014,
+          -0.1094,
+          -28.22
+        ]
+      ],
+      "survey": {},
+      "survey_samples": [],
+      "replay_frames": [
+        {
+          "step": 0,
+          "tx": 0.0,
+          "ty": 0.0,
+          "tyaw": 0.0,
+          "head": -28.0,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.46,
+            -0.44
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 26.56,
+          "cliff_y_est": null
+        },
+        {
+          "step": 1,
+          "tx": 0.0076,
+          "ty": -0.0003,
+          "tyaw": -2.56,
+          "head": -28.0,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.46,
+            -0.44
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 25.79,
+          "cliff_y_est": null
+        },
+        {
+          "step": 2,
+          "tx": 0.0228,
+          "ty": -0.0023,
+          "tyaw": -7.28,
+          "head": -28.0,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.46,
+            -0.44
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 24.27,
+          "cliff_y_est": null
+        },
+        {
+          "step": 3,
+          "tx": 0.0452,
+          "ty": -0.007,
+          "tyaw": -12.0,
+          "head": -28.0,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.46,
+            -0.44
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 22.01,
+          "cliff_y_est": null
+        },
+        {
+          "step": 4,
+          "tx": 0.068,
+          "ty": -0.0139,
+          "tyaw": -16.72,
+          "head": -28.0,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.46,
+            -0.44
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 19.71,
+          "cliff_y_est": null
+        },
+        {
+          "step": 5,
+          "tx": 0.0901,
+          "ty": -0.0226,
+          "tyaw": -21.44,
+          "head": -28.0,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.46,
+            -0.44
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 17.49,
+          "cliff_y_est": null
+        },
+        {
+          "step": 6,
+          "tx": 0.1114,
+          "ty": -0.033,
+          "tyaw": -26.16,
+          "head": -28.0,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.46,
+            -0.44
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 15.39,
+          "cliff_y_est": null
+        },
+        {
+          "step": 7,
+          "tx": 0.1318,
+          "ty": -0.0452,
+          "tyaw": -30.88,
+          "head": -28.0,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.46,
+            -0.44
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 13.46,
+          "cliff_y_est": null
+        },
+        {
+          "step": 8,
+          "tx": 0.1511,
+          "ty": -0.0591,
+          "tyaw": -35.6,
+          "head": -28.0,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.46,
+            -0.44
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 11.75,
+          "cliff_y_est": null
+        },
+        {
+          "step": 9,
+          "tx": 0.1692,
+          "ty": -0.0744,
+          "tyaw": -40.32,
+          "head": -28.0,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.46,
+            -0.44
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 10.34,
+          "cliff_y_est": null
+        },
+        {
+          "step": 10,
+          "tx": 0.186,
+          "ty": -0.0913,
+          "tyaw": -45.04,
+          "head": -28.0,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.46,
+            -0.44
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 9.3,
+          "cliff_y_est": null
+        },
+        {
+          "step": 11,
+          "tx": 0.2014,
+          "ty": -0.1094,
+          "tyaw": -49.76,
+          "head": -28.0,
+          "mood": "REFUSE_CLIFF",
+          "text": "WHOA! CLIFF! NOPE - SHAKING HEAD!",
+          "tgt": [
+            0.46,
+            -0.44
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 8.71,
+          "cliff_y_est": -0.1795
+        },
+        {
+          "step": 12,
+          "tx": 0.2014,
+          "ty": -0.1094,
+          "tyaw": -48.96,
+          "head": -28.0,
+          "mood": "REFUSE_CLIFF",
+          "text": "WHOA! CLIFF! NOPE - SHAKING HEAD!",
+          "tgt": [
+            0.46,
+            -0.44
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 8.71,
+          "cliff_y_est": -0.1795
+        },
+        {
+          "step": 13,
+          "tx": 0.2014,
+          "ty": -0.1094,
+          "tyaw": -48.16,
+          "head": 28.0,
+          "mood": "REFUSE_CLIFF",
+          "text": "WHOA! CLIFF! NOPE - SHAKING HEAD!",
+          "tgt": [
+            0.46,
+            -0.44
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 8.71,
+          "cliff_y_est": -0.1795
+        },
+        {
+          "step": 14,
+          "tx": 0.2014,
+          "ty": -0.1094,
+          "tyaw": -47.36,
+          "head": 28.0,
+          "mood": "REFUSE_CLIFF",
+          "text": "WHOA! CLIFF! NOPE - SHAKING HEAD!",
+          "tgt": [
+            0.46,
+            -0.44
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 8.71,
+          "cliff_y_est": -0.1795
+        },
+        {
+          "step": 15,
+          "tx": 0.2014,
+          "ty": -0.1094,
+          "tyaw": -46.56,
+          "head": -24.0,
+          "mood": "REFUSE_CLIFF",
+          "text": "WHOA! CLIFF! NOPE - SHAKING HEAD!",
+          "tgt": [
+            0.46,
+            -0.44
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 8.71,
+          "cliff_y_est": -0.1795
+        },
+        {
+          "step": 16,
+          "tx": 0.2014,
+          "ty": -0.1094,
+          "tyaw": -45.76,
+          "head": -24.0,
+          "mood": "REFUSE_CLIFF",
+          "text": "WHOA! CLIFF! NOPE - SHAKING HEAD!",
+          "tgt": [
+            0.46,
+            -0.44
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 8.71,
+          "cliff_y_est": -0.1795
+        },
+        {
+          "step": 17,
+          "tx": 0.2014,
+          "ty": -0.1094,
+          "tyaw": -44.96,
+          "head": 22.0,
+          "mood": "REFUSE_CLIFF",
+          "text": "WHOA! CLIFF! NOPE - SHAKING HEAD!",
+          "tgt": [
+            0.46,
+            -0.44
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 8.71,
+          "cliff_y_est": -0.1795
+        },
+        {
+          "step": 18,
+          "tx": 0.2014,
+          "ty": -0.1094,
+          "tyaw": -44.16,
+          "head": 22.0,
+          "mood": "REFUSE_CLIFF",
+          "text": "WHOA! CLIFF! NOPE - SHAKING HEAD!",
+          "tgt": [
+            0.46,
+            -0.44
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 8.71,
+          "cliff_y_est": -0.1795
+        },
+        {
+          "step": 19,
+          "tx": 0.2014,
+          "ty": -0.1094,
+          "tyaw": -43.36,
+          "head": -14.0,
+          "mood": "REFUSE_CLIFF",
+          "text": "WHOA! CLIFF! NOPE - SHAKING HEAD!",
+          "tgt": [
+            0.46,
+            -0.44
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 8.71,
+          "cliff_y_est": -0.1795
+        },
+        {
+          "step": 20,
+          "tx": 0.2014,
+          "ty": -0.1094,
+          "tyaw": -42.56,
+          "head": 0.0,
+          "mood": "REFUSE_CLIFF",
+          "text": "WHOA! CLIFF! NOPE - SHAKING HEAD!",
+          "tgt": [
+            0.46,
+            -0.44
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 8.71,
+          "cliff_y_est": -0.1795
+        },
+        {
+          "step": 21,
+          "tx": 0.2014,
+          "ty": -0.1094,
+          "tyaw": -41.76,
+          "head": 32.0,
+          "mood": "STARE_HUMAN",
+          "text": "Refused cliff! Looking back at human",
+          "tgt": [
+            0.46,
+            -0.44
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 8.71,
+          "cliff_y_est": -0.1795
+        },
+        {
+          "step": 22,
+          "tx": 0.2014,
+          "ty": -0.1094,
+          "tyaw": -37.48,
+          "head": 32.0,
+          "mood": "STARE_HUMAN",
+          "text": "Refused cliff! Looking back at human",
+          "tgt": [
+            0.46,
+            -0.44
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 8.71,
+          "cliff_y_est": -0.1795
+        },
+        {
+          "step": 23,
+          "tx": 0.2014,
+          "ty": -0.1094,
+          "tyaw": -33.81,
+          "head": 32.0,
+          "mood": "STARE_HUMAN",
+          "text": "Refused cliff! Looking back at human",
+          "tgt": [
+            0.46,
+            -0.44
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 8.71,
+          "cliff_y_est": -0.1795
+        },
+        {
+          "step": 24,
+          "tx": 0.2014,
+          "ty": -0.1094,
+          "tyaw": -30.72,
+          "head": 32.0,
+          "mood": "STARE_HUMAN",
+          "text": "Refused cliff! Looking back at human",
+          "tgt": [
+            0.46,
+            -0.44
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 8.71,
+          "cliff_y_est": -0.1795
+        },
+        {
+          "step": 25,
+          "tx": 0.2014,
+          "ty": -0.1094,
+          "tyaw": -28.22,
+          "head": 32.0,
+          "mood": "STARE_HUMAN",
+          "text": "Refused cliff! Looking back at human",
+          "tgt": [
+            0.46,
+            -0.44
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 8.71,
+          "cliff_y_est": -0.1795
+        }
+      ]
+    },
+    "S3b_nav_void_baseline": {
+      "steps": 23,
+      "final_err_cm": 15.1,
+      "mean_cam_pose_err_cm": 2.7,
+      "min_clearance_cm": 8.61,
+      "collision": false,
+      "cliff_detected": false,
+      "cliff_refusal_step": -1,
+      "cliff_y_est_m": null,
+      "fell_off_cliff": true,
+      "min_cliff_margin_cm": -0.32,
+      "fakeout_ignored": false,
+      "target_switched": false,
+      "human_found_new_seat": false,
+      "final_face_gaze_err_deg": -1.0,
+      "nbv_peeks_done": false,
+      "nbv_peek_xy": null,
+      "attack1_moving_det_step": -1,
+      "attack2_drop_det_step": -1,
+      "attack3_kidnap_recovered": false,
+      "attack3_kidnap_recov_steps": -1,
+      "attack3_kidnap_recov_err_cm": -1.0,
+      "pursuit_mode": false,
+      "pursuit_captured": false,
+      "capture_step": -1,
+      "escort_band_ratio": 0.0,
+      "min_chase_edge_cm": null,
+      "min_static_clear_cm": null,
+      "mean_moving_vel_err_mps": -1.0,
+      "mean_drop_loc_err_cm": -1.0,
+      "traj_true": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0076,
+          -0.0003,
+          -2.56
+        ],
+        [
+          0.0228,
+          -0.0023,
+          -7.28
+        ],
+        [
+          0.0452,
+          -0.007,
+          -12.0
+        ],
+        [
+          0.068,
+          -0.0139,
+          -16.72
+        ],
+        [
+          0.0901,
+          -0.0226,
+          -21.44
+        ],
+        [
+          0.1114,
+          -0.033,
+          -26.16
+        ],
+        [
+          0.1318,
+          -0.0452,
+          -30.88
+        ],
+        [
+          0.1511,
+          -0.0591,
+          -35.6
+        ],
+        [
+          0.1692,
+          -0.0744,
+          -40.32
+        ],
+        [
+          0.186,
+          -0.0913,
+          -45.04
+        ],
+        [
+          0.2014,
+          -0.1094,
+          -49.76
+        ],
+        [
+          0.2152,
+          -0.1287,
+          -54.48
+        ],
+        [
+          0.2273,
+          -0.1491,
+          -59.2
+        ],
+        [
+          0.2378,
+          -0.1705,
+          -63.92
+        ],
+        [
+          0.2467,
+          -0.1925,
+          -67.88
+        ],
+        [
+          0.2554,
+          -0.2146,
+          -68.49
+        ],
+        [
+          0.2649,
+          -0.2364,
+          -66.54
+        ],
+        [
+          0.2759,
+          -0.2575,
+          -62.38
+        ],
+        [
+          0.2872,
+          -0.2784,
+          -61.58
+        ],
+        [
+          0.2979,
+          -0.2996,
+          -63.4
+        ],
+        [
+          0.3077,
+          -0.3212,
+          -65.55
+        ],
+        [
+          0.318,
+          -0.3427,
+          -64.35
+        ],
+        [
+          0.33,
+          -0.3632,
+          -59.78
+        ]
+      ],
+      "survey": {},
+      "survey_samples": [],
+      "replay_frames": [
+        {
+          "step": 0,
+          "tx": 0.0,
+          "ty": 0.0,
+          "tyaw": 0.0,
+          "head": -28.0,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.46,
+            -0.44
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 26.56,
+          "cliff_y_est": null
+        },
+        {
+          "step": 1,
+          "tx": 0.0076,
+          "ty": -0.0003,
+          "tyaw": -2.56,
+          "head": -28.0,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.46,
+            -0.44
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 25.79,
+          "cliff_y_est": null
+        },
+        {
+          "step": 2,
+          "tx": 0.0228,
+          "ty": -0.0023,
+          "tyaw": -7.28,
+          "head": -28.0,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.46,
+            -0.44
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 24.27,
+          "cliff_y_est": null
+        },
+        {
+          "step": 3,
+          "tx": 0.0452,
+          "ty": -0.007,
+          "tyaw": -12.0,
+          "head": -28.0,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.46,
+            -0.44
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 22.01,
+          "cliff_y_est": null
+        },
+        {
+          "step": 4,
+          "tx": 0.068,
+          "ty": -0.0139,
+          "tyaw": -16.72,
+          "head": -28.0,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.46,
+            -0.44
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 19.71,
+          "cliff_y_est": null
+        },
+        {
+          "step": 5,
+          "tx": 0.0901,
+          "ty": -0.0226,
+          "tyaw": -21.44,
+          "head": -28.0,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.46,
+            -0.44
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 17.49,
+          "cliff_y_est": null
+        },
+        {
+          "step": 6,
+          "tx": 0.1114,
+          "ty": -0.033,
+          "tyaw": -26.16,
+          "head": -28.0,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.46,
+            -0.44
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 15.39,
+          "cliff_y_est": null
+        },
+        {
+          "step": 7,
+          "tx": 0.1318,
+          "ty": -0.0452,
+          "tyaw": -30.88,
+          "head": -28.0,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.46,
+            -0.44
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 13.46,
+          "cliff_y_est": null
+        },
+        {
+          "step": 8,
+          "tx": 0.1511,
+          "ty": -0.0591,
+          "tyaw": -35.6,
+          "head": -28.0,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.46,
+            -0.44
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 11.75,
+          "cliff_y_est": null
+        },
+        {
+          "step": 9,
+          "tx": 0.1692,
+          "ty": -0.0744,
+          "tyaw": -40.32,
+          "head": -28.0,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.46,
+            -0.44
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 10.34,
+          "cliff_y_est": null
+        },
+        {
+          "step": 10,
+          "tx": 0.186,
+          "ty": -0.0913,
+          "tyaw": -45.04,
+          "head": -28.0,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.46,
+            -0.44
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 9.3,
+          "cliff_y_est": null
+        },
+        {
+          "step": 11,
+          "tx": 0.2014,
+          "ty": -0.1094,
+          "tyaw": -49.76,
+          "head": -25.4,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.46,
+            -0.44
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 8.71,
+          "cliff_y_est": null
+        },
+        {
+          "step": 12,
+          "tx": 0.2152,
+          "ty": -0.1287,
+          "tyaw": -54.48,
+          "head": -12.1,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.46,
+            -0.44
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 8.61,
+          "cliff_y_est": null
+        },
+        {
+          "step": 13,
+          "tx": 0.2273,
+          "ty": -0.1491,
+          "tyaw": -59.2,
+          "head": -10.6,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.46,
+            -0.44
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 9.01,
+          "cliff_y_est": null
+        },
+        {
+          "step": 14,
+          "tx": 0.2378,
+          "ty": -0.1705,
+          "tyaw": -63.92,
+          "head": -9.3,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.46,
+            -0.44
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 9.89,
+          "cliff_y_est": null
+        },
+        {
+          "step": 15,
+          "tx": 0.2467,
+          "ty": -0.1925,
+          "tyaw": -67.88,
+          "head": 6.6,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.46,
+            -0.44
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 11.14,
+          "cliff_y_est": null
+        },
+        {
+          "step": 16,
+          "tx": 0.2554,
+          "ty": -0.2146,
+          "tyaw": -68.49,
+          "head": 3.5,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.46,
+            -0.44
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 12.59,
+          "cliff_y_est": null
+        },
+        {
+          "step": 17,
+          "tx": 0.2649,
+          "ty": -0.2364,
+          "tyaw": -66.54,
+          "head": 9.0,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.46,
+            -0.44
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 14.14,
+          "cliff_y_est": null
+        },
+        {
+          "step": 18,
+          "tx": 0.2759,
+          "ty": -0.2575,
+          "tyaw": -62.38,
+          "head": -4.8,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.46,
+            -0.44
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 15.69,
+          "cliff_y_est": null
+        },
+        {
+          "step": 19,
+          "tx": 0.2872,
+          "ty": -0.2784,
+          "tyaw": -61.58,
+          "head": -5.9,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.46,
+            -0.44
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 17.34,
+          "cliff_y_est": null
+        },
+        {
+          "step": 20,
+          "tx": 0.2979,
+          "ty": -0.2996,
+          "tyaw": -63.4,
+          "head": -4.2,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.46,
+            -0.44
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 19.14,
+          "cliff_y_est": null
+        },
+        {
+          "step": 21,
+          "tx": 0.3077,
+          "ty": -0.3212,
+          "tyaw": -65.55,
+          "head": 18.6,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.46,
+            -0.44
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 21.07,
+          "cliff_y_est": null
+        },
+        {
+          "step": 22,
+          "tx": 0.318,
+          "ty": -0.3427,
+          "tyaw": -64.35,
+          "head": 21.6,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.46,
+            -0.44
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 23.04,
+          "cliff_y_est": null
+        },
+        {
+          "step": 23,
+          "tx": 0.33,
+          "ty": -0.3632,
+          "tyaw": -59.78,
+          "head": 21.6,
+          "mood": "FELL_OFF",
+          "text": "FELL OFF DESK CLIFF!",
+          "tgt": [
+            0.46,
+            -0.44
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 24.95,
+          "cliff_y_est": null
+        }
+      ]
+    },
+    "S4_survey_zigzag": {
+      "steps": 24,
+      "final_err_cm": 20.36,
+      "mean_cam_pose_err_cm": 1.1,
+      "min_clearance_cm": 9.3,
+      "collision": false,
+      "cliff_detected": true,
+      "cliff_refusal_step": 10,
+      "cliff_y_est_m": -0.1513,
+      "fell_off_cliff": false,
+      "min_cliff_margin_cm": 26.87,
+      "fakeout_ignored": false,
+      "target_switched": false,
+      "human_found_new_seat": false,
+      "final_face_gaze_err_deg": -1.0,
+      "nbv_peeks_done": false,
+      "nbv_peek_xy": null,
+      "attack1_moving_det_step": -1,
+      "attack2_drop_det_step": -1,
+      "attack3_kidnap_recovered": false,
+      "attack3_kidnap_recov_steps": -1,
+      "attack3_kidnap_recov_err_cm": -1.0,
+      "pursuit_mode": false,
+      "pursuit_captured": false,
+      "capture_step": -1,
+      "escort_band_ratio": 0.0,
+      "min_chase_edge_cm": null,
+      "min_static_clear_cm": null,
+      "mean_moving_vel_err_mps": -1.0,
+      "mean_drop_loc_err_cm": -1.0,
+      "traj_true": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0076,
+          -0.0003,
+          -2.56
+        ],
+        [
+          0.0228,
+          -0.0023,
+          -7.28
+        ],
+        [
+          0.0452,
+          -0.007,
+          -12.0
+        ],
+        [
+          0.068,
+          -0.0139,
+          -16.72
+        ],
+        [
+          0.0901,
+          -0.0226,
+          -21.44
+        ],
+        [
+          0.1114,
+          -0.033,
+          -26.16
+        ],
+        [
+          0.1318,
+          -0.0452,
+          -30.88
+        ],
+        [
+          0.1511,
+          -0.0591,
+          -35.6
+        ],
+        [
+          0.1692,
+          -0.0744,
+          -40.32
+        ],
+        [
+          0.186,
+          -0.0913,
+          -45.04
+        ],
+        [
+          0.186,
+          -0.0913,
+          -44.24
+        ],
+        [
+          0.186,
+          -0.0913,
+          -43.44
+        ],
+        [
+          0.186,
+          -0.0913,
+          -42.64
+        ],
+        [
+          0.186,
+          -0.0913,
+          -41.84
+        ],
+        [
+          0.186,
+          -0.0913,
+          -41.04
+        ],
+        [
+          0.186,
+          -0.0913,
+          -40.24
+        ],
+        [
+          0.186,
+          -0.0913,
+          -39.44
+        ],
+        [
+          0.186,
+          -0.0913,
+          -38.64
+        ],
+        [
+          0.186,
+          -0.0913,
+          -37.84
+        ],
+        [
+          0.186,
+          -0.0913,
+          -37.04
+        ],
+        [
+          0.186,
+          -0.0913,
+          -33.76
+        ],
+        [
+          0.186,
+          -0.0913,
+          -31.01
+        ],
+        [
+          0.186,
+          -0.0913,
+          -28.65
+        ],
+        [
+          0.186,
+          -0.0913,
+          -26.67
+        ]
+      ],
+      "survey": {
+        "n": 24,
+        "median_err_cm": 2.28,
+        "p90_abs_err_cm": 3.26,
+        "median_y_est": -0.3396
+      },
+      "survey_samples": [
+        {
+          "step": 1,
+          "y_est": -0.3412,
+          "ex": 0.01563586451868735,
+          "ey": -0.0009865561667338572,
+          "eyaw": -2.4159360909117424,
+          "dist_to_rim_m": 0.6604
+        },
+        {
+          "step": 2,
+          "y_est": -0.3414,
+          "ex": 0.028137333645285312,
+          "ey": -0.0042192386546887695,
+          "eyaw": -6.952388984786978,
+          "dist_to_rim_m": 0.5841
+        },
+        {
+          "step": 3,
+          "y_est": -0.3421,
+          "ex": 0.040269124247649724,
+          "ey": -0.007631635315041949,
+          "eyaw": -11.693513863434134,
+          "dist_to_rim_m": 0.528
+        },
+        {
+          "step": 4,
+          "y_est": -0.3442,
+          "ex": 0.055763187283689605,
+          "ey": -0.012325203552536329,
+          "eyaw": -16.411378892964706,
+          "dist_to_rim_m": 0.4852
+        },
+        {
+          "step": 5,
+          "y_est": -0.3265,
+          "ex": 0.08545453510081685,
+          "ey": -0.02633665491448729,
+          "eyaw": -20.962129700068004,
+          "dist_to_rim_m": 0.4102
+        },
+        {
+          "step": 6,
+          "y_est": -0.3379,
+          "ex": 0.11711033785696205,
+          "ey": -0.03299985194821685,
+          "eyaw": -26.01284733322663,
+          "dist_to_rim_m": 0.3847
+        },
+        {
+          "step": 7,
+          "y_est": -0.3481,
+          "ex": 0.12903809610730121,
+          "ey": -0.040536945678700906,
+          "eyaw": -30.955368952888477,
+          "dist_to_rim_m": 0.366
+        },
+        {
+          "step": 8,
+          "y_est": -0.337,
+          "ex": 0.14508663908584754,
+          "ey": -0.05188309525407825,
+          "eyaw": -35.63008584451728,
+          "dist_to_rim_m": 0.3289
+        },
+        {
+          "step": 9,
+          "y_est": -0.3361,
+          "ex": 0.15486730303245744,
+          "ey": -0.05956116576826467,
+          "eyaw": -40.26792393181182,
+          "dist_to_rim_m": 0.3133
+        },
+        {
+          "step": 10,
+          "y_est": -0.1513,
+          "ex": 0.17316027256268043,
+          "ey": -0.07422855378451196,
+          "eyaw": -45.055308138344145,
+          "dist_to_rim_m": 0.08
+        },
+        {
+          "step": 11,
+          "y_est": -0.3892,
+          "ex": 0.17957545834527633,
+          "ey": -0.07986131885075556,
+          "eyaw": -44.54224747545129,
+          "dist_to_rim_m": 0.7239
+        },
+        {
+          "step": 12,
+          "y_est": -0.4057,
+          "ex": 0.1865573375639841,
+          "ey": -0.08393827197860186,
+          "eyaw": -43.78896348456638,
+          "dist_to_rim_m": 0.6631
+        },
+        {
+          "step": 13,
+          "y_est": -0.3831,
+          "ex": 0.18287839117497723,
+          "ey": -0.08072163800886323,
+          "eyaw": -43.00772120940667,
+          "dist_to_rim_m": 0.6682
+        },
+        {
+          "step": 14,
+          "y_est": -0.3769,
+          "ex": 0.1736619787918134,
+          "ey": -0.0757193028793981,
+          "eyaw": -42.07695031425723,
+          "dist_to_rim_m": 0.6823
+        },
+        {
+          "step": 15,
+          "y_est": -0.374,
+          "ex": 0.1713211220993206,
+          "ey": -0.07331012841428705,
+          "eyaw": -41.290925771372855,
+          "dist_to_rim_m": 0.6932
+        },
+        {
+          "step": 16,
+          "y_est": -0.353,
+          "ex": 0.1778395963911351,
+          "ey": -0.07753661917984786,
+          "eyaw": -40.54002585721588,
+          "dist_to_rim_m": 0.7247
+        },
+        {
+          "step": 17,
+          "y_est": -0.3445,
+          "ex": 0.1842094627249101,
+          "ey": -0.08274407033223652,
+          "eyaw": -39.7665526760488,
+          "dist_to_rim_m": 0.7286
+        },
+        {
+          "step": 18,
+          "y_est": -0.3296,
+          "ex": 0.1849233328408699,
+          "ey": -0.08209642123486056,
+          "eyaw": -38.98757476796101,
+          "dist_to_rim_m": 0.7288
+        },
+        {
+          "step": 19,
+          "y_est": -0.3364,
+          "ex": 0.17681108094448966,
+          "ey": -0.07734659982104584,
+          "eyaw": -38.17603540953107,
+          "dist_to_rim_m": 0.2936
+        },
+        {
+          "step": 20,
+          "y_est": -0.3373,
+          "ex": 0.17102324898258664,
+          "ey": -0.07462919504686319,
+          "eyaw": -37.32421814705674,
+          "dist_to_rim_m": 0.3032
+        },
+        {
+          "step": 21,
+          "y_est": -0.3379,
+          "ex": 0.17120944220189424,
+          "ey": -0.0752981054800544,
+          "eyaw": -34.13138292643583,
+          "dist_to_rim_m": 0.308
+        },
+        {
+          "step": 22,
+          "y_est": -0.3359,
+          "ex": 0.18065186102187952,
+          "ey": -0.0798164736438781,
+          "eyaw": -31.37607870040972,
+          "dist_to_rim_m": 0.3025
+        },
+        {
+          "step": 23,
+          "y_est": -0.3369,
+          "ex": 0.18440097386109883,
+          "ey": -0.08372338949191276,
+          "eyaw": -28.909604418214826,
+          "dist_to_rim_m": 0.3055
+        },
+        {
+          "step": 24,
+          "y_est": -0.3362,
+          "ex": 0.18156252650713064,
+          "ey": -0.08188558452512944,
+          "eyaw": -26.962610386627546,
+          "dist_to_rim_m": 0.3185
+        }
+      ],
+      "replay_frames": [
+        {
+          "step": 0,
+          "tx": 0.0,
+          "ty": 0.0,
+          "tyaw": 0.0,
+          "head": -28.0,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.3,
+            -0.26
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 26.56,
+          "cliff_y_est": null
+        },
+        {
+          "step": 1,
+          "tx": 0.0076,
+          "ty": -0.0003,
+          "tyaw": -2.56,
+          "head": -28.0,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.3,
+            -0.26
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 25.79,
+          "cliff_y_est": null
+        },
+        {
+          "step": 2,
+          "tx": 0.0228,
+          "ty": -0.0023,
+          "tyaw": -7.28,
+          "head": -28.0,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.3,
+            -0.26
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 24.27,
+          "cliff_y_est": null
+        },
+        {
+          "step": 3,
+          "tx": 0.0452,
+          "ty": -0.007,
+          "tyaw": -12.0,
+          "head": -28.0,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.3,
+            -0.26
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 22.01,
+          "cliff_y_est": null
+        },
+        {
+          "step": 4,
+          "tx": 0.068,
+          "ty": -0.0139,
+          "tyaw": -16.72,
+          "head": -28.0,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.3,
+            -0.26
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 19.71,
+          "cliff_y_est": null
+        },
+        {
+          "step": 5,
+          "tx": 0.0901,
+          "ty": -0.0226,
+          "tyaw": -21.44,
+          "head": -28.0,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.3,
+            -0.26
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 17.49,
+          "cliff_y_est": null
+        },
+        {
+          "step": 6,
+          "tx": 0.1114,
+          "ty": -0.033,
+          "tyaw": -26.16,
+          "head": -28.0,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.3,
+            -0.26
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 15.39,
+          "cliff_y_est": null
+        },
+        {
+          "step": 7,
+          "tx": 0.1318,
+          "ty": -0.0452,
+          "tyaw": -30.88,
+          "head": -28.0,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.3,
+            -0.26
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 13.46,
+          "cliff_y_est": null
+        },
+        {
+          "step": 8,
+          "tx": 0.1511,
+          "ty": -0.0591,
+          "tyaw": -35.6,
+          "head": -28.0,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.3,
+            -0.26
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 11.75,
+          "cliff_y_est": null
+        },
+        {
+          "step": 9,
+          "tx": 0.1692,
+          "ty": -0.0744,
+          "tyaw": -40.32,
+          "head": -26.8,
+          "mood": "APPROACH",
+          "text": "Heading to knock spot",
+          "tgt": [
+            0.3,
+            -0.26
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 10.34,
+          "cliff_y_est": null
+        },
+        {
+          "step": 10,
+          "tx": 0.186,
+          "ty": -0.0913,
+          "tyaw": -45.04,
+          "head": -28.0,
+          "mood": "REFUSE_CLIFF",
+          "text": "WHOA! CLIFF! NOPE - SHAKING HEAD!",
+          "tgt": [
+            0.3,
+            -0.26
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 9.3,
+          "cliff_y_est": -0.1513
+        },
+        {
+          "step": 11,
+          "tx": 0.186,
+          "ty": -0.0913,
+          "tyaw": -44.24,
+          "head": -28.0,
+          "mood": "REFUSE_CLIFF",
+          "text": "WHOA! CLIFF! NOPE - SHAKING HEAD!",
+          "tgt": [
+            0.3,
+            -0.26
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 9.3,
+          "cliff_y_est": -0.1513
+        },
+        {
+          "step": 12,
+          "tx": 0.186,
+          "ty": -0.0913,
+          "tyaw": -43.44,
+          "head": 28.0,
+          "mood": "REFUSE_CLIFF",
+          "text": "WHOA! CLIFF! NOPE - SHAKING HEAD!",
+          "tgt": [
+            0.3,
+            -0.26
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 9.3,
+          "cliff_y_est": -0.1513
+        },
+        {
+          "step": 13,
+          "tx": 0.186,
+          "ty": -0.0913,
+          "tyaw": -42.64,
+          "head": 28.0,
+          "mood": "REFUSE_CLIFF",
+          "text": "WHOA! CLIFF! NOPE - SHAKING HEAD!",
+          "tgt": [
+            0.3,
+            -0.26
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 9.3,
+          "cliff_y_est": -0.1513
+        },
+        {
+          "step": 14,
+          "tx": 0.186,
+          "ty": -0.0913,
+          "tyaw": -41.84,
+          "head": -24.0,
+          "mood": "REFUSE_CLIFF",
+          "text": "WHOA! CLIFF! NOPE - SHAKING HEAD!",
+          "tgt": [
+            0.3,
+            -0.26
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 9.3,
+          "cliff_y_est": -0.1513
+        },
+        {
+          "step": 15,
+          "tx": 0.186,
+          "ty": -0.0913,
+          "tyaw": -41.04,
+          "head": -24.0,
+          "mood": "REFUSE_CLIFF",
+          "text": "WHOA! CLIFF! NOPE - SHAKING HEAD!",
+          "tgt": [
+            0.3,
+            -0.26
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 9.3,
+          "cliff_y_est": -0.1513
+        },
+        {
+          "step": 16,
+          "tx": 0.186,
+          "ty": -0.0913,
+          "tyaw": -40.24,
+          "head": 22.0,
+          "mood": "REFUSE_CLIFF",
+          "text": "WHOA! CLIFF! NOPE - SHAKING HEAD!",
+          "tgt": [
+            0.3,
+            -0.26
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 9.3,
+          "cliff_y_est": -0.1513
+        },
+        {
+          "step": 17,
+          "tx": 0.186,
+          "ty": -0.0913,
+          "tyaw": -39.44,
+          "head": 22.0,
+          "mood": "REFUSE_CLIFF",
+          "text": "WHOA! CLIFF! NOPE - SHAKING HEAD!",
+          "tgt": [
+            0.3,
+            -0.26
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 9.3,
+          "cliff_y_est": -0.1513
+        },
+        {
+          "step": 18,
+          "tx": 0.186,
+          "ty": -0.0913,
+          "tyaw": -38.64,
+          "head": -14.0,
+          "mood": "REFUSE_CLIFF",
+          "text": "WHOA! CLIFF! NOPE - SHAKING HEAD!",
+          "tgt": [
+            0.3,
+            -0.26
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 9.3,
+          "cliff_y_est": -0.1513
+        },
+        {
+          "step": 19,
+          "tx": 0.186,
+          "ty": -0.0913,
+          "tyaw": -37.84,
+          "head": 0.0,
+          "mood": "REFUSE_CLIFF",
+          "text": "WHOA! CLIFF! NOPE - SHAKING HEAD!",
+          "tgt": [
+            0.3,
+            -0.26
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 9.3,
+          "cliff_y_est": -0.1513
+        },
+        {
+          "step": 20,
+          "tx": 0.186,
+          "ty": -0.0913,
+          "tyaw": -37.04,
+          "head": 32.0,
+          "mood": "STARE_HUMAN",
+          "text": "Refused cliff! Looking back at human",
+          "tgt": [
+            0.3,
+            -0.26
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 9.3,
+          "cliff_y_est": -0.1513
+        },
+        {
+          "step": 21,
+          "tx": 0.186,
+          "ty": -0.0913,
+          "tyaw": -33.76,
+          "head": 32.0,
+          "mood": "STARE_HUMAN",
+          "text": "Refused cliff! Looking back at human",
+          "tgt": [
+            0.3,
+            -0.26
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 9.3,
+          "cliff_y_est": -0.1513
+        },
+        {
+          "step": 22,
+          "tx": 0.186,
+          "ty": -0.0913,
+          "tyaw": -31.01,
+          "head": 32.0,
+          "mood": "STARE_HUMAN",
+          "text": "Refused cliff! Looking back at human",
+          "tgt": [
+            0.3,
+            -0.26
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 9.3,
+          "cliff_y_est": -0.1513
+        },
+        {
+          "step": 23,
+          "tx": 0.186,
+          "ty": -0.0913,
+          "tyaw": -28.65,
+          "head": 32.0,
+          "mood": "STARE_HUMAN",
+          "text": "Refused cliff! Looking back at human",
+          "tgt": [
+            0.3,
+            -0.26
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 9.3,
+          "cliff_y_est": -0.1513
+        },
+        {
+          "step": 24,
+          "tx": 0.186,
+          "ty": -0.0913,
+          "tyaw": -26.67,
+          "head": 32.0,
+          "mood": "STARE_HUMAN",
+          "text": "Refused cliff! Looking back at human",
+          "tgt": [
+            0.3,
+            -0.26
+          ],
+          "cyls": [],
+          "tube": [],
+          "clear_cm": 9.3,
+          "cliff_y_est": -0.1513
+        }
+      ]
+    }
+  },
+  "true_cliff_y": -0.36,
+  "demo_mp4": "D:\\robot_work\\runs_end_side\\edge_survey_v19\\demo_edge_v19.mp4"
+}

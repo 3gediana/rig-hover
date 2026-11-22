@@ -174,8 +174,42 @@ def detect_visual_cliff_zero_oracle(
     # 鼠标垫亮度约 60-75，真实悬崖暗地面亮度 < 44；且非向上凸起障碍 (z < 0.025)
     void_mask = (g_roi < 44) & (z_roi < 0.025)
     void_area = int(void_mask.sum())
+
+    # v19 S3a 修复：深渊占半屏时"亮桌边界"必然消失，亮度联合线会在最后 ~12cm 全瞎。
+    # 此处用"行级深渊占比"单独成检：rim 线 = 自上而下首个深渊占比>50% 的行（深渊占视野下半部）。
+    row_frac = void_mask.mean(axis=1)
+    _rows = np.where(row_frac > 0.5)[0]
     if void_area < 240:
         return None
+    if len(_rows) >= 30:
+        v_rim = int(_rows[0]) + roi_v0
+        us = np.arange(16, 224)
+        R_c2w = _rot_c2w_np(math.radians(eyaw), math.radians(p_est), math.radians(r_est))
+        r_w = rays_cam[v_rim, us] @ R_c2w.T
+        down = r_w[:, 2] < -0.05
+        t_hit = np.where(down, -REAL_H_CAM_M / np.minimum(r_w[:, 2], -1e-4), 3.0)
+        ok = down & (t_hit > 0.10) & (t_hit < 0.75)
+        if int(ok.sum()) >= 50:
+            wx = cam_ex + t_hit[ok] * r_w[ok, 0]
+            wy = cam_ey + t_hit[ok] * r_w[ok, 1]
+            dists = np.hypot(wx - cam_ex, wy - cam_ey)
+            return {
+                "void_area_px": void_area,
+                "rim_xy": (round(float(np.median(wx)), 4), round(float(np.median(wy)), 4)),
+                "y_cliff_est": round(float(np.median(wy)), 4),
+                "dist_to_rim_m": round(float(np.percentile(dists, 15)), 4),
+                "bbox_uv": (16, v_rim, 224, roi_v1),
+                "source": "void_majority",
+            }
+        # 深渊已贴脸：rim 就在近端，保守估 8cm
+        return {
+            "void_area_px": void_area,
+            "rim_xy": (cam_ex, cam_ey - 0.08),
+            "y_cliff_est": round(cam_ey - 0.08, 4),
+            "dist_to_rim_m": 0.08,
+            "bbox_uv": (16, int(_rows[0]) + roi_v0, 224, roi_v1),
+            "source": "void_majority_near",
+        }
 
     # 寻找最大深渊连通域（滤除孤立暗斑）
     n_cc, labels, stats, _ = cv2.connectedComponentsWithStats(void_mask.astype(np.uint8) * 255, connectivity=8)

@@ -6,7 +6,7 @@
     "T3": "HIL (ESP32-compatible local loop)",
     "T4": "physical robot"
   },
-  "generated_at": "2026-11-23 07:14:24",
+  "generated_at": "2026-11-23 07:43:07",
   "entries": [
     {
       "id": "knock-3d-v2",
@@ -273,17 +273,35 @@
       "tier": "T1",
       "source": "runs_end_side/pursuit_v18/pursuit_v18_report.json",
       "metrics": {
-        "S1_capture": null,
-        "S4_capture": null,
-        "S4_escort": null,
-        "S4_static_clear_cm": null,
-        "S5_capture": null,
+        "S1_capture": 20,
+        "S4_capture": 24,
+        "S4_escort": 0.5,
+        "S4_static_clear_cm": 3.04,
+        "S5_capture": 23,
         "vel_err_mps": null
       },
       "artifacts": {
         "mp4": "runs_end_side/pursuit_v18/demo_pursuit_v18.mp4"
       },
       "notes": "Kalman-lead interception + tangent-bug detour + stale-tracker hard reinit + body-spin reacquire. S2 zigzag: cup's scripted path physically crosses the robot when the tracker is blind — documented hard edge."
+    },
+    {
+      "id": "edge-survey-v19",
+      "name": "v19 edge survey: rim obs accumulate -> navigate anywhere + void refusal",
+      "category": "behavior",
+      "tier": "T1",
+      "source": "runs_end_side/edge_survey_v19/edge_survey_v19_report.json",
+      "metrics": {
+        "S1_samples": 28,
+        "S1_edge_err_cm": 2.51,
+        "S3a_instinct_fell": false,
+        "S3b_baseline_fell": true,
+        "S3a_margin_cm": 25.06
+      },
+      "artifacts": {
+        "mp4": "runs_end_side/edge_survey_v19/demo_edge_v19.mp4"
+      },
+      "notes": "void-majority line fixed a real blindness: brightness+border conjunction dies when void fills >50% view (last ~12cm). Now refuses ~20-25cm early on all approach angles; refusal envelope is conservative (16cm targets also refused)."
     }
   ],
   "gaps": [
@@ -297,7 +315,7 @@
     },
     {
       "gap": "double-knock recall still ~65-77% under strict streaming",
-      "blocking": "ensemble/rhythm-filter experiments below; more low-fps takes"
+      "blocking": "v20 autopsy: deploy threshold is grid-optimal; misses need data not tuning"
     },
     {
       "gap": "full E2E real-video scenario (face->fist->knock->dock->lookback) on recorded take",
@@ -308,8 +326,8 @@
       "blocking": "needs wider FOV / predictive dodge / multi-hypothesis tracking"
     },
     {
-      "gap": "edge-survey cliff-map then point-to-point anywhere",
-      "blocking": "none - implementable in DesktopArena3D tonight"
+      "gap": "GeoNet depth blind to synthetic dark pixels (void->z~0): geometric cliff/depth cues unreliable",
+      "blocking": "depth augmentation with dark-floor renders; affects any z<0 cue"
     },
     {
       "gap": "Android TFLite on-device run of the GeoNet+knock bundle",

@@ -320,15 +320,39 @@ def entries() -> list[dict]:
         })
 
     # ------------------------------------------------------------------
+    # v19 edge survey: accumulate rim observations -> navigate anywhere
+    # ------------------------------------------------------------------
+    d = _load("edge_survey_v19/edge_survey_v19_report.json")
+    if d.get("scenarios"):
+        def _em(sid, key):
+            sc = d["scenarios"].get(sid) or {}
+            return sc.get(key)
+        s1sv = (d["scenarios"].get("S1_survey_to_rim") or {}).get("survey", {})
+        e.append({
+            "id": "edge-survey-v19", "name": "v19 edge survey: rim obs accumulate -> navigate anywhere + void refusal",
+            "category": "behavior", "tier": "T1",
+            "source": "runs_end_side/edge_survey_v19/edge_survey_v19_report.json",
+            "metrics": {
+                "S1_samples": s1sv.get("n"),
+                "S1_edge_err_cm": s1sv.get("median_err_cm"),
+                "S3a_instinct_fell": _em("S3a_nav_void_instinct", "fell_off_cliff"),
+                "S3b_baseline_fell": _em("S3b_nav_void_baseline", "fell_off_cliff"),
+                "S3a_margin_cm": _em("S3a_nav_void_instinct", "min_cliff_margin_cm"),
+            },
+            "artifacts": {"mp4": "runs_end_side/edge_survey_v19/demo_edge_v19.mp4"},
+            "notes": "void-majority line fixed a real blindness: brightness+border conjunction dies when void fills >50% view (last ~12cm). Now refuses ~20-25cm early on all approach angles; refusal envelope is conservative (16cm targets also refused).",
+        })
+
+    # ------------------------------------------------------------------
     # Gaps / not-yet-run candidates
     # ------------------------------------------------------------------
     gaps = [
         {"gap": "physical-robot acceptance of ANY v14-v16 scenario", "blocking": "robot offline; needs --live run with watchdog supervision"},
         {"gap": "camera intrinsics calibration (FOV_H=60deg vs dist_k=0.84 contradiction)", "blocking": "needs printed checkerboard + 5min capture on the real robot"},
-        {"gap": "double-knock recall still ~65-77% under strict streaming", "blocking": "ensemble/rhythm-filter experiments below; more low-fps takes"},
+        {"gap": "double-knock recall still ~65-77% under strict streaming", "blocking": "v20 autopsy: deploy threshold is grid-optimal; misses need data not tuning"},
         {"gap": "full E2E real-video scenario (face->fist->knock->dock->lookback) on recorded take", "blocking": "needs pc_unified_brain_app run on a full take, not just segments"},
         {"gap": "pursuit S2 hard edge: cup zigzags through robot + rests out of 60deg FOV", "blocking": "needs wider FOV / predictive dodge / multi-hypothesis tracking"},
-        {"gap": "edge-survey cliff-map then point-to-point anywhere", "blocking": "none - implementable in DesktopArena3D tonight"},
+        {"gap": "GeoNet depth blind to synthetic dark pixels (void->z~0): geometric cliff/depth cues unreliable", "blocking": "depth augmentation with dark-floor renders; affects any z<0 cue"},
         {"gap": "Android TFLite on-device run of the GeoNet+knock bundle", "blocking": "needs G:\\robot_app build + phone"},
     ]
 
