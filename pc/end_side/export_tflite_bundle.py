@@ -36,11 +36,13 @@ TFL_INT32 = 2
 BUILTIN_OP_ADD = 0
 BUILTIN_OP_CONCATENATION = 2
 BUILTIN_OP_CONV_2D = 3
+BUILTIN_OP_DEPTHWISE_CONV_2D = 4
 BUILTIN_OP_FULLY_CONNECTED = 9
 BUILTIN_OP_LOGISTIC = 14
 BUILTIN_OP_MUL = 18
 BUILTIN_OP_RELU = 19
 BUILTIN_OP_RESHAPE = 22
+BUILTIN_OP_RESIZE_BILINEAR = 23
 BUILTIN_OP_SOFTMAX = 25
 BUILTIN_OP_TANH = 28
 BUILTIN_OP_PAD = 34
@@ -56,15 +58,18 @@ PAD_VALID = 1
 
 ACT_NONE = 0
 ACT_RELU = 1
+ACT_RELU6 = 3
 ACT_TANH = 4
 
 # BuiltinOptions union 1-based tags (与 schema_v3.fbs L477-526 逐项对齐)
 OPTS_NONE = 0
 OPTS_CONV_2D = 1
+OPTS_DEPTHWISE_CONV_2D = 2
 OPTS_FULLY_CONNECTED = 8
 OPTS_SOFTMAX = 9
 OPTS_CONCATENATION = 10
 OPTS_ADD = 11
+OPTS_RESIZE_BILINEAR = 15
 OPTS_RESHAPE = 17
 OPTS_MUL = 21
 OPTS_PAD = 22
@@ -130,6 +135,38 @@ def _fb_conv2d_options(
     b.PrependInt8Slot(3, fused_act, 0)
     b.PrependInt32Slot(4, dilation_w, 1)
     b.PrependInt32Slot(5, dilation_h, 1)
+    return b.EndObject()
+
+
+def _fb_depthwise_conv2d_options(
+    b: flatbuffers.Builder,
+    padding: int = PAD_VALID,
+    stride_w: int = 1,
+    stride_h: int = 1,
+    depth_multiplier: int = 1,
+    fused_act: int = ACT_NONE,
+    dilation_w: int = 1,
+    dilation_h: int = 1,
+) -> int:
+    b.StartObject(7)
+    b.PrependInt8Slot(0, padding, 0)
+    b.PrependInt32Slot(1, stride_w, 0)
+    b.PrependInt32Slot(2, stride_h, 0)
+    b.PrependInt32Slot(3, depth_multiplier, 0)
+    b.PrependInt8Slot(4, fused_act, 0)
+    b.PrependInt32Slot(5, dilation_w, 1)
+    b.PrependInt32Slot(6, dilation_h, 1)
+    return b.EndObject()
+
+
+def _fb_resize_bilinear_options(
+    b: flatbuffers.Builder,
+    align_corners: bool = False,
+    half_pixel_centers: bool = True,
+) -> int:
+    b.StartObject(4)
+    b.PrependBoolSlot(2, bool(align_corners), False)
+    b.PrependBoolSlot(3, bool(half_pixel_centers), False)
     return b.EndObject()
 
 
@@ -293,6 +330,54 @@ class _TFLiteGraphBuilder:
         out = self.add_temp(name, [n, h_out, w_out, int(c_out)], TFL_FLOAT32)
         opt = _fb_conv2d_options(self.b, padding, stride, stride, fused_act, dilation, dilation)
         self._emit_op(BUILTIN_OP_CONV_2D, [x, w_tid, b_tid], [out], OPTS_CONV_2D, opt)
+        return out
+
+    def depthwise_conv2d(
+        self,
+        name: str,
+        x: int,
+        w_1hwc: np.ndarray,
+        bias: np.ndarray | None,
+        stride: int = 1,
+        dilation: int = 1,
+        padding: int = PAD_VALID,
+        depth_multiplier: int = 1,
+        fused_act: int = ACT_NONE,
+    ) -> int:
+        n, h_in, w_in, _ = self.shape_of(x)
+        _, kh, kw, c_out = w_1hwc.shape
+        if padding == PAD_VALID:
+            eff_kh = (kh - 1) * dilation + 1
+            eff_kw = (kw - 1) * dilation + 1
+            h_out = (h_in - eff_kh) // stride + 1
+            w_out = (w_in - eff_kw) // stride + 1
+        else:
+            h_out = (h_in + stride - 1) // stride
+            w_out = (w_in + stride - 1) // stride
+        w_tid = self.add_const(f"{name}_w", w_1hwc, TFL_FLOAT32)
+        b_arr = np.zeros((c_out,), dtype=np.float32) if bias is None else bias.reshape(c_out)
+        b_tid = self.add_const(f"{name}_b", b_arr, TFL_FLOAT32)
+        out = self.add_temp(name, [n, h_out, w_out, int(c_out)], TFL_FLOAT32)
+        opt = _fb_depthwise_conv2d_options(
+            self.b, padding, stride, stride, depth_multiplier, fused_act, dilation, dilation
+        )
+        self._emit_op(BUILTIN_OP_DEPTHWISE_CONV_2D, [x, w_tid, b_tid], [out], OPTS_DEPTHWISE_CONV_2D, opt)
+        return out
+
+    def resize_bilinear(
+        self,
+        name: str,
+        x: int,
+        new_h: int,
+        new_w: int,
+        align_corners: bool = False,
+        half_pixel_centers: bool = True,
+    ) -> int:
+        n, _, _, c = self.shape_of(x)
+        sz_tid = self.add_const(f"{name}_sz", np.asarray([new_h, new_w], dtype=np.int32), TFL_INT32)
+        out = self.add_temp(name, [n, int(new_h), int(new_w), c], TFL_FLOAT32)
+        opt = _fb_resize_bilinear_options(self.b, align_corners=align_corners, half_pixel_centers=half_pixel_centers)
+        self._emit_op(BUILTIN_OP_RESIZE_BILINEAR, [x, sz_tid], [out], OPTS_RESIZE_BILINEAR, opt)
         return out
 
     def pad(self, name: str, x: int, paddings: list[list[int]]) -> int:
@@ -737,6 +822,8 @@ def _apply_fused_act(x: np.ndarray, act: int) -> np.ndarray:
         return x
     if act == ACT_RELU:
         return np.maximum(x, 0.0)
+    if act == ACT_RELU6:
+        return np.clip(x, 0.0, 6.0)
     if act == ACT_TANH:
         return np.tanh(x)
     raise ValueError(f"不支持的 FusedActivationFunction={act}")
@@ -838,6 +925,38 @@ def run_tflite_flatbuffer_cpu(tflite_path: str | Path, feed_inputs: list[np.ndar
             with torch.no_grad():
                 y_t = torch.nn.functional.conv2d(x_t, w_t, b_t, stride=(sh, sw), dilation=(dh, dw))
             values[outs[0]] = _apply_fused_act(np.transpose(y_t.numpy(), (0, 2, 3, 1)), act).astype(np.float32)
+
+        elif code == BUILTIN_OP_DEPTHWISE_CONV_2D:
+            assert bopt_type == OPTS_DEPTHWISE_CONV_2D and btab is not None
+            pad_mode = _tab_i8(btab, 4, 0)
+            sw = _tab_i32(btab, 6, 1)
+            sh = _tab_i32(btab, 8, 1)
+            dm = _tab_i32(btab, 10, 1)
+            act = _tab_i8(btab, 12, 0)
+            dw = _tab_i32(btab, 14, 1)
+            dh = _tab_i32(btab, 16, 1)
+            assert pad_mode == PAD_VALID, "Validator expects explicit PAD + VALID"
+            x, w, b = values[ins[0]], values[ins[1]], values[ins[2]]
+            c_in = int(x.shape[3])
+            assert int(w.shape[0]) == 1 and int(w.shape[3]) == c_in * dm
+            x_t = torch.from_numpy(np.transpose(x, (0, 3, 1, 2)))
+            w_t = torch.from_numpy(np.transpose(w, (3, 0, 1, 2)))  # [C_out, 1, kH, kW]
+            b_t = torch.from_numpy(b)
+            with torch.no_grad():
+                y_t = torch.nn.functional.conv2d(x_t, w_t, b_t, stride=(sh, sw), dilation=(dh, dw), groups=c_in)
+            values[outs[0]] = _apply_fused_act(np.transpose(y_t.numpy(), (0, 2, 3, 1)), act).astype(np.float32)
+
+        elif code == BUILTIN_OP_RESIZE_BILINEAR:
+            assert bopt_type == OPTS_RESIZE_BILINEAR and btab is not None
+            align_c = _tab_bool(btab, 8, False)
+            half_px = _tab_bool(btab, 10, False)
+            assert (not align_c) and half_px, "Validator currently expects align_corners=False, half_pixel_centers=True"
+            x = values[ins[0]]
+            sz = [int(v) for v in values[ins[1]]]
+            x_t = torch.from_numpy(np.transpose(x, (0, 3, 1, 2)))
+            with torch.no_grad():
+                y_t = torch.nn.functional.interpolate(x_t, size=(sz[0], sz[1]), mode="bilinear", align_corners=False)
+            values[outs[0]] = np.transpose(y_t.numpy(), (0, 2, 3, 1)).astype(np.float32)
 
         elif code == BUILTIN_OP_PAD:
             assert bopt_type == OPTS_PAD

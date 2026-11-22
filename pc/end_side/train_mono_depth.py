@@ -445,6 +445,8 @@ def render_analytical_desktop_scene(
     elev_gt_48 = ((surf_48 >= 2) & (xyz_48[..., 2] > ELEV_THRESHOLD_M)).astype(np.float32)
 
     t_96, xyz_96, norm_96, surf_96, albedo_96 = _trace_grid(INPUT_H, INPUT_W)
+    depth_gt_96 = np.clip(t_96, DEPTH_MIN_M, DEPTH_MAX_M).astype(np.float32)
+    elev_gt_96 = ((surf_96 >= 2) & (xyz_96[..., 2] > ELEV_THRESHOLD_M)).astype(np.float32)
 
     # 桌面程序化纹理 (surf_96 == 0) 与背景墙纹理 (surf_96 == 1)
     xh = xyz_96[..., 0]
@@ -560,6 +562,9 @@ def render_analytical_desktop_scene(
         "depth_m": depth_gt_48,
         "inv_depth_01": metric_m_to_inv_depth_01(depth_gt_48),
         "elev_mask": elev_gt_48,
+        "depth_m_96": depth_gt_96,
+        "inv_depth_01_96": metric_m_to_inv_depth_01(depth_gt_96),
+        "elev_mask_96": elev_gt_96,
         "meta": {
             "h_cam": h_cam,
             "pitch_deg": pitch_deg,
