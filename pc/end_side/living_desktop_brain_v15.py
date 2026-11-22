@@ -38,6 +38,7 @@
 from __future__ import annotations
 
 import json
+import os
 import math
 import pathlib
 import shutil
@@ -253,6 +254,8 @@ class RobustDynamicObstacleTracker:
         self.r_est = 0.040
         self.n_obs = 0
         self.last_obs_step = -99
+        self.last_move_step = -99
+        self._move_ref: tuple[float, float] | None = None
         self.obs_hist: list[tuple[int, float, float]] = []
 
     def reset(self) -> None:
@@ -261,6 +264,8 @@ class RobustDynamicObstacleTracker:
         self.x[:] = 0.0
         self.n_obs = 0
         self.last_obs_step = -99
+        self.last_move_step = -99
+        self._move_ref = None
         self.obs_hist.clear()
 
     def predict(self, cur_step: int) -> None:
@@ -290,6 +295,10 @@ class RobustDynamicObstacleTracker:
 
         # 若旧移动障碍已消失 >= 2 步，且画面里出现一个全新位置的突发障碍 -> 自动开启新轨道！
         dist_jump = math.hypot(obs_x - self.x[0], obs_y - self.x[1])
+        # 累积位移 >3cm 记为"有效移动观测"（慢速杯每步仅 ~1cm，单步差分会把移动目标误当静止）
+        if self._move_ref is None or math.hypot(obs_x - self._move_ref[0], obs_y - self._move_ref[1]) > 0.03:
+            self.last_move_step = step
+            self._move_ref = (obs_x, obs_y)
         if dist_jump > 0.14:
             if (step - self.last_obs_step >= 2) and self.is_moving:
                 self.reset()
@@ -360,6 +369,20 @@ class RobustDynamicObstacleTracker:
 # ---------------------------------------------------------------------------
 
 
+def _tracker_reinit(tracker, obs_x: float, obs_y: float, obs_r: float, step: int) -> None:
+    """绕过 14cm 关联门硬重置追踪器——追捕失锁后杯子可能已换位，远距检测就是同一只杯子。"""
+    tracker.x = np.array([obs_x, obs_y, 0.0, 0.0], dtype=np.float64)
+    tracker.P = np.diag([0.04 ** 2, 0.04 ** 2, 0.15 ** 2, 0.15 ** 2])
+    tracker.r_est = float(obs_r)
+    tracker.initialized = True
+    tracker.is_moving = False
+    tracker.n_obs = 1
+    tracker.last_obs_step = step
+    tracker.last_move_step = step
+    tracker._move_ref = (float(obs_x), float(obs_y))
+    tracker.obs_hist = [(step, float(obs_x), float(obs_y))]
+
+
 def _segment_hits_circle(p0: tuple[float, float], p1: tuple[float, float], cx: float, cy: float, r: float) -> bool:
     vx, vy = p1[0] - p0[0], p1[1] - p0[1]
     l2 = vx * vx + vy * vy
@@ -423,6 +446,10 @@ def run_living_brain_episode(
     moving_obs_cfg: dict[str, float] | None = None,
     static_drop_obs: dict[str, float] | None = None,
     kidnap_event: dict[str, float] | None = None,
+    pursuit_mode: bool = False,          # v18: the moving cylinder IS the goal (chase+escort)
+    edge_survey_samples: list | None = None,  # v19: 每步累积 cliff 边界观测样本（拒跳闩存照旧生效）
+    chase_standoff_m: float = 0.085,
+    pursuit_lead_s: float = 0.45,
     slip_factor: float = 0.78,
     yaw_drift_dps: float = 5.0,
     seed: int = 15001,
@@ -483,6 +510,18 @@ def run_living_brain_episode(
     kidnap_recovered = False
     kidnap_recov_steps = -1
     kidnap_recov_err_cm = -1.0
+    # v18 pursuit state
+    captured = False
+    capture_step = -1
+    escort_hits = 0
+    escort_total = 0
+    min_chase_edge_m = 999.0
+    min_static_clear_m = 999.0
+    cup_rest_steps = 0
+    cmd_motion_acc = 0.0
+    est_motion_acc = 0.0
+    pose_stuck_events = 0
+    pursuit_end = False
     attack1_det_step = -1
     attack2_det_step = -1
     vel_errs_mps: list[float] = []
@@ -510,8 +549,31 @@ def run_living_brain_episode(
                 active_cyls.append(dict(static_occluder))
             if moving_obs_cfg is not None and step >= int(moving_obs_cfg["start_step"]):
                 el_t = (step - int(moving_obs_cfg["start_step"])) * dt
-                mx = float(moving_obs_cfg["x0"] + moving_obs_cfg["vx"] * el_t)
-                my = float(moving_obs_cfg["y0"] + moving_obs_cfg["vy"] * el_t)
+                if "waypoints" in moving_obs_cfg:
+                    wps = moving_obs_cfg["waypoints"]
+                    spd = float(moving_obs_cfg.get("speed", 0.09))
+
+                    def _walk(tt: float) -> tuple[float, float]:
+                        left = spd * tt
+                        for wi in range(len(wps) - 1):
+                            ax, ay = float(wps[wi][0]), float(wps[wi][1])
+                            bx, by = float(wps[wi + 1][0]), float(wps[wi + 1][1])
+                            seg = math.hypot(bx - ax, by - ay)
+                            if left <= seg:
+                                f = (left / seg) if seg > 1e-6 else 0.0
+                                return ax + f * (bx - ax), ay + f * (by - ay)
+                            left -= seg
+                        return float(wps[-1][0]), float(wps[-1][1])
+
+                    mx, my = _walk(el_t)
+                    px_p, py_p = _walk(max(el_t - dt, 0.0))
+                    moving_obs_cfg["_vx_now"] = (mx - px_p) / dt
+                    moving_obs_cfg["_vy_now"] = (my - py_p) / dt
+                else:
+                    mx = float(moving_obs_cfg["x0"] + moving_obs_cfg["vx"] * el_t)
+                    my = float(moving_obs_cfg["y0"] + moving_obs_cfg["vy"] * el_t)
+                    moving_obs_cfg["_vx_now"] = float(moving_obs_cfg["vx"])
+                    moving_obs_cfg["_vy_now"] = float(moving_obs_cfg["vy"])
                 if -0.46 < my < 0.22 and 0.14 < mx < 0.80:
                     true_moving_now = {"cx": mx, "cy": my, "rad": float(moving_obs_cfg["rad"]), "height": float(moving_obs_cfg["height"])}
                     active_cyls.append(true_moving_now)
@@ -635,11 +697,18 @@ def run_living_brain_episode(
 
             # --- 3) 行为 L1：100% 零开挂纯视觉悬崖边缘本能 ---
             cliff_det = None
-            if enable_cliff_instinct and reloc_ok and (not cliff_detected):
+            _survey_now = edge_survey_samples is not None
+            if enable_cliff_instinct and reloc_ok and (not cliff_detected or _survey_now):
                 cliff_det = detect_visual_cliff_zero_oracle(cf["bgr"], prev_b, geo_fe, (cam_ex, cam_ey, eyaw, p_est, r_est), arena.rays_cam)
                 if cliff_det is not None:
+                    if _survey_now:
+                        edge_survey_samples.append({
+                            "step": step, "y_est": cliff_det["y_cliff_est"],
+                            "ex": ex, "ey": ey, "eyaw": eyaw,
+                            "dist_to_rim_m": cliff_det["dist_to_rim_m"],
+                        })
                     # 走近到距悬崖边 21cm 或横向 12cm 以内才急刹拒跳（戏剧张力拉满且保证安全余量 > 5cm！）
-                    if cliff_det["dist_to_rim_m"] < 0.21 or (ey - cliff_det["y_cliff_est"] < 0.12):
+                    if not cliff_detected and (cliff_det["dist_to_rim_m"] < 0.21 or (ey - cliff_det["y_cliff_est"] < 0.12)):
                         cliff_detected = True
                         cliff_y_est = cliff_det["y_cliff_est"]
                         cliff_refusal_step = step
@@ -653,6 +722,31 @@ def run_living_brain_episode(
             brake_this_step = False
             if (static_occluder is not None or moving_obs_cfg is not None or static_drop_obs is not None) and reloc_ok and step >= 1:
                 vis_det = detect_novel_3d_obstacle_live(cf["bgr"], prev_b, geo_fe, (cam_ex, cam_ey, eyaw, p_est, r_est), static_obs_tree)
+                # pursuit: 屏蔽追逐目标再扫一次——让"第二个"新障碍（如突降杯）浮出水面
+                vis_det2 = None
+                if pursuit_mode and tracker.initialized:
+                    vis_det2 = detect_novel_3d_obstacle_live(
+                        cf["bgr"], prev_b, geo_fe, (cam_ex, cam_ey, eyaw, p_est, r_est),
+                        static_obs_tree, exclude_xy=(float(tracker.x[0]), float(tracker.x[1])), exclude_r=0.18,
+                    )
+                if os.environ.get("RIG_PURSUIT_DEBUG"):
+                    _v = f"({vis_det['cx']:.2f},{vis_det['cy']:.2f},r{vis_det['rad']:.2f})" if vis_det else "None"
+                    _v2 = f"({vis_det2['cx']:.2f},{vis_det2['cy']:.2f},r{vis_det2['rad']:.2f})" if vis_det2 else "None"
+                    print(f"    [det s{step}] det={_v} det2={_v2} trk_obs={tracker.last_obs_step}")
+                    if vis_det2 is not None:
+                        sp_new = (float(vis_det2["cx"]), float(vis_det2["cy"]), float(vis_det2["rad"] + 0.050))
+                        near_trk = tracker.initialized and math.hypot(sp_new[0] - tracker.x[0], sp_new[1] - tracker.x[1]) < 0.22
+                        stale_trk = tracker.initialized and (step - tracker.last_obs_step > 10)
+                        if stale_trk and not near_trk:
+                            # kidnap/遮挡后杯子可能已换位——远距新检测大概率还是那只杯子，硬重置喂回 tracker
+                            _tracker_reinit(tracker, vis_det2["cx"], vis_det2["cy"], vis_det2["rad"], step)
+                        elif all(math.hypot(sp_new[0] - s0[0], sp_new[1] - s0[1]) > 0.10 for s0 in discovered_static_obs):
+                            discovered_static_obs.append(sp_new)
+                            if attack2_det_step < 0:
+                                attack2_det_step = step
+                                mood = "PURSUIT_DODGE"
+                                mood_text = "New obstacle on chase path! Braking..."
+                                brake_this_step = True
                 if vis_det is not None:
                     # L3：若发现高障碍挡死通往记忆目标的视线，且尚未探头 -> 触发皮亚杰物体恒存 NBV 侧滑探头！
                     if enable_nbv_peek and (not nbv_active) and (not nbv_peeks_done):
@@ -668,10 +762,30 @@ def run_living_brain_episode(
                             path_xy = [(float(p[0]), float(p[1])) for p in cbf_p["path_xy"]]
                             brake_this_step = True
 
-                    # L4（或普通动态障碍跟踪）
+                    # L4（或普通动态障碍跟踪）；pursuit 下远离追逐目标的新检测=另一个物体
                     was_init = tracker.initialized
                     prev_moving = tracker.is_moving
-                    accepted = tracker.update(vis_det["cx"], vis_det["cy"], vis_det["rad"], step)
+                    misdet = (
+                        pursuit_mode and tracker.initialized
+                        and math.hypot(vis_det["cx"] - tracker.x[0], vis_det["cy"] - tracker.x[1]) > 0.24
+                    )
+                    if misdet:
+                        stale_trk = step - tracker.last_obs_step > 10
+                        if stale_trk:
+                            # tracker 失锁后的远距新检测：按杯子重捕获硬重置，而非误记成静态障碍
+                            _tracker_reinit(tracker, vis_det["cx"], vis_det["cy"], vis_det["rad"], step)
+                            accepted = True
+                        else:
+                            sp_new = (float(vis_det["cx"]), float(vis_det["cy"]), float(vis_det["rad"] + 0.050))
+                            if all(math.hypot(sp_new[0] - s0[0], sp_new[1] - s0[1]) > 0.10 for s0 in discovered_static_obs):
+                                discovered_static_obs.append(sp_new)
+                            accepted = False
+                    else:
+                        accepted = tracker.update(vis_det["cx"], vis_det["cy"], vis_det["rad"], step)
+                        if (not accepted) and pursuit_mode and (step - tracker.last_obs_step > 4):
+                            # 14–24cm 死区：关联门拒绝但追踪已旧——杯子移位了，硬重置重捕获
+                            _tracker_reinit(tracker, vis_det["cx"], vis_det["cy"], vis_det["rad"], step)
+                            accepted = True
                     if accepted:
                         if true_moving_now is not None and (not was_init) and attack1_det_step < 0:
                             attack1_det_step = step
@@ -682,7 +796,7 @@ def run_living_brain_episode(
                             mood = "DODGE_DROP"
                             mood_text = "Sudden obstacle! Bayesian detour!"
                         if true_moving_now is not None and tracker.is_moving:
-                            vel_errs_mps.append(math.hypot(tracker.x[2] - moving_obs_cfg["vx"], tracker.x[3] - moving_obs_cfg["vy"]))
+                            vel_errs_mps.append(math.hypot(tracker.x[2] - moving_obs_cfg.get("_vx_now", moving_obs_cfg.get("vx", 0.0)), tracker.x[3] - moving_obs_cfg.get("_vy_now", moving_obs_cfg.get("vy", 0.0))))
                         if true_drop_now is not None and (not tracker.is_moving) and attack2_det_step >= 0:
                             drop_loc_errs_cm.append(math.hypot(tracker.x[0] - true_drop_now["cx"], tracker.x[1] - true_drop_now["cy"]) * 100.0)
                         # 将确认的非移动突发障碍永久记入空间工作记忆（劫持后依然牢记绝不撞！）
@@ -695,8 +809,8 @@ def run_living_brain_episode(
                                     if math.hypot(sp_new[0] - s0[0], sp_new[1] - s0[1]) <= 0.10:
                                         discovered_static_obs[idx_s] = sp_new
 
-                        # 触发重规划
-                        if (not enable_nbv_peek) and ((not was_init) or (tracker.is_moving and not prev_moving) or (tracker.n_obs in (1, 3, 5) and step - last_replan_step >= 2) or (attack2_det_step == step)):
+                        # 触发重规划（pursuit 模式下被追的杯子不进 SDF——它是目标而非障碍）
+                        if (not enable_nbv_peek) and (not pursuit_mode) and ((not was_init) or (tracker.is_moving and not prev_moving) or (tracker.n_obs in (1, 3, 5) and step - last_replan_step >= 2) or (attack2_det_step == step)):
                             pad_r = 0.025 if (enable_velocity_prediction and tracker.is_moving) else 0.016
                             spheres = list(discovered_static_obs)
                             spheres.extend(tracker.get_spheres(5, pad_r) if enable_velocity_prediction else [(float(tracker.x[0]), float(tracker.x[1]), float(tracker.r_est + 0.010))])
@@ -725,10 +839,158 @@ def run_living_brain_episode(
                 est_slip = 0.78 * est_slip + 0.22 * float(np.clip(dx_v / (prev_cmd_vx * dt), 0.50, 1.15))
             slip_eff = max(est_slip, 0.55)
 
+            # --- 5.6) 位姿卡死看门狗：指令位移持续远大于估计位移 → 局部重定位锁死在错误极小值，强制全局搜索 ---
+            cmd_motion_acc += max(prev_cmd_vx, 0.0) * dt
+            est_motion_acc += dx_v
+            if cmd_motion_acc > 0.30:
+                _stuck = est_motion_acc < 0.35 * cmd_motion_acc
+                cmd_motion_acc = est_motion_acc = 0.0
+                if _stuck and enable_global_recovery:
+                    ro_g = relocalize_global_kidnap_zero_prior(reloc, cf["bgr"], p_imu, r_imu)
+                    if ro_g["ok"]:
+                        pose_stuck_events += 1
+                        cam_ex, cam_ey = float(ro_g["x"]), float(ro_g["y"])
+                        eyaw = _wrap_deg(float(ro_g["yaw_deg"]))
+                        lever = REAL_H_CAM_M * math.sin(math.radians(p_est - p_nom))
+                        ex = cam_ex - lever * math.cos(math.radians(eyaw))
+                        ey = cam_ey - lever * math.sin(math.radians(eyaw))
+                        reloc_ok = True
+                        from_global = True
+                        if kidnap_triggered and not kidnap_recovered:
+                            kidnap_recovered = True
+                            kidnap_recov_steps = step - int(kidnap_event["step"])
+                            kidnap_recov_err_cm = round(math.hypot(ro_g["x"] - cx, ro_g["y"] - cy) * 100.0, 2)
+                        mood = "RECOVERED"
+                        mood_text = "Pose-stuck watchdog: global relock!"
+                    else:
+                        reloc_ok = False
+
+            # --- 5.5) v18 追捕模式：移动水杯本身就是目标 ---
+            if pursuit_mode:
+                if tracker.initialized and tracker.n_obs >= 1:
+                    gx = float(tracker.x[0]) + float(tracker.x[2]) * pursuit_lead_s
+                    gy = float(tracker.x[1]) + float(tracker.x[3]) * pursuit_lead_s
+                    ux, uy = gx - ex, gy - ey
+                    un = math.hypot(ux, uy)
+                    stand = float(tracker.r_est) + chase_standoff_m
+                    if un > 1e-6:
+                        gx -= ux / un * stand
+                        gy -= uy / un * stand
+                    # standoff 点若落在已发现障碍内，绕杯子逐步旋转选到净空一侧
+                    if discovered_static_obs:
+                        base_ang = math.atan2(gy - ey, gx - ex)
+                        if un > 1e-6:
+                            bx_, by_ = gx + ux / un * stand, gy + uy / un * stand
+                        else:
+                            bx_, by_ = gx, gy
+                        for k_ in range(10):
+                            off = 0.0 if k_ == 0 else (((k_ + 1) // 2) * 0.42 * (1.0 if k_ % 2 == 0 else -1.0))
+                            cand = (bx_ + math.cos(base_ang + off) * stand, by_ + math.sin(base_ang + off) * stand)
+                            if all(math.hypot(cand[0] - s0[0], cand[1] - s0[1]) > s0[2] + 0.055 for s0 in discovered_static_obs):
+                                gx, gy = cand
+                                break
+                    cx_, cy_ = float(tracker.x[0]), float(tracker.x[1])
+                    d_rc = math.hypot(ex - cx_, ey - cy_)
+                    edge_now = d_rc - float(tracker.r_est) - 0.055
+                    if edge_now < 0.14:
+                        esc_r = float(tracker.r_est) + 0.055 + 0.060
+                        cup_speed = math.hypot(float(tracker.x[2]), float(tracker.x[3]))
+                        if cup_speed > 0.035:
+                            # 骑杯尾：陪护点放在杯速反方向 ±52°，让出弹道——跟跑而不是挡路
+                            v_ang = math.atan2(float(tracker.x[3]), float(tracker.x[2]))
+                            behind = math.atan2(ey - cy_, ex - cx_)
+                            side_s = 1.0 if _wrap_deg(math.degrees(behind - v_ang)) >= 0.0 else -1.0
+                            ang_esc = v_ang + math.pi + side_s * 0.9
+                            gx, gy = cx_ + math.cos(ang_esc) * esc_r, cy_ + math.sin(ang_esc) * esc_r
+                        else:
+                            ux2, uy2 = (ex - cx_) / max(d_rc, 1e-6), (ey - cy_) / max(d_rc, 1e-6)
+                            gx, gy = cx_ + ux2 * esc_r, cy_ + uy2 * esc_r
+                    else:
+                        # 目标点钳在当前杯位气泡外——前瞻拦截点在杯子变向时可能甩进杯体
+                        min_gc = float(tracker.r_est) + 0.085
+                        d_gc = math.hypot(gx - cx_, gy - cy_)
+                        if 1e-6 < d_gc < min_gc:
+                            gx = cx_ + (gx - cx_) / d_gc * min_gc
+                            gy = cy_ + (gy - cy_) / d_gc * min_gc
+                    active_goal_xy = (gx, gy)
+                    target_xy = (cx_, cy_)
+                    if not captured and mood in ("APPROACH", "SWITCH_TARGET"):
+                        mood = "PURSUIT"
+                        mood_text = "Chasing the runaway cup!"
+                elif vis_det is not None:
+                    active_goal_xy = (vis_det["cx"], vis_det["cy"])
+                if true_moving_now is not None:
+                    edge = math.hypot(tx - true_moving_now["cx"], ty - true_moving_now["cy"]) - true_moving_now["rad"] - 0.055
+                    min_chase_edge_m = min(min_chase_edge_m, edge)
+                    if not captured and edge < 0.025:
+                        captured = True
+                        capture_step = step
+                        mood = "ESCORT"
+                        mood_text = "Caught it! Escorting the cup..."
+                    elif captured:
+                        escort_total += 1
+                        if 0.0 < edge < 0.24:
+                            escort_hits += 1
+                # tangent-bug 最小偏转：目标方向穿过障碍视锥时，把目标方向转到障碍切线沿
+                for s_ in discovered_static_obs:
+                    ox, oy = s_[0] - ex, s_[1] - ey
+                    od = math.hypot(ox, oy)
+                    gd = math.hypot(active_goal_xy[0] - ex, active_goal_xy[1] - ey)
+                    if od > 1e-6 and gd > 1e-6 and od < gd + 0.05:
+                        subt = math.asin(min(1.0, (s_[2] + 0.06) / od))
+                        ang_g = math.atan2(active_goal_xy[1] - ey, active_goal_xy[0] - ex)
+                        ang_o = math.atan2(oy, ox)
+                        rel = _wrap_deg(math.degrees(ang_g - ang_o))
+                        if abs(rel) < math.degrees(subt):
+                            side = 1.0 if rel >= 0.0 else -1.0
+                            ang_new = ang_o + math.radians(side * (math.degrees(subt) + 6.0))
+                            active_goal_xy = (ex + math.cos(ang_new) * gd, ey + math.sin(ang_new) * gd)
+                            if mood in ("PURSUIT", "PURSUIT_DODGE", "ESCORT", "APPROACH"):
+                                mood = "PURSUIT_DODGE"
+                                mood_text = "Tangent-deflect around drop..."
+                            break
+
+                # 已压线 → 沿径向逃逸出障碍球（检测中心漂移下用大余量触发；走廊级绕行交给 standoff 旋转）
+                for s_ in discovered_static_obs:
+                    if math.hypot(ex - s_[0], ey - s_[1]) < s_[2] - 0.02:
+                        esc_ang = math.atan2(ey - s_[1], ex - s_[0])
+                        active_goal_xy = (ex + math.cos(esc_ang) * 0.16, ey + math.sin(esc_ang) * 0.16)
+                        if mood in ("PURSUIT", "PURSUIT_DODGE", "ESCORT", "APPROACH"):
+                            mood = "PURSUIT_DODGE"
+                            mood_text = "Escaping obstacle overlap..."
+                        break
+
+                # 停靠判据：杯子飞出桌面(消失) 或 tracker 近期有观测且判静止；
+                # 冻结 tracker 的 is_moving 不衰减，必须同时要求观测新鲜，否则幻影失锁会假停靠
+                _trk_fresh = tracker.initialized and (step - tracker.last_obs_step <= 8)
+                if captured and (true_moving_now is None or (_trk_fresh and not tracker.is_moving)):
+                    cup_rest_steps += 1
+                else:
+                    cup_rest_steps = 0
+                pursuit_end = captured and cup_rest_steps >= 4
+                # pursuit 里只统计非追逐物的碰撞（碰到被追的杯子=捕获成功）
+                d_sta = min(
+                    math.hypot(tx - arena.cup["cx"], ty - arena.cup["cy"]) - arena.cup["rad"],
+                    math.hypot(tx - arena.mouse["cx"], ty - arena.mouse["cy"]) - 0.048,
+                    max(abs(tx - arena.keyboard["cx"]) - 0.08, abs(ty - arena.keyboard["cy"]) - 0.16, 0.0),
+                    max(abs(tx - arena.notebook["cx"]) - 0.08, abs(ty - arena.notebook["cy"]) - 0.07, 0.0),
+                    max(abs(tx - arena.box_right["cx"]) - 0.06, abs(ty - arena.box_right["cy"]) - 0.06, 0.0),
+                ) - 0.055
+                for c_ in active_cyls:
+                    if c_ is true_moving_now:
+                        continue
+                    d_sta = min(d_sta, math.hypot(tx - c_["cx"], ty - c_["cy"]) - c_["rad"] - 0.055)
+                min_static_clear_m = min(min_static_clear_m, d_sta)
+
             # --- 6) 高阶活体行为状态机控制律 ---
             rem_goal = math.hypot(active_goal_xy[0] - ex, active_goal_xy[1] - ey)
             e_along = (active_goal_xy[0] - ex) * math.cos(math.radians(eyaw)) + (active_goal_xy[1] - ey) * math.sin(math.radians(eyaw))
             done_episode = False
+            if pursuit_mode and pursuit_end:
+                mood = "ESCORT_DONE"
+                mood_text = "Cup parked. Mission complete!"
+                raw_cmd = DriveCommand(vx=0.0, vyaw=0.0, head=head_deg)
+                done_episode = True
 
             # (A) L1 悬崖拒跳 + 摇头抗议 + 回头看人
             if cliff_detected:
@@ -808,8 +1070,8 @@ def run_living_brain_episode(
                     path_xy = [(float(p[0]), float(p[1])) for p in cbf_f["path_xy"]]
                     rem_goal = math.hypot(active_goal_xy[0] - ex, active_goal_xy[1] - ey)
 
-                # 检查是否停靠到最终目标
-                if (not nbv_active) and reloc_ok and (
+                # 检查是否停靠到最终目标（pursuit 模式下由捕获/护送判定代替）
+                if (not pursuit_mode) and (not nbv_active) and reloc_ok and (
                     (rem_goal < 0.022)
                     or (rem_goal < 0.040 and e_along < 0.008 and step > 14)
                 ):
@@ -843,7 +1105,7 @@ def run_living_brain_episode(
                 else:
                     lookahead_m = 0.085 if (tracker.initialized or nbv_active) else 0.11
                     wp = active_goal_xy
-                    if rem_goal > 0.12:
+                    if rem_goal > 0.12 and not pursuit_mode:
                         in_i = int(np.argmin([math.hypot(px - ex, py - ey) for px, py in path_xy]))
                         for j in range(in_i, len(path_xy)):
                             if math.hypot(path_xy[j][0] - ex, path_xy[j][1] - ey) >= lookahead_m:
@@ -855,18 +1117,27 @@ def run_living_brain_episode(
                     vyaw_lim = float(np.clip(cmd_v3.vyaw, -46.0, 46.0))
                     vx_cap = 56.0
                     head_deg = float(np.clip(cmd_v3.head, -28.0, 28.0))
+                    # 追捕视线保持：相机始终锁住被追的杯子（失锁 >15 步则扫视寻回），否则杯子出 FOV 即永久失锁
+                    if pursuit_mode and tracker.initialized:
+                        if step - tracker.last_obs_step > 15:
+                            head_deg = 26.0 * (1.0 if ((step // 5) % 2) == 0 else -1.0)
+                        else:
+                            bear_cup = math.degrees(math.atan2(tracker.x[1] - ey, tracker.x[0] - ex))
+                            head_deg = float(np.clip(_wrap_deg(bear_cup - eyaw), -28.0, 28.0))
 
-                    # 末端静态安全护盾
-                    if (not nbv_active) and rem_goal < 0.12:
+                    # 末端静态安全护盾（pursuit 下全距生效；检测球仅用于目标层规避，瞬时制动仍按基准 SDF，
+                    # 因为检测中心可有 ~10cm 漂移，幻影球会让护盾误刹成死锁）
+                    if (not nbv_active) and (pursuit_mode or rem_goal < 0.12):
+                        sdf_sh = sdf_base
                         with torch.no_grad():
-                            dev_s = next(sdf_base.parameters()).device
+                            dev_s = next(sdf_sh.parameters()).device if hasattr(sdf_sh, "parameters") else next(sdf_base.parameters()).device
                             p_c = torch.tensor([[ex, ey]], dtype=torch.float32, device=dev_s)
                             p_f = torch.tensor([[ex + 0.05 * math.cos(math.radians(eyaw)), ey + 0.05 * math.sin(math.radians(eyaw))]], dtype=torch.float32, device=dev_s)
-                            if float(sdf_base(p_f)[0].item()) < 0.072 and float(sdf_base(p_f)[0].item()) < float(sdf_base(p_c)[0].item()):
+                            if float(sdf_sh(p_f)[0].item()) < 0.072 and float(sdf_sh(p_f)[0].item()) < float(sdf_sh(p_c)[0].item()):
                                 vx_cap = 0.0
 
-                    # 预测性速度障碍管护盾（L4 移动水杯）
-                    if tracker.initialized and tracker.is_moving and (step - tracker.last_obs_step <= 4):
+                    # 预测性速度障碍管护盾（L4 移动水杯；pursuit 下被追的是目标，不禁速）
+                    if (not pursuit_mode) and tracker.initialized and tracker.is_moving and (step - tracker.last_obs_step <= 4):
                         if enable_velocity_prediction:
                             tube = tracker.get_spheres(5, 0.025)
                             fwd_x = ex + 0.12 * math.cos(math.radians(eyaw))
@@ -879,7 +1150,14 @@ def run_living_brain_episode(
                             if d0 < 0.035:
                                 vx_cap = min(vx_cap, 18.0)
 
-                    if rem_goal < 0.08 and e_along < 0.0:
+                    # 追捕目标失联：持续同向自旋寻回杯子（±交替只是原地摆动，永远转不到 FOV 外的杯子）。
+                    # 按 last_move_step（观测累计位移>3cm 才算）判失联，抗幻影检测对 last_obs 的刷新；
+                    # 阈值 14 > cup_rest 的 4 步窗口，保证"已捕获+真停靠"先走 ESCORT_DONE
+                    if pursuit_mode and tracker.initialized and (step - tracker.last_move_step > 14):
+                        raw_cmd = DriveCommand(vx=0.0, vyaw=46.0, head=head_deg)
+                        mood = "PURSUIT_SCAN"
+                        mood_text = "Lost the cup! Spin-scanning..."
+                    elif rem_goal < 0.08 and e_along < 0.0:
                         raw_cmd = DriveCommand(vx=float(np.clip((e_along / (0.34 * dt * slip_eff)) * 85.0, -18.0, 0.0)), vyaw=0.0, head=head_deg)
                     elif rem_goal < 0.16:
                         max_vx = min(vx_cap, (max(e_along, 0.0) / (0.34 * dt * slip_eff)) * 88.0)
@@ -923,6 +1201,17 @@ def run_living_brain_episode(
             vx_mps = float(np.clip(safe.vx / 100.0 * 0.34, -0.08, 0.22))
             prev_cmd_vx = vx_mps
             vyaw_dps = float(np.clip(safe.vyaw / 100.0 * 75.0, -60.0, 60.0))
+            if os.environ.get("RIG_PURSUIT_DEBUG") and pursuit_mode and step >= 10:
+                _tk = f"({tracker.x[0]:.2f},{tracker.x[1]:.2f},v={math.hypot(tracker.x[2], tracker.x[3]):.2f})" if tracker.initialized else "noinit"
+                _tc = f"({true_moving_now['cx']:.2f},{true_moving_now['cy']:.2f})" if true_moving_now is not None else "none"
+                print(f"  [tk s{step}] tracker={_tk} truecup={_tc} est=({ex:.2f},{ey:.2f}) true=({tx:.2f},{ty:.2f})")
+            if os.environ.get("RIG_PURSUIT_DEBUG2") and pursuit_mode and step >= 10:
+                _net = f"({cmd_v3.vx:.1f},{cmd_v3.vyaw:.1f})" if "cmd_v3" in dir() else "n/a"
+                _cap = f"{vx_cap:.0f}" if "vx_cap" in dir() else "n/a"
+                print(f"  [dbg s{step}] true=({tx:.2f},{ty:.2f}) est=({ex:.2f},{ey:.2f}) goal=({active_goal_xy[0]:.2f},{active_goal_xy[1]:.2f}) "
+                      f"rem={rem_goal:.3f} eA={e_along:.3f} raw=({raw_cmd.vx:.1f},{raw_cmd.vyaw:.1f}) safe_vx={safe.vx:.1f} "
+                      f"net={_net} cap={_cap} reloc={int(reloc_ok)} "
+                      f"obs={[(round(o[0],2),round(o[1],2),round(o[2],2)) for o in discovered_static_obs]} mood={mood}")
             tyaw = _wrap_deg(tyaw + (vyaw_dps + yaw_drift_dps) * dt)
             tx += (vx_mps * slip_factor) * dt * math.cos(math.radians(tyaw))
             ty += (vx_mps * slip_factor) * dt * math.sin(math.radians(tyaw))
@@ -954,6 +1243,12 @@ def run_living_brain_episode(
         "attack3_kidnap_recovered": kidnap_recovered,
         "attack3_kidnap_recov_steps": kidnap_recov_steps,
         "attack3_kidnap_recov_err_cm": kidnap_recov_err_cm,
+        "pursuit_mode": pursuit_mode,
+        "pursuit_captured": captured,
+        "capture_step": capture_step,
+        "escort_band_ratio": round(escort_hits / max(escort_total, 1), 3),
+        "min_chase_edge_cm": round(min_chase_edge_m * 100.0, 2) if min_chase_edge_m < 999.0 else None,
+        "min_static_clear_cm": round(min_static_clear_m * 100.0, 2) if min_static_clear_m < 999.0 else None,
         "mean_moving_vel_err_mps": round(float(np.mean(vel_errs_mps)), 3) if vel_errs_mps else -1.0,
         "mean_drop_loc_err_cm": round(float(np.mean(drop_loc_errs_cm)), 2) if drop_loc_errs_cm else -1.0,
         "traj_true": [(round(a, 4), round(b, 4), round(c, 2)) for a, b, c in traj_true],

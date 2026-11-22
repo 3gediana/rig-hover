@@ -203,6 +203,8 @@ def detect_novel_3d_obstacle_live(
     geo_fe: HoverGeoNet240Frontend,
     cam_pose: tuple[float, float, float, float, float],
     static_obs_tree: cKDTree,
+    exclude_xy: tuple[float, float] | None = None,
+    exclude_r: float = 0.16,
 ) -> dict[str, Any] | None:
     """100% 纯视觉 + 自研 HoverGeoNet-v4 实时检测画面中任意未知静止/移动 3D 障碍（零真值偷看！）。
     同时返回世界系估计中心 `(cx, cy, r)` 与 2D 像素包围框 `bbox_uv`（供第一视角视频实时画框！）。"""
@@ -227,6 +229,8 @@ def detect_novel_3d_obstacle_live(
     cand_xy = pw[cand, :2]
     d_stat, _ = static_obs_tree.query(cand_xy, k=1)
     novel_flat = d_stat > 0.085
+    if exclude_xy is not None:
+        novel_flat &= np.hypot(cand_xy[:, 0] - exclude_xy[0], cand_xy[:, 1] - exclude_xy[1]) > exclude_r
     if int(novel_flat.sum()) < 50:
         return None
 
