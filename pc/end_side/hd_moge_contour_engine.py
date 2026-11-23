@@ -298,16 +298,38 @@ class UltraDenseSurfelCloud:
     def __init__(self, vox_size_m: float = 0.0020) -> None:
         self.vox_size = float(vox_size_m)
         self.aligner = KissIcpStaticAligner(init_sigma_m=0.045, min_sigma_m=0.010, max_sigma_m=0.10, max_iters=6)
-        self.pos = np.zeros((0, 3), dtype=np.float32)
-        self.nrm = np.zeros((0, 3), dtype=np.float32)
-        self.crease = np.zeros((0,), dtype=np.float32)
-        self.wt = np.zeros((0,), dtype=np.float32)
+        # 原子视图：四个数组绑成一个元组，整代替换 = 单次 STORE_ATTR。
+        # 后台融合线程重写 _v 时，主线程读者拿到的永远是完整一致的某一代。
+        self._v: tuple = (
+            np.zeros((0, 3), dtype=np.float32),
+            np.zeros((0, 3), dtype=np.float32),
+            np.zeros((0,), dtype=np.float32),
+            np.zeros((0,), dtype=np.float32),
+        )
         self.frames_fused = 0
         # 排序键缓存：_pack_keys+argsort(全图) 每次 fuse 都重算是主开销；
         # 仅在追加新点后失效，原地加权更新容忍体素边界轻微漂移
         self._sorted_keys: np.ndarray | None = None
         self._sorted_order: np.ndarray | None = None
         self._sorted_n: int = -1
+
+    pos = property(lambda s: s._v[0])
+    nrm = property(lambda s: s._v[1])
+    crease = property(lambda s: s._v[2])
+    wt = property(lambda s: s._v[3])
+
+    def get_view(self) -> tuple:
+        """一致快照：单次引用读，绝不出现 pos@新一代+wt@旧一代的撕裂。"""
+        return self._v
+
+    def _set_v(self, pos=None, nrm=None, crease=None, wt=None) -> None:
+        p, n, c, w = self._v
+        self._v = (
+            p if pos is None else pos,
+            n if nrm is None else nrm,
+            c if crease is None else crease,
+            w if wt is None else wt,
+        )
 
     def _pack_keys(self, pts: np.ndarray) -> np.ndarray:
         inv = 1.0 / self.vox_size
@@ -345,10 +367,7 @@ class UltraDenseSurfelCloud:
         n_w = np.ones(len(n_pts), dtype=np.float32)
 
         if len(self.pos) == 0:
-            self.pos = n_pts
-            self.nrm = n_nrm
-            self.crease = n_cr
-            self.wt = n_w
+            self._set_v(pos=n_pts, nrm=n_nrm, crease=n_cr, wt=n_w)
             self._sorted_keys = None
         else:
             if self._sorted_keys is None or self._sorted_n != len(self.pos):
@@ -376,10 +395,13 @@ class UltraDenseSurfelCloud:
                 self.wt[oi] = np.minimum(wp + wn, 12.0)
 
             if np.any(~matched):
-                self.pos = np.concatenate([self.pos, n_pts[~matched]], axis=0)
-                self.nrm = np.concatenate([self.nrm, n_nrm[~matched]], axis=0)
-                self.crease = np.concatenate([self.crease, n_cr[~matched]], axis=0)
-                self.wt = np.concatenate([self.wt, n_w[~matched]], axis=0)
+                # 四个新数组先全算完，再一次原子发表——读者无撕裂窗口
+                self._set_v(
+                    pos=np.concatenate([self.pos, n_pts[~matched]], axis=0),
+                    nrm=np.concatenate([self.nrm, n_nrm[~matched]], axis=0),
+                    crease=np.concatenate([self.crease, n_cr[~matched]], axis=0),
+                    wt=np.concatenate([self.wt, n_w[~matched]], axis=0),
+                )
                 self._sorted_keys = None  # 追加使排序键/索引映射失效
 
         self.frames_fused += 1

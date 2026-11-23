@@ -124,14 +124,20 @@ def _cliff_guard(
 class UnifiedRobotBrain:
     """100% 自研模型驱动的 RIG-Hover PC 端统一具身大脑（Scenario 1 + Scenario 2）。"""
 
-    def __init__(self, use_lite_geonet: bool = False, enable_knock: bool = True, static_decim: int = 3) -> None:
+    def __init__(self, use_lite_geonet: bool = False, enable_knock: bool = True, static_decim: int = 3,
+                 reloc_decim: int = 2) -> None:
         ckpt = MBV3_CKPT if (use_lite_geonet or not VIT_CKPT.exists()) else VIT_CKPT
         self.geonet_ckpt = ckpt
         self.geo_fe = HoverGeoNet240Frontend(ckpt, use_fp16=True, h_cam_m=REAL_H_CAM_M, fov_h_deg=REAL_FOV_H_DEG)
-        self.slam = HdDynamicContourSlamEngine(vox_size_m=0.0020, h_cam_m=REAL_H_CAM_M, obs_radius_m=0.095, static_decim=static_decim)
+        self.slam = HdDynamicContourSlamEngine(vox_size_m=0.0020, h_cam_m=REAL_H_CAM_M, obs_radius_m=0.095,
+                                               static_decim=static_decim, async_static=True)
         self.policy_s1: EndSidePolicyNet = load_rl_policy(POLICY_S1_CKPT)
         self.policy_nav: EndSidePolicyNet = load_rl_policy(POLICY_NAV_CKPT)
         self.shield = EndSideSafetyShield()
+        self.reloc_decim = max(1, int(reloc_decim))
+        # 感知线程池：yunet/双敲只依赖原始帧，全程挂在 GeoNet+SLAM 底下并行
+        from concurrent.futures import ThreadPoolExecutor
+        self._pool = ThreadPoolExecutor(max_workers=2, thread_name_prefix="percep")
 
         self.yunet = (
             cv2.FaceDetectorYN.create(str(YUNET_ONNX), "", (240, 240), score_threshold=0.45)
@@ -141,7 +147,9 @@ class UnifiedRobotBrain:
 
         self.knock_det: DoubleKnockDetector | None = None
         if enable_knock and KNOCK_DEPLOY_CKPT.exists():
-            dev = "cuda" if torch.cuda.is_available() else "cpu"
+            # 双敲网络极小 (hidden=64,size=96)：固定 CPU，把 GPU 完全让给 GeoNet，
+            # 且能真正与 GeoNet+SLAM 线程级并行（GPU 版只会排队等内核）。
+            dev = "cpu"
             kb = torch.load(KNOCK_DEPLOY_CKPT, map_location=dev, weights_only=False)
             km = DoubleKnockNet(in_ch=2, kin_dim=8, hidden_dim=64, num_classes=4).to(dev).eval()
             km.load_state_dict(kb["state_dict"])
@@ -200,6 +208,10 @@ class UnifiedRobotBrain:
         self.dwell_count = 0
         return {"target_xy": self.target_xy, "astar_accepted": bool(plan["accepted"]), "path_pts": len(self.path_xy)}
 
+    def _knock_step_full(self, bgr240: np.ndarray, timestamp_s: float | None) -> dict[str, Any]:
+        g240 = cv2.cvtColor(bgr240, cv2.COLOR_BGR2GRAY)
+        return self.knock_det.step(g240, wrist_box=None, scenario_state=None, timestamp=timestamp_s)
+
     def step(
         self,
         bgr: np.ndarray,
@@ -215,6 +227,15 @@ class UnifiedRobotBrain:
         _t = time.perf_counter
         _st: dict[str, float] = {}
         _t0 = _t()
+
+        # 0) 并行感知：yunet/双敲只依赖原始帧——主链跑 GeoNet+SLAM 期间它们在 CPU 线程上完成
+        fut_face = None
+        fut_knock = None
+        if scenario == 1:
+            if self.yunet is not None:
+                fut_face = self._pool.submit(self.yunet.detect, bgr240)
+            if self.knock_det is not None:
+                fut_knock = self._pool.submit(self._knock_step_full, bgr240, timestamp_s)
 
         # 1) 自研 HoverGeoNet-ViT-240 推理 + 2mm Dynablox 双层建图
         pred = self.geo_fe.infer_frame(bgr240, self.prev_bgr, pitch_deg=tel.pitch, roll_deg=tel.roll, auto_level=auto_level)
@@ -252,7 +273,8 @@ class UnifiedRobotBrain:
         # 2) 若处于导航巡航中 (MODE_APPROACH)，运行 2D-3D PnP + KISS-ICP 无里程计视觉重定位
         reloc_info: dict[str, Any] = {"source": "map_build", "ransac_inliers": 0}
         _t0 = _t()
-        if self.mode == MODE_APPROACH and self.relocalizer is not None and self.frames_seen >= 3:
+        if self.mode == MODE_APPROACH and self.relocalizer is not None and self.frames_seen >= 3 \
+                and self.frames_seen % self.reloc_decim == 0:
             ro = self.relocalizer.relocalize(
                 bgr240, pred["pts_cam"], pred["nrm_cam"], pred["valid_grid"],
                 imu_pitch_deg=tel.pitch, imu_roll_deg=tel.roll, prev_est_pose=self.est_pose,
@@ -266,13 +288,13 @@ class UnifiedRobotBrain:
             reloc_info = {"source": ro["source"], "ransac_inliers": ro["ransac_inliers"], "icp_res_mm": ro["icp_median_res_mm"]}
         _st["reloc"] = (_t() - _t0) * 1e3
 
-        # 3) 场景一感知：YuNet 人脸 + 自研 DoubleKnockNet 双敲触发 -> 3D 升维落针
+        # 3) 收集并行感知结果（此时它们早已在 GeoNet+SLAM 底下跑完，等待≈0）
         face_dets: list[dict[str, float]] = []
         knock_out: dict[str, Any] = {"fired": 0, "p_double": 0.0}
-        if scenario == 1:
+        if fut_face is not None or fut_knock is not None:
             _t0 = _t()
-            if self.yunet is not None:
-                _, faces = self.yunet.detect(bgr240)
+            if fut_face is not None:
+                _, faces = fut_face.result()
                 if faces is not None and len(faces) > 0:
                     fx, fy, fw, fh = faces[0][:4]
                     face_dets.append({"cx": float((fx + 0.5 * fw) / 240.0), "cy": float((fy + 0.5 * fh) / 240.0), "w": float(fw / 240.0), "h": float(fh / 240.0), "score": float(faces[0][-1])})
@@ -280,9 +302,8 @@ class UnifiedRobotBrain:
                         self.mode = MODE_GAZE_FACE
             _st["yunet"] = (_t() - _t0) * 1e3
             _t0 = _t()
-            if self.knock_det is not None:
-                g240 = cv2.cvtColor(bgr240, cv2.COLOR_BGR2GRAY)
-                knock_out = self.knock_det.step(g240, wrist_box=None, scenario_state=None, timestamp=timestamp_s)
+            if fut_knock is not None:
+                knock_out = fut_knock.result()
                 if knock_out.get("fired", 0):
                     # 将当前动态前景质心（或桌面中前区）升维为 3D 敲击点！
                     if len(self.slam.dyn_pts) >= 20:
@@ -401,12 +422,13 @@ class _LiveFrameFetcher:
     /status 在同线程每 K 帧捎带一次（遥测慢变，无需每帧往返）。
     """
 
-    def __init__(self, base_url: str, status_every: int = 5) -> None:
+    def __init__(self, base_url: str, status_every: int = 5, jpg_q: int = 60) -> None:
         import threading
-        import urllib.request
-        self._urlopen = urllib.request.urlopen
+        import requests
+        self._sess = requests.Session()  # keep-alive：urllib 每次新建 TCP=握手+固件 socket 磨损
         self.base = base_url.rstrip("/")
         self.status_every = max(1, int(status_every))
+        self.jpg_q = int(jpg_q)
         self._lock = threading.Lock()
         self._latest: tuple[np.ndarray, RobotTelemetry, int] | None = None
         self._consumed = -1
@@ -417,17 +439,17 @@ class _LiveFrameFetcher:
     def _loop(self) -> None:
         tel = RobotTelemetry()
         i = 0
+        cap_url = f"{self.base}/capture?q={self.jpg_q}"
         while not self._stop:
             try:
                 if i % self.status_every == 0:
                     try:
-                        with self._urlopen(f"{self.base}/status", timeout=1.5) as r:
-                            tel = RobotTelemetry.from_status_json(json.loads(r.read().decode("utf-8", errors="ignore")))
+                        r = self._sess.get(f"{self.base}/status", timeout=1.5)
+                        tel = RobotTelemetry.from_status_json(json.loads(r.content.decode("utf-8", errors="ignore")))
                     except Exception:
                         pass
-                with self._urlopen(f"{self.base}/capture", timeout=2.0) as r:
-                    arr = np.frombuffer(r.read(), dtype=np.uint8)
-                bgr = cv2.imdecode(arr, cv2.IMREAD_COLOR)
+                r = self._sess.get(cap_url, timeout=2.0)
+                bgr = cv2.imdecode(np.frombuffer(r.content, dtype=np.uint8), cv2.IMREAD_COLOR)
                 if bgr is not None:
                     with self._lock:
                         self._latest = (bgr, tel, i)
@@ -502,9 +524,14 @@ def main() -> None:
     ap.add_argument("--emote", action="store_true", help="Live mode only: mirror brain state onto the robot LCD via POST /emote")
     ap.add_argument("--static-decim", type=int, default=3,
                     help="静态建图降频：每 N 帧才做 2mm 融合/鬼影雕刻（实测该块占帧耗 ~85%）；1=不降频保最高图质（离线跑图用）")
+    ap.add_argument("--reloc-decim", type=int, default=2,
+                    help="视觉重定位降频：APPROACH 时每 N 帧跑一次（~50ms/次）；est_pose 0.75 平滑兜底间隔帧")
+    ap.add_argument("--jpg-q", type=int, default=60,
+                    help="Live 模式 /capture?q= 的 JPEG 质量：固件实测编码耗时随质量缩放（80→60 省 ~5ms 编码 + ~3ms 传输）")
     args = ap.parse_args()
 
-    brain = UnifiedRobotBrain(use_lite_geonet=args.lite, enable_knock=(args.scenario == 1), static_decim=args.static_decim)
+    brain = UnifiedRobotBrain(use_lite_geonet=args.lite, enable_knock=(args.scenario == 1),
+                              static_decim=args.static_decim, reloc_decim=args.reloc_decim)
     print(f"UnifiedRobotBrain READY | geonet={brain.geonet_ckpt.name} | scenario={args.scenario} | source={args.source}", flush=True)
 
     # 数据源迭代器
@@ -562,7 +589,7 @@ def main() -> None:
         from emote_bridge import EmoteBridge
         bridge = EmoteBridge(args.base, verbose=True)
     prev_mode = ""
-    fetcher = _LiveFrameFetcher(args.base) if args.source == "live" else None
+    fetcher = _LiveFrameFetcher(args.base, jpg_q=args.jpg_q) if args.source == "live" else None
     cmd_sender = _AsyncCmdSender() if (args.source == "live" and args.send_cmd) else None
     frame_ids = range(args.max_frames) if args.max_frames is not None else itertools.count()
     for idx in frame_ids:

@@ -252,6 +252,7 @@ class HdDynamicContourSlamEngine:
         h_cam_m: float = REAL_H_CAM_M,
         obs_radius_m: float = 0.095,
         static_decim: int = 1,
+        async_static: bool = False,
     ) -> None:
         self.vox_size = float(vox_size_m)
         self.confirm_wt = float(confirm_wt)
@@ -261,6 +262,14 @@ class HdDynamicContourSlamEngine:
         # 动态分离与 ICP 对齐仍每帧全速跑。1 = 不降频（保持原行为）。
         self.static_decim = max(1, int(static_decim))
         self._pf_idx = 0
+        # 静态建图工人线程：fuse/carve 彻底离开控制关键路径（消灭每 N 帧 ~200ms 尖峰）。
+        # busy 时丢帧不排队（"最新优先"语义）；点云经 _v 原子视图发表，读者无撕裂。
+        # 默认关：测试/离线回放要确定性语义（异步会让 ever-free 确认不足、动态路由失真）。
+        self._static_pool = None
+        self._static_fut = None
+        if async_static:
+            from concurrent.futures import ThreadPoolExecutor
+            self._static_pool = ThreadPoolExecutor(1, thread_name_prefix="staticmap")
 
         self.static_cloud = UltraDenseSurfelCloud(vox_size_m=self.vox_size)
         self.ever_free = EverFreeVoxelGrid(res_m=ever_free_res_m, confirm_hits=3)
@@ -301,10 +310,8 @@ class HdDynamicContourSlamEngine:
         drop = np.zeros(len(self.static_cloud.pos), dtype=bool)
         drop[tent_idx[in_free]] = True
         keep = ~drop
-        self.static_cloud.pos = self.static_cloud.pos[keep]
-        self.static_cloud.nrm = self.static_cloud.nrm[keep]
-        self.static_cloud.crease = self.static_cloud.crease[keep]
-        self.static_cloud.wt = self.static_cloud.wt[keep]
+        p_, n_, c_, w_ = self.static_cloud.get_view()
+        self.static_cloud._set_v(pos=p_[keep], nrm=n_[keep], crease=c_[keep], wt=w_[keep])
         self.static_cloud._sorted_keys = None  # 掩码重排使缓存失效
         return int(np.sum(drop))
 
@@ -347,9 +354,10 @@ class HdDynamicContourSlamEngine:
         rot_corr = 0.0
         trans_corr_mm = 0.0
         _t0 = _t()
-        if align and (not gate.is_disturbed) and len(self.static_cloud.pos) > 5000 and len(pts_w) > 400:
+        mp_pos, mp_nrm = self.static_cloud.get_view()[:2]
+        if align and (not gate.is_disturbed) and len(mp_pos) > 5000 and len(pts_w) > 400:
             res_icp = self.static_cloud.aligner.align_to_static(
-                pts_w, nrm_w, self.static_cloud.pos, self.static_cloud.nrm, cam_pos
+                pts_w, nrm_w, mp_pos, mp_nrm, cam_pos
             )
             if res_icp["converged"] and res_icp["inlier_ratio"] > 0.42:
                 dR, dt = res_icp["dR"], res_icp["dt"]
@@ -440,28 +448,27 @@ class HdDynamicContourSlamEngine:
         fuse_info = {"total_pts": int(len(self.static_cloud.pos)), "rot_corr_deg": rot_corr, "trans_corr_mm": trans_corr_mm}
         carved = 0
         self._pf_idx += 1
+        # 收回上一个已完成的静态任务结果（结果只是日志数据，晚到一帧无碍）
+        if self._static_fut is not None and self._static_fut.done():
+            try:
+                fuse_info, carved = self._static_fut.result()
+            except Exception as exc:
+                fuse_info["static_err"] = str(exc)
+            self._static_fut = None
         run_static = (self._pf_idx % self.static_decim == 0)
         if not gate.is_disturbed and len(st_pts) > 200 and run_static:
-            # 1) 已在前置步骤完成 KISS-ICP 配准，此处直接执行 2mm 静态面元融合 (align=False 避免二次重复配准)
-            fuse_info = self.static_cloud.fuse_frame(st_pts, st_nrms, st_cr, cam_pos=cam_pos, align=False)
-            fuse_info["rot_corr_deg"] = round(rot_corr, 3)
-            fuse_info["trans_corr_mm"] = round(trans_corr_mm, 2)
-            _st["fuse"] = (_t() - _t0) * 1e3
-            _t0 = _t()
-            # 2) 用干净静态视线更新 Occupied-Protected Ever-Free（注意步长与采样率）
-            ray_stride = max(4, len(st_pts) // 2400)
-            self.ever_free.integrate_clean_rays(cam_pos, st_pts, safety_margin_m=0.045, stride=ray_stride, n_samples=48)
-            _st["ef_rays"] = (_t() - _t0) * 1e3
-            _t0 = _t()
-            # 3) 保护所有已稳定观测 (>=1.5帧) 的静态物体体素（先于 confirm_hits=3 激活，彻底杜绝静态键盘/显示器被误刻！）
-            conf_mask = self.static_cloud.wt >= 1.5
-            if np.any(conf_mask):
-                self.ever_free.protect_static_voxels(self.static_cloud.pos[conf_mask])
-            _st["ef_protect"] = (_t() - _t0) * 1e3
-            _t0 = _t()
-            # 4) 立即雕刻早先帧可能残留的暂态鬼影
-            carved = self._carve_tentative_ghosts()
-            _st["carve"] = (_t() - _t0) * 1e3
+            if self._static_pool is None:
+                _ts = _t()
+                fuse_info, carved = self._static_task(st_pts, st_nrms, st_cr, cam_pos.copy(), rot_corr, trans_corr_mm)
+                _st["static_sync"] = (_t() - _ts) * 1e3
+            elif self._static_fut is None:
+                # 静态块整体进工人线程：控制关键路径零尖峰；busy 则丢帧（地图下轮补）
+                self._static_fut = self._static_pool.submit(
+                    self._static_task, st_pts, st_nrms, st_cr, cam_pos.copy(), rot_corr, trans_corr_mm
+                )
+                _st["static_submit"] = (_t() - _t0) * 1e3
+            else:
+                fuse_info["static_async"] = "busy_skip"
 
         rec = {
             "disturbed": bool(gate.is_disturbed),
@@ -477,20 +484,47 @@ class HdDynamicContourSlamEngine:
         self.stats_log.append(rec)
         return rec
 
+    def _static_task(
+        self,
+        st_pts: np.ndarray,
+        st_nrms: np.ndarray,
+        st_cr: np.ndarray,
+        cam_pos: np.ndarray,
+        rot_corr: float,
+        trans_corr_mm: float,
+    ) -> tuple[dict, int]:
+        """工人线程执行的静态建图块：融合→ever-free 视线→体素保护→鬼影雕刻。
+
+        安全论证：输入 st_* 是布尔索引产生的新数组（主线程不再引用）；
+        点云写入走 _v 原子发表；主线程对它的读（ICP/重定位/展示）永远拿一致整代；
+        原位加权写是 x86 对齐 float32 原子写，读者最坏拿到"半新"值，无崩溃路径。
+        """
+        fuse_info = self.static_cloud.fuse_frame(st_pts, st_nrms, st_cr, cam_pos=cam_pos, align=False)
+        fuse_info["rot_corr_deg"] = round(rot_corr, 3)
+        fuse_info["trans_corr_mm"] = round(trans_corr_mm, 2)
+        ray_stride = max(4, len(st_pts) // 2400)
+        self.ever_free.integrate_clean_rays(cam_pos, st_pts, safety_margin_m=0.045, stride=ray_stride, n_samples=48)
+        conf_mask = self.static_cloud.wt >= 1.5
+        if np.any(conf_mask):
+            self.ever_free.protect_static_voxels(self.static_cloud.pos[conf_mask])
+        carved = self._carve_tentative_ghosts()
+        return fuse_info, carved
+
     def get_confirmed_static_cloud(self, min_wt: float | None = None) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
         """取出已确认（或全部）超密静态点云。"""
-        if len(self.static_cloud.pos) == 0:
+        _p, _n, _c, _w = self.static_cloud.get_view()  # 原子视图：工人线程融合中也不撕裂
+        if len(_p) == 0:
             return (
                 np.zeros((0, 3), dtype=np.float32),
                 np.zeros((0, 3), dtype=np.float32),
                 np.zeros((0,), dtype=np.float32),
             )
         if min_wt is None or self.static_cloud.frames_fused <= 2:
-            return self.static_cloud.pos, self.static_cloud.nrm, self.static_cloud.crease
-        m = self.static_cloud.wt >= float(min_wt)
+            return _p, _n, _c
+        m = _w >= float(min_wt)
         if int(np.sum(m)) < 500:
-            return self.static_cloud.pos, self.static_cloud.nrm, self.static_cloud.crease
-        return self.static_cloud.pos[m], self.static_cloud.nrm[m], self.static_cloud.crease[m]
+            return _p, _n, _c
+        return _p[m], _n[m], _c[m]
 
     def rebuild_traversability_grid(
         self,
