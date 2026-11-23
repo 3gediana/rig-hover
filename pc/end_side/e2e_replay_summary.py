@@ -14,17 +14,23 @@ REPO = Path(__file__).resolve().parent.parent.parent
 def summarize(log_path: Path, ann_path: Path, fps: float = 15.0, pad_s: float = 0.6) -> dict:
     recs = [json.loads(l) for l in log_path.read_text(encoding="utf-8", errors="replace").splitlines() if l.strip().startswith("{")]
     ann = json.loads(ann_path.read_text(encoding="utf-8"))
-    gt = [(float(a["start_s"]), float(a["end_s"])) for a in ann.get("annotations", []) if a.get("label") == "knock"]
+    all_segs = ann.get("annotations", [])
+    gt = [(float(a["start_s"]), float(a["end_s"])) for a in all_segs if a.get("label") == "knock"]
+    other = [(a.get("label", "?"), float(a["start_s"]), float(a["end_s"])) for a in all_segs if a.get("label") != "knock"]
 
     fires = [(r["frame"], r["frame"] / fps) for r in recs if r.get("knock", {}).get("fired")]
-    hits, fp, matched = [], [], set()
+    hits, fp, amb, matched = [], [], [], set()
     for fr, t in fires:
         hit = next((i for i, (s0, s1) in enumerate(gt) if s0 - pad_s <= t <= s1 + pad_s), None)
-        if hit is None:
-            fp.append({"frame": fr, "t_s": round(t, 2)})
-        else:
+        if hit is not None:
             matched.add(hit)
             hits.append({"frame": fr, "t_s": round(t, 2), "gt_idx": hit})
+            continue
+        seg = next((s for s in other if s[1] - pad_s <= t <= s[2] + pad_s), None)
+        if seg is not None:
+            amb.append({"frame": fr, "t_s": round(t, 2), "inside_label": seg[0]})
+        else:
+            fp.append({"frame": fr, "t_s": round(t, 2)})
     misses = [{"gt_idx": i, "gt_s": list(g)} for i, g in enumerate(gt) if i not in matched]
 
     modes: dict[str, int] = {}
@@ -49,7 +55,7 @@ def summarize(log_path: Path, ann_path: Path, fps: float = 15.0, pad_s: float = 
     return {
         "log": str(log_path), "n_frames_logged": len(recs), "fps_assumed": fps,
         "gt_knocks": len(gt), "fires": len(fires),
-        "hits": hits, "false_positives": fp, "misses": misses,
+        "hits": hits, "false_positives": fp, "ambiguous_in_other_labels": amb, "misses": misses,
         "mode_frame_counts": modes, "mode_transitions": transitions,
         "geonet_ms": {"median": round(st.median(geoms), 2), "p90": round(st.quantiles(geoms, n=10)[8], 2)} if geoms else None,
         "reloc_inliers_median": round(st.median(inls), 1) if inls else None,

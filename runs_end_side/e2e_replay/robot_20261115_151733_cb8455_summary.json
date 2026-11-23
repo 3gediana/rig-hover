@@ -22,6 +22,7 @@
     }
   ],
   "false_positives": [],
+  "ambiguous_in_other_labels": [],
   "misses": [
     {
       "gt_idx": 0,
