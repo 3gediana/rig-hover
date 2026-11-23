@@ -251,10 +251,16 @@ class HdDynamicContourSlamEngine:
         confirm_wt: float = 2.6,
         h_cam_m: float = REAL_H_CAM_M,
         obs_radius_m: float = 0.095,
+        static_decim: int = 1,
     ) -> None:
         self.vox_size = float(vox_size_m)
         self.confirm_wt = float(confirm_wt)
         self.h_cam_m = float(h_cam_m)
+        # 静态融合降频：fuse/ef_rays/ef_protect/carve 是 O(图尺寸) 的重活
+        # （实测占单帧 ~85%），静态世界低速变化容忍每 N 帧更新一次；
+        # 动态分离与 ICP 对齐仍每帧全速跑。1 = 不降频（保持原行为）。
+        self.static_decim = max(1, int(static_decim))
+        self._pf_idx = 0
 
         self.static_cloud = UltraDenseSurfelCloud(vox_size_m=self.vox_size)
         self.ever_free = EverFreeVoxelGrid(res_m=ever_free_res_m, confirm_hits=3)
@@ -299,6 +305,7 @@ class HdDynamicContourSlamEngine:
         self.static_cloud.nrm = self.static_cloud.nrm[keep]
         self.static_cloud.crease = self.static_cloud.crease[keep]
         self.static_cloud.wt = self.static_cloud.wt[keep]
+        self.static_cloud._sorted_keys = None  # 掩码重排使缓存失效
         return int(np.sum(drop))
 
     def process_frame(
@@ -316,7 +323,11 @@ class HdDynamicContourSlamEngine:
         align: bool = True,
     ) -> dict[str, Any]:
         """处理单帧 3D 点图：扰动门控 -> 摇摆补偿运动+Ever-Free 双判动态分离 -> 静态 2mm 精修 -> 暂态残影雕刻。"""
+        _t = time.perf_counter
+        _st: dict[str, float] = {}
+        _t0 = _t()
         gate = self.quality_gate.evaluate_pre_icp(bgr_cur, pitch_deg=pitch_deg, roll_deg=roll_deg, yaw_deg=robot_yaw_deg)
+        _st["gate"] = (_t() - _t0) * 1e3
 
         # 将局部机身系变换到全局世界系 (robot_x, robot_y, robot_yaw_deg)
         rad = math.radians(float(robot_yaw_deg))
@@ -335,6 +346,7 @@ class HdDynamicContourSlamEngine:
         #    把本帧对齐到已有静态骨架，消掉 1.16Hz 摇摆造成的 2.4°/38mm 瞬时偏移，再做动态检测与 Ever-Free 查询！
         rot_corr = 0.0
         trans_corr_mm = 0.0
+        _t0 = _t()
         if align and (not gate.is_disturbed) and len(self.static_cloud.pos) > 5000 and len(pts_w) > 400:
             res_icp = self.static_cloud.aligner.align_to_static(
                 pts_w, nrm_w, self.static_cloud.pos, self.static_cloud.nrm, cam_pos
@@ -345,6 +357,8 @@ class HdDynamicContourSlamEngine:
                 nrm_w = (nrm_w @ dR.T).astype(np.float32)
                 rot_corr = float(res_icp["rot_deg"])
                 trans_corr_mm = float(res_icp["trans_m"] * 1000.0)
+        _st["icp"] = (_t() - _t0) * 1e3
+        _t0 = _t()
 
         # 用配准后的世界 X 距离更新对齐深度网格（彻底消除 1.16Hz 摇摆引起的假深度跳变）
         cur_depth = np.zeros(valid_grid.shape, dtype=np.float32)
@@ -411,6 +425,8 @@ class HdDynamicContourSlamEngine:
 
         self.prev_bgr = bgr_cur.copy()
         self.prev_depth = cur_depth.copy()
+        _st["dynmask"] = (_t() - _t0) * 1e3
+        _t0 = _t()
 
         # 更新实时动态层（仅当前帧，完全无多帧残影！）
         self.dyn_pts = pts_w[is_dyn]
@@ -423,20 +439,29 @@ class HdDynamicContourSlamEngine:
 
         fuse_info = {"total_pts": int(len(self.static_cloud.pos)), "rot_corr_deg": rot_corr, "trans_corr_mm": trans_corr_mm}
         carved = 0
-        if not gate.is_disturbed and len(st_pts) > 200:
+        self._pf_idx += 1
+        run_static = (self._pf_idx % self.static_decim == 0)
+        if not gate.is_disturbed and len(st_pts) > 200 and run_static:
             # 1) 已在前置步骤完成 KISS-ICP 配准，此处直接执行 2mm 静态面元融合 (align=False 避免二次重复配准)
             fuse_info = self.static_cloud.fuse_frame(st_pts, st_nrms, st_cr, cam_pos=cam_pos, align=False)
             fuse_info["rot_corr_deg"] = round(rot_corr, 3)
             fuse_info["trans_corr_mm"] = round(trans_corr_mm, 2)
+            _st["fuse"] = (_t() - _t0) * 1e3
+            _t0 = _t()
             # 2) 用干净静态视线更新 Occupied-Protected Ever-Free（注意步长与采样率）
             ray_stride = max(4, len(st_pts) // 2400)
             self.ever_free.integrate_clean_rays(cam_pos, st_pts, safety_margin_m=0.045, stride=ray_stride, n_samples=48)
+            _st["ef_rays"] = (_t() - _t0) * 1e3
+            _t0 = _t()
             # 3) 保护所有已稳定观测 (>=1.5帧) 的静态物体体素（先于 confirm_hits=3 激活，彻底杜绝静态键盘/显示器被误刻！）
             conf_mask = self.static_cloud.wt >= 1.5
             if np.any(conf_mask):
                 self.ever_free.protect_static_voxels(self.static_cloud.pos[conf_mask])
+            _st["ef_protect"] = (_t() - _t0) * 1e3
+            _t0 = _t()
             # 4) 立即雕刻早先帧可能残留的暂态鬼影
             carved = self._carve_tentative_ghosts()
+            _st["carve"] = (_t() - _t0) * 1e3
 
         rec = {
             "disturbed": bool(gate.is_disturbed),
@@ -447,6 +472,7 @@ class HdDynamicContourSlamEngine:
             "carved_ghosts": int(carved),
             "rot_corr_deg": float(fuse_info["rot_corr_deg"]),
             "trans_corr_mm": float(fuse_info["trans_corr_mm"]),
+            "slam_stage_ms": {k: round(v, 2) for k, v in _st.items()},
         }
         self.stats_log.append(rec)
         return rec

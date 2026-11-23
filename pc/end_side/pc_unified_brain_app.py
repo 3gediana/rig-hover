@@ -124,11 +124,11 @@ def _cliff_guard(
 class UnifiedRobotBrain:
     """100% 自研模型驱动的 RIG-Hover PC 端统一具身大脑（Scenario 1 + Scenario 2）。"""
 
-    def __init__(self, use_lite_geonet: bool = False, enable_knock: bool = True) -> None:
+    def __init__(self, use_lite_geonet: bool = False, enable_knock: bool = True, static_decim: int = 3) -> None:
         ckpt = MBV3_CKPT if (use_lite_geonet or not VIT_CKPT.exists()) else VIT_CKPT
         self.geonet_ckpt = ckpt
         self.geo_fe = HoverGeoNet240Frontend(ckpt, use_fp16=True, h_cam_m=REAL_H_CAM_M, fov_h_deg=REAL_FOV_H_DEG)
-        self.slam = HdDynamicContourSlamEngine(vox_size_m=0.0020, h_cam_m=REAL_H_CAM_M, obs_radius_m=0.095)
+        self.slam = HdDynamicContourSlamEngine(vox_size_m=0.0020, h_cam_m=REAL_H_CAM_M, obs_radius_m=0.095, static_decim=static_decim)
         self.policy_s1: EndSidePolicyNet = load_rl_policy(POLICY_S1_CKPT)
         self.policy_nav: EndSidePolicyNet = load_rl_policy(POLICY_NAV_CKPT)
         self.shield = EndSideSafetyShield()
@@ -212,24 +212,32 @@ class UnifiedRobotBrain:
         self.frames_seen += 1
         tel = telemetry or RobotTelemetry(pitch=3.0, roll=0.0, yaw=self.est_pose[2])
         bgr240 = cv2.resize(bgr, (240, 240), interpolation=cv2.INTER_AREA) if bgr.shape[:2] != (240, 240) else bgr
+        _t = time.perf_counter
+        _st: dict[str, float] = {}
+        _t0 = _t()
 
         # 1) 自研 HoverGeoNet-ViT-240 推理 + 2mm Dynablox 双层建图
         pred = self.geo_fe.infer_frame(bgr240, self.prev_bgr, pitch_deg=tel.pitch, roll_deg=tel.roll, auto_level=auto_level)
+        _st["geonet"] = (_t() - _t0) * 1e3
         self.last_pred = pred
+        _t0 = _t()
         slam_rec = self.slam.process_frame(
             bgr240, pred["pts_grid"], pred["nrm_grid"], pred["crease_grid"], pred["valid_grid"],
             robot_x=self.est_pose[0], robot_y=self.est_pose[1], robot_yaw_deg=self.est_pose[2],
             pitch_deg=tel.pitch, roll_deg=tel.roll, align=(self.frames_seen > 1),
         )
+        _st["slam"] = (_t() - _t0) * 1e3
         self._ensure_relocalizer(bgr240, pred)
         self.prev_bgr = bgr240.copy()
 
         # 1.5) 视觉悬崖本能：纯视觉深渊检测（与 v15 仿真同一检测器），近崖 APPROACH 经 Shield clearance=0 硬刹停
+        _t0 = _t()
         cliff_det = detect_visual_cliff_zero_oracle(
             bgr240, self.prev_bgr, self.geo_fe,
             (self.est_pose[0], self.est_pose[1], self.est_pose[2], tel.pitch, tel.roll),
             self.rays_cam, pred=pred,
         )
+        _st["cliff"] = (_t() - _t0) * 1e3
         cliff_engaged, cliff_clear = _cliff_guard(cliff_det, self.est_pose, self.cliff_hold_m, self.cliff_cone_deg)
         # 迟滞边沿：rim 在 hold 线附近抖动时只报一次警（进 <hold_m、出 >hold_m+3cm）
         if cliff_det is None:
@@ -243,6 +251,7 @@ class UnifiedRobotBrain:
 
         # 2) 若处于导航巡航中 (MODE_APPROACH)，运行 2D-3D PnP + KISS-ICP 无里程计视觉重定位
         reloc_info: dict[str, Any] = {"source": "map_build", "ransac_inliers": 0}
+        _t0 = _t()
         if self.mode == MODE_APPROACH and self.relocalizer is not None and self.frames_seen >= 3:
             ro = self.relocalizer.relocalize(
                 bgr240, pred["pts_cam"], pred["nrm_cam"], pred["valid_grid"],
@@ -255,11 +264,13 @@ class UnifiedRobotBrain:
                 _wrap_deg(self.est_pose[2] + al * _wrap_deg(ro["yaw_deg"] - self.est_pose[2])),
             )
             reloc_info = {"source": ro["source"], "ransac_inliers": ro["ransac_inliers"], "icp_res_mm": ro["icp_median_res_mm"]}
+        _st["reloc"] = (_t() - _t0) * 1e3
 
         # 3) 场景一感知：YuNet 人脸 + 自研 DoubleKnockNet 双敲触发 -> 3D 升维落针
         face_dets: list[dict[str, float]] = []
         knock_out: dict[str, Any] = {"fired": 0, "p_double": 0.0}
         if scenario == 1:
+            _t0 = _t()
             if self.yunet is not None:
                 _, faces = self.yunet.detect(bgr240)
                 if faces is not None and len(faces) > 0:
@@ -267,6 +278,8 @@ class UnifiedRobotBrain:
                     face_dets.append({"cx": float((fx + 0.5 * fw) / 240.0), "cy": float((fy + 0.5 * fh) / 240.0), "w": float(fw / 240.0), "h": float(fh / 240.0), "score": float(faces[0][-1])})
                     if self.mode == MODE_IDLE:
                         self.mode = MODE_GAZE_FACE
+            _st["yunet"] = (_t() - _t0) * 1e3
+            _t0 = _t()
             if self.knock_det is not None:
                 g240 = cv2.cvtColor(bgr240, cv2.COLOR_BGR2GRAY)
                 knock_out = self.knock_det.step(g240, wrist_box=None, scenario_state=None, timestamp=timestamp_s)
@@ -277,8 +290,10 @@ class UnifiedRobotBrain:
                         self.set_3d_target(float(np.clip(k_med[0], 0.24, 1.05)), float(np.clip(k_med[1], -0.40, 0.40)))
                     else:
                         self.set_3d_target(0.48, 0.0)
+            _st["knock"] = (_t() - _t0) * 1e3
 
         # 4) 自研 EndSidePolicyNet + EndSideSafetyShield 输出最终控制指令
+        _t0 = _t()
         rem_m = 0.0
         if self.mode == MODE_APPROACH and self.target_xy is not None:
             ex, ey, eyaw = self.est_pose
@@ -309,11 +324,14 @@ class UnifiedRobotBrain:
             f39 = EndSideFeatureBuilder.build(tel, detections=face_dets, target_lock=None, clearance_m=1.0)
             raw_cmd = self.policy_s1.infer_numpy(f39)
             safe_cmd = self.shield.apply(raw_cmd, mode=self.mode, remaining_m=0.0, pitch_deg=tel.pitch)
+        _st["policy"] = (_t() - _t0) * 1e3
 
         return {
             "frame": self.frames_seen,
             "mode": MODE_NAMES.get(self.mode, str(self.mode)),
             "geonet_ms": round(float(pred["infer_ms"]), 2),
+            "stage_ms": {k: round(v, 2) for k, v in _st.items()},
+            "slam_stages": slam_rec.get("slam_stage_ms"),
             "static_pts": slam_rec["n_static_map"],
             "dyn_pts": slam_rec["n_dynamic_frame"],
             "est_pose": [round(v, 3) for v in self.est_pose],
@@ -387,9 +405,11 @@ def main() -> None:
                     help="默认跑完全部帧（video/live 到 EOF、frames 到目录尾）；仅显式传值时截断。原默认 60 曾致多次全量回放被静默截断。")
     ap.add_argument("--click-xy", type=str, default="", help="Optional auto-click target 'x,y' in meters for headless Scenario 2")
     ap.add_argument("--emote", action="store_true", help="Live mode only: mirror brain state onto the robot LCD via POST /emote")
+    ap.add_argument("--static-decim", type=int, default=3,
+                    help="静态建图降频：每 N 帧才做 2mm 融合/鬼影雕刻（实测该块占帧耗 ~85%）；1=不降频保最高图质（离线跑图用）")
     args = ap.parse_args()
 
-    brain = UnifiedRobotBrain(use_lite_geonet=args.lite, enable_knock=(args.scenario == 1))
+    brain = UnifiedRobotBrain(use_lite_geonet=args.lite, enable_knock=(args.scenario == 1), static_decim=args.static_decim)
     print(f"UnifiedRobotBrain READY | geonet={brain.geonet_ckpt.name} | scenario={args.scenario} | source={args.source}", flush=True)
 
     # 数据源迭代器

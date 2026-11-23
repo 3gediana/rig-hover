@@ -303,6 +303,11 @@ class UltraDenseSurfelCloud:
         self.crease = np.zeros((0,), dtype=np.float32)
         self.wt = np.zeros((0,), dtype=np.float32)
         self.frames_fused = 0
+        # 排序键缓存：_pack_keys+argsort(全图) 每次 fuse 都重算是主开销；
+        # 仅在追加新点后失效，原地加权更新容忍体素边界轻微漂移
+        self._sorted_keys: np.ndarray | None = None
+        self._sorted_order: np.ndarray | None = None
+        self._sorted_n: int = -1
 
     def _pack_keys(self, pts: np.ndarray) -> np.ndarray:
         inv = 1.0 / self.vox_size
@@ -344,10 +349,16 @@ class UltraDenseSurfelCloud:
             self.nrm = n_nrm
             self.crease = n_cr
             self.wt = n_w
+            self._sorted_keys = None
         else:
-            old_k = self._pack_keys(self.pos)
-            order = np.argsort(old_k)
-            sorted_old = old_k[order]
+            if self._sorted_keys is None or self._sorted_n != len(self.pos):
+                old_k = self._pack_keys(self.pos)
+                order = np.argsort(old_k)
+                self._sorted_keys = old_k[order]
+                self._sorted_order = order
+                self._sorted_n = len(self.pos)
+            sorted_old = self._sorted_keys
+            order = self._sorted_order
             ins = np.searchsorted(sorted_old, uniq_k)
             ins_clip = np.minimum(ins, len(sorted_old) - 1)
             matched = (ins < len(sorted_old)) & (sorted_old[ins_clip] == uniq_k)
@@ -369,6 +380,7 @@ class UltraDenseSurfelCloud:
                 self.nrm = np.concatenate([self.nrm, n_nrm[~matched]], axis=0)
                 self.crease = np.concatenate([self.crease, n_cr[~matched]], axis=0)
                 self.wt = np.concatenate([self.wt, n_w[~matched]], axis=0)
+                self._sorted_keys = None  # 追加使排序键/索引映射失效
 
         self.frames_fused += 1
         return {
