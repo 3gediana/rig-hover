@@ -385,6 +385,13 @@ class UnifiedRobotBrain:
                 safe_cmd = DriveCommand(safe_cmd.vx, safe_cmd.vyaw, head_deg)
         _st["policy"] = (_t() - _t0) * 1e3
 
+        # 找人本能：无脸 >6s 就缓速旋转扫描（真机曾转到面壁全程 IDLE——它不是在不理你，
+        # 是根本不在看你）。舵机扫 ±55°，身体 16°/s 慢转，见脸立即停。
+        self._no_face = 0 if face_dets else getattr(self, "_no_face", 0) + 1
+        if self.mode in (MODE_IDLE, MODE_GAZE_FACE) and self._no_face > 60:
+            sweep = 55.0 * math.sin(self._no_face * 0.04)
+            safe_cmd = DriveCommand(0.0, 16.0, float(sweep))
+
         # 出口低通：10Hz 更新率下符号拍动就是肉眼可见的前后猛抖（真机实证）。
         # 悬崖硬停（clearance<=0）旁路不平滑——刹停必须是即时的。
         if cliff_clear is not None and cliff_clear <= 0.0:
