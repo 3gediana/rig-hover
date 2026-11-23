@@ -42,7 +42,7 @@ from end_side_protocol import DriveCommand, RobotTelemetry, _clamp
 from mono_depth_model import camera_rotation_matrix
 from scenario_v2 import MODE_APPROACH, MODE_DWELL, MODE_GAZE_FACE, MODE_GAZE_FIST, MODE_IDLE
 
-CALIB_FOV_H_DEG: float = 62.5
+CALIB_FOV_H_DEG: float = 75.5  # s2r 2026-11-23: measured upright (2.705 px/IMU-deg); 62.5 was a lying-bench estimate
 CALIB_H_CAM_M: float = 0.135
 FEAT_HEARTBEAT_PKT: bytes = struct.pack("<HHIHHf", 0xFE01, 0, 100, 0, 0, 1.0 / 32767.0)
 
@@ -648,6 +648,10 @@ class FirmwareActuatorClient:
                 "head_lpf": 0.28,
                 "vyaw_stop_eps": 2.5,
                 "k_dyaw": -0.16,
+                # s2r 2026-11-23: bound firmware leads so heading/position torque cannot saturate and steal
+                # balance torque (integrating-loop overshoot knocked the robot over; see SIM2REAL report).
+                "yaw_lead_max": 18.0,
+                "pos_lead_max": 0.05,
             }
             r = self._sess.post(f"{self.base}/cfg", json=cfg, timeout=0.6)
             if r.status_code == 200:
