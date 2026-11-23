@@ -138,3 +138,11 @@
 - 视频读取循环原先把 `cap.read()=False` 直接当 EOF（内存压力下
   ffmpeg 帧缓冲分配会偶发失败）——已加 5 次重试 + 失败日志，
   回放不再可能被单帧解码失败静默截断。
+
+## 2026-11-15 晚：延迟攻坚第二轮（实测拆解，非拍脑袋）
+
+- **SLAM 是真凶**：本地链 ~500ms 里 SLAM 占 ~400ms，其中 ~85%（fuse/carve/ef_protect）是静态建图而非控制工作。`--static-decim 3`（默认）+ 排序键缓存 → SLAM ~30ms 摊销，合计 ~114ms（~8-9Hz）。
+- **传输链去串行化**：live 循环原来 fetch→compute→cmd 全串行 ~160-590ms/帧。`_LiveFrameFetcher`（后台持续拉帧，主循环取最新丢旧）+ `_AsyncCmdSender`（latest-wins）→ 周期≈max(compute,camera)。
+- **不降频的**：DoubleKnock（触发时序敏感）、悬崖（安全）、ICP/dynmask（控制需要）。
+- **framesrc/realimg/e2ereplay 测试 FAIL 是环境性**（mock 零帧 / HaGRID 未下载），非回归；endside 94 门全绿。
+- 下一目标：重定位 ~50ms 可降频；真机 live 端到端待开机验证。
