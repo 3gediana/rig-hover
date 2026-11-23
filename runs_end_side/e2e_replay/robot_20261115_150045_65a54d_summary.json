@@ -1,0 +1,130 @@
+{
+  "log": "runs_end_side\\e2e_replay_65a54d_v8.log",
+  "n_frames_logged": 163,
+  "fps_assumed": 15.0,
+  "gt_knocks": 11,
+  "fires": 9,
+  "fires_by_src": {
+    "pair": 3,
+    "sem_confirm": 6
+  },
+  "hits": [
+    {
+      "frame": 114,
+      "t_s": 7.6,
+      "gt_idx": 0
+    },
+    {
+      "frame": 419,
+      "t_s": 27.93,
+      "gt_idx": 1
+    },
+    {
+      "frame": 632,
+      "t_s": 42.13,
+      "gt_idx": 5
+    },
+    {
+      "frame": 1151,
+      "t_s": 76.73,
+      "gt_idx": 6
+    },
+    {
+      "frame": 1432,
+      "t_s": 95.47,
+      "gt_idx": 10
+    }
+  ],
+  "false_positives": [],
+  "ambiguous_in_other_labels": [
+    {
+      "frame": 250,
+      "t_s": 16.67,
+      "inside_label": "伸手但未敲",
+      "label_id": "reach"
+    },
+    {
+      "frame": 369,
+      "t_s": 24.6,
+      "inside_label": "连续敲击",
+      "label_id": "label_1794064784169"
+    },
+    {
+      "frame": 885,
+      "t_s": 59.0,
+      "inside_label": "连续敲击",
+      "label_id": "label_1794064784169"
+    },
+    {
+      "frame": 940,
+      "t_s": 62.67,
+      "inside_label": "连续敲击",
+      "label_id": "label_1794064784169"
+    }
+  ],
+  "misses": [
+    {
+      "gt_idx": 2,
+      "gt_s": [
+        28.58,
+        29.95
+      ]
+    },
+    {
+      "gt_idx": 3,
+      "gt_s": [
+        30.82,
+        31.5
+      ]
+    },
+    {
+      "gt_idx": 4,
+      "gt_s": [
+        34.52,
+        35.0
+      ]
+    },
+    {
+      "gt_idx": 7,
+      "gt_s": [
+        80.5,
+        81.57
+      ]
+    },
+    {
+      "gt_idx": 8,
+      "gt_s": [
+        83.62,
+        84.69
+      ]
+    },
+    {
+      "gt_idx": 9,
+      "gt_s": [
+        85.56,
+        86.34
+      ]
+    }
+  ],
+  "mode_frame_counts": {
+    "GAZE_FACE": 12,
+    "APPROACH": 151
+  },
+  "mode_transitions": [
+    {
+      "frame": 1,
+      "mode": "GAZE_FACE"
+    },
+    {
+      "frame": 114,
+      "mode": "APPROACH"
+    }
+  ],
+  "geonet_ms": {
+    "median": 15.75,
+    "p90": 20.55
+  },
+  "reloc_inliers_median": 483.0,
+  "icp_res_mm_median": 5.38,
+  "tier": "T2-real-video-replay"
+}

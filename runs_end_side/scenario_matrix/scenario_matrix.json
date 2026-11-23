@@ -6,7 +6,7 @@
     "T3": "HIL (ESP32-compatible local loop)",
     "T4": "physical robot"
   },
-  "generated_at": "2026-11-23 10:28:27",
+  "generated_at": "2026-11-23 10:57:07",
   "entries": [
     {
       "id": "knock-3d-v2",
@@ -321,6 +321,27 @@
       },
       "artifacts": {
         "json": "runs_end_side/e2e_replay/robot_20261107_214950_1f30d1_summary.json"
+      },
+      "notes": "pc_unified_brain_app --source video on the full take; replay tier (odometry static)."
+    },
+    {
+      "id": "v21-e2e-65a54d",
+      "name": "v21 full-take real-video E2E replay [65a54d]",
+      "category": "behavior",
+      "tier": "T2",
+      "source": "runs_end_side/e2e_replay/robot_20261115_150045_65a54d_summary.json",
+      "metrics": {
+        "frames": 163,
+        "gt_knocks": 11,
+        "fires": 9,
+        "fp_outside_labels": 0,
+        "fires_in_other_labels": 4,
+        "misses": 6,
+        "reloc_inliers_med": 483.0,
+        "geonet_ms_med": 15.75
+      },
+      "artifacts": {
+        "json": "runs_end_side/e2e_replay/robot_20261115_150045_65a54d_summary.json"
       },
       "notes": "pc_unified_brain_app --source video on the full take; replay tier (odometry static)."
     },
