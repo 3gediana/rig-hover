@@ -325,14 +325,19 @@ class EverFreeVoxelGrid:
             )
             s_idx = s_idx[s_inb]
             if len(s_idx) > 0:
+                s_lin = np.unique((s_idx[:, 0] * self.ny + s_idx[:, 1]) * self.nz + s_idx[:, 2])
+                ux = s_lin // (self.ny * self.nz)
+                rem = s_lin % (self.ny * self.nz)
+                uy = rem // self.nz
+                uz = rem % self.nz
                 seed_vol = np.zeros((self.nx, self.ny, self.nz), dtype=bool)
                 # 围绕种子体素做快速 1 步 3x3x3 + 竖直向下 2 格扩张（覆盖贴近桌面的物体底缘）
                 for dx in (-1, 0, 1):
-                    x_s = np.clip(s_idx[:, 0] + dx, 0, self.nx - 1)
+                    x_s = np.clip(ux + dx, 0, self.nx - 1)
                     for dy in (-1, 0, 1):
-                        y_s = np.clip(s_idx[:, 1] + dy, 0, self.ny - 1)
+                        y_s = np.clip(uy + dy, 0, self.ny - 1)
                         for dz in (-2, -1, 0, 1):
-                            z_s = np.clip(s_idx[:, 2] + dz, 0, self.nz - 1)
+                            z_s = np.clip(uz + dz, 0, self.nz - 1)
                             seed_vol[x_s, y_s, z_s] = True
                 cand = (pts[:, 2] >= 0.032) & (~out)
                 if np.any(cand):
@@ -410,6 +415,7 @@ class KissIcpStaticAligner:
         static_nrms: np.ndarray,
         cam_pos: np.ndarray,
         allow_translation: bool = True,
+        pre_q_ref: tuple[np.ndarray, np.ndarray, cKDTree] | None = None,
     ) -> dict[str, Any]:
         """将当前帧候选静态点配准到已确认静态地图。返回 (dR, dt, 质量指标)。"""
         eye3 = np.eye(3, dtype=np.float32)
@@ -434,15 +440,17 @@ class KissIcpStaticAligner:
             p_cur = src_pts.astype(np.float64).copy()
             n_cur = src_nrms.astype(np.float64).copy()
 
-        if len(static_pts) > 8000:
-            s_step = max(1, len(static_pts) // 8000)
-            q_ref = static_pts[::s_step].astype(np.float64)
-            nq_ref = static_nrms[::s_step].astype(np.float64)
+        if pre_q_ref is not None:
+            q_ref, nq_ref, tree = pre_q_ref
         else:
-            q_ref = static_pts.astype(np.float64)
-            nq_ref = static_nrms.astype(np.float64)
-
-        tree = cKDTree(q_ref)
+            if len(static_pts) > 8000:
+                s_step = max(1, len(static_pts) // 8000)
+                q_ref = static_pts[::s_step].astype(np.float64)
+                nq_ref = static_nrms[::s_step].astype(np.float64)
+            else:
+                q_ref = static_pts.astype(np.float64)
+                nq_ref = static_nrms.astype(np.float64)
+            tree = cKDTree(q_ref)
         pivot = cam_pos.astype(np.float64)
 
         r_total = np.eye(3, dtype=np.float64)

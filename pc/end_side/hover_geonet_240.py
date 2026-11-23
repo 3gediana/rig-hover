@@ -89,6 +89,18 @@ def enhance_gray_240(bgr_or_gray: np.ndarray) -> np.ndarray:
     return g_enh.astype(np.float32) / 255.0
 
 
+_BASE_RAY_CACHE: dict[tuple[int, int, float], np.ndarray] = {}
+
+
+def _get_base_camera_rays(h: int, w: int, fov_h_deg: float) -> np.ndarray:
+    key = (int(h), int(w), round(float(fov_h_deg), 4))
+    cached = _BASE_RAY_CACHE.get(key)
+    if cached is None:
+        cached = make_camera_ray_grid(h, w, fov_h_deg=fov_h_deg, pitch_deg=0.0, roll_deg=0.0).astype(np.float32)
+        _BASE_RAY_CACHE[key] = cached
+    return cached
+
+
 def build_robot_physics_input(
     bgr_cur: np.ndarray,
     bgr_prev: np.ndarray | None = None,
@@ -118,13 +130,14 @@ def build_robot_physics_input(
     else:
         fdiff = np.zeros((GEO_H, GEO_W), dtype=np.float32)
 
+    rays_cam = _get_base_camera_rays(GEO_H, GEO_W, fov_h_deg)
     if r_level is not None:
-        rays_cam = make_camera_ray_grid(GEO_H, GEO_W, fov_h_deg=fov_h_deg, pitch_deg=0.0, roll_deg=0.0)
         rays_world = (rays_cam @ r_level.T).astype(np.float32)
+    elif abs(float(pitch_deg)) < 1e-6 and abs(float(roll_deg)) < 1e-6:
+        rays_world = rays_cam
     else:
-        rays_world = make_camera_ray_grid(
-            GEO_H, GEO_W, fov_h_deg=fov_h_deg, pitch_deg=pitch_deg, roll_deg=roll_deg
-        ).astype(np.float32)
+        r_pr = camera_rotation_matrix(pitch_deg=pitch_deg, roll_deg=roll_deg)
+        rays_world = (rays_cam @ r_pr.T).astype(np.float32)
 
     inv_d_prior = compute_desk_prior_from_rays(rays_world, h_cam_m=h_cam_m)
     inv_d_prior_norm = (inv_d_prior / INV_D_SCALE).astype(np.float32)

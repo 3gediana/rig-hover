@@ -295,8 +295,9 @@ class UltraDenseSurfelCloud:
     - 按 2.0 mm 细体素做逆方差位置与法向加权平均，平滑单帧微小起伏同时 100% 保留 3.5 cm 鼠标弧顶与 90° 桌角！
     """
 
-    def __init__(self, vox_size_m: float = 0.0020) -> None:
+    def __init__(self, vox_size_m: float = 0.0020, max_surfels: int = 320_000) -> None:
         self.vox_size = float(vox_size_m)
+        self.max_surfels = int(max_surfels)
         self.aligner = KissIcpStaticAligner(init_sigma_m=0.045, min_sigma_m=0.010, max_sigma_m=0.10, max_iters=6)
         # 原子视图：四个数组绑成一个元组，整代替换 = 单次 STORE_ATTR。
         # 后台融合线程重写 _v 时，主线程读者拿到的永远是完整一致的某一代。
@@ -312,6 +313,9 @@ class UltraDenseSurfelCloud:
         self._sorted_keys: np.ndarray | None = None
         self._sorted_order: np.ndarray | None = None
         self._sorted_n: int = -1
+        self._gen: int = 0
+        self._icp_cache_gen: int = -1
+        self._icp_ref: tuple[np.ndarray, np.ndarray, cKDTree] | None = None
 
     pos = property(lambda s: s._v[0])
     nrm = property(lambda s: s._v[1])
@@ -330,6 +334,28 @@ class UltraDenseSurfelCloud:
             c if crease is None else crease,
             w if wt is None else wt,
         )
+        self._gen += 1
+
+    def get_icp_ref(self) -> tuple[np.ndarray, np.ndarray, cKDTree] | None:
+        """返回与当前静态图快照绑定的 (q_ref, nq_ref, cKDTree)，消除主循环每帧重建 KDTree 开销。"""
+        gen = self._gen
+        p, n, _, _ = self._v
+        if len(p) < 150:
+            return None
+        cached_r = self._icp_ref
+        if self._icp_cache_gen == gen and cached_r is not None:
+            return cached_r
+        if len(p) > 8000:
+            s_step = max(1, len(p) // 8000)
+            q_ref = p[::s_step].astype(np.float64)
+            nq_ref = n[::s_step].astype(np.float64)
+        else:
+            q_ref = p.astype(np.float64)
+            nq_ref = n.astype(np.float64)
+        ref = (q_ref, nq_ref, cKDTree(q_ref))
+        self._icp_ref = ref
+        self._icp_cache_gen = gen
+        return ref
 
     def _pack_keys(self, pts: np.ndarray) -> np.ndarray:
         inv = 1.0 / self.vox_size
@@ -395,14 +421,23 @@ class UltraDenseSurfelCloud:
                 self.wt[oi] = np.minimum(wp + wn, 12.0)
 
             if np.any(~matched):
+                new_pos = np.concatenate([self.pos, n_pts[~matched]], axis=0)
+                new_nrm = np.concatenate([self.nrm, n_nrm[~matched]], axis=0)
+                new_cr = np.concatenate([self.crease, n_cr[~matched]], axis=0)
+                new_wt = np.concatenate([self.wt, n_w[~matched]], axis=0)
+                # 长时直播有界化（真机曾无上界涨到 2.9M 点拖垮 CPU 缓存）：超上限时优先保留高确认度与近景面元
+                if self.max_surfels > 0 and len(new_pos) > self.max_surfels:
+                    target_n = int(self.max_surfels * 0.85)
+                    dist_r = np.hypot(new_pos[:, 0] - cam_pos[0], new_pos[:, 1] - cam_pos[1])
+                    score = new_wt * 3.0 - np.clip(dist_r, 0.0, 2.5)
+                    keep_idx = np.argpartition(score, -target_n)[-target_n:]
+                    keep_idx.sort()
+                    new_pos, new_nrm, new_cr, new_wt = new_pos[keep_idx], new_nrm[keep_idx], new_cr[keep_idx], new_wt[keep_idx]
                 # 四个新数组先全算完，再一次原子发表——读者无撕裂窗口
-                self._set_v(
-                    pos=np.concatenate([self.pos, n_pts[~matched]], axis=0),
-                    nrm=np.concatenate([self.nrm, n_nrm[~matched]], axis=0),
-                    crease=np.concatenate([self.crease, n_cr[~matched]], axis=0),
-                    wt=np.concatenate([self.wt, n_w[~matched]], axis=0),
-                )
+                self._set_v(pos=new_pos, nrm=new_nrm, crease=new_cr, wt=new_wt)
                 self._sorted_keys = None  # 追加使排序键/索引映射失效
+                # 在后台融合工人线程内预热最新 KDTree，主控线程零建树延迟
+                _ = self.get_icp_ref()
 
         self.frames_fused += 1
         return {

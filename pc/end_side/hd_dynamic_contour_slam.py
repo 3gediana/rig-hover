@@ -363,7 +363,7 @@ class HdDynamicContourSlamEngine:
         mp_pos, mp_nrm = self.static_cloud.get_view()[:2]
         if align and (not gate.is_disturbed) and len(mp_pos) > 5000 and len(pts_w) > 400:
             res_icp = self.static_cloud.aligner.align_to_static(
-                pts_w, nrm_w, mp_pos, mp_nrm, cam_pos
+                pts_w, nrm_w, mp_pos, mp_nrm, cam_pos, pre_q_ref=self.static_cloud.get_icp_ref()
             )
             if res_icp["converged"] and res_icp["inlier_ratio"] > 0.42:
                 dR, dt = res_icp["dR"], res_icp["dt"]
@@ -415,13 +415,19 @@ class HdDynamicContourSlamEngine:
             )
             s_idx = s_idx[inb_s]
             if len(s_idx) > 0:
+                ny_ef, nz_ef = self.ever_free.ny, self.ever_free.nz
+                s_lin = np.unique((s_idx[:, 0] * ny_ef + s_idx[:, 1]) * nz_ef + s_idx[:, 2])
+                ux = s_lin // (ny_ef * nz_ef)
+                rem = s_lin % (ny_ef * nz_ef)
+                uy = rem // nz_ef
+                uz = rem % nz_ef
                 vol = np.zeros((self.ever_free.nx, self.ever_free.ny, self.ever_free.nz), dtype=bool)
                 for dx in (-1, 0, 1):
-                    xs = np.clip(s_idx[:, 0] + dx, 0, self.ever_free.nx - 1)
+                    xs = np.clip(ux + dx, 0, self.ever_free.nx - 1)
                     for dy in (-1, 0, 1):
-                        ys = np.clip(s_idx[:, 1] + dy, 0, self.ever_free.ny - 1)
+                        ys = np.clip(uy + dy, 0, self.ever_free.ny - 1)
                         for dz in (-1, 0, 1):
-                            zs = np.clip(s_idx[:, 2] + dz, 0, self.ever_free.nz - 1)
+                            zs = np.clip(uz + dz, 0, self.ever_free.nz - 1)
                             vol[xs, ys, zs] = True
                 cand = (pts_w[:, 2] >= 0.034) & (~is_dyn)
                 if np.any(cand):
