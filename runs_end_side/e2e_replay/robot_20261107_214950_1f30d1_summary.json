@@ -1,23 +1,23 @@
 {
-  "log": "runs_end_side\\e2e_replay_1f30d1_full.log",
-  "n_frames_logged": 335,
+  "log": "runs_end_side\\e2e_replay_1f30d1_v8.log",
+  "n_frames_logged": 338,
   "fps_assumed": 20.0,
   "gt_knocks": 14,
-  "fires": 15,
+  "fires": 19,
   "hits": [
     {
-      "frame": 593,
-      "t_s": 29.65,
+      "frame": 592,
+      "t_s": 29.6,
       "gt_idx": 1
     },
     {
-      "frame": 669,
-      "t_s": 33.45,
+      "frame": 666,
+      "t_s": 33.3,
       "gt_idx": 2
     },
     {
-      "frame": 714,
-      "t_s": 35.7,
+      "frame": 713,
+      "t_s": 35.65,
       "gt_idx": 3
     },
     {
@@ -26,19 +26,34 @@
       "gt_idx": 4
     },
     {
-      "frame": 1049,
-      "t_s": 52.45,
+      "frame": 1048,
+      "t_s": 52.4,
       "gt_idx": 5
     },
     {
-      "frame": 1134,
-      "t_s": 56.7,
+      "frame": 1133,
+      "t_s": 56.65,
       "gt_idx": 6
     },
     {
-      "frame": 1284,
-      "t_s": 64.2,
+      "frame": 1231,
+      "t_s": 61.55,
+      "gt_idx": 7
+    },
+    {
+      "frame": 1283,
+      "t_s": 64.15,
       "gt_idx": 8
+    },
+    {
+      "frame": 1757,
+      "t_s": 87.85,
+      "gt_idx": 9
+    },
+    {
+      "frame": 2682,
+      "t_s": 134.1,
+      "gt_idx": 12
     }
   ],
   "false_positives": [
@@ -85,6 +100,12 @@
       "label_id": "label_1794064784169"
     },
     {
+      "frame": 1602,
+      "t_s": 80.1,
+      "inside_label": "连续敲击",
+      "label_id": "label_1794064784169"
+    },
+    {
       "frame": 1668,
       "t_s": 83.4,
       "inside_label": "连续敲击",
@@ -97,20 +118,6 @@
       "gt_s": [
         3.77,
         6.48
-      ]
-    },
-    {
-      "gt_idx": 7,
-      "gt_s": [
-        60.17,
-        61.98
-      ]
-    },
-    {
-      "gt_idx": 9,
-      "gt_s": [
-        86.26,
-        88.82
       ]
     },
     {
@@ -128,13 +135,6 @@
       ]
     },
     {
-      "gt_idx": 12,
-      "gt_s": [
-        131.95,
-        133.91
-      ]
-    },
-    {
       "gt_idx": 13,
       "gt_s": [
         135.27,
@@ -144,7 +144,7 @@
   ],
   "mode_frame_counts": {
     "GAZE_FACE": 22,
-    "APPROACH": 313
+    "APPROACH": 316
   },
   "mode_transitions": [
     {
@@ -157,10 +157,10 @@
     }
   ],
   "geonet_ms": {
-    "median": 15.72,
-    "p90": 22.32
+    "median": 16.5,
+    "p90": 20.6
   },
-  "reloc_inliers_median": 210.0,
-  "icp_res_mm_median": 5.75,
+  "reloc_inliers_median": 211,
+  "icp_res_mm_median": 5.78,
   "tier": "T2-real-video-replay"
 }

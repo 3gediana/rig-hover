@@ -6,7 +6,7 @@
     "T3": "HIL (ESP32-compatible local loop)",
     "T4": "physical robot"
   },
-  "generated_at": "2026-11-23 09:14:05",
+  "generated_at": "2026-11-23 10:28:27",
   "entries": [
     {
       "id": "knock-3d-v2",
@@ -310,14 +310,14 @@
       "tier": "T2",
       "source": "runs_end_side/e2e_replay/robot_20261107_214950_1f30d1_summary.json",
       "metrics": {
-        "frames": 335,
+        "frames": 338,
         "gt_knocks": 14,
-        "fires": 15,
+        "fires": 19,
         "fp_outside_labels": 1,
-        "fires_in_other_labels": 7,
-        "misses": 7,
-        "reloc_inliers_med": 210.0,
-        "geonet_ms_med": 15.72
+        "fires_in_other_labels": 8,
+        "misses": 4,
+        "reloc_inliers_med": 211,
+        "geonet_ms_med": 16.5
       },
       "artifacts": {
         "json": "runs_end_side/e2e_replay/robot_20261107_214950_1f30d1_summary.json"
@@ -356,8 +356,8 @@
       "blocking": "needs printed checkerboard + 5min capture on the real robot"
     },
     {
-      "gap": "double-knock recall still ~65-77% under strict streaming",
-      "blocking": "v20 autopsy: deploy threshold is grid-optimal; misses need data not tuning"
+      "gap": "double-knock recall on weak-impact takes still ~25-77%",
+      "blocking": "v23 fixed trigger-layer losses (easy take 7->10/14); remaining misses are both-channel-weak - need harder-knock data not tuning"
     },
     {
       "gap": "physical live E2E run (replays cover cb8455+1f30d1; live still untested)",
