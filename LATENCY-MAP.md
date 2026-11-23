@@ -334,3 +334,32 @@ OTA 的 TLS 每次都失败重试。
 - 重定位 ~50ms 是下一个候选（可降频到每 2 帧，est_pose 已有 0.75 平滑兜底）
 - 真机验证：等机器人开机后测 live 端到端（fetch 线程 + 计算并行后的实际帧龄与控制率）
 - APP 模式整合：统一大脑本身已逐帧跑全部感知（模式只是行为状态机），APP 预设模式可合并为单一"脑模式"+场景参数
+
+### 10.4 第三轮：理论地板与并行化（2026-11-15 深夜）
+
+**第一性原理地板**（逐项物理下限，不拍脑袋）：
+
+| 环节 | 地板 | 依据 |
+|---|---|---|
+| 相机帧周期 | ~33 ms | GC0308 @30fps 硬地板，改不动 |
+| JPEG 编码 | ~18-22 ms | 软件 DCT；q80→q60 可压到 ~18ms+3KB |
+| WiFi 传输 | ~4-9 ms | 3-5KB @ ~600KB/s |
+| PC 解码 | ~1 ms | |
+| 计算最小集 | ~50-60 ms | geonet(15) + dynmask/ICP(~15) + reloc(~30摊) + policy(0.5) |
+| 指令回程 | ~5 ms | /cmd 异步后不在关键路径 |
+| **e2e 地板** | **~110-130 ms ≈ 8-9Hz** | 无感知零计算也要 ~70ms |
+
+**本轮实测（video probe，BelowNormal 桌面负载）**：TOTAL 中位 **83.3ms / p90 104 / max 132**（上轮 ~114，原架构 ~500）。
+
+做的事：
+1. **并行感知**：yunet+双敲只依赖原始帧 → 线程池挂在 GeoNet+SLAM 底下（knock 钉 CPU 让 GPU 独占 GeoNet，真并行非排队）
+2. **建图工人线程**：fuse/carve 整块出关键路径，busy 丢帧"最新优先"；点云 `_v` 原子元组发表防撕裂（float32 对齐写天然原子=良性竞争）
+3. **reloc 降频×2**（est_pose 平滑兜底，代价 ~3.5mm@50mm/s）
+4. **requests.Session keep-alive**：urllib 每帧新建 TCP = 握手+固件 socket 磨损（疑似"劣化态"元凶）；`/capture?q=60`
+
+**剩余可榨空间**：
+- geonet ~46ms 里 CPU 前处理（CLAHE+bilateral+Lanczos）占 ~15-25ms → 可换轻量插值/挪 GPU，或降输入尺寸
+- geonet 推理本身 ~16ms → torch.compile/CUDA graph 对 launch-bound 小 ViT 可能再砍半（未验证）
+- 传感器 33ms 地板以下唯一路径是更高帧率模式（GC0308 驱动需查寄存器配置，风险高）
+- ESP32 端"采集+编码"常驻流水线可让 /capture 响应接近即时（代价是帧龄 0-33ms 随机化）
+- 真机验证待开机：keep-alive 后 socket 磨损应消失
