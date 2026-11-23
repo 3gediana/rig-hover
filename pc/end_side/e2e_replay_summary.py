@@ -29,6 +29,11 @@ def summarize(log_path: Path, ann_path: Path, fps: float = 15.0, pad_s: float = 
     other = [(a.get("label", "?"), float(a["start_s"]), float(a["end_s"])) for a in all_segs if a.get("label") != "knock"]
 
     fires = [(r["frame"], r["frame"] / fps) for r in recs if r.get("knock", {}).get("fired")]
+    fire_src: dict[str, int] = {}
+    for r in recs:
+        if r.get("knock", {}).get("fired"):
+            s_ = r["knock"].get("src", "pair")
+            fire_src[s_] = fire_src.get(s_, 0) + 1
     hits, fp, amb, matched = [], [], [], set()
     for fr, t in fires:
         hit = next((i for i, (s0, s1) in enumerate(gt) if s0 - pad_s <= t <= s1 + pad_s), None)
@@ -64,7 +69,7 @@ def summarize(log_path: Path, ann_path: Path, fps: float = 15.0, pad_s: float = 
     import statistics as st
     return {
         "log": str(log_path), "n_frames_logged": len(recs), "fps_assumed": fps,
-        "gt_knocks": len(gt), "fires": len(fires),
+        "gt_knocks": len(gt), "fires": len(fires), "fires_by_src": fire_src,
         "hits": hits, "false_positives": fp, "ambiguous_in_other_labels": amb, "misses": misses,
         "mode_frame_counts": modes, "mode_transitions": transitions,
         "geonet_ms": {"median": round(st.median(geoms), 2), "p90": round(st.quantiles(geoms, n=10)[8], 2)} if geoms else None,

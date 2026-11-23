@@ -34,7 +34,7 @@
 
 **当前阶段**：端侧双敲识别模型（`DoubleKnockNet`）已完成 4 折留一与跨数据集零误报压力测试，端侧 39 维闭环强化学习策略（`BC Warm-Start + PPO`）已完成 5 控制器对比评测并导出真 FlatBuffers `.tflite` 部署包（详见 `SHOWCASE-REPORT-FOR-ADVISOR.md`）。
 
-**2026-11-22/23 状态更新（v13–v17）**：端侧大脑已串成端到端闭环并完成多轮压测——v13 严格自审（同架构 2D/3D 双敲消融增益仅 `+0.0217`，暴露跨场次校准退化）→ v14 具身大脑（真实录像双敲触发→3D 锁定→无里程计停靠 `3.97 cm`，30 局蒙特卡洛中位误差 `3.80 cm`）→ v15 活体桌面行为（视觉悬崖刹停、假动作免疫、物体恒存 NBV 探头、三连拷打）→ v16 Sim2Real 拷打（黑垫/悬崖视差区分、WiFi 延迟丢包、25 局全真蒙特卡洛碰撞率 `4%` vs 基线 `28%`）+ ESP32 HTTP HIL 16 周期中位 `35.6 ms` → v17 自研 EAF 表情生成器 + `/emote` 大脑状态表情桥（`brain_knock/brain_lock/brain_cliff_alert`）。统一入口 `pc/end_side/pc_unified_brain_app.py`（`--scenario 1|2`，`--source frames|video|live`，`--send-cmd` 显式授权，`--emote` 表情镜像）。**全部指标止于 T0–T3（仿真/回放/外部分布/HIL），尚无 T4 真机验收。** 完整细节见 `SHOWCASE-REPORT-FOR-ADVISOR.md` §13 与 `runs_end_side/scenario_matrix/`。
+**2026-11-22/24 状态更新（v13–v23）**：端侧大脑已串成端到端闭环并完成多轮压测——v13 严格自审（同架构 2D/3D 双敲消融增益仅 `+0.0217`，暴露跨场次校准退化）→ v14 具身大脑（真实录像双敲触发→3D 锁定→无里程计停靠 `3.97 cm`，30 局蒙特卡洛中位误差 `3.80 cm`）→ v15 活体桌面行为（视觉悬崖刹停、假动作免疫、物体恒存 NBV 探头、三连拷打）→ v16 Sim2Real 拷打（黑垫/悬崖视差区分、WiFi 延迟丢包、25 局全真蒙特卡洛碰撞率 `4%` vs 基线 `28%`）+ ESP32 HTTP HIL 16 周期中位 `35.6 ms` → v17 自研 EAF 表情生成器 + `/emote` 大脑状态表情桥（`brain_knock/brain_lock/brain_cliff_alert`）→ v18 追捕移动水杯（5 场景 4.5/5）→ v19 边缘勘测+任意点导航（void-majority 悬崖修复）→ v20 双敲漏检解剖 → v21 双 take E2E 回放 → v22 悬崖本能接入统一大脑（真机画面实证）→ v23 双敲触发层修复（sem 闩存+延迟确认单峰，易 take 命中 7→10/14）。统一入口 `pc/end_side/pc_unified_brain_app.py`（`--scenario 1|2`，`--source frames|video|live`，`--send-cmd` 显式授权，`--emote` 表情镜像）。**全部指标止于 T0–T3（仿真/回放/外部分布/HIL），尚无 T4 真机验收。** 完整细节见 `SHOWCASE-REPORT-FOR-ADVISOR.md` §13 与 `runs_end_side/scenario_matrix/`。
 
 ---
 
@@ -82,7 +82,7 @@ idf.py -p COM3 -b 460800 app-flash
 | 文档 | 行数 | 什么时候读 |
 |---|---|---|
 | **`AGENTS.md`（本文）** | — | **第一个读。** 索引 + 踩坑 + 纪律 |
-| **`SHOWCASE-REPORT-FOR-ADVISOR.md`** | ~380 | **【2026-11-15 进组请柬技术报告】** 端侧感知+决策一体化架构、双敲识别网络 (`DoubleKnockNet`)、端侧 39 维闭环强化学习策略 (`BC + PPO`) 与安全屏障 (`EndSideSafetyShield`) 完整方法论与实测对比 |
+| **`SHOWCASE-REPORT-FOR-ADVISOR.md`** | ~593 | **【2026-11-15 进组请柬技术报告】** 端侧感知+决策一体化架构、双敲识别网络 (`DoubleKnockNet`)、端侧 39 维闭环强化学习策略 (`BC + PPO`) 与安全屏障 (`EndSideSafetyShield`) 完整方法论与实测对比；§13 附 v13–v23 具身行为证据链 |
 | **`COLLAB.md`** | — | **外部协作者（马伟坚）第一个读。** 分工、数据与标注约定、红线 |
 | `dataset/README.md` | — | 数据集样例目录：收录规则、导出命令、annotation 格式 |
 | `dataset/docs/ROBOT-SETUP.md` | — | **新电脑/新操作者先读。** 电脑热点 `qasd`/`88888888`、重新配网、服务启动、红线 |
