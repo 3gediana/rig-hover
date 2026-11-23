@@ -461,6 +461,38 @@ def fps_degrade_batch(
     return v, k
 
 
+def amp_degrade_batch(
+    x_vis: torch.Tensor,
+    x_kin: torch.Tensor,
+    rng: np.random.Generator,
+    p: float = 0.5,
+    s_range: tuple[float, float] = (0.35, 0.85),
+) -> tuple[torch.Tensor, torch.Tensor]:
+    """随机把敲击幅度降级成"轻敲"（弱冲击样本增强）。
+
+    v20/v23 全谱系解剖显示残余漏检几乎全是弱冲击弱语义样本（imp<0.3、sem<0.1），
+    触发层已无可修空间——需要模型在更低 SNR 上学到双敲的时序模式。
+    本增强把强敲样本的"敲击强度签名"按 s 同步衰减：
+      - 视觉帧差通道 v[:,:,1] ×s（灰度通道不动——桌子没变暗）；
+      - 运动学 {2:vy, 3:ay_rebound, 4:vx, 6:global_diff, 7:roi_diff} ×s
+        （触底速度与帧差能量都正比于敲击力度）；
+      - 位置 {0:wx,1:wy} 与 {5:box_valid} 不变（手的位置不随力度变）。
+    只收缩正样本不放大负样本——弱噪仍是弱噪，不会把背景噪声教成敲击。
+    """
+    if p <= 0.0:
+        return x_vis, x_kin
+    v = x_vis.clone()
+    k = x_kin.clone()
+    for i in range(v.shape[0]):
+        if rng.random() >= p:
+            continue
+        s = float(rng.uniform(s_range[0], s_range[1]))
+        v[i, :, 1] = v[i, :, 1] * s
+        for d in (2, 3, 4, 6, 7):
+            k[i, :, d] = k[i, :, d] * s
+    return v, k
+
+
 def degrade_sequence(
     vis: np.ndarray,
     kin: np.ndarray,
@@ -677,6 +709,7 @@ def train_one_model(
     device: torch.device = torch.device("cpu"),
     seed: int = 42,
     fps_aug_p: float = 0.0,
+    amp_aug_p: float = 0.0,
 ) -> DoubleKnockNet:
     torch.manual_seed(seed)
     rng = np.random.default_rng(seed)
@@ -733,6 +766,8 @@ def train_one_model(
 
             if fps_aug_p > 0.0:
                 bv, bk = fps_degrade_batch(bv, bk, rng, p=fps_aug_p)
+            if amp_aug_p > 0.0:
+                bv, bk = amp_degrade_batch(bv, bk, rng, p=amp_aug_p)
             bv, bk = augment_batch(bv, bk, rng)
             opt.zero_grad()
             l_imp, l_cnt = model(bv, bk)
@@ -800,6 +835,7 @@ def run_pipeline(
     epochs: int = 16,
     device_str: str = "cuda",
     fps_aug_p: float = 0.0,
+    amp_aug_p: float = 0.0,
 ) -> dict:
     repo_root = Path(__file__).resolve().parents[2]
     out_path = Path(out_dir) if Path(out_dir).is_absolute() else repo_root / out_dir
@@ -830,6 +866,7 @@ def run_pipeline(
             device=device,
             seed=100 + fold_idx,
             fps_aug_p=fps_aug_p,
+            amp_aug_p=amp_aug_p,
         )
         calib = calibrate_on_train_takes(model, train_sub, window=window, device=device)
 
@@ -1007,6 +1044,7 @@ def run_pipeline(
         "window": window,
         "epochs": epochs,
         "fps_aug_p": fps_aug_p,
+        "amp_aug_p": amp_aug_p,
         "fps_robustness_ungated": fps_rob_summary,
         "mean_window_knock_auroc": round(float(np.mean([f["window_knock_auroc"] for f in fold_reports])), 4),
         "mean_window_knock_f1": round(float(np.mean([f["window_knock_f1"] for f in fold_reports])), 4),
@@ -1043,6 +1081,7 @@ def main() -> int:
     ap.add_argument("--epochs", type=int, default=16)
     ap.add_argument("--device", default="cuda")
     ap.add_argument("--fps-aug", type=float, default=0.0, help="训练时随机模拟低采集帧率的概率（0–1）")
+    ap.add_argument("--amp-aug", type=float, default=0.0, help="训练时随机把敲击幅度降级成轻敲的概率（0–1）")
     args = ap.parse_args()
     run_pipeline(
         out_dir=args.out,
@@ -1050,6 +1089,7 @@ def main() -> int:
         epochs=args.epochs,
         device_str=args.device,
         fps_aug_p=max(0.0, min(1.0, args.fps_aug)),
+        amp_aug_p=max(0.0, min(1.0, args.amp_aug)),
     )
     return 0
 
