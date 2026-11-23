@@ -381,8 +381,13 @@ class UnifiedRobotBrain:
             # 盯脸可读性：policy 输出 ±1-5° 人耳听不到舵机声。检测到脸就直接按
             # 方位角控舵机（60°FOV，正=左转），转幅一眼能看见
             if self.mode == MODE_GAZE_FACE and face_dets:
-                head_deg = float(np.clip((0.5 - face_dets[0]["cx"]) * 60.0, -60.0, 60.0))
-                safe_cmd = DriveCommand(safe_cmd.vx, safe_cmd.vyaw, head_deg)
+                # 舵机闭环居中：不猜头-视野传递函数，每帧朝脸心增量修正（±12°/帧），
+                # 居中即停。真机"斜眼看人"的根因是一次性比例映射增益不足。
+                cx_err = face_dets[0]["cx"] - 0.5
+                if abs(cx_err) > 0.03:  # 死区：居中附近保持，避免嗡鸣
+                    self._head_hold = float(np.clip(
+                        getattr(self, "_head_hold", 0.0) - np.clip(cx_err * 60.0, -12.0, 12.0), -70.0, 70.0))
+                safe_cmd = DriveCommand(safe_cmd.vx, safe_cmd.vyaw, getattr(self, "_head_hold", 0.0))
         _st["policy"] = (_t() - _t0) * 1e3
 
         # 找人本能：无脸 >6s 就缓速旋转扫描（真机曾转到面壁全程 IDLE——它不是在不理你，
@@ -404,6 +409,9 @@ class UnifiedRobotBrain:
                 0.55 * _p[2] + 0.45 * safe_cmd.head,
             )
             self._cmd_f = (safe_cmd.vx, safe_cmd.vyaw, safe_cmd.head)
+        # vyaw 死区：±3 以下一律 0——往复摆动若有非零均值会积成净转身（真机实证"前后摆变侧对"）
+        if abs(safe_cmd.vyaw) < 3.0:
+            safe_cmd = DriveCommand(safe_cmd.vx, 0.0, safe_cmd.head)
 
         return {
             "frame": self.frames_seen,
