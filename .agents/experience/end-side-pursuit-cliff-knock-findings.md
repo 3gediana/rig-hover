@@ -146,3 +146,11 @@
 - **不降频的**：DoubleKnock（触发时序敏感）、悬崖（安全）、ICP/dynmask（控制需要）。
 - **framesrc/realimg/e2ereplay 测试 FAIL 是环境性**（mock 零帧 / HaGRID 未下载），非回归；endside 94 门全绿。
 - 下一目标：重定位 ~50ms 可降频；真机 live 端到端待开机验证。
+
+## 延迟攻坚第三轮（并发/编排层面）
+
+- **并行感知**：yunet+knock 只吃原始帧 → 线程池藏在 GeoNet+SLAM 下；knock 钉 CPU（GPU 独占给 GeoNet，否则只是排队）。
+- **建图工人线程**：static_cloud 的 pos/nrm/crease/wt 绑成 `_v` 元组原子发表——不然 fuse 里逐字段 concat 会让读者拿到"新pos+旧wt"布尔索引撕裂崩溃。原位写是 x86 对齐原子，良性。
+- **async_static 默认 False**：测试要确定性——decim=1 + busy-skip 会饿死 ever_free 确认链，动态入侵者路由全挂（被 test_3 抓到）。
+- **懒解码**：pts_cam/nrm_cam 只有重定位吃，跳帧不解；rays_cam 常量缓存。
+- 实测：~500 → **74.8ms 中位 / p90 95 / max 128**（ BelowNormal 桌面负载下）。地板 ~110-130ms e2e（传感器 33ms 是硬底）。
