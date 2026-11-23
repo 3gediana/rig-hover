@@ -410,7 +410,7 @@ class UnifiedRobotBrain:
             if self.mode == MODE_GAZE_FIST and fist_det:
                 # 盯拳：身体转向拳方位（头是表情件；vyaw>0=左）。增量小步，防甩头
                 vyaw_g = float(np.clip(fist_det["bearing_deg"] * 0.6, -25.0, 25.0))
-                head_g = float(np.clip(fist_det["bearing_deg"] * 0.7, -35.0, 35.0))
+                head_g = float(np.clip(fist_det["bearing_deg"] * 2.0, -45.0, 45.0))
                 safe_cmd = DriveCommand(0.0, vyaw_g, head_g)
             elif self.mode == MODE_GAZE_FACE and face_dets:
                 # 舵机云台不带相机——转头动不了脸在画面里的位置（真机实证 head 顶死 +70 而
@@ -418,7 +418,7 @@ class UnifiedRobotBrain:
                 # 此式同号），头只做同向表情倾斜，身体到位后自然回零。
                 cx_err = face_dets[0]["cx"] - 0.5
                 vyaw_g = float(np.clip(cx_err * 140.0, -30.0, 30.0)) if abs(cx_err) > 0.04 else 0.0
-                head_g = float(np.clip(-cx_err * 50.0, -35.0, 35.0))
+                head_g = float(np.clip(-cx_err * 160.0, -45.0, 45.0))  # 连杆比吃掉大半摆角，打满±45才看得见
                 safe_cmd = DriveCommand(0.0 if held else safe_cmd.vx, vyaw_g if not held else 0.0, head_g)
         _st["policy"] = (_t() - _t0) * 1e3
 
@@ -438,7 +438,7 @@ class UnifiedRobotBrain:
             safe_cmd = DriveCommand(
                 0.55 * _p[0] + 0.45 * safe_cmd.vx,
                 0.55 * _p[1] + 0.45 * safe_cmd.vyaw,
-                0.55 * _p[2] + 0.45 * safe_cmd.head,
+                0.15 * _p[2] + 0.85 * safe_cmd.head,  # head 通道轻平滑要响应快
             )
             self._cmd_f = (safe_cmd.vx, safe_cmd.vyaw, safe_cmd.head)
         # vyaw 死区：±3 以下一律 0——往复摆动若有非零均值会积成净转身（真机实证"前后摆变侧对"）
