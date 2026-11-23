@@ -321,12 +321,16 @@ class UnifiedRobotBrain:
             if fut_knock is not None:
                 knock_out = fut_knock.result()
                 if knock_out.get("fired", 0):
-                    # 将当前动态前景质心（或桌面中前区）升维为 3D 敲击点！
-                    if len(self.slam.dyn_pts) >= 20:
-                        k_med = np.median(self.slam.dyn_pts, axis=0)
-                        self.set_3d_target(float(np.clip(k_med[0], 0.24, 1.05)), float(np.clip(k_med[1], -0.40, 0.40)))
+                    # 敲击点=贴桌面的动态簇质心：dyn_pts 混着手+身体+脸，中位数会把点拉到桌外
+                    # （真机实证：敲在桌前 0.25m 被算成 0.69m 桌外）。取最近 35% + |z|<0.06m 的点。
+                    dp = self.slam.dyn_pts
+                    if len(dp) >= 20:
+                        near = dp[dp[:, 0] <= np.quantile(dp[:, 0], 0.35)]
+                        near = near[np.abs(near[:, 2]) < 0.06] if len(near) else dp
+                        k_med = np.median(near if len(near) >= 8 else dp, axis=0)
+                        self.set_3d_target(float(np.clip(k_med[0], 0.15, 0.60)), float(np.clip(k_med[1], -0.35, 0.35)))
                     else:
-                        self.set_3d_target(0.48, 0.0)
+                        self.set_3d_target(0.35, 0.0)
             _st["knock"] = (_t() - _t0) * 1e3
 
         # 4) 自研 EndSidePolicyNet + EndSideSafetyShield 输出最终控制指令
@@ -374,6 +378,11 @@ class UnifiedRobotBrain:
             f39 = EndSideFeatureBuilder.build(tel, detections=face_dets, target_lock=None, clearance_m=1.0)
             raw_cmd = self.policy_s1.infer_numpy(f39)
             safe_cmd = self.shield.apply(raw_cmd, mode=self.mode, remaining_m=0.0, pitch_deg=tel.pitch)
+            # 盯脸可读性：policy 输出 ±1-5° 人耳听不到舵机声。检测到脸就直接按
+            # 方位角控舵机（60°FOV，正=左转），转幅一眼能看见
+            if self.mode == MODE_GAZE_FACE and face_dets:
+                head_deg = float(np.clip((0.5 - face_dets[0]["cx"]) * 60.0, -60.0, 60.0))
+                safe_cmd = DriveCommand(safe_cmd.vx, safe_cmd.vyaw, head_deg)
         _st["policy"] = (_t() - _t0) * 1e3
 
         # 出口低通：10Hz 更新率下符号拍动就是肉眼可见的前后猛抖（真机实证）。
