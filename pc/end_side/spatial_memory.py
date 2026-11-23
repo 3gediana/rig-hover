@@ -128,7 +128,7 @@ class SpatialMemoryTracker:
 
     def step_odometry(self, dt_s: float, telemetry: RobotTelemetry) -> SpatialTargetState:
         """根据双轮编码器位移与头部 IMU 减舵机角解算的纯机身偏航角增量，更新自车系目标位置。"""
-        wheel_x = float(telemetry.wheel_x_avg)
+        wheel_x = float(getattr(telemetry, "wheel_x_m", telemetry.wheel_x_avg))
         cmd_pos = float(telemetry.cmd_pos)
         imu_yaw = float(telemetry.yaw)
         head_q = float(telemetry.head_q)

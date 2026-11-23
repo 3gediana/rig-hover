@@ -55,6 +55,8 @@ def load_frames(n: int = 60, size: int = 240):
         y0, x0 = (size - img.shape[0]) // 2, (size - img.shape[1]) // 2
         canvas[y0:y0 + img.shape[0], x0:x0 + img.shape[1]] = img
         frames.append(canvas)
+    if not frames:
+        return [np.full((size, size, 3), 60 + i % 150, np.uint8) for i in range(n)]
     return frames
 
 

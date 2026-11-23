@@ -21,7 +21,8 @@ import queue
 import threading
 import time
 import urllib.parse
-import urllib.request
+
+import requests
 
 # 大脑状态 -> LCD 表情名（emote.json 里的 key）。
 # brain_* 三个自定义表情由 pc/end_side/make_brain_emotes_v17.py 生成。
@@ -34,7 +35,12 @@ MODE_TO_EMOTE: dict[str, str] = {
     "FALLBACK": "confused",
 }
 
-# 瞬时事件 -> (表情名, 驻留秒数)。事件期间屏蔽状态更新。
+# 若固件未烧录 v17 自定义 brain_* 表情（如出厂/旧槽位 28 表情表），自动降级到已有高辨识度表情
+EMOTE_FALLBACK: dict[str, str] = {
+    "brain_knock": "surprised",
+    "brain_lock": "confident",
+    "brain_cliff_alert": "shocked",
+}
 EVENT_EMOTE: dict[str, tuple[str, float]] = {
     "knock": ("brain_knock", 1.6),
     "lock": ("brain_lock", 1.4),
@@ -97,23 +103,44 @@ class EmoteBridge:
             return
         try:
             self._q.put_nowait(emote)
+            self._last_sent = emote
+            self._last_sent_t = now
         except queue.Full:
             pass  # 机器人断联时队列会满，直接丢
 
     def _worker(self) -> None:
+        sess = requests.Session()
+        sess.trust_env = False  # 局域网直连，绕过系统 HTTP_PROXY
+        supported: set[str] | None = None
+        probed = False
         while True:
             emote = self._q.get()
             if emote is None:
+                sess.close()
                 return
-            url = f"{self.base_url}/emote?name={urllib.parse.quote(emote)}"
-            req = urllib.request.Request(url, method="POST", data=b"")
+            if not probed:
+                probed = True
+                try:
+                    rg = sess.get(f"{self.base_url}/emote", timeout=0.35)
+                    if rg.status_code == 200:
+                        names = rg.json().get("names")
+                        if isinstance(names, list) and names:
+                            supported = {str(x) for x in names}
+                except Exception:
+                    supported = None
+            send_name = emote
+            if supported is not None and send_name not in supported:
+                send_name = EMOTE_FALLBACK.get(send_name, "neutral")
+            url = f"{self.base_url}/emote?name={urllib.parse.quote(send_name)}"
             try:
-                with urllib.request.urlopen(req, timeout=self.timeout_s) as r:
-                    r.read()
-                self.sent += 1
-                self._last_sent = emote
-                self._last_sent_t = time.perf_counter()
-                if self.verbose:
-                    print(f"[emote] -> {emote}", flush=True)
+                r = sess.post(url, data=b"", timeout=self.timeout_s)
+                if r.status_code == 200:
+                    self.sent += 1
+                    self._last_sent = emote
+                    self._last_sent_t = time.perf_counter()
+                    if self.verbose:
+                        print(f"[emote] -> {send_name}", flush=True)
+                else:
+                    self.failed += 1
             except Exception:
                 self.failed += 1
