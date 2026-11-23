@@ -102,6 +102,10 @@ SUITES = [
     # 追捕/悬崖/LCD 表情生成器+桥接，共 56 个 pytest 门禁（~30 s）。
     ("endside", "end-side embodied brain stack (101 pytest gates)", rf"{W}\pc\end_side",
      ["-m", "pytest", ".", "-x", "-q", "-p", "no:cacheprovider"], True),
+    # 2026-11-24 SIM2REAL: controllers on the plant identified from the real robot (overshoot/torque bounds,
+    # the fall mechanism as a regression, gaze facing, table projection, click-to-go convergence, fist path).
+    ("s2r", "sim2real controllers on identified plant (7 gates)", rf"{W}\pc\s2r",
+     ["-m", "pytest", "test_s2r.py", "-q", "-p", "no:cacheprovider"], False),
 ]
 
 FAIL_LINE_RE = re.compile(r"(?m)^\s*\[?(?:FAIL|FAILED)\b")

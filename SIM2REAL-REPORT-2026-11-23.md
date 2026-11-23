@@ -151,3 +151,10 @@ Devin 的 3D 点云窗口里点击，本质也是求 z=0 平面交点，所以�
 **仍然诚实的边界**：这是用真机数据辨识的模型做的闭环，**不是真机跑动**（机器人现在躺着，通电跑动要你在场）。
 平面投影对相机俯仰角敏感，没标定前 40 cm 处误差可到 10 cm（见 §4）。所以"点一下能到位"现在是：
 **闭环证明算法收敛、到点会停、精度约 1 cm 沿途**，真机那一格仍留白等 `live.py --mode click` 在你在场时验证。
+
+## 11. 全仓回归 + 收尾（2026-11-24 00:30）
+
+- **全仓测试**（`run_all_tests.py`，BelowNormal 优先级）：**21/23 门禁通过**。没过的 `realimg`、`e2ereplay` 两项，加上诊断项 `obsdomain`，都是因为 `pc/gesture/data/raw/hagrid/` 这批 HaGRID 原图本来就没下载（Devin 的经验笔记里也记过）。**和昨晚的改动无关**：迁到 G 盘的只有 `synth/`，它走目录链接照常可读，用到它的 `gesture` 那项是通过的。`endside` 101 项、`safety` 7 项都通过。
+- **s2r 接入测试入口**：`run_all_tests.py --only s2r`，7 项门禁全部通过。
+- **旧 App 安全修复**：`real_robot_bridge.py` 的视场角从 62.5° 改成实测的 75.5°，并给固件下发的转向超前量和位置超前量加了上限（18° / 5 cm），`test_real_robot_bridge` 7/7 通过。
+- **AGENTS.md 修正**：最后更新日期、测试数量、失效引用（`scenario_matrix/README.md` 实际是 `scenario_matrix.md`）；把 §6 标成历史状态。

@@ -3,7 +3,7 @@
 > 给**下一个接手这个项目的 agent**。目标：你读完这一份，就知道
 > 东西在哪、怎么跑、别踩哪些坑、现在到哪一步了。
 >
-> 最后更新：2026-11-15。
+> 最后更新：2026-11-24（SIM2REAL 复盘，见 `SIM2REAL-REPORT-2026-11-23.md`）。
 > 用户偏好见 §8，**动手前先读那一节**。
 > **2026-11-23 夜 SIM2REAL 复盘（必读）**：下午真机失败的根因、真机实测硬件档案（FOV 75.5°、头舵机 ±7° 死区、
 > 航向静摩擦、陀螺零漂）、一次由转身测试导致的摔倒，以及新的 `pc/s2r/` 精简运行时，全在
@@ -53,7 +53,7 @@ curl.exe --noproxy '*' http://192.168.137.50/status
 # 端到端延迟（需要机器人在线）
 & $py D:\robot_work\pc\tools\e2e_latency.py --n 60 --base http://192.168.137.50 --warmup 10
 
-# 全部测试（23 个门禁 + 1 个诊断）
+# 全部测试（2026-11-24：24 个门禁 + 1 个诊断，含 s2r；以 run_all_tests.py 的 SUITES 为准）
 & $py D:\robot_work\run_all_tests.py
 
 # 构建固件
@@ -143,7 +143,7 @@ idf.py -p COM3 -b 460800 app-flash
 ### 3.3 关键命令
 
 ```powershell
-# 全部门禁（23 套 + 1 诊断）
+# 全部门禁（以 run_all_tests.py 的 SUITES 为准）
 & $py D:\robot_work\run_all_tests.py
 & $py D:\robot_work\run_all_tests.py --build      # 额外跑固件构建
 
@@ -351,7 +351,7 @@ idf.py -p COM3 -b 460800 app-flash
 
 ---
 
-## 6. 当前状态（2026-11-03 夜）
+## 6. 历史状态（2026-11-03 夜；当前状态见 §0 与 SIM2REAL-REPORT-2026-11-23.md）
 
 ### 6.1 已完成
 
@@ -499,7 +499,7 @@ dist_k=0.84 ⇒ f_px = 118.6 ⇒ FOV_V = 90°
 > v18 追捕水杯 5 场景 4.5/5；v19 边缘勘测+任意点导航；v20 双敲漏检解剖；v21 两条完整 take E2E 回放
 > （回放语义：`est_pose`=录像真值不可响应指令）；v22 悬崖本能接入统一大脑（Shield clearance=0 硬刹）；
 > v23 双敲触发层修复（sem闩存+延迟确认单峰，易 take 命中 7→10/14，难 take 零回归）。
-> 能力缺口清单见 `runs_end_side/scenario_matrix/README.md`。
+> 能力缺口清单见 `runs_end_side/scenario_matrix/scenario_matrix.md`。
 >
 > **资源纪律（用户明确要求）**：仿真一律 BelowNormal 优先级、单进程串行跑，机器曾被多开仿真卡死。
 >
