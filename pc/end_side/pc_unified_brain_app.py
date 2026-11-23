@@ -333,6 +333,28 @@ class UnifiedRobotBrain:
                         self.set_3d_target(0.35, 0.0)
             _st["knock"] = (_t() - _t0) * 1e3
 
+        # 3.5) 拳头注视：抬离桌面的紧凑动态簇 = 悬空拳头（统一大脑此前没有拳头检测器，
+        # GAZE_FIST 是进不去的死代码——真机"不认拳"的直接原因；SLAM 动态分离现成）
+        fist_det = None
+        dp = self.slam.dyn_pts
+        if len(dp) >= 60:
+            elev = dp[(dp[:, 2] > 0.08) & (dp[:, 0] < 0.95)]
+            if len(elev) >= 40:
+                _c = np.median(elev, axis=0)
+                spread = float(np.median(np.linalg.norm(elev[:, :2] - _c[:2], axis=1)))
+                if spread < 0.16:
+                    fist_det = {"bearing_deg": math.degrees(math.atan2(-_c[1], _c[0])), "n": int(len(elev))}
+        if fist_det is not None and self.mode in (MODE_IDLE, MODE_GAZE_FACE):
+            self.mode = MODE_GAZE_FIST
+            self._fist_lost = 0
+        elif self.mode == MODE_GAZE_FIST:
+            if fist_det is None:
+                self._fist_lost = getattr(self, "_fist_lost", 0) + 1
+                if self._fist_lost > 30:
+                    self.mode = MODE_GAZE_FACE if face_dets else MODE_IDLE
+            else:
+                self._fist_lost = 0
+
         # 4) 自研 EndSidePolicyNet + EndSideSafetyShield 输出最终控制指令
         _t0 = _t()
         rem_m = 0.0
@@ -380,7 +402,13 @@ class UnifiedRobotBrain:
             safe_cmd = self.shield.apply(raw_cmd, mode=self.mode, remaining_m=0.0, pitch_deg=tel.pitch)
             # 盯脸可读性：policy 输出 ±1-5° 人耳听不到舵机声。检测到脸就直接按
             # 方位角控舵机（60°FOV，正=左转），转幅一眼能看见
-            if self.mode == MODE_GAZE_FACE and face_dets:
+            if self.mode == MODE_GAZE_FIST and fist_det:
+                # 盯拳：朝拳簇方位增量修正舵机（bearing>0=目标在左→head+左）
+                self._head_hold = float(np.clip(
+                    getattr(self, "_head_hold", 0.0) + float(np.clip(fist_det["bearing_deg"] * 0.8, -14.0, 14.0)),
+                    -70.0, 70.0))
+                safe_cmd = DriveCommand(0.0, safe_cmd.vyaw, self._head_hold)
+            elif self.mode == MODE_GAZE_FACE and face_dets:
                 # 舵机闭环居中：不猜头-视野传递函数，每帧朝脸心增量修正（±12°/帧），
                 # 居中即停。真机"斜眼看人"的根因是一次性比例映射增益不足。
                 cx_err = face_dets[0]["cx"] - 0.5
@@ -427,6 +455,7 @@ class UnifiedRobotBrain:
             "reloc": reloc_info,
             "knock": {"fired": int(knock_out.get("fired", 0)), "p_double": round(float(knock_out.get("p_double", 0.0)), 3), "src": knock_out.get("fire_src", "pair"), "imp": round(float(knock_out.get("p_impulse", 0.0)), 3), "sem": round(float(knock_out.get("p_double_sem", knock_out.get("p_double", 0.0))), 3), "pk": int(bool(knock_out.get("peak")))},
             "faces": face_dets,
+            "fist": fist_det,
             "cliff": cliff_det,
             "cliff_fired": int(cliff_fired),
             "cliff_engaged": int(cliff_engaged),
