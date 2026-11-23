@@ -223,6 +223,14 @@ class UnifiedRobotBrain:
         """单帧统一推理：自研 HoverGeoNet-ViT-240 + Dynablox + 视觉-3D 重定位 + 场景一/二 RL 决策。"""
         self.frames_seen += 1
         tel = telemetry or RobotTelemetry(pitch=3.0, roll=0.0, yaw=self.est_pose[2])
+        # IMU 逐帧传播 est_pose.yaw：重定位每 2 帧才纠一次，冻结期间机器人真在转，
+        # 方位角来回跳曾致 vyaw 甩鞭原地打转（真机 f171-300 实证）
+        if getattr(self, "_last_tel_yaw", None) is not None:
+            self.est_pose = (
+                self.est_pose[0], self.est_pose[1],
+                _wrap_deg(self.est_pose[2] + _wrap_deg(tel.yaw - self._last_tel_yaw)),
+            )
+        self._last_tel_yaw = tel.yaw
         bgr240 = cv2.resize(bgr, (240, 240), interpolation=cv2.INTER_AREA) if bgr.shape[:2] != (240, 240) else bgr
         _t = time.perf_counter
         _st: dict[str, float] = {}
@@ -352,6 +360,19 @@ class UnifiedRobotBrain:
             raw_cmd = self.policy_s1.infer_numpy(f39)
             safe_cmd = self.shield.apply(raw_cmd, mode=self.mode, remaining_m=0.0, pitch_deg=tel.pitch)
         _st["policy"] = (_t() - _t0) * 1e3
+
+        # 出口低通：10Hz 更新率下符号拍动就是肉眼可见的前后猛抖（真机实证）。
+        # 悬崖硬停（clearance<=0）旁路不平滑——刹停必须是即时的。
+        if cliff_clear is not None and cliff_clear <= 0.0:
+            self._cmd_f = (safe_cmd.vx, safe_cmd.vyaw, safe_cmd.head)
+        else:
+            _p = getattr(self, "_cmd_f", None) or (safe_cmd.vx, safe_cmd.vyaw, safe_cmd.head)
+            safe_cmd = DriveCommand(
+                0.55 * _p[0] + 0.45 * safe_cmd.vx,
+                0.55 * _p[1] + 0.45 * safe_cmd.vyaw,
+                0.55 * _p[2] + 0.45 * safe_cmd.head,
+            )
+            self._cmd_f = (safe_cmd.vx, safe_cmd.vyaw, safe_cmd.head)
 
         return {
             "frame": self.frames_seen,
