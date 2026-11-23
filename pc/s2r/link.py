@@ -57,7 +57,7 @@ class Tel:
 
     @property
     def x_m(self) -> float:
-        return float(self.wheel_x) * TICK_M if abs(self.wheel_x) > 3.0 else float(self.wheel_x)
+        return float(self.wheel_x)   # firmware wheel_x, metres (TLM f[12]); same unit as stable_pos
 
 
 def parse_tlm(pkt: bytes) -> Tel | None:
@@ -68,7 +68,7 @@ def parse_tlm(pkt: bytes) -> Tel | None:
         return None
     f = struct.unpack_from("<34f", pkt, 16)
     return Tel(t=time.perf_counter(), roll=f[0], pitch=f[1], yaw=f[2], x1=f[10], x2=f[11],
-               wheel_x=(f[10] + f[11]) * 0.5, vx_w=f[13], q=f[14], q_tgt=f[15], stable_pos=f[16], stable_yaw=f[17],
+               wheel_x=f[12], vx_w=f[13], q=f[14], q_tgt=f[15], stable_pos=f[16], stable_yaw=f[17],
                tor1=f[20], tor2=f[21], robot_state=int(round(f[22])), src=int(round(f[29])), feat_age=f[30], danger=f[33])
 
 
@@ -302,6 +302,16 @@ class Robot:
                 return True
             time.sleep(0.05)
         return False
+
+    def rest_pos_lead(self) -> float:
+        # balance equilibrium offset: firmware holds stable_pos ahead/behind the wheels at rest (measured 4.65 cm).
+        t = self.udp.latest()
+        return 0.0 if t is None else float(t.stable_pos) - t.x_m
+
+    def drive_cfg(self, headroom_m: float = 0.05) -> dict:
+        # pos_lead cap must sit ON TOP of the rest offset, else the cap is consumed and vx cannot move the robot.
+        lead0 = abs(self.rest_pos_lead())
+        return {"yaw_lead_max": 18.0, "pos_lead_max": float(min(0.14, lead0 + headroom_m)), "vx_max": 0.08, "vyaw_max": 45.0}
 
     def rest_bias(self, secs: float = 3.0) -> float:
         """Bias from a stationary window using wheel truth (works whatever mode the robot is in)."""

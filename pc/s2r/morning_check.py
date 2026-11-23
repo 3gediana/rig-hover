@@ -36,13 +36,14 @@ def stage_motion():
             report["abort"] = f"robot not standing (state={tel.robot_state}, roll={tel.roll:.1f})"; return False
         p0 = tel.pitch
         b = R.rest_bias(3.0); report["rest_bias_dps"] = round(b, 3)
-        R.act.cfg.update({"yaw_lead_max": 18.0, "pos_lead_max": 0.05, "vx_max": 0.08, "vyaw_max": 45.0})
+        R.act.cfg.update(R.drive_cfg()); print("drive cfg", R.act.cfg, flush=True)
         R.act.enable(init_bias_dps=b)
         H = HeadingServo()
         psi0 = R.udp.latest().body_yaw_wheel
         res = []
         def safe(t):
             return abs(t.pitch - p0) <= 8.0 and abs(t.roll) <= 12.0
+        prev_tgt = 0.0
         for tgt, dur in ((8, 4), (0, 4), (-8, 4), (0, 4), (15, 5), (0, 5)):
             H.reset(); te = time.perf_counter() + dur; peak = 0.0; seg = []
             while time.perf_counter() < te:
@@ -57,7 +58,8 @@ def stage_motion():
                 log.append([round(time.perf_counter(), 3), tgt, round(rel, 2), round(lead, 2), round(vy, 1), round(t.pitch, 2)])
                 time.sleep(0.03)
             fin = float(np.mean(seg[-10:]))
-            ov = (max(seg) - tgt) if tgt > 0 else ((tgt - min(seg)) if tgt < 0 else max(abs(min(seg)), abs(max(seg))) - 0)
+            step = tgt - prev_tgt; prev_tgt = tgt
+            ov = (max(seg) - tgt) if step > 0 else ((tgt - min(seg)) if step < 0 else 0.0)
             res.append({"target": tgt, "final": round(fin, 2), "final_err": round(abs(fin - tgt), 2), "overshoot": round(ov, 2), "peak_lead": round(peak, 1)})
             print("heading", res[-1], flush=True)
         report["heading"] = res; save()

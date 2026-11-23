@@ -120,7 +120,7 @@ def main():
     bgaze = BodyGaze()
     goto = GotoPoint()
     if send:
-        R.act.cfg.update({"yaw_lead_max": 18.0, "pos_lead_max": 0.05, "vx_max": 0.08, "vyaw_max": 45.0})
+        R.act.cfg.update(R.drive_cfg()); print("drive cfg", R.act.cfg, flush=True)
         print("cfg", R.act.enable(init_bias_dps=bias0), flush=True)
 
     mode = "IDLE"; last_idx = 0; t0 = time.perf_counter(); last_t = t0
@@ -217,7 +217,7 @@ def main():
                 else:
                     bgaze.update(now, cx, tel_cap.body_yaw_wheel, tel_cap.q, tel.q, tel.body_yaw_wheel)
                     vy, _ = body_only.step(now, tel.body_yaw_wheel, lead_yaw, bgaze.target)
-                vx = float(np.clip(-2.0 * lead_pos, -0.02, 0.02))
+                vx = 0.0   # firmware holds position itself
             if send:
                 R.act.set(vx=vx, vyaw=vy, head=head)
             stats["frames"] += 1; stats["face"] += face is not None; stats["fist"] += fist is not None

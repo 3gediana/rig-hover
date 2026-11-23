@@ -119,7 +119,7 @@ class GotoPoint:
         """x,y: odometry position (m); lead_pos = stable_pos - wheel_x (m). Returns (vx m/s, vyaw deg/s, dbg)."""
         if self.goal is None or self.phase in ("idle", "done"):
             vy, _ = self.heading.step(t, psi_w, lead_yaw, None)
-            return float(np.clip(-2.0 * lead_pos, -0.02, 0.02)), vy, {"phase": self.phase}
+            return 0.0, vy, {"phase": self.phase}
         gx, gy = self.goal
         dx, dy = gx - x, gy - y
         dist = math.hypot(dx, dy)
@@ -128,7 +128,7 @@ class GotoPoint:
         e_head = wrap(bear - psi_w)
         if self.phase == "turn":
             vy, hd = self.heading.step(t, psi_w, lead_yaw, bear)
-            vx = float(np.clip(-2.0 * lead_pos, -0.02, 0.02))
+            vx = 0.0
             if abs(e_head) < self.turn_tol and abs(lead_yaw) < 6.0:
                 self.phase = "drive"
             return vx, vy, {"phase": "turn", "e_head": round(e_head, 1), "dist": round(dist, 3)}
@@ -165,7 +165,7 @@ class HeadServo:
     """Port of real_robot_bridge.CalibratedGazeServo head path (stiction preload + absolute exposure-time goal),
     with the measured FOV (75.5 deg, not 62.5). Body turning is delegated to HybridGaze."""
 
-    def __init__(self, fov_h_deg: float = 240.0 / F_PX_PER_DEG, head_max: float = 44.0, center_tol: float = 0.022):
+    def __init__(self, fov_h_deg: float = 240.0 / F_PX_PER_DEG, head_max: float = 30.0, center_tol: float = 0.022):
         self.fov, self.head_max, self.center_tol = fov_h_deg, head_max, center_tol
         self.gh: list[float] = []; self.qf = None; self.qi = 0.0; self.ls = 0; self.hold = 0.0
         self.qp = None; self.tp = None; self.dq = 0.0
@@ -226,5 +226,35 @@ class HybridGaze:
             self.last_seen = t
         elif t - self.last_seen > 1.2:
             self.body_target = psi_w
+        vy, _ = self.heading.step(t, psi_w, lead_yaw, self.body_target)
+        return vy, self.head_cmd
+
+
+class HybridGazeV2(HybridGaze):
+    """Head centres fast; body only turns once the head has settled, slowly; head is fed forward with the body
+    rotation measured by the wheels since capture, so the camera stays on the face while the body swings round."""
+
+    def __init__(self, face_after_deg: float = 7.0, body_vmax: float = 15.0):
+        super().__init__(face_after_deg=face_after_deg, body_vmax=body_vmax)
+        self.psi_at_cmd = None
+        self._base_head = 0.0
+
+    def step(self, t, det, psi_w, lead_yaw, q_now, dt, new_det):
+        if det is not None and det[0] is not None and new_det:
+            cx, psi_cap, q_cap = det
+            self._base_head = self.head.step(t, cx, q_cap, q_now, dt)
+            self.psi_at_cmd = psi_cap
+            cam_dir = psi_cap + q_cap + (cx - 120.0) / F_PX_PER_DEG
+            head_reach = 28.0   # measured upright reach +32.7/-36.9 deg, keep margin
+            settled = (abs(self.head.dq) < 6.0 and abs(cx - 120.0) < 14.0) or abs(q_cap) >= head_reach or abs(wrap(cam_dir - psi_cap)) > head_reach
+            if self.body_target is None:
+                self.body_target = psi_w
+            if settled and abs(wrap(cam_dir - psi_w)) > self.face_after:
+                self.body_target = cam_dir
+            self.last_seen = t
+        elif t - self.last_seen > 1.2:
+            self.body_target = psi_w
+        if self.psi_at_cmd is not None:
+            self.head_cmd = float(np.clip(self._base_head - (psi_w - self.psi_at_cmd), -45.0, 45.0))
         vy, _ = self.heading.step(t, psi_w, lead_yaw, self.body_target)
         return vy, self.head_cmd

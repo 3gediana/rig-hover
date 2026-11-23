@@ -103,3 +103,24 @@ def test_click_to_go_converges_and_stops():
             assert r["done"], (g, pk, r)
             assert r["along_err_cm"] < 4.0, (g, pk, r)      # along-track, standoff removed
             assert r["lateral_max_cm"] < 12.0, (g, pk, r)
+
+
+def test_gaze_turns_body_when_face_beyond_head_reach():
+    # real failure 2026-11-24: face 56 px right, head pinned at +32 deg, body never turned
+    H = C.HybridGazeV2()
+    vy = 0.0
+    for k in range(40):
+        vy, hd = H.step(k * 0.07, (176.0, 0.0, 32.4), 0.0, 0.0, 32.4, 0.07, True)
+    assert H.body_target is not None and H.body_target > 30.0, H.body_target
+    assert vy > 0.0
+    assert abs(hd) <= 45.0
+
+
+def test_no_hold_term_drives_robot_at_rest_offset():
+    # stable_pos rests ~4.6 cm ahead of the wheels; idle/turn must not command vx from that offset
+    G = C.GotoPoint()
+    vx, vy, d = G.step(0.0, 0.0, 0.0, 0.0, 0.0, 0.046)
+    assert vx == 0.0
+    G.set_goal(0.0, 0.10)
+    vx, vy, d = G.step(0.04, 0.0, 0.0, 0.0, 0.0, 0.046)
+    assert d["phase"] == "turn" and vx == 0.0
