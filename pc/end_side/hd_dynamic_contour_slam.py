@@ -87,6 +87,8 @@ class HoverGeoNet240Frontend:
         base = int(blob.get("base", 32 if arch == "vit_b1" else 24))
         in_ch = int(blob.get("in_ch", GEO_IN_CH))
         self.arch = arch
+        # 相机射线栅格逐帧重算是纯浪费（FOV/分辨率固定）：缓存一次终身用
+        self._rays_cam: np.ndarray | None = None
         self.model = create_hover_geonet(arch=arch, in_ch=in_ch, base=base, pretrained_backbone=False).to(self.device).eval()
         sd = blob["state_dict_fp16"] if "state_dict_fp16" in blob else blob["state_dict"]
         self.model.load_state_dict({k: v.to(self.device) for k, v in sd.items()}, strict=False)
@@ -109,6 +111,7 @@ class HoverGeoNet240Frontend:
         roll_deg: float = 0.0,
         auto_level: bool = False,
         valid_thresh: float = 0.45,
+        cam_cloud: bool = True,
     ) -> dict[str, Any]:
         x7, rays_in, inv_d_prior = build_robot_physics_input(
             bgr_cur,
@@ -137,14 +140,17 @@ class HoverGeoNet240Frontend:
             auto_level=auto_level,
         )
         # 同时提供相机系度量点云供视觉-几何自定位 (RANSAC-Kabsch + KISS-ICP)
-        rays_cam = make_camera_ray_grid(GEO_H, GEO_W, fov_h_deg=self.fov_h_deg, pitch_deg=0.0, roll_deg=0.0)
-        pts_cam = (rays_cam * dec["depth_m"][..., None]).astype(np.float32)
-        r_in = camera_rotation_matrix(pitch_deg=pitch_deg, roll_deg=roll_deg)
-        nrm_cam = (dec["nrm_grid"] @ r_in).astype(np.float32)
-        nrm_cam /= np.maximum(np.linalg.norm(nrm_cam, axis=-1, keepdims=True), 1e-6)
-
-        dec["pts_cam"] = pts_cam
-        dec["nrm_cam"] = nrm_cam
+        if cam_cloud:
+            if self._rays_cam is None:
+                self._rays_cam = make_camera_ray_grid(GEO_H, GEO_W, fov_h_deg=self.fov_h_deg, pitch_deg=0.0, roll_deg=0.0)
+            pts_cam = (self._rays_cam * dec["depth_m"][..., None]).astype(np.float32)
+            r_in = camera_rotation_matrix(pitch_deg=pitch_deg, roll_deg=roll_deg)
+            nrm_cam = (dec["nrm_grid"] @ r_in).astype(np.float32)
+            nrm_cam /= np.maximum(np.linalg.norm(nrm_cam, axis=-1, keepdims=True), 1e-6)
+            dec["pts_cam"] = pts_cam
+            dec["nrm_cam"] = nrm_cam
+        else:
+            dec["pts_cam"] = dec["nrm_cam"] = None
         dec["infer_ms"] = infer_ms
         dec["scale"] = 1.0
         return dec

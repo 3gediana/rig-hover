@@ -238,7 +238,11 @@ class UnifiedRobotBrain:
                 fut_knock = self._pool.submit(self._knock_step_full, bgr240, timestamp_s)
 
         # 1) 自研 HoverGeoNet-ViT-240 推理 + 2mm Dynablox 双层建图
-        pred = self.geo_fe.infer_frame(bgr240, self.prev_bgr, pitch_deg=tel.pitch, roll_deg=tel.roll, auto_level=auto_level)
+        # cam_cloud 只被重定位消费：跳帧时连相机系点云都不解码（省 ~5-8ms）
+        reloc_due = (self.mode == MODE_APPROACH and self.relocalizer is not None
+                     and self.frames_seen >= 3 and self.frames_seen % self.reloc_decim == 0)
+        pred = self.geo_fe.infer_frame(bgr240, self.prev_bgr, pitch_deg=tel.pitch, roll_deg=tel.roll,
+                                       auto_level=auto_level, cam_cloud=reloc_due)
         _st["geonet"] = (_t() - _t0) * 1e3
         self.last_pred = pred
         _t0 = _t()
@@ -273,8 +277,7 @@ class UnifiedRobotBrain:
         # 2) 若处于导航巡航中 (MODE_APPROACH)，运行 2D-3D PnP + KISS-ICP 无里程计视觉重定位
         reloc_info: dict[str, Any] = {"source": "map_build", "ransac_inliers": 0}
         _t0 = _t()
-        if self.mode == MODE_APPROACH and self.relocalizer is not None and self.frames_seen >= 3 \
-                and self.frames_seen % self.reloc_decim == 0:
+        if reloc_due:
             ro = self.relocalizer.relocalize(
                 bgr240, pred["pts_cam"], pred["nrm_cam"], pred["valid_grid"],
                 imu_pitch_deg=tel.pitch, imu_roll_deg=tel.roll, prev_est_pose=self.est_pose,
