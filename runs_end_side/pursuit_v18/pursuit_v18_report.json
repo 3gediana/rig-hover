@@ -4012,8 +4012,8 @@
           "ty": -0.249,
           "tyaw": 57.97,
           "head": 28.0,
-          "mood": "PURSUIT_SCAN",
-          "text": "Lost the cup! Spin-scanning...",
+          "mood": "PURSUIT_DODGE",
+          "text": "Tangent-deflect around drop...",
           "tgt": [
             0.374,
             0.263
@@ -4041,8 +4041,8 @@
           "ty": -0.249,
           "tyaw": 59.73,
           "head": 28.0,
-          "mood": "PURSUIT_SCAN",
-          "text": "Lost the cup! Spin-scanning...",
+          "mood": "PURSUIT_DODGE",
+          "text": "Tangent-deflect around drop...",
           "tgt": [
             0.366,
             0.254

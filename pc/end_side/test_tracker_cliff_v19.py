@@ -212,3 +212,37 @@ def test_cliff_guard_prefers_detector_bearing() -> None:
     det = {"dist_to_rim_m": 0.28, "rim_xy": (0.0, -0.28), "bearing_deg": 10.0}
     engaged, clear = _cliff_guard(det, (0.0, 0.0, 0.0))
     assert engaged is True and clear == 0.0
+
+
+# ---------------- v24b 弹道让位几何 ----------------
+
+def test_yield_goal_head_on() -> None:
+    """杯子直冲机器人（弹道过机器人中心）→ 给垂直让位点，且在弹道异侧。"""
+    from living_desktop_brain_v15 import _ballistic_yield_goal
+    # 杯在 (0,0) 向 +x 以 0.4m/s；机器人在 (0.15,0.02) —— 弹道上
+    g = _ballistic_yield_goal(0.0, 0.0, 0.4, 0.0, 0.15, 0.02, 0.045)
+    assert g is not None
+    # 让位方向应垂直杯速（±y），且远离弹道（机器人本在 +y 侧 → 继续 +y）
+    assert g[1] > 0.02 + 0.15
+
+
+def test_yield_goal_passing_wide() -> None:
+    """杯子从旁掠过（弹道最近距离 > r+0.045）→ 不让位。"""
+    from living_desktop_brain_v15 import _ballistic_yield_goal
+    g = _ballistic_yield_goal(0.0, 0.0, 0.4, 0.0, 0.15, 0.20, 0.045)
+    assert g is None
+
+
+def test_yield_goal_slow_cup() -> None:
+    """杯速 <0.05（准静止/失锁衰减）→ 不触发。"""
+    from living_desktop_brain_v15 import _ballistic_yield_goal
+    g = _ballistic_yield_goal(0.0, 0.0, 0.02, 0.0, 0.10, 0.0, 0.045)
+    assert g is None
+
+
+def test_yield_goal_behind_robot() -> None:
+    """杯子已从机器人身后远离 → 弹道线段最近点 t<0 被钳到 0，当前距够远则不让。"""
+    from living_desktop_brain_v15 import _ballistic_yield_goal
+    # 杯在 (0,0) 向 +x；机器人在 (-0.30,0.0) —— 在杯子后方
+    g = _ballistic_yield_goal(0.0, 0.0, 0.4, 0.0, -0.30, 0.0, 0.045)
+    assert g is None

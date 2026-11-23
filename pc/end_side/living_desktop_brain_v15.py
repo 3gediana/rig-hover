@@ -309,6 +309,30 @@ def _segment_hits_circle(p0: tuple[float, float], p1: tuple[float, float], cx: f
     return math.hypot(px - cx, py - cy) <= r
 
 
+def _ballistic_yield_goal(
+    cx: float, cy: float, cvx: float, cvy: float,
+    ex: float, ey: float, r_est: float,
+    horizon_s: float = 0.55, escape_m: float = 0.22,
+) -> tuple[float, float] | None:
+    """v24b 弹道让位：预测杯子 [c, c+v*horizon] 弹道线段与机器人当前位置的
+    最近距离 < r_est+0.045（即即将擦身/穿透）时，返回垂直于杯速方向的让位点。
+    只对"杯中可见且 tracker 速度有效"生效——失锁遮挡段卡尔曼速度衰减到
+    <0.05 自动不触发（看不见的弹道让不了，属诚实边界）。"""
+    cspd = math.hypot(cvx, cvy)
+    if cspd < 0.05:
+        return None
+    px, py = cx + cvx * horizon_s, cy + cvy * horizon_s
+    sx, sy = px - cx, py - cy
+    seg2 = max(sx * sx + sy * sy, 1e-9)
+    tt = max(0.0, min(1.0, ((ex - cx) * sx + (ey - cy) * sy) / seg2))
+    qx, qy = cx + sx * tt, cy + sy * tt
+    if math.hypot(ex - qx, ey - qy) >= r_est + 0.045:
+        return None
+    nx, ny = -cvy / cspd, cvx / cspd
+    side = 1.0 if (ex - qx) * nx + (ey - qy) * ny >= 0.0 else -1.0
+    return (ex + nx * side * escape_m, ey + ny * side * escape_m)
+
+
 def _compute_nbv_peek_point(
     rob_xy: tuple[float, float],
     tgt_xy: tuple[float, float],
@@ -847,6 +871,18 @@ def run_living_brain_episode(
                         escort_total += 1
                         if 0.0 < edge < 0.24:
                             escort_hits += 1
+                # v24b 弹道让位：预测杯子近端弹道将横穿机器人（含转弯切入）时，
+                # 目标点临时换到垂直杯速的让位点——贴身护航是"跟跑"，不是"挡路"
+                if pursuit_mode and tracker.initialized and true_moving_now is not None:
+                    yg = _ballistic_yield_goal(
+                        float(tracker.x[0]), float(tracker.x[1]),
+                        float(tracker.x[2]), float(tracker.x[3]),
+                        ex, ey, float(tracker.r_est))
+                    if yg is not None:
+                        active_goal_xy = yg
+                        if mood in ("ESCORT", "PURSUIT"):
+                            mood_text = "Yielding to cup's path..."
+
                 # tangent-bug 最小偏转：目标方向穿过障碍视锥时，把目标方向转到障碍切线沿
                 for s_ in discovered_static_obs:
                     ox, oy = s_[0] - ex, s_[1] - ey
