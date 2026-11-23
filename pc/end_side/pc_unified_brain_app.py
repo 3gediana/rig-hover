@@ -22,6 +22,7 @@
 from __future__ import annotations
 
 import argparse
+import itertools
 import json
 import math
 import pathlib
@@ -382,7 +383,8 @@ def main() -> None:
     ap.add_argument("--send-cmd", action="store_true", help="Live mode only: actually send /cmd to robot")
     ap.add_argument("--lite", action="store_true", help="Use 6.5MB MBV3 model instead of ViT-240")
     ap.add_argument("--headless", action="store_true", help="No GUI window (batch/test mode)")
-    ap.add_argument("--max-frames", type=int, default=60)
+    ap.add_argument("--max-frames", type=int, default=None,
+                    help="默认跑完全部帧（video/live 到 EOF、frames 到目录尾）；仅显式传值时截断。原默认 60 曾致多次全量回放被静默截断。")
     ap.add_argument("--click-xy", type=str, default="", help="Optional auto-click target 'x,y' in meters for headless Scenario 2")
     ap.add_argument("--emote", action="store_true", help="Live mode only: mirror brain state onto the robot LCD via POST /emote")
     args = ap.parse_args()
@@ -396,7 +398,8 @@ def main() -> None:
     if args.source == "frames":
         p = pathlib.Path(args.input)
         jpgs = sorted(p.glob("*.jpg")) + sorted(p.glob("*.png"))
-        frames_iter = [cv2.imread(str(j)) for j in jpgs[: args.max_frames] if cv2.imread(str(j)) is not None]
+        lim = args.max_frames if args.max_frames is not None else len(jpgs)
+        frames_iter = [cv2.imread(str(j)) for j in jpgs[:lim] if cv2.imread(str(j)) is not None]
     elif args.source == "video":
         cap = cv2.VideoCapture(args.input)
         video_fps = float(cap.get(cv2.CAP_PROP_FPS) or 15.0) or 15.0
@@ -444,7 +447,8 @@ def main() -> None:
         from emote_bridge import EmoteBridge
         bridge = EmoteBridge(args.base, verbose=True)
     prev_mode = ""
-    for idx in range(args.max_frames):
+    frame_ids = range(args.max_frames) if args.max_frames is not None else itertools.count()
+    for idx in frame_ids:
         if args.source == "frames":
             if idx >= len(frames_iter):
                 break
@@ -500,7 +504,7 @@ def main() -> None:
             except Exception:
                 pass
 
-        if idx % 10 == 0 or info["knock"]["fired"] or idx == args.max_frames - 1:
+        if idx % 10 == 0 or info["knock"]["fired"] or (args.max_frames is not None and idx == args.max_frames - 1):
             print(json.dumps(info, ensure_ascii=False), flush=True)
 
         if not args.headless:
