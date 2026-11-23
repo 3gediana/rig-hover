@@ -319,7 +319,7 @@ class UnifiedRobotBrain:
             "target_xy": list(self.target_xy) if self.target_xy else None,
             "rem_m": round(rem_m, 3),
             "reloc": reloc_info,
-            "knock": {"fired": int(knock_out.get("fired", 0)), "p_double": round(float(knock_out.get("p_double", 0.0)), 3), "src": knock_out.get("fire_src", "pair"), "imp": round(float(knock_out.get("p_impulse", 0.0)), 3), "sem": round(float(knock_out.get("p_double_sem", knock_out.get("p_double", 0.0))), 3)},
+            "knock": {"fired": int(knock_out.get("fired", 0)), "p_double": round(float(knock_out.get("p_double", 0.0)), 3), "src": knock_out.get("fire_src", "pair"), "imp": round(float(knock_out.get("p_impulse", 0.0)), 3), "sem": round(float(knock_out.get("p_double_sem", knock_out.get("p_double", 0.0))), 3), "pk": int(bool(knock_out.get("peak")))},
             "cliff": cliff_det,
             "cliff_fired": int(cliff_fired),
             "cliff_engaged": int(cliff_engaged),
