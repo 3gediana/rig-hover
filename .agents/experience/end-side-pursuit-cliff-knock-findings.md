@@ -38,6 +38,20 @@
 - PhysNet 推理输入**必须先 /255**（`predict_seq_both_modes` 自己不做归一化，
   传 uint8 输出全零）。
 
+## 悬崖本能已接入统一大脑（2026-11-24）
+
+- 检测器抽到 `pc/end_side/cliff_detect.py`（v15 改为 re-export，测试不破）；
+  新增 `pred=` 参数复用每帧已算的 GeoNet 输出——**必须传**，否则二次
+  `infer_frame` 既 +15ms 又污染前端时序状态（有回归测试守着）。
+- `UnifiedRobotBrain.step` 每帧检测；`dist_to_rim_m < 0.30` 时给 Shield
+  `clearance_m=0` 走既有 `eff_rem<=0 → vx=0` 硬屏障刹停（仅 APPROACH 有效，
+  其它模式 vx 本就为 0）。`info["cliff"]/["cliff_fired"]`（边沿触发）→
+  `bridge.event("cliff")` 接线完成。
+- **真机画面首次实证**（take 1f30d1 冒烟 80 帧）：稳定检出左下方真实桌沿
+  `bright_border`，rim≈0.28m，全程不误闪。**已知假阳性面**：桌面上的大块
+  暗色物体（黑垫/深色袖）也能凑出"暗区+亮桌边界"——GeoNet 对暗物体预测
+  z≈0 无法分辨"桌面下深渊"与"桌面上暗物"，0.30m 保持距限缩影响半径。
+
 ## E2E 录像回放的正确读法（2026-11-24 审计）
 
 - 回放日志里 `est_pose` = **录像当时**真机的物理轨迹，`cmd` = 策略"想发"的指令。

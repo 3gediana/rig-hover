@@ -580,6 +580,8 @@ JVM 单测 `DoubleKnockKinematicsTest` 两条通过（含 13 fps 输入在 ~32 �
 
 **回放语义说明**：日志 `est_pose` 是录像当时真机的物理轨迹（两 take 均只原地转 yaw 92°–127°、平移 <3cm），`rem_m` 冻结在 ~0.74m 是"录像不可响应指令"的固有性质，非重定位失效。回放验证感知→决策→指令生成链；rem 收敛/到点停靠属运动闭环，须靠 v15 仿真或真机直播验证。
 
+**v22 悬崖本能接入统一大脑**：`detect_visual_cliff_zero_oracle` 抽出为 `cliff_detect.py` 共用件，`UnifiedRobotBrain` 每帧复用已算 GeoNet 输出检测（零额外推理）；`dist_to_rim_m<0.30` 时经 Shield `clearance=0` 硬屏障刹停 APPROACH 前进，`cliff_fired` 边沿事件 → `brain_cliff_alert` 表情。真机 take 冒烟验证：左下真实桌沿被稳定锁定（rim≈0.28m、`bright_border` 线），去重与零时延增量正常。已知边界：大块暗色桌面物体理论上可假触发（GeoNet 对暗物预测 z≈0），0.30m 保持距限缩影响。
+
 ### 13.12 本轮诚实边界
 
 

@@ -129,3 +129,18 @@ def test_no_void_returns_none() -> None:
     det = detect_visual_cliff_zero_oracle(
         bgr, bgr, _StubGeo(), (0.0, 0.0, 0.0, 0.0, 0.0), _rays_cam())
     assert det is None
+
+
+def test_pred_shortcut_skips_infer_frame() -> None:
+    """统一大脑集成契约：传 pred 时绝不二次调用 geo_fe.infer_frame（防时序状态污染+省 15ms）。"""
+
+    class _ExplodingGeo:
+        def infer_frame(self, *a, **k):  # noqa: ANN002, ANN003
+            raise AssertionError("infer_frame must not be called when pred is passed")
+
+    bgr = _img_dark_below_row(175)
+    pred = {"pts_grid": np.zeros((240, 240, 3), dtype=np.float64)}
+    det = detect_visual_cliff_zero_oracle(
+        bgr, bgr, _ExplodingGeo(), (0.0, 0.0, 0.0, 0.0, 0.0), _rays_cam(), pred=pred)
+    assert det is not None
+    assert det["source"] == "void_majority"

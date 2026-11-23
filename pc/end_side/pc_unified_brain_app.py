@@ -51,7 +51,10 @@ from hd_dynamic_contour_slam import (  # noqa: E402
     HoverGeoNet240Frontend,
     render_hd_dual_layer_green,
 )
+from cliff_detect import detect_visual_cliff_zero_oracle  # noqa: E402
 from hd_moge_contour_engine import REAL_FOV_H_DEG, REAL_H_CAM_M  # noqa: E402
+from hover_geonet_240 import GEO_H, GEO_W  # noqa: E402
+from mono_depth_model import make_camera_ray_grid  # noqa: E402
 from neural_gaussian_splat_model import OrbitCamera3D, PersistentGaussianMemoryMap  # noqa: E402
 from scenario1_own_models_e2e import (  # noqa: E402
     POLICY_NAV_CKPT,
@@ -121,6 +124,11 @@ class UnifiedRobotBrain:
         self.frames_seen: int = 0
         self.dwell_count: int = 0
         self.last_pred: dict[str, Any] | None = None
+        # 视觉悬崖本能（与 living_desktop_brain_v15 共用的零开挂检测器）：
+        # APPROACH 巡航中 dist_to_rim_m < 0.30 时通过 Shield clearance=0 硬刹停 vx。
+        self.rays_cam = make_camera_ray_grid(GEO_H, GEO_W, fov_h_deg=REAL_FOV_H_DEG, pitch_deg=0.0, roll_deg=0.0)
+        self.cliff_hold_m: float = 0.30
+        self._cliff_active: bool = False
 
     def _ensure_relocalizer(self, bgr: np.ndarray, pred: dict[str, Any]) -> None:
         st_pts, st_nrms, _ = self.slam.get_confirmed_static_cloud(min_wt=1.0)
@@ -171,6 +179,16 @@ class UnifiedRobotBrain:
         )
         self._ensure_relocalizer(bgr240, pred)
         self.prev_bgr = bgr240.copy()
+
+        # 1.5) 视觉悬崖本能：纯视觉深渊检测（与 v15 仿真同一检测器），近崖 APPROACH 经 Shield clearance=0 硬刹停
+        cliff_det = detect_visual_cliff_zero_oracle(
+            bgr240, self.prev_bgr, self.geo_fe,
+            (self.est_pose[0], self.est_pose[1], self.est_pose[2], tel.pitch, tel.roll),
+            self.rays_cam, pred=pred,
+        )
+        cliff_near = cliff_det is not None and cliff_det["dist_to_rim_m"] < self.cliff_hold_m
+        cliff_fired = cliff_near and not self._cliff_active
+        self._cliff_active = cliff_near
 
         # 2) 若处于导航巡航中 (MODE_APPROACH)，运行 2D-3D PnP + KISS-ICP 无里程计视觉重定位
         reloc_info: dict[str, Any] = {"source": "map_build", "ransac_inliers": 0}
@@ -230,7 +248,7 @@ class UnifiedRobotBrain:
                 tlock = TargetLock(valid=1, bearing_body=bear, remaining_m=rem_m)
                 f39 = EndSideFeatureBuilder.build(tel, detections=face_dets, target_lock=tlock, clearance_m=0.85)
                 raw_cmd = self.policy_nav.infer_numpy(f39)
-                safe_cmd = self.shield.apply(raw_cmd, mode=MODE_APPROACH, remaining_m=rem_m, pitch_deg=tel.pitch, clearance_m=0.85)
+                safe_cmd = self.shield.apply(raw_cmd, mode=MODE_APPROACH, remaining_m=rem_m, pitch_deg=tel.pitch, clearance_m=0.0 if cliff_near else 0.85)
         elif self.mode == MODE_DWELL:
             self.dwell_count += 1
             safe_cmd = self.shield.apply(DriveCommand(0.0, 0.0, 0.0), mode=MODE_DWELL, remaining_m=0.0, pitch_deg=tel.pitch)
@@ -252,6 +270,8 @@ class UnifiedRobotBrain:
             "rem_m": round(rem_m, 3),
             "reloc": reloc_info,
             "knock": {"fired": int(knock_out.get("fired", 0)), "p_double": round(float(knock_out.get("p_double", 0.0)), 3)},
+            "cliff": cliff_det,
+            "cliff_fired": int(cliff_fired),
             "cmd": {"vx": round(safe_cmd.vx, 2), "vyaw": round(safe_cmd.vyaw, 2), "head": round(safe_cmd.head, 2)},
         }
 
@@ -273,6 +293,7 @@ class UnifiedRobotBrain:
             f"Pose : x={step_info['est_pose'][0]:.2f} y={step_info['est_pose'][1]:.2f}",
             f"       yaw={step_info['est_pose'][2]:.1f} deg",
             f"Knock: p={step_info['knock']['p_double']:.2f} fired={step_info['knock']['fired']}",
+            f"Cliff: {step_info['cliff']['dist_to_rim_m']:.2f}m {step_info['cliff']['source']}" if step_info.get("cliff") else "Cliff: clear",
             f"RL Cmd: vx={step_info['cmd']['vx']:.1f}",
             f"        vyaw={step_info['cmd']['vyaw']:.1f} h={step_info['cmd']['head']:.1f}",
             "Keys: Shift+Click=Target | 1/2=Scen",
@@ -402,6 +423,8 @@ def main() -> None:
         if bridge is not None:
             if info["knock"]["fired"]:
                 bridge.event("knock")
+            elif info.get("cliff_fired"):
+                bridge.event("cliff")
             elif info["mode"] == "APPROACH" and prev_mode != "APPROACH":
                 bridge.event("lock")
             else:
