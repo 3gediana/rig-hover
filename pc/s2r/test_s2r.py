@@ -57,3 +57,35 @@ def test_goto_reaches_and_stops():
         if G.phase == "done":
             break
     assert G.phase == "done" and abs(x - (0.10 - G.standoff)) < 0.03
+
+
+def test_fist_detector_face_overlap_and_band():
+    import numpy as np
+    class _KP:
+        def __init__(self, xy, cf): self.xy=_T(xy); self.conf=_T(cf); self.n=len(xy)
+        def __len__(self): return self.n
+    class _T:
+        def __init__(self, a): self.a=np.array(a)
+        def cpu(self): return self
+        def numpy(self): return self.a
+    class _Boxes:
+        def __init__(self, n): self.n=n
+        def __len__(self): return self.n
+    class _R:
+        def __init__(self, xy, cf): self.keypoints=_KP([xy],[cf]); self.boxes=_Boxes(1)
+    class _Pose:
+        def __init__(self, xy, cf): self.xy, self.cf = xy, cf
+        def predict(self, *a, **k): return [_R(self.xy, self.cf)]
+    import importlib.util, pathlib
+    spec = importlib.util.spec_from_file_location("fist", str(pathlib.Path(__file__).resolve().parent / "fist.py"))
+    F = importlib.util.module_from_spec(spec); spec.loader.exec_module(F)
+    # 17 COCO keypoints; wrist R=10 at (184,128) high conf, elbow R=8 present
+    xy = [[0,0]]*17; cf = [0.0]*17
+    xy[8]=[170,110]; cf[8]=0.5; xy[10]=[184,128]; cf[10]=0.64
+    det = F.FistDetector(_Pose(xy, cf), None)
+    bgr = np.zeros((240,240,3), np.uint8)
+    d = det.detect(bgr, 0.0, face_box_px=None)
+    assert d is not None and d["src"] == "wrist"       # desk-height fist kept (old gate dropped it)
+    det2 = F.FistDetector(_Pose(xy, cf), None)
+    d2 = det2.detect(bgr, 0.0, face_box_px=(150,100,220,170))  # wrist inside face box -> rejected
+    assert d2 is None

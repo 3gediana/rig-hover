@@ -30,7 +30,8 @@ for p in (HERE, REPO / "pc" / "end_side", REPO / "pc" / "train", REPO / "pc" / "
         sys.path.insert(0, str(p))
 
 from link import F_PX_PER_DEG, Robot  # noqa: E402
-from controllers import GotoPoint, HeadServo, HeadingServo, HybridGaze, pixel_to_table, wrap  # noqa: E402
+from controllers import GotoPoint, HeadServo, HeadingServo, HybridGaze, HybridGazeV2, pixel_to_table, wrap  # noqa: E402
+from fist import FistDetector  # noqa: E402
 
 YUNET = REPO / "pc" / "perception" / "assets" / "face_detection_yunet_2023mar.onnx"
 POSE = REPO / "pc" / "perception" / "assets" / "yolo26n-pose.pt"
@@ -92,6 +93,7 @@ def main():
     ap.add_argument("--log", default=str(REPO / "runs_end_side" / "s2r_live" / time.strftime("%Y%m%d_%H%M%S")))
     ap.add_argument("--save-every", type=int, default=5)
     ap.add_argument("--no-knock", action="store_true")
+    ap.add_argument("--fist-recall", action="store_true", help="use s2r/fist recall-first detector instead of the afternoon raised-fist gate")
     a = ap.parse_args()
     out = pathlib.Path(a.log); out.mkdir(parents=True, exist_ok=True)
     flog = open(out / "frames.jsonl", "w", encoding="utf-8")
@@ -109,7 +111,11 @@ def main():
     bias0 = R.rest_bias(2.5)
     print(f"rest gyro bias {bias0:+.2f} dps", flush=True)
     safety = Safety()
-    hyb, head_only, body_only = HybridGaze(), HeadServo(), HeadingServo()
+    hyb, head_only, body_only = HybridGazeV2(), HeadServo(), HeadingServo()
+    fistdet = None
+    if a.fist_recall:
+        from ultralytics import YOLO as _YOLO, YOLOE as _YOLOE
+        fistdet = FistDetector(_YOLO(str(POSE)), _YOLOE(str(YOLOE)))
     from controllers import BodyGaze
     bgaze = BodyGaze()
     goto = GotoPoint()
@@ -148,6 +154,13 @@ def main():
             P = perc.detect(bgr, now, mode in ("IDLE", "FACE", "FIST"))
             face = P["faces"][0] if P["faces"] else None
             fist = P["fist"]
+            if fistdet is not None:
+                fb = None
+                if face is not None:
+                    cxp, cyp, wp, hp = face["cx"]*240, face["cy"]*240, face["w"]*240, face["h"]*240
+                    fb = (cxp-wp/2, cyp-hp/2, cxp+wp/2, cyp+hp/2)
+                d = fistdet.detect(bgr, now, face_box_px=fb)
+                fist = d if (d is not None and not d.get("coasted")) else (fist if fist is not None else d)
             kout = {"fired": 0}
             if knock is not None:
                 g96 = cv2.resize(gray, (96, 96), interpolation=cv2.INTER_AREA)

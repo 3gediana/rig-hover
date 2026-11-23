@@ -226,3 +226,36 @@ class HybridGaze:
             self.body_target = psi_w
         vy, _ = self.heading.step(t, psi_w, lead_yaw, self.body_target)
         return vy, self.head_cmd
+
+
+
+class HybridGazeV2(HybridGaze):
+    """Fix for the step-response deficit of HybridGaze (sim: 2.7 deg vs v25 1.1 deg median):
+    the body only starts turning once the head has settled on the target, turns slowly, and the head
+    command is fed forward with the body rotation measured by the wheels since the frame was captured,
+    so the camera stays on the face while the body swings round underneath it."""
+
+    def __init__(self, face_after_deg: float = 7.0, body_vmax: float = 15.0):
+        super().__init__(face_after_deg=face_after_deg, body_vmax=body_vmax)
+        self.psi_at_cmd = None
+
+    def step(self, t, det, psi_w, lead_yaw, q_now, dt, new_det):
+        if det is not None and det[0] is not None and new_det:
+            cx, psi_cap, q_cap = det
+            base = self.head.step(t, cx, q_cap, q_now, dt)
+            self.psi_at_cmd = psi_cap
+            self._base_head = base
+            cam_dir = psi_cap + q_cap + (cx - 120.0) / F_PX_PER_DEG
+            settled = abs(self.head.dq) < 6.0 and abs(cx - 120.0) < 14.0
+            if self.body_target is None:
+                self.body_target = psi_w
+            if settled and abs(wrap(cam_dir - psi_w)) > self.face_after:
+                self.body_target = cam_dir
+            self.last_seen = t
+        elif t - self.last_seen > 1.2:
+            self.body_target = psi_w
+        if self.psi_at_cmd is not None and hasattr(self, "_base_head"):
+            # counter-rotate the head by the body rotation since capture (wheel odometry, 2 ms fresh)
+            self.head_cmd = float(np.clip(self._base_head - (psi_w - self.psi_at_cmd), -45.0, 45.0))
+        vy, _ = self.heading.step(t, psi_w, lead_yaw, self.body_target)
+        return vy, self.head_cmd

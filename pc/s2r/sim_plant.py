@@ -115,6 +115,17 @@ def make_hybrid():
         return Hy.step(t, d, psi_w, P.S - (P.imu - P.q), P.q, dt, new)
     return ctrl
 
+def make_hybrid2():
+    Hy = C.HybridGazeV2(); st = {"used": None, "tp": None}
+    def ctrl(t, det, P, rng):
+        psi_w = P.psi + rng.normal(0, 0.1)
+        new = det is not None and det is not st["used"]
+        if new: st["used"] = det
+        dt = 0.04 if st["tp"] is None else t - st["tp"]; st["tp"] = t
+        d = (det[1], det[2], det[3]) if det is not None else None
+        return Hy.step(t, d, psi_w, P.S - (P.imu - P.q), P.q, dt, new)
+    return ctrl
+
 PLANTS = [(0, {}), (1, dict(Fs=40, Fk=14, J=0.3)), (2, dict(Fs=56, Fk=8, J=0.8, b=1)), (3, dict(ff_err=1.0)), (4, dict(head_db=10)), (5, dict(ff_err=-1.5, Fs=30))]
 
 def heading_sweep():
@@ -139,7 +150,7 @@ if __name__ == "__main__":
     res = {"heading_sweep": heading_sweep(), "gaze": {}}
     print("HEADING", json.dumps(res["heading_sweep"]), flush=True)
     for kind in ("still", "steps", "sway"):
-        for name, mk in (("devin_v25", make_devin_v25), ("s2r_body", make_s2r), ("s2r_hybrid", make_hybrid)):
+        for name, mk in (("devin_v25", make_devin_v25), ("s2r_body", make_s2r), ("s2r_hybrid", make_hybrid), ("s2r_hybrid2", make_hybrid2)):
             rs = [run_gaze(mk(), face_traj(kind), seed=sd, plant_kw=pk) for sd, pk in PLANTS]
             agg = {k: (float(np.median([r[k] for r in rs])) if k != "umax" else float(max(r[k] for r in rs))) for k in rs[0]}
             res["gaze"][f"{kind}/{name}"] = agg
