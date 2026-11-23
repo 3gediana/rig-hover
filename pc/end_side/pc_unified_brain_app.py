@@ -230,7 +230,13 @@ class UnifiedRobotBrain:
             self.rays_cam, pred=pred,
         )
         cliff_engaged, cliff_clear = _cliff_guard(cliff_det, self.est_pose, self.cliff_hold_m, self.cliff_cone_deg)
-        cliff_near = cliff_det is not None and cliff_det["dist_to_rim_m"] < self.cliff_hold_m
+        # 迟滞边沿：rim 在 hold 线附近抖动时只报一次警（进 <hold_m、出 >hold_m+3cm）
+        if cliff_det is None:
+            cliff_near = False
+        elif self._cliff_active:
+            cliff_near = cliff_det["dist_to_rim_m"] < self.cliff_hold_m + 0.03
+        else:
+            cliff_near = cliff_det["dist_to_rim_m"] < self.cliff_hold_m
         cliff_fired = cliff_near and not self._cliff_active
         self._cliff_active = cliff_near
 
