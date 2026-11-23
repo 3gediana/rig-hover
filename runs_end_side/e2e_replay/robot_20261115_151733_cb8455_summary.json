@@ -1,0 +1,111 @@
+{
+  "log": "runs_end_side\\e2e_replay_cb8455_full.log",
+  "n_frames_logged": 246,
+  "fps_assumed": 15.0,
+  "gt_knocks": 12,
+  "fires": 3,
+  "hits": [
+    {
+      "frame": 176,
+      "t_s": 11.73,
+      "gt_idx": 1
+    },
+    {
+      "frame": 518,
+      "t_s": 34.53,
+      "gt_idx": 3
+    },
+    {
+      "frame": 1136,
+      "t_s": 75.73,
+      "gt_idx": 7
+    }
+  ],
+  "false_positives": [],
+  "misses": [
+    {
+      "gt_idx": 0,
+      "gt_s": [
+        7.45,
+        9.12
+      ]
+    },
+    {
+      "gt_idx": 2,
+      "gt_s": [
+        30.85,
+        31.92
+      ]
+    },
+    {
+      "gt_idx": 4,
+      "gt_s": [
+        39.97,
+        40.12
+      ]
+    },
+    {
+      "gt_idx": 5,
+      "gt_s": [
+        43.32,
+        44.68
+      ]
+    },
+    {
+      "gt_idx": 6,
+      "gt_s": [
+        47.42,
+        48.48
+      ]
+    },
+    {
+      "gt_idx": 8,
+      "gt_s": [
+        97.27,
+        98.94
+      ]
+    },
+    {
+      "gt_idx": 9,
+      "gt_s": [
+        101.68,
+        103.35
+      ]
+    },
+    {
+      "gt_idx": 10,
+      "gt_s": [
+        134.66,
+        136.79
+      ]
+    },
+    {
+      "gt_idx": 11,
+      "gt_s": [
+        156.54,
+        157.91
+      ]
+    }
+  ],
+  "mode_frame_counts": {
+    "GAZE_FACE": 18,
+    "APPROACH": 228
+  },
+  "mode_transitions": [
+    {
+      "frame": 1,
+      "mode": "GAZE_FACE"
+    },
+    {
+      "frame": 176,
+      "mode": "APPROACH"
+    }
+  ],
+  "geonet_ms": {
+    "median": 13.63,
+    "p90": 19.44
+  },
+  "reloc_inliers_median": 600,
+  "icp_res_mm_median": 3.84,
+  "tier": "T2-real-video-replay"
+}
