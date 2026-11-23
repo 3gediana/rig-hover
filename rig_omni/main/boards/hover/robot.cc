@@ -140,6 +140,37 @@ void update_state(){
         stable_flag = 0;
     }
 
+    // s2r 2026-11-23: wheel-referenced yaw-gyro bias tracker. Over 2 s windows, with the robot
+    // balancing on the desk (wheels on the ground, no slip at these rates), the true IMU-frame yaw
+    // change is body yaw (from the wheel encoder difference, 0.219 deg/tick, vision-calibrated)
+    // plus the head servo's own motion. bias = mean(raw gyro) + true_rate.  Skipped on fast turns.
+    {
+        static int64_t win_t0 = 0;
+        static double raw_sum = 0.0;
+        static int raw_n = 0;
+        static float w0 = 0.0f, q0 = 0.0f;
+        const int64_t now_b = esp_timer_get_time();
+        if (robot_state != 1 || !isIMUInit) {
+            win_t0 = 0;
+        } else if (win_t0 == 0) {
+            win_t0 = now_b; raw_sum = 0.0; raw_n = 0;
+            w0 = wheel1_x - wheel2_x; q0 = q_head;
+        } else {
+            raw_sum += imu_gyro_yaw_raw(); raw_n++;
+            const float win_s = (float)(now_b - win_t0) * 1e-6f;
+            if (win_s >= 2.0f && raw_n > 50) {
+                const float d_body = -0.2190f * ((wheel1_x - wheel2_x) - w0);
+                const float d_head = q_head - q0;
+                const float true_rate = (d_body + d_head) / win_s;
+                const float b = (float)(raw_sum / raw_n) + true_rate;
+                if (fabsf(d_body / win_s) < 20.0f && fabsf(d_head / win_s) < 20.0f) {
+                    imu_yaw_bias_nudge(b, 0.2f);
+                }
+                win_t0 = 0;
+            }
+        }
+    }
+
     if(esp_timer_get_time()/1000.0-yaw_ctrl_time>3000){
         stable_yaw = yaw - q_head;
     }

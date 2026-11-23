@@ -95,13 +95,18 @@ static void calibration_bias_qmi8658c(void) {
             gyro_bias[2] += gyro_z;
             qmi_countInit++;
         } else {
+            // s2r 2026-11-23: this unit's yaw gyro (gyro_bias[1]) sits at -3.5..-5.6 dps at rest and
+            // drifts with temperature; the old 5 dps gate zeroed it and the heading loop then spun the body.
+            // Yaw channel gets a 12 dps gate; the wheel-referenced tracker (imu_yaw_bias_track) refines it.
             static const float kMaxGyroBiasDps = 5.0f;
+            static const float kMaxYawGyroBiasDps = 12.0f;
             for (int i = 0; i < 3; i++) {
                 acc_bias[i] /= (float)QMI8658C_CALIBRATION_COUNT;
                 gyro_bias[i] /= (float)QMI8658C_CALIBRATION_COUNT;
-                if (fabsf(gyro_bias[i]) > kMaxGyroBiasDps) {
+                const float gate = (i == 1) ? kMaxYawGyroBiasDps : kMaxGyroBiasDps;
+                if (fabsf(gyro_bias[i]) > gate) {
                     ESP_LOGW(TAG, "gyro_bias[%d]=%.2f dps > %.1f, treat as motion, set to 0",
-                             i, gyro_bias[i], kMaxGyroBiasDps);
+                             i, gyro_bias[i], gate);
                     gyro_bias[i] = 0.0f;
                 }
             }
@@ -273,6 +278,19 @@ void imu_read_once() {
     if (isIMUInit) {  // bias 校准完成后才开始积分，校准窗口内 yaw 保持 0
         yaw = yaw - gyro_yaw_comp * (float)qmi_d_imu_time;
     }
+}
+
+// ---------------------- s2r: wheel-referenced yaw bias tracking ----------------------
+// bias = mean(raw yaw gyro) + d(true yaw)/dt, true yaw rate from wheel encoders + head servo
+// (IMU is in the head). Called by the board's control loop with a stationary-ground guarantee.
+float imu_gyro_yaw_raw(void) { return gyro_yaw; }
+float imu_yaw_bias(void) { return gyro_bias[1]; }
+void imu_yaw_bias_nudge(float bias_window_dps, float alpha) {
+    if (!isIMUInit || !std::isfinite(bias_window_dps)) return;
+    if (fabsf(bias_window_dps) > 12.0f) return;
+    if (alpha < 0.0f) alpha = 0.0f;
+    if (alpha > 1.0f) alpha = 1.0f;
+    gyro_bias[1] += alpha * (bias_window_dps - gyro_bias[1]);
 }
 
 // ---------------------- 清理 ----------------------

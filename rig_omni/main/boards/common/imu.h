@@ -19,4 +19,9 @@ extern float dq;
 // d(yaw)/dt，单位 deg/s。固件里 yaw = yaw - gyro_yaw_comp*dt，所以它是
 // -gyro_yaw_comp（已过低通与 1.5 deg/s 死区）。航向环的 D 项用它。
 extern float yaw_rate;
+/* s2r: wheel-referenced yaw gyro bias tracking (imu.cc) */
+float imu_gyro_yaw_raw(void);
+float imu_yaw_bias(void);
+void imu_yaw_bias_nudge(float bias_window_dps, float alpha);
+
 #endif
