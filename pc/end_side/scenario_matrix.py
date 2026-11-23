@@ -372,7 +372,7 @@ def entries() -> list[dict]:
         {"gap": "physical-robot acceptance of ANY v14-v16 scenario", "blocking": "robot offline; needs --live run with watchdog supervision"},
         {"gap": "camera intrinsics calibration (FOV_H=60deg vs dist_k=0.84 contradiction)", "blocking": "needs printed checkerboard + 5min capture on the real robot"},
         {"gap": "double-knock recall on weak-impact takes still ~25-77%", "blocking": "v23 fixed trigger-layer losses (easy take 7->10/14); remaining misses are both-channel-weak - need harder-knock data not tuning"},
-        {"gap": "physical live E2E run (replays cover cb8455+1f30d1; live still untested)", "blocking": "robot offline; needs --source live --send-cmd supervised run"},
+        {"gap": "physical live E2E run (replays cover cb8455+1f30d1+65a54d+67f0c1; live still untested)", "blocking": "robot offline; needs --source live --send-cmd supervised run"},
         {"gap": "pursuit S2 hard edge: cup zigzags through robot + rests out of 60deg FOV", "blocking": "needs wider FOV / predictive dodge / multi-hypothesis tracking"},
         {"gap": "GeoNet depth blind to synthetic dark pixels (void->z~0): geometric cliff/depth cues unreliable", "blocking": "depth augmentation with dark-floor renders; affects any z<0 cue"},
         {"gap": "Android TFLite on-device run of the GeoNet+knock bundle", "blocking": "needs G:\\robot_app build + phone"},
