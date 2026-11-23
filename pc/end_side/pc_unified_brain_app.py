@@ -392,6 +392,101 @@ def _fetch_live_robot(base_url: str) -> tuple[np.ndarray | None, RobotTelemetry]
         return None, tel
 
 
+class _LiveFrameFetcher:
+    """后台取帧线程：/capture + /status 与主计算完全并行（传输链从关键路径摘除）。
+
+    第一性原理：相机帧周期 ~32ms 是地板，串行结构 "fetch(45-70ms) -> compute(~110ms)
+    -> cmd(~10ms)" 把抓取延迟全数加进每帧；改成抓取线程持续拉流、主循环取
+    **最新**帧（丢弃中间旧帧而非排队）—— 控制用的是最新鲜的一帧而不是下一帧。
+    /status 在同线程每 K 帧捎带一次（遥测慢变，无需每帧往返）。
+    """
+
+    def __init__(self, base_url: str, status_every: int = 5) -> None:
+        import threading
+        import urllib.request
+        self._urlopen = urllib.request.urlopen
+        self.base = base_url.rstrip("/")
+        self.status_every = max(1, int(status_every))
+        self._lock = threading.Lock()
+        self._latest: tuple[np.ndarray, RobotTelemetry, int] | None = None
+        self._consumed = -1
+        self._stop = False
+        self._th = threading.Thread(target=self._loop, name="live-fetch", daemon=True)
+        self._th.start()
+
+    def _loop(self) -> None:
+        tel = RobotTelemetry()
+        i = 0
+        while not self._stop:
+            try:
+                if i % self.status_every == 0:
+                    try:
+                        with self._urlopen(f"{self.base}/status", timeout=1.5) as r:
+                            tel = RobotTelemetry.from_status_json(json.loads(r.read().decode("utf-8", errors="ignore")))
+                    except Exception:
+                        pass
+                with self._urlopen(f"{self.base}/capture", timeout=2.0) as r:
+                    arr = np.frombuffer(r.read(), dtype=np.uint8)
+                bgr = cv2.imdecode(arr, cv2.IMREAD_COLOR)
+                if bgr is not None:
+                    with self._lock:
+                        self._latest = (bgr, tel, i)
+                i += 1
+            except Exception:
+                time.sleep(0.05)
+
+    def get(self, wait_s: float = 0.2) -> tuple[np.ndarray | None, RobotTelemetry | None]:
+        """取最新一帧；无新帧时短暂等待后返回 (None, None)。"""
+        deadline = time.perf_counter() + wait_s
+        while time.perf_counter() < deadline:
+            with self._lock:
+                if self._latest is not None and self._latest[2] != self._consumed:
+                    self._consumed = self._latest[2]
+                    return self._latest[0], self._latest[1]
+            time.sleep(0.003)
+        return None, None
+
+    def close(self) -> None:
+        self._stop = True
+
+
+class _AsyncCmdSender:
+    """异步指令发送：/cmd GET 不占主循环；只保最新（旧指令直接丢弃）。"""
+
+    def __init__(self) -> None:
+        import threading
+        import urllib.request
+        self._urlopen = urllib.request.urlopen
+        self._cond = threading.Condition()
+        self._pending: str | None = None
+        self._stop = False
+        self._th = threading.Thread(target=self._loop, name="cmd-send", daemon=True)
+        self._th.start()
+
+    def _loop(self) -> None:
+        while True:
+            with self._cond:
+                while self._pending is None and not self._stop:
+                    self._cond.wait(timeout=0.5)
+                if self._stop:
+                    return
+                url, self._pending = self._pending, None
+            try:
+                self._urlopen(url, timeout=0.5).read()
+            except Exception:
+                pass
+
+    def send(self, url: str) -> None:
+        with self._cond:
+            self._pending = url  # 覆盖式：只发最新指令
+            self._cond.notify()
+
+    def close(self) -> None:
+        with self._cond:
+            self._stop = True
+            self._cond.notify()
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description="RIG-Hover PC Unified Embodied Brain (100% Own Models)")
     ap.add_argument("--scenario", type=int, default=2, choices=[1, 2])
@@ -467,6 +562,8 @@ def main() -> None:
         from emote_bridge import EmoteBridge
         bridge = EmoteBridge(args.base, verbose=True)
     prev_mode = ""
+    fetcher = _LiveFrameFetcher(args.base) if args.source == "live" else None
+    cmd_sender = _AsyncCmdSender() if (args.source == "live" and args.send_cmd) else None
     frame_ids = range(args.max_frames) if args.max_frames is not None else itertools.count()
     for idx in frame_ids:
         if args.source == "frames":
@@ -488,9 +585,8 @@ def main() -> None:
                     break
             tel = None
         else:
-            bgr, tel = _fetch_live_robot(args.base)
+            bgr, tel = fetcher.get()
             if bgr is None:
-                time.sleep(0.05)
                 continue
 
         if args.click_xy and (not auto_clicked) and idx >= 4:
@@ -515,14 +611,9 @@ def main() -> None:
                 bridge.update_mode(info["mode"])
             prev_mode = info["mode"]
 
-        if args.source == "live" and args.send_cmd:
-            import urllib.request
+        if cmd_sender is not None:
             c = info["cmd"]
-            url = f"{args.base}/cmd?vx={c['vx']:.1f}&vyaw={c['vyaw']:.1f}&head={c['head']:.1f}"
-            try:
-                urllib.request.urlopen(url, timeout=0.5).read()
-            except Exception:
-                pass
+            cmd_sender.send(f"{args.base}/cmd?vx={c['vx']:.1f}&vyaw={c['vyaw']:.1f}&head={c['head']:.1f}")
 
         if idx % 10 == 0 or info["knock"]["fired"] or (args.max_frames is not None and idx == args.max_frames - 1):
             print(json.dumps(info, ensure_ascii=False), flush=True)
