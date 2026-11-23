@@ -252,7 +252,8 @@ class UnifiedRobotBrain:
             pitch_deg=tel.pitch, roll_deg=tel.roll, align=(self.frames_seen > 1),
         )
         _st["slam"] = (_t() - _t0) * 1e3
-        self._ensure_relocalizer(bgr240, pred)
+        if reloc_due or self.frames_seen % 6 == 0:
+            self._ensure_relocalizer(bgr240, pred)
         self.prev_bgr = bgr240.copy()
 
         # 1.5) 视觉悬崖本能：纯视觉深渊检测（与 v15 仿真同一检测器），近崖 APPROACH 经 Shield clearance=0 硬刹停
@@ -278,6 +279,8 @@ class UnifiedRobotBrain:
         reloc_info: dict[str, Any] = {"source": "map_build", "ransac_inliers": 0}
         _t0 = _t()
         if reloc_due:
+            # 就在重定位前刷最新静态图（原先每帧 O(全图) 扫描是隐藏的关键路径大头）
+            self.relocalizer.static_pts, self.relocalizer.static_nrms, _ = self.slam.get_confirmed_static_cloud(min_wt=1.0)
             ro = self.relocalizer.relocalize(
                 bgr240, pred["pts_cam"], pred["nrm_cam"], pred["valid_grid"],
                 imu_pitch_deg=tel.pitch, imu_roll_deg=tel.roll, prev_est_pose=self.est_pose,
@@ -429,6 +432,7 @@ class _LiveFrameFetcher:
         import threading
         import requests
         self._sess = requests.Session()  # keep-alive：urllib 每次新建 TCP=握手+固件 socket 磨损
+        self._sess.trust_env = False  # 机器人是局域网直连：系统 HTTP 代理会把每帧请求绕出去（实测拖慢到 ~6Hz）
         self.base = base_url.rstrip("/")
         self.status_every = max(1, int(status_every))
         self.jpg_q = int(jpg_q)
