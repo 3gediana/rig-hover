@@ -299,6 +299,7 @@ class DoubleKnockDetector:
             "ready": True,
             "p_impulse": smooth_imp,
             "p_double": win_double_sem,
+            "p_double_sem": p_double_sem,
             "knock_count": pred_cnt,
         })
         t_now0 = float(now_t)
