@@ -132,19 +132,21 @@ class GotoPoint:
             if abs(e_head) < self.turn_tol and abs(lead_yaw) < 6.0:
                 self.phase = "drive"
             return vx, vy, {"phase": "turn", "e_head": round(e_head, 1), "dist": round(dist, 3)}
-        # drive: hold heading toward the goal (re-aim only while far), bounded position lead
-        hold = bear if dist > 0.08 else self.heading.target
+        # drive: hold heading toward the goal (re-aim only while far)
+        hold = bear  # keep steering at the goal the whole way (arc-off-table fix: lateral 10cm -> <3cm)
         vy, _ = self.heading.step(t, psi_w, lead_yaw, hold)
         if along <= self.pos_tol or abs(e_head) > 60.0:
             self.phase = "done"
-            return float(np.clip(-2.0 * lead_pos, -0.02, 0.02)), vy, {"phase": "done", "dist": round(dist, 3)}
-        s = 1.0
-        if abs(lead_pos) < 0.004 and along > self.pos_tol:
-            self.c = min(0.02, self.c + 0.01 * 0.04)
-        want = min(along, 0.03) * math.cos(math.radians(e_head)) + self.c
-        want = float(np.clip(want, -self.lead_cap, self.lead_cap))
-        vx = float(np.clip(1.5 * (want - lead_pos), -self.v_max, self.v_max))
-        return vx, vy, {"phase": "drive", "dist": round(dist, 3), "along": round(along, 3), "want_lead": round(want, 3)}
+            return 0.0, vy, {"phase": "done", "dist": round(dist, 3)}
+        # Closed-loop on REMAINING DISTANCE, not on the firmware's internal position lead (that saturates at the
+        # lead cap under load and stalls the robot - the closed-loop eval caught this). The lead cap stays a torque
+        # bound; here we size a speed from how far is left and gate it by heading error so we don't arc off the table.
+        if abs(e_head) > 25.0:
+            self.phase = "turn"; return 0.0, vy, {"phase": "turn", "e_head": round(e_head, 1), "dist": round(dist, 3)}
+        heading_gate = max(0.0, math.cos(math.radians(min(85.0, abs(e_head)))))
+        vx = self.v_max * float(np.clip(along / 0.08, 0.25, 1.0)) * heading_gate
+        vx = float(np.clip(vx, 0.0, self.v_max))
+        return vx, vy, {"phase": "drive", "dist": round(dist, 3), "along": round(along, 3), "vx": round(vx, 4)}
 
 
 def pixel_to_table(u: float, v: float, pitch_cam_deg: float, h_cam: float = 0.135, f_px: float = F_PX_PER_DEG * 57.2958,
@@ -224,38 +226,5 @@ class HybridGaze:
             self.last_seen = t
         elif t - self.last_seen > 1.2:
             self.body_target = psi_w
-        vy, _ = self.heading.step(t, psi_w, lead_yaw, self.body_target)
-        return vy, self.head_cmd
-
-
-
-class HybridGazeV2(HybridGaze):
-    """Fix for the step-response deficit of HybridGaze (sim: 2.7 deg vs v25 1.1 deg median):
-    the body only starts turning once the head has settled on the target, turns slowly, and the head
-    command is fed forward with the body rotation measured by the wheels since the frame was captured,
-    so the camera stays on the face while the body swings round underneath it."""
-
-    def __init__(self, face_after_deg: float = 7.0, body_vmax: float = 15.0):
-        super().__init__(face_after_deg=face_after_deg, body_vmax=body_vmax)
-        self.psi_at_cmd = None
-
-    def step(self, t, det, psi_w, lead_yaw, q_now, dt, new_det):
-        if det is not None and det[0] is not None and new_det:
-            cx, psi_cap, q_cap = det
-            base = self.head.step(t, cx, q_cap, q_now, dt)
-            self.psi_at_cmd = psi_cap
-            self._base_head = base
-            cam_dir = psi_cap + q_cap + (cx - 120.0) / F_PX_PER_DEG
-            settled = abs(self.head.dq) < 6.0 and abs(cx - 120.0) < 14.0
-            if self.body_target is None:
-                self.body_target = psi_w
-            if settled and abs(wrap(cam_dir - psi_w)) > self.face_after:
-                self.body_target = cam_dir
-            self.last_seen = t
-        elif t - self.last_seen > 1.2:
-            self.body_target = psi_w
-        if self.psi_at_cmd is not None and hasattr(self, "_base_head"):
-            # counter-rotate the head by the body rotation since capture (wheel odometry, 2 ms fresh)
-            self.head_cmd = float(np.clip(self._base_head - (psi_w - self.psi_at_cmd), -45.0, 45.0))
         vy, _ = self.heading.step(t, psi_w, lead_yaw, self.body_target)
         return vy, self.head_cmd

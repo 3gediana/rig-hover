@@ -89,3 +89,17 @@ def test_fist_detector_face_overlap_and_band():
     det2 = F.FistDetector(_Pose(xy, cf), None)
     d2 = det2.detect(bgr, 0.0, face_box_px=(150,100,220,170))  # wrist inside face box -> rejected
     assert d2 is None
+
+
+def test_click_to_go_converges_and_stops():
+    import importlib.util, pathlib, numpy as np
+    spec = importlib.util.spec_from_file_location("ectg", str(pathlib.Path(__file__).resolve().parent / "eval_click_to_go.py"))
+    E = importlib.util.module_from_spec(spec)
+    import sys as _s; _s.argv = ["x"]  # prevent __main__ block (guarded) 
+    spec.loader.exec_module(E)
+    for g in [(0.15, 0.0), (0.22, -0.06), (0.25, 0.10)]:
+        for pk in [{}, dict(Fs=56, Fk=8, J=0.8, b=1), dict(drift=-3.7)]:
+            r = E.run_click(g, pk)
+            assert r["done"], (g, pk, r)
+            assert r["along_err_cm"] < 4.0, (g, pk, r)      # along-track, standoff removed
+            assert r["lateral_max_cm"] < 12.0, (g, pk, r)
