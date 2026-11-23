@@ -343,14 +343,14 @@ def entries() -> list[dict]:
             "notes": "void-majority line fixed a real blindness: brightness+border conjunction dies when void fills >50% view (last ~12cm). Now refuses ~20-25cm early on all approach angles; refusal envelope is conservative (16cm targets also refused).",
         })
 
-    d21 = RUNS / "e2e_replay" / "robot_20261115_151733_cb8455_summary.json"
-    if d21.exists():
+    for d21 in sorted((RUNS / "e2e_replay").glob("*_summary.json")) if (RUNS / "e2e_replay").exists() else []:
         d = json.loads(d21.read_text(encoding="utf-8"))
         gn = d.get("geonet_ms") or {}
+        tid = d21.stem.replace("_summary", "")
         e.append({
-            "id": "v21-e2e-fulltake", "name": "v21 full-take real-video E2E replay (knock -> 3D lock -> nav cmd)",
+            "id": f"v21-e2e-{tid[-6:]}", "name": f"v21 full-take real-video E2E replay [{tid[-6:]}]",
             "category": "behavior", "tier": "T2",
-            "source": "runs_end_side/e2e_replay/robot_20261115_151733_cb8455_summary.json",
+            "source": f"runs_end_side/e2e_replay/{d21.name}",
             "metrics": {
                 "frames": d.get("n_frames_logged"),
                 "gt_knocks": d.get("gt_knocks"),
@@ -360,8 +360,8 @@ def entries() -> list[dict]:
                 "reloc_inliers_med": d.get("reloc_inliers_median"),
                 "geonet_ms_med": gn.get("median"),
             },
-            "artifacts": _art("e2e_replay/robot_20261115_151733_cb8455_summary.json"),
-            "notes": "pc_unified_brain_app --source video on full 2412f take; replay tier (odometry static).",
+            "artifacts": _art(f"e2e_replay/{d21.name}"),
+            "notes": "pc_unified_brain_app --source video on the full take; replay tier (odometry static).",
         })
 
     # ------------------------------------------------------------------
