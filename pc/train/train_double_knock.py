@@ -159,6 +159,9 @@ class DoubleKnockDetector:
         pair_max_s: float = 1.45,
         cooldown_s: float = 2.0,
         gate_state: int = MODE_GAZE_FIST,
+        sem_latch_s: float = 0.0,
+        single_confirm_thr: float | None = None,
+        single_lookback_s: float = 1.5,
     ):
         self.model = model
         self.device = torch.device(device)
@@ -175,6 +178,12 @@ class DoubleKnockDetector:
         self.pair_max_s = float(pair_max_s)
         self.cooldown_s = float(cooldown_s)
         self.gate_state = int(gate_state)
+        # v23 触发层修复（曲线重仿真证据）：语义闩存 + 延迟语义确认单峰
+        self.sem_latch_s = float(sem_latch_s)
+        self.single_confirm_thr = None if single_confirm_thr is None else float(single_confirm_thr)
+        self.single_lookback_s = float(single_lookback_s)
+        self._sem_latched_until = -1e9
+        self._sem_below_confirm = True
 
         self.frames_buf: deque[np.ndarray] = deque(maxlen=max(self.window * 3, 144))
         self.boxes_buf: deque = deque(maxlen=max(self.window * 3, 144))
@@ -292,6 +301,26 @@ class DoubleKnockDetector:
             "p_double": win_double_sem,
             "knock_count": pred_cnt,
         })
+        t_now0 = float(now_t)
+        if self.sem_latch_s > 0.0 and p_double_sem >= self.double_threshold:
+            self._sem_latched_until = t_now0 + self.sem_latch_s
+
+        # 延迟语义确认单峰通道（v23：gt7/gt12 第二敲冲击太弱不成峰，语义在峰后到）
+        if self.single_confirm_thr is not None:
+            gate_ok0 = scenario_state is None or int(scenario_state) == self.gate_state
+            rise = p_double_sem >= self.single_confirm_thr and self._sem_below_confirm
+            self._sem_below_confirm = p_double_sem < self.single_confirm_thr
+            if (
+                rise and gate_ok0 and self.peak_times
+                and t_now0 - self.peak_times[-1] <= self.single_lookback_s
+                and t_now0 - self.last_trigger_t >= self.cooldown_s
+            ):
+                self.last_trigger_t = t_now0
+                self.fired_total += 1
+                out["fired"] = 1
+                out["fire_src"] = "sem_confirm"
+                return out
+
         if len(self.smooth_hist) < 3:
             return out
 
@@ -311,7 +340,8 @@ class DoubleKnockDetector:
             len(self.peak_times) >= 2
             and self.pair_min_s <= (t_now - self.peak_times[-2]) <= self.pair_max_s
         )
-        if not has_pair or win_double_sem < self.double_threshold:
+        sem_ok = win_double_sem >= self.double_threshold or t_now <= self._sem_latched_until
+        if not has_pair or not sem_ok:
             return out
         if t_now - self.last_trigger_t < self.cooldown_s:
             return out

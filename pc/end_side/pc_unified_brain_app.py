@@ -113,6 +113,9 @@ class UnifiedRobotBrain:
                 imp_threshold=0.35,
                 double_threshold=0.32,
                 gate_state=MODE_GAZE_FIST,
+                sem_latch_s=2.0,
+                single_confirm_thr=0.60,
+                single_lookback_s=1.5,
             )
 
         self.relocalizer: Visual3DLandmarkRelocalizer | None = None
@@ -269,7 +272,7 @@ class UnifiedRobotBrain:
             "target_xy": list(self.target_xy) if self.target_xy else None,
             "rem_m": round(rem_m, 3),
             "reloc": reloc_info,
-            "knock": {"fired": int(knock_out.get("fired", 0)), "p_double": round(float(knock_out.get("p_double", 0.0)), 3)},
+            "knock": {"fired": int(knock_out.get("fired", 0)), "p_double": round(float(knock_out.get("p_double", 0.0)), 3), "src": knock_out.get("fire_src", "pair")},
             "cliff": cliff_det,
             "cliff_fired": int(cliff_fired),
             "cmd": {"vx": round(safe_cmd.vx, 2), "vyaw": round(safe_cmd.vyaw, 2), "head": round(safe_cmd.head, 2)},
