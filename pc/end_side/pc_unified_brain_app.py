@@ -206,6 +206,8 @@ class UnifiedRobotBrain:
             self.path_xy = [(self.est_pose[0], self.est_pose[1]), (float(wx), float(wy))]
         self.mode = MODE_APPROACH
         self.dwell_count = 0
+        self._best_rem = 1e9
+        self._approach_stall = 0
         return {"target_xy": self.target_xy, "astar_accepted": bool(plan["accepted"]), "path_pts": len(self.path_xy)}
 
     def _knock_step_full(self, bgr240: np.ndarray, timestamp_s: float | None) -> dict[str, Any]:
@@ -333,6 +335,19 @@ class UnifiedRobotBrain:
         if self.mode == MODE_APPROACH and self.target_xy is not None:
             ex, ey, eyaw = self.est_pose
             rem_m = math.hypot(self.target_xy[0] - ex, self.target_xy[1] - ey)
+            # 目标不可达放弃机制：悬崖挡道/距离不降时，原地扭摆毫无意义。
+            # 150 帧 (~15s) 内 rem 没改善 20% -> 放弃，回盯人脸（"那儿去不了"的可读表达）
+            if rem_m < getattr(self, "_best_rem", 1e9):
+                self._best_rem = rem_m
+                self._approach_stall = 0
+            else:
+                self._approach_stall = getattr(self, "_approach_stall", 0) + 1
+            if self._approach_stall > 150 and rem_m > getattr(self, "_best_rem", 0) * 0.99:
+                self.target_xy = None
+                self._best_rem = 1e9
+                self._approach_stall = 0
+                self.mode = MODE_DWELL if scenario == 1 else MODE_IDLE
+                self.dwell_count = 0
             if rem_m < 0.032:
                 self.mode = MODE_DWELL if scenario == 1 else MODE_IDLE
                 self.dwell_count = 0
@@ -387,6 +402,7 @@ class UnifiedRobotBrain:
             "rem_m": round(rem_m, 3),
             "reloc": reloc_info,
             "knock": {"fired": int(knock_out.get("fired", 0)), "p_double": round(float(knock_out.get("p_double", 0.0)), 3), "src": knock_out.get("fire_src", "pair"), "imp": round(float(knock_out.get("p_impulse", 0.0)), 3), "sem": round(float(knock_out.get("p_double_sem", knock_out.get("p_double", 0.0))), 3), "pk": int(bool(knock_out.get("peak")))},
+            "faces": face_dets,
             "cliff": cliff_det,
             "cliff_fired": int(cliff_fired),
             "cliff_engaged": int(cliff_engaged),
@@ -505,8 +521,9 @@ class _AsyncCmdSender:
 
     def __init__(self) -> None:
         import threading
-        import urllib.request
-        self._urlopen = urllib.request.urlopen
+        import requests
+        self._sess = requests.Session()
+        self._sess.trust_env = False  # 与 fetcher 同一原因：系统代理会吞掉发给机器人的指令
         self._cond = threading.Condition()
         self._pending: str | None = None
         self._stop = False
@@ -522,7 +539,7 @@ class _AsyncCmdSender:
                     return
                 url, self._pending = self._pending, None
             try:
-                self._urlopen(url, timeout=0.5).read()
+                self._sess.get(url, timeout=0.5)
             except Exception:
                 pass
 
@@ -556,6 +573,9 @@ def main() -> None:
                     help="视觉重定位降频：APPROACH 时每 N 帧跑一次（~50ms/次）；est_pose 0.75 平滑兜底间隔帧")
     ap.add_argument("--jpg-q", type=int, default=60,
                     help="Live 模式 /capture?q= 的 JPEG 质量：固件实测编码耗时随质量缩放（80→60 省 ~5ms 编码 + ~3ms 传输）")
+    ap.add_argument("--dump-dir", type=str, default="",
+                    help="逐帧落盘：bgr240 原图 + info 的 jsonl（失败现场可回放，如'为什么没识别到'）")
+    ap.add_argument("--dump-every", type=int, default=3, help="每 N 帧存一张图")
     args = ap.parse_args()
 
     brain = UnifiedRobotBrain(use_lite_geonet=args.lite, enable_knock=(args.scenario == 1),
@@ -619,6 +639,12 @@ def main() -> None:
     prev_mode = ""
     fetcher = _LiveFrameFetcher(args.base, jpg_q=args.jpg_q) if args.source == "live" else None
     cmd_sender = _AsyncCmdSender() if (args.source == "live" and args.send_cmd) else None
+    dump_dir = None
+    dump_jsonl = None
+    if args.dump_dir:
+        dump_dir = pathlib.Path(args.dump_dir)
+        dump_dir.mkdir(parents=True, exist_ok=True)
+        dump_jsonl = open(dump_dir / "info.jsonl", "w", encoding="utf-8")
     frame_ids = range(args.max_frames) if args.max_frames is not None else itertools.count()
     for idx in frame_ids:
         if args.source == "frames":
@@ -654,6 +680,11 @@ def main() -> None:
         else:
             ts = time.perf_counter() - t0
         info = brain.step(bgr, telemetry=tel, scenario=scenario, timestamp_s=ts, auto_level=(tel is None))
+
+        if dump_dir is not None:
+            if idx % args.dump_every == 0:
+                cv2.imwrite(str(dump_dir / f"f{idx:05d}.jpg"), bgr)
+            dump_jsonl.write(json.dumps(info, ensure_ascii=False) + "\n")
 
         if bridge is not None:
             if info["knock"]["fired"]:
