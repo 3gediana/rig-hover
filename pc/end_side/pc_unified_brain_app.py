@@ -446,7 +446,16 @@ def main() -> None:
         elif args.source == "video":
             ok, bgr = cap.read()
             if not ok:
-                break
+                # 解码失败≠视频结束：内存压力下 ffmpeg 缓冲分配会偶发失败
+                # （曾致三次回放在 ~f60 被静默截断）。重试 5 次仍失败才按 EOF 处理。
+                for _r in range(5):
+                    time.sleep(0.05)
+                    ok, bgr = cap.read()
+                    if ok:
+                        break
+                if not ok:
+                    print(f"[video] frame {idx} read failed after retries -> treating as EOF", flush=True)
+                    break
             tel = None
         else:
             bgr, tel = _fetch_live_robot(args.base)
