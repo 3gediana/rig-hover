@@ -105,3 +105,12 @@ pc/train/arbtest/build/
 pc/agent_bridge/robot_notes.log
 pc/escalate/artifacts/metrics_test.json
 pc/sim/results.json
+
+_archive/
+# s2r 2026-11-23: real-robot captures contain people's faces (public repo)
+runs_end_side/hw_char_upright/
+runs_end_side/s2r_live/
+runs_end_side/s2r_morning/
+rig_omni/main/**/*.pre_s2r
+# leaked API keys (rotate them!)
+pc/s2r/sim_results.json
