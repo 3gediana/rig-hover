@@ -402,20 +402,24 @@ class UnifiedRobotBrain:
             safe_cmd = self.shield.apply(raw_cmd, mode=self.mode, remaining_m=0.0, pitch_deg=tel.pitch)
             # 盯脸可读性：policy 输出 ±1-5° 人耳听不到舵机声。检测到脸就直接按
             # 方位角控舵机（60°FOV，正=左转），转幅一眼能看见
+            # 手持态：满天 void + 全画面动态 = 被人拿在手里，轮子空转无意义 → 锁轮只做表情
+            held = (len(dp) > 25000) and (cliff_det is not None and cliff_det.get("void_area_px", 0) > 6000)
+            if held:
+                safe_cmd = DriveCommand(0.0, 0.0, safe_cmd.head)
+
             if self.mode == MODE_GAZE_FIST and fist_det:
-                # 盯拳：朝拳簇方位增量修正舵机（bearing>0=目标在左→head+左）
-                self._head_hold = float(np.clip(
-                    getattr(self, "_head_hold", 0.0) + float(np.clip(fist_det["bearing_deg"] * 0.8, -14.0, 14.0)),
-                    -70.0, 70.0))
-                safe_cmd = DriveCommand(0.0, safe_cmd.vyaw, self._head_hold)
+                # 盯拳：身体转向拳方位（头是表情件；vyaw>0=左）。增量小步，防甩头
+                vyaw_g = float(np.clip(fist_det["bearing_deg"] * 0.6, -25.0, 25.0))
+                head_g = float(np.clip(fist_det["bearing_deg"] * 0.7, -35.0, 35.0))
+                safe_cmd = DriveCommand(0.0, vyaw_g, head_g)
             elif self.mode == MODE_GAZE_FACE and face_dets:
-                # 舵机闭环居中：不猜头-视野传递函数，每帧朝脸心增量修正（±12°/帧），
-                # 居中即停。真机"斜眼看人"的根因是一次性比例映射增益不足。
+                # 舵机云台不带相机——转头动不了脸在画面里的位置（真机实证 head 顶死 +70 而
+                # cx 不变）。居中脸的职责在身体：vyaw 闭环（实测 policy 输出 -10~-32 与
+                # 此式同号），头只做同向表情倾斜，身体到位后自然回零。
                 cx_err = face_dets[0]["cx"] - 0.5
-                if abs(cx_err) > 0.03:  # 死区：居中附近保持，避免嗡鸣
-                    self._head_hold = float(np.clip(
-                        getattr(self, "_head_hold", 0.0) - np.clip(cx_err * 60.0, -12.0, 12.0), -70.0, 70.0))
-                safe_cmd = DriveCommand(safe_cmd.vx, safe_cmd.vyaw, getattr(self, "_head_hold", 0.0))
+                vyaw_g = float(np.clip(cx_err * 140.0, -30.0, 30.0)) if abs(cx_err) > 0.04 else 0.0
+                head_g = float(np.clip(-cx_err * 50.0, -35.0, 35.0))
+                safe_cmd = DriveCommand(0.0 if held else safe_cmd.vx, vyaw_g if not held else 0.0, head_g)
         _st["policy"] = (_t() - _t0) * 1e3
 
         # 找人本能：无脸 >6s 就缓速旋转扫描（真机曾转到面壁全程 IDLE——它不是在不理你，
