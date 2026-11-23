@@ -16,6 +16,10 @@ import numpy as np
 from hd_moge_contour_engine import REAL_H_CAM_M
 
 
+def _wrap_deg_local(a: float) -> float:
+    return (a + 180.0) % 360.0 - 180.0
+
+
 def _rot_c2w_np(yaw_rad: float, pitch_rad: float, roll_rad: float) -> np.ndarray:
     """精确相机到世界旋转矩阵 R_c2w = R_z(yaw) @ R_pitch(pitch) @ R_roll(roll)（与 DesktopArena3D 严格对齐）。"""
     cy, sy = math.cos(yaw_rad), math.sin(yaw_rad)
@@ -76,11 +80,14 @@ def detect_visual_cliff_zero_oracle(
             wx = cam_ex + t_hit[ok] * r_w[ok, 0]
             wy = cam_ey + t_hit[ok] * r_w[ok, 1]
             dists = np.hypot(wx - cam_ex, wy - cam_ey)
+            i_near = int(np.argmin(dists))
+            bear = _wrap_deg_local(float(np.degrees(np.arctan2(wy[i_near] - cam_ey, wx[i_near] - cam_ex))) - eyaw)
             return {
                 "void_area_px": void_area,
                 "rim_xy": (round(float(np.median(wx)), 4), round(float(np.median(wy)), 4)),
                 "y_cliff_est": round(float(np.median(wy)), 4),
                 "dist_to_rim_m": round(float(np.percentile(dists, 15)), 4),
+                "bearing_deg": round(bear, 1),
                 "bbox_uv": (16, v_rim, 224, roi_v1),
                 "source": "void_majority",
             }
@@ -135,11 +142,14 @@ def detect_visual_cliff_zero_oracle(
     rim_y = float(np.median(wy[near_m]))
     min_dist_to_rim = float(np.percentile(dists, 15))
     y_cliff_est = float(np.median(wy))
+    i_near = int(np.argmin(dists))
+    bear = _wrap_deg_local(float(np.degrees(np.arctan2(wy[i_near] - cam_ey, wx[i_near] - cam_ex))) - eyaw)
     return {
         "void_area_px": best_area,
         "rim_xy": (round(rim_x, 4), round(rim_y, 4)),
         "y_cliff_est": round(y_cliff_est, 4),
         "dist_to_rim_m": round(min_dist_to_rim, 4),
+        "bearing_deg": round(bear, 1),
         "bbox_uv": (
             int(stats[best_cc, cv2.CC_STAT_LEFT] + 16),
             int(stats[best_cc, cv2.CC_STAT_TOP] + roi_v0),

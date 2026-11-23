@@ -1,0 +1,1 @@
+Get-CimInstance Win32_Process -Filter 'Name="python.exe"' | Where-Object { $_.CommandLine -match 'pc_unified_brain_app' } | ForEach-Object { $p = Get-Process -Id $_.ProcessId -ErrorAction SilentlyContinue; if ($p) { $p.PriorityClass = 'BelowNormal'; Write-Output "$($_.ProcessId) -> BelowNormal" } }

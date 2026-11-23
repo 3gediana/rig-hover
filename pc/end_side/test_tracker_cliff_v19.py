@@ -144,3 +144,71 @@ def test_pred_shortcut_skips_infer_frame() -> None:
         bgr, bgr, _ExplodingGeo(), (0.0, 0.0, 0.0, 0.0, 0.0), _rays_cam(), pred=pred)
     assert det is not None
     assert det["source"] == "void_majority"
+
+
+# ---------------- 方向感知悬崖净空门（v24 加固） ----------------
+
+def test_cliff_guard_side_rim_does_not_freeze() -> None:
+    """rim 在车体侧向 90°、距离 0.28m（<hold_m）：不接合，机器人仍可前进。"""
+    from pc_unified_brain_app import _cliff_guard
+    det = {"dist_to_rim_m": 0.28, "rim_xy": (0.0, -0.28)}  # 正左/右侧
+    engaged, clear = _cliff_guard(det, (0.0, 0.0, 0.0))
+    assert engaged is False and clear == 0.85
+
+
+def test_cliff_guard_front_rim_graded() -> None:
+    """rim 正前方 0.40m（锥内）：接合且 clearance=0.40-0.30=0.10，渐刹不抱死。"""
+    from pc_unified_brain_app import _cliff_guard
+    det = {"dist_to_rim_m": 0.40, "rim_xy": (0.40, 0.0)}  # 车头正前
+    engaged, clear = _cliff_guard(det, (0.0, 0.0, 0.0))
+    assert engaged is True and abs(clear - 0.10) < 1e-9
+
+
+def test_cliff_guard_front_rim_hard_stop() -> None:
+    """rim 正前方 ≤hold_m：clearance=0 硬停。"""
+    from pc_unified_brain_app import _cliff_guard
+    det = {"dist_to_rim_m": 0.25, "rim_xy": (0.25, 0.0)}
+    engaged, clear = _cliff_guard(det, (0.0, 0.0, 0.0))
+    assert engaged is True and clear == 0.0
+
+
+def test_cliff_guard_near_rim_any_bearing() -> None:
+    """贴脸 rim（<0.15m）方位不可信，任何朝向都接合。"""
+    from pc_unified_brain_app import _cliff_guard
+    det = {"dist_to_rim_m": 0.08, "rim_xy": (0.0, 0.08)}  # 正后方也刹
+    engaged, clear = _cliff_guard(det, (0.0, 0.0, 0.0))
+    assert engaged is True and clear == 0.0
+
+
+def test_cliff_guard_yaw_rotated() -> None:
+    """车体 yaw=90° 时 rim 在世界 +x 但相对车体在侧向 → 不接合。"""
+    from pc_unified_brain_app import _cliff_guard
+    det = {"dist_to_rim_m": 0.28, "rim_xy": (0.28, 0.0)}
+    engaged, clear = _cliff_guard(det, (0.0, 0.0, 90.0))
+    assert engaged is False
+
+
+def test_cliff_guard_none() -> None:
+    from pc_unified_brain_app import _cliff_guard
+    engaged, clear = _cliff_guard(None, (0.0, 0.0, 0.0))
+    assert engaged is False and clear == 0.85
+
+
+def test_cliff_guard_cone_boundary() -> None:
+    """45° 锥边界：44° 接合、46° 放行。"""
+    from pc_unified_brain_app import _cliff_guard
+    d = 0.40
+    for deg, want in ((44.0, True), (46.0, False)):
+        r = math.radians(deg)
+        det = {"dist_to_rim_m": d, "rim_xy": (d * math.cos(r), d * math.sin(r))}
+        engaged, _ = _cliff_guard(det, (0.0, 0.0, 0.0))
+        assert engaged is want
+
+
+def test_cliff_guard_prefers_detector_bearing() -> None:
+    """det 带 bearing_deg（最近点方位）时优先于 rim_xy 中位方位——L 形桌角防漏刹。"""
+    from pc_unified_brain_app import _cliff_guard
+    # rim 中位在 90°（锥外），但最近点在 10°（锥内）→ 应接合
+    det = {"dist_to_rim_m": 0.28, "rim_xy": (0.0, -0.28), "bearing_deg": 10.0}
+    engaged, clear = _cliff_guard(det, (0.0, 0.0, 0.0))
+    assert engaged is True and clear == 0.0

@@ -81,6 +81,45 @@ KNOCK_DEPLOY_CKPT = REPO / "runs_knock" / "double_knock_fpsaug2_20261115" / "dou
 _PROJ = PersistentGaussianMemoryMap(max_splats=8)
 
 
+def _cliff_guard(
+    cliff_det: dict[str, Any] | None,
+    est_pose: tuple[float, float, float],
+    hold_m: float = 0.30,
+    cone_deg: float = 45.0,
+) -> tuple[bool, float]:
+    """方向感知的悬崖净空门。
+
+    真实负样本动机：rim 出现在车身侧向时二元冻结会让机器人永远开不到
+    合法目标。本函数只在两种情形接合净空：
+      1. rim 位于前向锥 `|bearing| <= cone_deg` 内（行进方向上真有悬崖）；
+      2. `dist_to_rim_m < 0.15` 贴脸兜底（rim 几乎在轮下，方位不可信时仍刹）。
+
+    返回 `(engaged, clearance_m)`。接合时 `clearance_m = max(0, dist - hold_m)`，
+    与 Shield 的 sqrt 刹车包络天然衔接：hold+0.25m 起渐刹、hold_m 处硬停，
+    取代原先"30cm 处突然抱死"的 0/1 切换。
+    """
+    if cliff_det is None:
+        return False, 0.85
+    d = float(cliff_det.get("dist_to_rim_m") or 9.9)
+    bear_v = cliff_det.get("bearing_deg")
+    if bear_v is not None:
+        bear = abs(float(bear_v))
+    else:
+        rx, ry = cliff_det.get("rim_xy") or (None, None)
+        if rx is None:
+            engaged = d < hold_m
+            return engaged, (0.0 if engaged else 0.85)
+        ex, ey, eyaw = float(est_pose[0]), float(est_pose[1]), float(est_pose[2])
+        dxw, dyw = float(rx) - ex, float(ry) - ey
+        cy, sy = math.cos(math.radians(eyaw)), math.sin(math.radians(eyaw))
+        bx = cy * dxw + sy * dyw
+        by = -sy * dxw + cy * dyw
+        bear = abs(math.degrees(math.atan2(by, bx)))
+    if d < 0.15 or bear <= cone_deg:
+        return True, max(0.0, d - hold_m)
+    return False, 0.85
+
+
 class UnifiedRobotBrain:
     """100% 自研模型驱动的 RIG-Hover PC 端统一具身大脑（Scenario 1 + Scenario 2）。"""
 
@@ -131,6 +170,7 @@ class UnifiedRobotBrain:
         # APPROACH 巡航中 dist_to_rim_m < 0.30 时通过 Shield clearance=0 硬刹停 vx。
         self.rays_cam = make_camera_ray_grid(GEO_H, GEO_W, fov_h_deg=REAL_FOV_H_DEG, pitch_deg=0.0, roll_deg=0.0)
         self.cliff_hold_m: float = 0.30
+        self.cliff_cone_deg: float = 45.0
         self._cliff_active: bool = False
 
     def _ensure_relocalizer(self, bgr: np.ndarray, pred: dict[str, Any]) -> None:
@@ -189,6 +229,7 @@ class UnifiedRobotBrain:
             (self.est_pose[0], self.est_pose[1], self.est_pose[2], tel.pitch, tel.roll),
             self.rays_cam, pred=pred,
         )
+        cliff_engaged, cliff_clear = _cliff_guard(cliff_det, self.est_pose, self.cliff_hold_m, self.cliff_cone_deg)
         cliff_near = cliff_det is not None and cliff_det["dist_to_rim_m"] < self.cliff_hold_m
         cliff_fired = cliff_near and not self._cliff_active
         self._cliff_active = cliff_near
@@ -249,9 +290,9 @@ class UnifiedRobotBrain:
                             break
                 bear = _wrap_deg(math.degrees(math.atan2(wp[1] - ey, wp[0] - ex)) - eyaw)
                 tlock = TargetLock(valid=1, bearing_body=bear, remaining_m=rem_m)
-                f39 = EndSideFeatureBuilder.build(tel, detections=face_dets, target_lock=tlock, clearance_m=0.85)
+                f39 = EndSideFeatureBuilder.build(tel, detections=face_dets, target_lock=tlock, clearance_m=cliff_clear)
                 raw_cmd = self.policy_nav.infer_numpy(f39)
-                safe_cmd = self.shield.apply(raw_cmd, mode=MODE_APPROACH, remaining_m=rem_m, pitch_deg=tel.pitch, clearance_m=0.0 if cliff_near else 0.85)
+                safe_cmd = self.shield.apply(raw_cmd, mode=MODE_APPROACH, remaining_m=rem_m, pitch_deg=tel.pitch, clearance_m=cliff_clear)
         elif self.mode == MODE_DWELL:
             self.dwell_count += 1
             safe_cmd = self.shield.apply(DriveCommand(0.0, 0.0, 0.0), mode=MODE_DWELL, remaining_m=0.0, pitch_deg=tel.pitch)
@@ -275,6 +316,7 @@ class UnifiedRobotBrain:
             "knock": {"fired": int(knock_out.get("fired", 0)), "p_double": round(float(knock_out.get("p_double", 0.0)), 3), "src": knock_out.get("fire_src", "pair")},
             "cliff": cliff_det,
             "cliff_fired": int(cliff_fired),
+            "cliff_engaged": int(cliff_engaged),
             "cmd": {"vx": round(safe_cmd.vx, 2), "vyaw": round(safe_cmd.vyaw, 2), "head": round(safe_cmd.head, 2)},
         }
 

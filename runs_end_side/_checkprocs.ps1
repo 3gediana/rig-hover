@@ -1,0 +1,1 @@
+Get-CimInstance Win32_Process -Filter 'Name="python.exe"' | ForEach-Object { $cl = if ($_.CommandLine) { $_.CommandLine.Substring(0, [Math]::Min(120, $_.CommandLine.Length)) } else { '' }; Write-Output "$($_.ProcessId) $($cl)" }
