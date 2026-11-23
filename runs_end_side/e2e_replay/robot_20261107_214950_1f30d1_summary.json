@@ -51,37 +51,44 @@
     {
       "frame": 214,
       "t_s": 10.7,
-      "inside_label": "label_1794064784169"
+      "inside_label": "连续敲击",
+      "label_id": "label_1794064784169"
     },
     {
       "frame": 260,
       "t_s": 13.0,
-      "inside_label": "label_1794064784169"
+      "inside_label": "连续敲击",
+      "label_id": "label_1794064784169"
     },
     {
       "frame": 302,
       "t_s": 15.1,
-      "inside_label": "label_1794064784169"
+      "inside_label": "连续敲击",
+      "label_id": "label_1794064784169"
     },
     {
       "frame": 397,
       "t_s": 19.85,
-      "inside_label": "label_1794064784169"
+      "inside_label": "连续敲击",
+      "label_id": "label_1794064784169"
     },
     {
       "frame": 447,
       "t_s": 22.35,
-      "inside_label": "label_1794064784169"
+      "inside_label": "连续敲击",
+      "label_id": "label_1794064784169"
     },
     {
       "frame": 1422,
       "t_s": 71.1,
-      "inside_label": "label_1794064784169"
+      "inside_label": "连续敲击",
+      "label_id": "label_1794064784169"
     },
     {
       "frame": 1668,
       "t_s": 83.4,
-      "inside_label": "label_1794064784169"
+      "inside_label": "连续敲击",
+      "label_id": "label_1794064784169"
     }
   ],
   "misses": [

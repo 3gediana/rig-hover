@@ -11,9 +11,19 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parent.parent.parent
 
 
+def _load_label_names() -> dict[str, str]:
+    """dataset/labels.json 的 id->中文名映射（自定义 label_<ts> 也有实名，如'连续敲击'）。"""
+    try:
+        items = json.loads((REPO / "dataset" / "labels.json").read_text(encoding="utf-8"))
+        return {x["id"]: x.get("name", x["id"]) for x in items}
+    except Exception:
+        return {}
+
+
 def summarize(log_path: Path, ann_path: Path, fps: float = 15.0, pad_s: float = 0.6) -> dict:
     recs = [json.loads(l) for l in log_path.read_text(encoding="utf-8", errors="replace").splitlines() if l.strip().startswith("{")]
     ann = json.loads(ann_path.read_text(encoding="utf-8"))
+    names = _load_label_names()
     all_segs = ann.get("annotations", [])
     gt = [(float(a["start_s"]), float(a["end_s"])) for a in all_segs if a.get("label") == "knock"]
     other = [(a.get("label", "?"), float(a["start_s"]), float(a["end_s"])) for a in all_segs if a.get("label") != "knock"]
@@ -28,7 +38,7 @@ def summarize(log_path: Path, ann_path: Path, fps: float = 15.0, pad_s: float = 
             continue
         seg = next((s for s in other if s[1] - pad_s <= t <= s[2] + pad_s), None)
         if seg is not None:
-            amb.append({"frame": fr, "t_s": round(t, 2), "inside_label": seg[0]})
+            amb.append({"frame": fr, "t_s": round(t, 2), "inside_label": names.get(seg[0], seg[0]), "label_id": seg[0]})
         else:
             fp.append({"frame": fr, "t_s": round(t, 2)})
     misses = [{"gt_idx": i, "gt_s": list(g)} for i, g in enumerate(gt) if i not in matched]
