@@ -154,3 +154,13 @@
 - **async_static 默认 False**：测试要确定性——decim=1 + busy-skip 会饿死 ever_free 确认链，动态入侵者路由全挂（被 test_3 抓到）。
 - **懒解码**：pts_cam/nrm_cam 只有重定位吃，跳帧不解；rays_cam 常量缓存。
 - 实测：~500 → **74.8ms 中位 / p90 95 / max 128**（ BelowNormal 桌面负载下）。地板 ~110-130ms e2e（传感器 33ms 是硬底）。
+
+## 真机 Sim2Real 八大崩溃根因与硬件台架标定（v25，192.168.137.50 实测）
+
+1. **`RobotTelemetry.from_status_json` 静默缺失**：`pc_unified_brain_app.py` 此前调用不存在的类方法被 `try/except` 吞掉，导致所有真机测试中 `tel` 恒为全零（`pitch=0, roll=0, yaw=0, head_q=0`），既让 IMU 传播失效，又把倾斜桌面重建出每帧 3.5 万伪动态点与 290 万膨胀面元。修复：补齐类方法（含 `/status` 的 `1024-CPR` 编码器脉冲→米换算），并直连固件 `:9001` 的 **~492Hz `TLM1` 二进制 UDP 遥测流**按相机曝光时刻 `at_time(t_exp)` 对齐，彻底卸除 `/status` 对单线程 `httpd` 的轮询争用。
+2. **`GET /cmd` 在 `robot.cc` 中无转向闭环**：`ARB_SRC_MANUAL (src=0)` 下 `vyaw` 是从未被读取的死变量，`yaw_ctrl_time=0` 使每 6ms 执行 `stable_yaw = yaw - q_head` 令 `yaw_u ≡ 0`（底盘航向零阻尼开环自由偏转），`vx` 未推进 `stable_pos` 与 `K0=1300` 位置弹簧硬顶造成剧烈前后抽动。修复：`FirmwareActuatorClient` 在站立平衡态 (`robot_state == 1`) 自动切入固件 `POST /mode?src=teacher` + `16B POST /feat` 保活 + `/cfg` `k_dyaw=-0.16`，由板载 167Hz 环连续积分米制 `stable_pos` 与度制 `stable_yaw`；手持/横放态 (`robot_state == 0`) 自动回退 `manual` `/cmd?stop=1&head=..` 静音锁轮、保留转头。
+3. **本机 QMI8658C 陀螺 `-5.58°/s` 开机漏校零漂**：固件 `imu.cc:98` 设 `kMaxGyroBiasDps = 5.0°/s`，而本机陀螺静止零偏实测约 `-5.58°/s`，超阈值被固件清零 `gyro_bias[1]=0`，导致静止 16s `imu.yaw` 自漂 90°（Teacher 环为维持 `yaw - stable_yaw = 0` 会反推底盘自转）。修复：`OnlineYawGyroBiasEstimator` 在静止帧实时辨识零漂率，对 SLAM 里程计做减法去漂，并对 Teacher `vyaw_des` 注入 `+bias_dps` 前馈抵消。
+4. **头部相机正立极性与 EM3 `±10.2°` 库仑静摩擦死区**：真机打点与 `live_dump_s9` 光流证实摄像头 1:1 随头部舵机转动、实测 `FOV_H ≈ 62.5°`（`f_px ≈ 197.7 px`），**正立时 `+head` 为向右转**（与 `+cx`、`+imu.yaw`、`+vyaw` 同号；横躺倒置 `az < -3` 时反号）。开环 `cmd = q_des` 因舵机内部 P 环静摩擦存在 `±10.2°` 死区（MAE `5.22°`）；`CalibratedGazeServo` 采用曝光时刻头角 `q_head(t_cap) + s_roll*(cx-0.5)*62.5°` 解耦延迟 + 492Hz `q_head` 速度阻尼条件抗饱和预载外环，真机台架实测稳态 MAE 降至 **`1.20°`、中位超调 `0.70°`**，且 `|q_goal|<=34°` 严格 `vyaw=0`。
+5. **融合人脸/拳头检测取代脆弱深度簇启发式**：`YuNet` + `YOLO26n-pose` 五官兜底解决仰头/半侧脸丢锁，且向 `EndSideFeatureBuilder` 喂 `slot0.score=1.0` 消除 `2*cx - score` 折叠矩阵零偏；1–2m 抬拳用 `(wy - sy)/sw <= 0.48`（6 条真机 take 召回 27/27、背景误报 0/7），0.2–0.5m 手腕出画特写拳用 `YOLOE(['fist','person','face','cloth'])` 补盲，挂在 CPU SLAM 下异步重叠（`percep_wait = 0.0 ms`）。
+6. **`DoubleKnockNet` 恢复真实 `wrist_box` + 24Hz 原速流**：此前 `wrist_box=None` 令 8 维运动学通道中 6 维恒零（`cb8455` 离线命中仅 3/12）；补入 COCO 原始手腕框后 `cb8455` E2E 回放命中升至 `7/12`（另捕获 11 次连续敲击段，真误报仅 `1` 次 = `0.37/min`），直播由 `CameraRateKnockStream` 消费全部 ~24fps 相机帧防漏触桌脉冲，3D 落点投影补入 `cam_yaw = body_yaw + head_q`。
+7. **LCD 表情降级与地图有界化**：`EmoteBridge` 旁路系统代理并自动探测 `/emote` 支持表将未烧录 `brain_*` 映射为 `surprised/confident/shocked`（真机联调 `13 sent / 0 failed`）；`UltraDenseSurfelCloud` 设 `32万` 面元上限 + 后台预建 `cKDTree` + 3D 体素扩张一维去重 + 侧翻/手持（`|pitch|,|roll|>25°`）冻结建图保护桌面模型。

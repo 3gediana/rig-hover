@@ -46,7 +46,7 @@ from end_side_controller import (  # noqa: E402
     EndSidePolicyNet,
     EndSideSafetyShield,
 )
-from end_side_protocol import DriveCommand, RobotTelemetry  # noqa: E402
+from end_side_protocol import DriveCommand, RobotTelemetry, UdpTelemetryReceiver  # noqa: E402
 from hd_dynamic_contour_slam import (  # noqa: E402
     HdDynamicContourSlamEngine,
     HoverGeoNet240Frontend,
@@ -57,9 +57,19 @@ from hd_moge_contour_engine import REAL_FOV_H_DEG, REAL_H_CAM_M  # noqa: E402
 from hover_geonet_240 import GEO_H, GEO_W  # noqa: E402
 from mono_depth_model import make_camera_ray_grid  # noqa: E402
 from neural_gaussian_splat_model import OrbitCamera3D, PersistentGaussianMemoryMap  # noqa: E402
+from real_robot_bridge import (  # noqa: E402
+    CALIB_FOV_H_DEG,
+    CalibratedGazeServo,
+    CameraRateKnockStream,
+    FirmwareActuatorClient,
+    FusedHandFacePerception,
+    OnlineYawGyroBiasEstimator,
+    project_knock_pixel_to_world_xy,
+)
 from scenario1_own_models_e2e import (  # noqa: E402
     POLICY_NAV_CKPT,
     POLICY_S1_CKPT,
+    YOLO_POSE_PT,
     YUNET_ONNX,
     load_rl_policy,
 )
@@ -78,6 +88,7 @@ from train_double_knock import DoubleKnockDetector, DoubleKnockNet  # noqa: E402
 VIT_CKPT = REPO / "runs_end_side" / "hover_geonet_vit_240" / "hover_geonet_vit_b1_fp16.pt"
 MBV3_CKPT = REPO / "runs_end_side" / "hover_geonet_240" / "hover_geonet_240_fp16.pt"
 KNOCK_DEPLOY_CKPT = REPO / "runs_knock" / "double_knock_fpsaug2_20261115" / "double_knock_deploy.pt"
+YOLOE_SEG_PT = REPO / "pc" / "perception" / "assets" / "yoloe-26n-seg.pt"
 
 _PROJ = PersistentGaussianMemoryMap(max_splats=8)
 
@@ -135,20 +146,26 @@ class UnifiedRobotBrain:
         self.policy_nav: EndSidePolicyNet = load_rl_policy(POLICY_NAV_CKPT)
         self.shield = EndSideSafetyShield()
         self.reloc_decim = max(1, int(reloc_decim))
-        # 感知线程池：yunet/双敲只依赖原始帧，全程挂在 GeoNet+SLAM 底下并行
+        # 感知线程池：人脸/姿态/握拳检测与主线程 CPU SLAM 并行重叠
         from concurrent.futures import ThreadPoolExecutor
         self._pool = ThreadPoolExecutor(max_workers=2, thread_name_prefix="percep")
 
-        self.yunet = (
-            cv2.FaceDetectorYN.create(str(YUNET_ONNX), "", (240, 240), score_threshold=0.45)
-            if YUNET_ONNX.exists()
-            else None
-        )
+        self.fused_percep: FusedHandFacePerception | None = None
+        if enable_knock:
+            self.fused_percep = FusedHandFacePerception(
+                yunet_onnx=YUNET_ONNX,
+                yolo_pose_pt=YOLO_POSE_PT,
+                yoloe_pt=YOLOE_SEG_PT,
+                enable_yoloe_closeup=True,
+                yoloe_stride=2,
+            )
+        self.gaze_servo = CalibratedGazeServo(fov_h_deg=CALIB_FOV_H_DEG)
+        self.yaw_bias_est = OnlineYawGyroBiasEstimator()
 
         self.knock_det: DoubleKnockDetector | None = None
         if enable_knock and KNOCK_DEPLOY_CKPT.exists():
             # 双敲网络极小 (hidden=64,size=96)：固定 CPU，把 GPU 完全让给 GeoNet，
-            # 且能真正与 GeoNet+SLAM 线程级并行（GPU 版只会排队等内核）。
+            # 且注入真实 YOLO 手腕运动学框后恢复 42% 校准门限（召回 ~90%+ 且压低误报）。
             dev = "cpu"
             kb = torch.load(KNOCK_DEPLOY_CKPT, map_location=dev, weights_only=False)
             km = DoubleKnockNet(in_ch=2, kin_dim=8, hidden_dim=64, num_classes=4).to(dev).eval()
@@ -158,42 +175,49 @@ class UnifiedRobotBrain:
                 device=dev,
                 window=int(kb.get("window", 48)),
                 size=int(kb.get("size", 96)),
-                imp_threshold=0.35,
-                double_threshold=0.32,
+                imp_threshold=0.38,
+                double_threshold=0.45,
                 gate_state=MODE_GAZE_FIST,
                 sem_latch_s=2.0,
-                single_confirm_thr=0.60,
+                single_confirm_thr=0.72,
                 single_lookback_s=1.5,
             )
 
         self.relocalizer: Visual3DLandmarkRelocalizer | None = None
         self.prev_bgr: np.ndarray | None = None
         self.mode: int = MODE_IDLE
-        self.est_pose: tuple[float, float, float] = (0.0, 0.0, 0.0)
+        self.est_pose: tuple[float, float, float] = (0.0, 0.0, 0.0)  # 纯机身位姿 (body_x, body_y, body_yaw_deg)
         self.target_xy: tuple[float, float] | None = None
         self.path_xy: list[tuple[float, float]] = []
         self.frames_seen: int = 0
         self.dwell_count: int = 0
         self.last_pred: dict[str, Any] | None = None
+        self._last_step_t: float | None = None
+        self._last_body_yaw_tel: float | None = None
+        self._last_wheel_x_m: float | None = None
+        self._last_wrist_box: list[float] | None = None
+        self._last_peak_meta: tuple[float, list[float] | None, RobotTelemetry] | None = None
+        self._cliff_standoff_cnt: int = 0
         # 视觉悬崖本能（与 living_desktop_brain_v15 共用的零开挂检测器）：
-        # APPROACH 巡航中 dist_to_rim_m < 0.30 时通过 Shield clearance=0 硬刹停 vx。
+        # APPROACH 巡航中 dist_to_rim_m < hold_m 时通过 Shield clearance=0 硬刹停 vx。
         self.rays_cam = make_camera_ray_grid(GEO_H, GEO_W, fov_h_deg=REAL_FOV_H_DEG, pitch_deg=0.0, roll_deg=0.0)
-        self.cliff_hold_m: float = 0.30
+        self.cliff_hold_m: float = 0.25
         self.cliff_cone_deg: float = 45.0
         self._cliff_active: bool = False
 
-    def _ensure_relocalizer(self, bgr: np.ndarray, pred: dict[str, Any]) -> None:
+    def _ensure_relocalizer(self, bgr: np.ndarray, pred: dict[str, Any], cam_yaw_deg: float | None = None) -> None:
         st_pts, st_nrms, _ = self.slam.get_confirmed_static_cloud(min_wt=1.0)
         if len(st_pts) < 1000:
             return
+        kf_pose = (self.est_pose[0], self.est_pose[1], float(cam_yaw_deg if cam_yaw_deg is not None else self.est_pose[2]))
         if self.relocalizer is None:
             self.relocalizer = Visual3DLandmarkRelocalizer(st_pts, st_nrms)
-            self.relocalizer.add_keyframe(bgr, pred["pts_grid"], pred["valid_grid"], self.est_pose)
+            self.relocalizer.add_keyframe(bgr, pred["pts_grid"], pred["valid_grid"], kf_pose)
         else:
             self.relocalizer.static_pts = st_pts
             self.relocalizer.static_nrms = st_nrms
             if len(self.relocalizer.keyframes) < 5 and self.frames_seen % 6 == 0:
-                self.relocalizer.add_keyframe(bgr, pred["pts_grid"], pred["valid_grid"], self.est_pose)
+                self.relocalizer.add_keyframe(bgr, pred["pts_grid"], pred["valid_grid"], kf_pose)
 
     def set_3d_target(self, wx: float, wy: float) -> dict[str, Any]:
         """锁定 3D 桌面目标（来自场景二用户点击或场景一双敲 3D 升维），实时触发 A* 绕障规划。"""
@@ -208,11 +232,12 @@ class UnifiedRobotBrain:
         self.dwell_count = 0
         self._best_rem = 1e9
         self._approach_stall = 0
+        self._cliff_standoff_cnt = 0
         return {"target_xy": self.target_xy, "astar_accepted": bool(plan["accepted"]), "path_pts": len(self.path_xy)}
 
-    def _knock_step_full(self, bgr240: np.ndarray, timestamp_s: float | None) -> dict[str, Any]:
+    def _knock_step_full(self, bgr240: np.ndarray, wrist_box: list[float] | None, timestamp_s: float | None) -> dict[str, Any]:
         g240 = cv2.cvtColor(bgr240, cv2.COLOR_BGR2GRAY)
-        return self.knock_det.step(g240, wrist_box=None, scenario_state=None, timestamp=timestamp_s)
+        return self.knock_det.step(g240, wrist_box=wrist_box, scenario_state=None, timestamp=timestamp_s)
 
     def step(
         self,
@@ -221,61 +246,123 @@ class UnifiedRobotBrain:
         scenario: int = 2,
         timestamp_s: float | None = None,
         auto_level: bool = True,
+        tel_now: RobotTelemetry | None = None,
+        ext_knock: tuple[dict[str, Any], tuple[float, list[float] | None, RobotTelemetry] | None] | None = None,
     ) -> dict[str, Any]:
         """单帧统一推理：自研 HoverGeoNet-ViT-240 + Dynablox + 视觉-3D 重定位 + 场景一/二 RL 决策。"""
         self.frames_seen += 1
-        tel = telemetry or RobotTelemetry(pitch=3.0, roll=0.0, yaw=self.est_pose[2])
-        # IMU 逐帧传播 est_pose.yaw：重定位每 2 帧才纠一次，冻结期间机器人真在转，
-        # 方位角来回跳曾致 vyaw 甩鞭原地打转（真机 f171-300 实证）
-        if getattr(self, "_last_tel_yaw", None) is not None:
-            self.est_pose = (
-                self.est_pose[0], self.est_pose[1],
-                _wrap_deg(self.est_pose[2] + _wrap_deg(tel.yaw - self._last_tel_yaw)),
-            )
-        self._last_tel_yaw = tel.yaw
-        bgr240 = cv2.resize(bgr, (240, 240), interpolation=cv2.INTER_AREA) if bgr.shape[:2] != (240, 240) else bgr
         _t = time.perf_counter
+        now_s = float(timestamp_s) if timestamp_s is not None else _t()
+        dt_s = 0.08 if self._last_step_t is None else float(np.clip(now_s - self._last_step_t, 0.015, 0.25))
+        self._last_step_t = now_s
+
+        tel = telemetry or RobotTelemetry(pitch=3.0, roll=0.0, yaw=self.est_pose[2], robot_state=1)
+        tel_cur = tel_now or tel
+
+        # 1) 纯机身 SE(2) 里程计传播 + QMI8658C 在线陀螺零漂抵消：
+        #    严格区分头部视线航向 (tel.yaw) 与底盘航向 (body_yaw = tel.yaw - tel.head_q)，
+        #    并实时减去静止期辨识出的陀螺零漂率（真机实测 -5.58°/s，恰超 imu.cc 5°/s 阈值被置零！）
+        bgr240 = cv2.resize(bgr, (240, 240), interpolation=cv2.INTER_AREA) if bgr.shape[:2] != (240, 240) else bgr
+        img_static = False
+        if self.prev_bgr is not None:
+            g_c = cv2.cvtColor(bgr240, cv2.COLOR_BGR2GRAY)
+            g_p = cv2.cvtColor(self.prev_bgr, cv2.COLOR_BGR2GRAY)
+            img_static = float(np.mean(cv2.absdiff(g_c, g_p))) < 4.2
+
+        yaw_bias_dps = 0.0
+        if telemetry is not None:
+            prev_vy = getattr(self, "_cmd_f", (0.0, 0.0, 0.0))[1]
+            yaw_bias_dps = self.yaw_bias_est.update(
+                tel, now_s=now_s, cmd_vyaw_norm=prev_vy, dq_head_dps=self.gaze_servo.dq_filt, image_static=img_static
+            )
+            body_yaw_tel = _wrap_deg(float(tel.yaw) - float(tel.head_q))
+            wheel_m = float(tel.wheel_x_m)
+            if self._last_body_yaw_tel is not None and self._last_wheel_x_m is not None:
+                raw_dyaw = _wrap_deg(body_yaw_tel - self._last_body_yaw_tel)
+                dyaw_b = float(np.clip(raw_dyaw - yaw_bias_dps * dt_s, -35.0, 35.0))
+                if abs(dyaw_b) < 0.18 and img_static:
+                    dyaw_b = 0.0
+                ds = float(np.clip(wheel_m - self._last_wheel_x_m, -0.12, 0.12)) if tel.robot_state == 1 else 0.0
+                mid_rad = math.radians(self.est_pose[2] + 0.5 * dyaw_b)
+                self.est_pose = (
+                    self.est_pose[0] + ds * math.cos(mid_rad),
+                    self.est_pose[1] + ds * math.sin(mid_rad),
+                    _wrap_deg(self.est_pose[2] + dyaw_b),
+                )
+            self._last_body_yaw_tel = body_yaw_tel
+            self._last_wheel_x_m = wheel_m
+
+        cam_yaw_deg = _wrap_deg(self.est_pose[2] + float(tel.head_q))
         _st: dict[str, float] = {}
+
+        # 若动态切到场景一，按需懒加载融合感知器
+        if scenario == 1 and self.fused_percep is None:
+            self.fused_percep = FusedHandFacePerception(
+                yunet_onnx=YUNET_ONNX, yolo_pose_pt=YOLO_POSE_PT, yoloe_pt=YOLOE_SEG_PT, enable_yoloe_closeup=True, yoloe_stride=2
+            )
+
+        # 2) 主线程先跑 GeoNet GPU，随后在主线程跑 CPU SLAM 的同时把 YOLO/YuNet 丢进工人线程重叠执行
         _t0 = _t()
-
-        # 0) 并行感知：yunet/双敲只依赖原始帧——主链跑 GeoNet+SLAM 期间它们在 CPU 线程上完成
-        fut_face = None
-        fut_knock = None
-        if scenario == 1:
-            if self.yunet is not None:
-                fut_face = self._pool.submit(self.yunet.detect, bgr240)
-            if self.knock_det is not None:
-                fut_knock = self._pool.submit(self._knock_step_full, bgr240, timestamp_s)
-
-        # 1) 自研 HoverGeoNet-ViT-240 推理 + 2mm Dynablox 双层建图
-        # cam_cloud 只被重定位消费：跳帧时连相机系点云都不解码（省 ~5-8ms）
-        reloc_due = (self.mode == MODE_APPROACH and self.relocalizer is not None
-                     and self.frames_seen >= 3 and self.frames_seen % self.reloc_decim == 0)
-        pred = self.geo_fe.infer_frame(bgr240, self.prev_bgr, pitch_deg=tel.pitch, roll_deg=tel.roll,
-                                       auto_level=auto_level, cam_cloud=reloc_due)
+        reloc_due = (
+            self.mode == MODE_APPROACH
+            and self.relocalizer is not None
+            and self.frames_seen >= 3
+            and self.frames_seen % self.reloc_decim == 0
+        )
+        # 横躺/手持失稳姿态 (|pitch|>25 或 |roll|>25) 时跳过静态建图融合，保护桌面 3D 地图不被侧翻/手持画面污染
+        tilted_off_desk = (telemetry is not None) and (abs(tel.pitch) > 25.0 or abs(tel.roll) > 25.0)
+        auto_lvl_use = bool(auto_level and not tilted_off_desk)
+        pitch_in = float(np.clip(tel.pitch, -25.0, 25.0)) if not tilted_off_desk else 3.0
+        roll_in = float(np.clip(tel.roll, -25.0, 25.0)) if not tilted_off_desk else 0.0
+        pred = self.geo_fe.infer_frame(
+            bgr240, self.prev_bgr, pitch_deg=pitch_in, roll_deg=roll_in, auto_level=auto_lvl_use, cam_cloud=reloc_due
+        )
         _st["geonet"] = (_t() - _t0) * 1e3
         self.last_pred = pred
+
+        fut_percep = None
+        if scenario == 1 and self.fused_percep is not None:
+            need_cu = self.mode in (MODE_IDLE, MODE_GAZE_FACE, MODE_GAZE_FIST)
+            fut_percep = self._pool.submit(self.fused_percep.detect, bgr240, now_s, need_cu)
+
         _t0 = _t()
-        slam_rec = self.slam.process_frame(
-            bgr240, pred["pts_grid"], pred["nrm_grid"], pred["crease_grid"], pred["valid_grid"],
-            robot_x=self.est_pose[0], robot_y=self.est_pose[1], robot_yaw_deg=self.est_pose[2],
-            pitch_deg=tel.pitch, roll_deg=tel.roll, align=(self.frames_seen > 1),
-        )
+        if tilted_off_desk:
+            slam_rec = {
+                "disturbed": True,
+                "reason": "tilted_off_desk",
+                "n_static_frame": 0,
+                "n_dynamic_frame": 0,
+                "n_static_map": int(len(self.slam.static_cloud.pos)),
+                "carved_ghosts": 0,
+                "rot_corr_deg": 0.0,
+                "trans_corr_mm": 0.0,
+                "slam_stage_ms": {"gate": 0.0, "icp": 0.0, "dynmask": 0.0},
+            }
+        else:
+            slam_rec = self.slam.process_frame(
+                bgr240, pred["pts_grid"], pred["nrm_grid"], pred["crease_grid"], pred["valid_grid"],
+                robot_x=self.est_pose[0], robot_y=self.est_pose[1], robot_yaw_deg=cam_yaw_deg,
+                pitch_deg=pitch_in, roll_deg=roll_in, align=(self.frames_seen > 1),
+            )
         _st["slam"] = (_t() - _t0) * 1e3
         if reloc_due or self.frames_seen % 6 == 0:
-            self._ensure_relocalizer(bgr240, pred)
+            self._ensure_relocalizer(bgr240, pred, cam_yaw_deg=cam_yaw_deg)
+        prev_bgr_for_cliff = self.prev_bgr if self.prev_bgr is not None else bgr240
         self.prev_bgr = bgr240.copy()
 
-        # 1.5) 视觉悬崖本能：纯视觉深渊检测（与 v15 仿真同一检测器），近崖 APPROACH 经 Shield clearance=0 硬刹停
+        # 2.5) 视觉悬崖本能（相机指向系转回机身航向门控）
         _t0 = _t()
         cliff_det = detect_visual_cliff_zero_oracle(
-            bgr240, self.prev_bgr, self.geo_fe,
-            (self.est_pose[0], self.est_pose[1], self.est_pose[2], tel.pitch, tel.roll),
+            bgr240, prev_bgr_for_cliff, self.geo_fe,
+            (self.est_pose[0], self.est_pose[1], cam_yaw_deg, pitch_in, roll_in),
             self.rays_cam, pred=pred,
         )
+        if cliff_det is not None and cliff_det.get("bearing_deg") is not None and abs(tel.head_q) > 0.5:
+            # 将头部相机相对方位换算为底盘前向相对方位，防止歪头看侧面桌沿时误锁死正前行驶
+            cliff_det = dict(cliff_det)
+            cliff_det["bearing_deg"] = round(_wrap_deg(float(cliff_det["bearing_deg"]) + float(tel.head_q)), 2)
         _st["cliff"] = (_t() - _t0) * 1e3
         cliff_engaged, cliff_clear = _cliff_guard(cliff_det, self.est_pose, self.cliff_hold_m, self.cliff_cone_deg)
-        # 迟滞边沿：rim 在 hold 线附近抖动时只报一次警（进 <hold_m、出 >hold_m+3cm）
         if cliff_det is None:
             cliff_near = False
         elif self._cliff_active:
@@ -285,99 +372,120 @@ class UnifiedRobotBrain:
         cliff_fired = cliff_near and not self._cliff_active
         self._cliff_active = cliff_near
 
-        # 2) 若处于导航巡航中 (MODE_APPROACH)，运行 2D-3D PnP + KISS-ICP 无里程计视觉重定位
+        # 3) APPROACH 巡航中运行 2D-3D PnP + KISS-ICP 视觉重定位（仅高内点且低残差时融合修正机身位姿）
         reloc_info: dict[str, Any] = {"source": "map_build", "ransac_inliers": 0}
         _t0 = _t()
         if reloc_due:
-            # 就在重定位前刷最新静态图（原先每帧 O(全图) 扫描是隐藏的关键路径大头）
             self.relocalizer.static_pts, self.relocalizer.static_nrms, _ = self.slam.get_confirmed_static_cloud(min_wt=1.0)
+            prev_cam_pose = (self.est_pose[0], self.est_pose[1], cam_yaw_deg)
             ro = self.relocalizer.relocalize(
                 bgr240, pred["pts_cam"], pred["nrm_cam"], pred["valid_grid"],
-                imu_pitch_deg=tel.pitch, imu_roll_deg=tel.roll, prev_est_pose=self.est_pose,
+                imu_pitch_deg=pitch_in, imu_roll_deg=roll_in, prev_est_pose=prev_cam_pose,
             )
-            al = 0.75
-            self.est_pose = (
-                (1.0 - al) * self.est_pose[0] + al * ro["x"],
-                (1.0 - al) * self.est_pose[1] + al * ro["y"],
-                _wrap_deg(self.est_pose[2] + al * _wrap_deg(ro["yaw_deg"] - self.est_pose[2])),
-            )
-            reloc_info = {"source": ro["source"], "ransac_inliers": ro["ransac_inliers"], "icp_res_mm": ro["icp_median_res_mm"]}
+            inl = int(ro.get("ransac_inliers", 0))
+            icp_mm = float(ro.get("icp_median_res_mm", 99.0))
+            if inl >= 16 and icp_mm < 24.0:
+                al = 0.55 if telemetry is not None else 0.75
+                ro_body_yaw = _wrap_deg(float(ro["yaw_deg"]) - float(tel.head_q))
+                self.est_pose = (
+                    (1.0 - al) * self.est_pose[0] + al * float(ro["x"]),
+                    (1.0 - al) * self.est_pose[1] + al * float(ro["y"]),
+                    _wrap_deg(self.est_pose[2] + al * _wrap_deg(ro_body_yaw - self.est_pose[2])),
+                )
+            reloc_info = {"source": ro["source"], "ransac_inliers": inl, "icp_res_mm": icp_mm}
         _st["reloc"] = (_t() - _t0) * 1e3
 
-        # 3) 收集并行感知结果（此时它们早已在 GeoNet+SLAM 底下跑完，等待≈0）
+        # 4) 收集融合人脸/握拳结果 + 24Hz 双敲流（或离线带 wrist_box 双敲）
         face_dets: list[dict[str, float]] = []
+        fist_det: dict[str, Any] | None = None
         knock_out: dict[str, Any] = {"fired": 0, "p_double": 0.0}
-        if fut_face is not None or fut_knock is not None:
+        if fut_percep is not None:
             _t0 = _t()
-            if fut_face is not None:
-                _, faces = fut_face.result()
-                if faces is not None and len(faces) > 0:
-                    fx, fy, fw, fh = faces[0][:4]
-                    face_dets.append({"cx": float((fx + 0.5 * fw) / 240.0), "cy": float((fy + 0.5 * fh) / 240.0), "w": float(fw / 240.0), "h": float(fh / 240.0), "score": float(faces[0][-1])})
-                    if self.mode == MODE_IDLE:
-                        self.mode = MODE_GAZE_FACE
-            _st["yunet"] = (_t() - _t0) * 1e3
+            perc = fut_percep.result()
+            face_dets = perc["faces"]
+            fist_det = perc["fist"]
+            self._last_wrist_box = perc["wrist_box"]
+            _st["percep"] = (_t() - _t0) * 1e3
+
+        if scenario == 1:
             _t0 = _t()
-            if fut_knock is not None:
-                knock_out = fut_knock.result()
-                if knock_out.get("fired", 0):
-                    # 敲击点=贴桌面的动态簇质心：dyn_pts 混着手+身体+脸，中位数会把点拉到桌外
-                    # （真机实证：敲在桌前 0.25m 被算成 0.69m 桌外）。取最近 35% + |z|<0.06m 的点。
-                    dp = self.slam.dyn_pts
-                    if len(dp) >= 20:
-                        near = dp[dp[:, 0] <= np.quantile(dp[:, 0], 0.35)]
-                        near = near[np.abs(near[:, 2]) < 0.06] if len(near) else dp
-                        k_med = np.median(near if len(near) >= 8 else dp, axis=0)
-                        self.set_3d_target(float(np.clip(k_med[0], 0.15, 0.60)), float(np.clip(k_med[1], -0.35, 0.35)))
+            peak_meta = None
+            if ext_knock is not None:
+                knock_out, peak_meta = ext_knock
+            elif self.knock_det is not None:
+                raw_ko = self._knock_step_full(bgr240, self._last_wrist_box, now_s)
+                if raw_ko.get("peak"):
+                    self._last_peak_meta = (now_s, self._last_wrist_box, tel)
+                peak_meta = self._last_peak_meta
+                if raw_ko.get("fired", 0):
+                    p_sem = float(raw_ko.get("p_double", 0.0))
+                    if self.mode == MODE_GAZE_FIST or (self._last_wrist_box is not None) or (p_sem >= 0.44):
+                        knock_out = raw_ko
                     else:
-                        self.set_3d_target(0.35, 0.0)
+                        knock_out = dict(raw_ko, fired=0)
+                else:
+                    knock_out = raw_ko
             _st["knock"] = (_t() - _t0) * 1e3
 
-        # 3.5) 拳头注视：抬离桌面的紧凑动态簇 = 悬空拳头（统一大脑此前没有拳头检测器，
-        # GAZE_FIST 是进不去的死代码——真机"不认拳"的直接原因；SLAM 动态分离现成）
-        fist_det = None
-        dp = self.slam.dyn_pts
-        if len(dp) >= 40:
-            elev = dp[(dp[:, 2] > 0.06) & (dp[:, 0] < 0.95)]
-            if len(elev) >= 25:
-                _c = np.median(elev, axis=0)
-                spread = float(np.median(np.linalg.norm(elev[:, :2] - _c[:2], axis=1)))
-                if spread < 0.25:
-                    fist_det = {"bearing_deg": math.degrees(math.atan2(-_c[1], _c[0])), "n": int(len(elev))}
-        if fist_det is not None and self.mode in (MODE_IDLE, MODE_GAZE_FACE):
-            self.mode = MODE_GAZE_FIST
-            self._fist_lost = 0
-        elif self.mode == MODE_GAZE_FIST:
-            if fist_det is None:
-                self._fist_lost = getattr(self, "_fist_lost", 0) + 1
-                if self._fist_lost > 30:
-                    self.mode = MODE_GAZE_FACE if face_dets else MODE_IDLE
-            else:
-                self._fist_lost = 0
+            # 高层交互状态机：IDLE <-> GAZE_FACE <-> GAZE_FIST -> (双敲) -> APPROACH -> DWELL -> GAZE_FACE
+            if knock_out.get("fired", 0):
+                wbox_k = (peak_meta[1] if peak_meta is not None else None) or self._last_wrist_box
+                tel_k = (peak_meta[2] if peak_meta is not None else None) or tel
+                if wbox_k is not None:
+                    u_k = 0.5 * (float(wbox_k[0]) + float(wbox_k[2]))
+                    v_k = min(236.0, float(wbox_k[3]))
+                else:
+                    u_k, v_k = 120.0, 176.0
+                wx, wy, k_proj = project_knock_pixel_to_world_xy(
+                    u_k, v_k, tel_k, self.est_pose,
+                    dyn_pts_world=self.slam.dyn_pts, cliff_det=cliff_det, cliff_hold_m=self.cliff_hold_m,
+                )
+                knock_out["proj"] = k_proj
+                self.set_3d_target(wx, wy)
+            elif self.mode not in (MODE_APPROACH, MODE_DWELL):
+                if fist_det is not None:
+                    self.mode = MODE_GAZE_FIST
+                elif face_dets:
+                    self.mode = MODE_GAZE_FACE
+                else:
+                    self.mode = MODE_IDLE
 
-        # 4) 自研 EndSidePolicyNet + EndSideSafetyShield 输出最终控制指令
+        # EndSideFeatureBuilder 要求的无偏归一化检测槽（train_rl_policy 折叠矩阵要求 slot0.score == 1.0 以消零点偏置）
+        feat_dets = [{**d, "score": 1.0} for d in face_dets] if face_dets else []
+
+        # 5) 控制指令生成：APPROACH 视觉导航 / DWELL 驻留回看 / GAZE 静摩擦补偿丝滑伺服
         _t0 = _t()
         rem_m = 0.0
+        gaze_dbg: dict[str, Any] = {}
+        allow_body = (tel_cur.robot_state == 1) or (telemetry is None)
+
         if self.mode == MODE_APPROACH and self.target_xy is not None:
             ex, ey, eyaw = self.est_pose
             rem_m = math.hypot(self.target_xy[0] - ex, self.target_xy[1] - ey)
-            # 目标不可达放弃机制：悬崖挡道/距离不降时，原地扭摆毫无意义。
-            # 150 帧 (~15s) 内 rem 没改善 20% -> 放弃，回盯人脸（"那儿去不了"的可读表达）
-            if rem_m < getattr(self, "_best_rem", 1e9):
+            bear = _wrap_deg(math.degrees(math.atan2(self.target_xy[1] - ey, self.target_xy[0] - ex)) - eyaw)
+            if rem_m < getattr(self, "_best_rem", 1e9) - 0.005:
                 self._best_rem = rem_m
                 self._approach_stall = 0
             else:
                 self._approach_stall = getattr(self, "_approach_stall", 0) + 1
-            if self._approach_stall > 150 and rem_m > getattr(self, "_best_rem", 0) * 0.99:
-                self.target_xy = None
+
+            # 若已紧贴桌沿安全线且车头已对准敲击点，优雅完成停靠（不再顶着悬崖刹车空扭 15s）
+            if cliff_engaged and cliff_clear <= 0.02 and abs(bear) < 18.0 and rem_m < 0.24:
+                self._cliff_standoff_cnt += 1
+            else:
+                self._cliff_standoff_cnt = 0
+
+            abort_unreachable = self._approach_stall > 95 and rem_m > getattr(self, "_best_rem", 0.0) * 0.96
+            arrived = (rem_m <= 0.042) or (self._cliff_standoff_cnt >= 8)
+            if arrived or abort_unreachable:
+                if abort_unreachable:
+                    self.target_xy = None
                 self._best_rem = 1e9
                 self._approach_stall = 0
+                self._cliff_standoff_cnt = 0
                 self.mode = MODE_DWELL if scenario == 1 else MODE_IDLE
                 self.dwell_count = 0
-            if rem_m < 0.032:
-                self.mode = MODE_DWELL if scenario == 1 else MODE_IDLE
-                self.dwell_count = 0
-                safe_cmd = self.shield.apply(DriveCommand(0.0, 0.0, 0.0), mode=self.mode, remaining_m=0.0, pitch_deg=tel.pitch)
+                safe_cmd = self.shield.apply(DriveCommand(0.0, 0.0, tel_cur.head_q), mode=self.mode, remaining_m=0.0, pitch_deg=pitch_in)
             else:
                 wp = self.target_xy
                 if len(self.path_xy) >= 2:
@@ -386,70 +494,71 @@ class UnifiedRobotBrain:
                         if math.hypot(self.path_xy[j][0] - ex, self.path_xy[j][1] - ey) >= 0.13:
                             wp = self.path_xy[j]
                             break
-                bear = _wrap_deg(math.degrees(math.atan2(wp[1] - ey, wp[0] - ex)) - eyaw)
-                tlock = TargetLock(valid=1, bearing_body=bear, remaining_m=rem_m)
-                f39 = EndSideFeatureBuilder.build(tel, detections=face_dets, target_lock=tlock, clearance_m=cliff_clear)
-                raw_cmd = self.policy_nav.infer_numpy(f39)
-                safe_cmd = self.shield.apply(raw_cmd, mode=MODE_APPROACH, remaining_m=rem_m, pitch_deg=tel.pitch, clearance_m=cliff_clear)
+                wp_bear = _wrap_deg(math.degrees(math.atan2(wp[1] - ey, wp[0] - ex)) - eyaw)
+                tlock = TargetLock(valid=1, bearing_body=wp_bear, remaining_m=rem_m)
+                f39 = EndSideFeatureBuilder.build(tel_cur, detections=feat_dets, target_lock=tlock, clearance_m=cliff_clear)
+                rl_cmd = self.policy_nav.infer_numpy(f39)
+                # 先对准后直行：偏角 > 22° 时优先原地平滑转向，防止窄桌面上大半径画弧扫出桌沿
+                turn_gate = max(0.0, math.cos(math.radians(min(88.0, abs(wp_bear) * 1.6))))
+                nom_vx = min(72.0, 88.0 * math.sqrt(max(0.0, rem_m / 0.35))) * turn_gate
+                nom_vyaw = float(np.clip(wp_bear * 1.65, -58.0, 58.0))
+                # 行进途中头部盯着桌面目标方向（"盯着那个位置走过去"）
+                cx_tgt_equiv = float(np.clip(0.5 + (wp_bear - float(tel.head_q)) / CALIB_FOV_H_DEG, 0.05, 0.95))
+                head_nav, _, _ = self.gaze_servo.step_visual_target(
+                    cx_tgt_equiv, tel, tel_cur, now_s, dt_s, allow_body_turn=False
+                )
+                blend_cmd = DriveCommand(
+                    vx=0.45 * rl_cmd.vx + 0.55 * nom_vx,
+                    vyaw=0.40 * rl_cmd.vyaw + 0.60 * nom_vyaw,
+                    head=head_nav,
+                )
+                safe_cmd = self.shield.apply(blend_cmd, mode=MODE_APPROACH, remaining_m=rem_m, pitch_deg=pitch_in, clearance_m=cliff_clear)
         elif self.mode == MODE_DWELL:
             self.dwell_count += 1
-            safe_cmd = self.shield.apply(DriveCommand(0.0, 0.0, 0.0), mode=MODE_DWELL, remaining_m=0.0, pitch_deg=tel.pitch)
-            if self.dwell_count >= 12:
-                self.mode = MODE_GAZE_FACE
+            # 到达后停轮抬头看人脸
+            if face_dets:
+                h_dw, _, gaze_dbg = self.gaze_servo.step_visual_target(
+                    face_dets[0]["cx"], tel, tel_cur, now_s, dt_s, allow_body_turn=False
+                )
+            else:
+                h_dw = self.gaze_servo.cmd_head_hold
+            safe_cmd = DriveCommand(0.0, 0.0, h_dw)
+            if self.dwell_count >= 20:
+                self.mode = MODE_GAZE_FACE if face_dets else MODE_IDLE
         else:
-            f39 = EndSideFeatureBuilder.build(tel, detections=face_dets, target_lock=None, clearance_m=1.0)
-            raw_cmd = self.policy_s1.infer_numpy(f39)
-            safe_cmd = self.shield.apply(raw_cmd, mode=self.mode, remaining_m=0.0, pitch_deg=tel.pitch)
-            # 盯脸可读性：policy 输出 ±1-5° 人耳听不到舵机声。检测到脸就直接按
-            # 方位角控舵机（60°FOV，正=左转），转幅一眼能看见
-            # 手持态：满天 void + 全画面动态 = 被人拿在手里，轮子空转无意义 → 锁轮只做表情
-            held = (len(dp) > 25000) and (cliff_det is not None and cliff_det.get("void_area_px", 0) > 6000)
-            if held:
-                safe_cmd = DriveCommand(0.0, 0.0, safe_cmd.head)
-
-            if self.mode == MODE_GAZE_FIST and fist_det:
-                # 盯拳：身体转向拳方位（头是表情件；vyaw>0=左）。增量小步，防甩头
-                vyaw_g = float(np.clip(fist_det["bearing_deg"] * 0.6, -25.0, 25.0))
-                head_g = float(np.clip(fist_det["bearing_deg"] * 2.0, -45.0, 45.0))
-                safe_cmd = DriveCommand(0.0, vyaw_g, head_g)
+            if self.mode == MODE_GAZE_FIST and fist_det is not None:
+                h_cmd, vy_cmd, gaze_dbg = self.gaze_servo.step_visual_target(
+                    fist_det["cx"], tel, tel_cur, now_s, dt_s, allow_body_turn=allow_body
+                )
+                safe_cmd = DriveCommand(0.0, vy_cmd, h_cmd)
             elif self.mode == MODE_GAZE_FACE and face_dets:
-                # 舵机云台不带相机——居中脸的职责在身体 vyaw。P 环 140 增益在 10Hz+
-                # 轮上惯量下欠阻尼来回甩（真机实证）→ PD 环：P 收敛居中 + D 阻尼，
-                # cx 三帧中值消框抖，死区放宽到 0.06。
-                self._cx_hist = (getattr(self, "_cx_hist", []) + [face_dets[0]["cx"]])[-3:]
-                cx_f = float(np.median(self._cx_hist))
-                e = cx_f - 0.5
-                de = e - getattr(self, "_cx_prev", e)
-                self._cx_prev = e
-                vyaw_g = float(np.clip(70.0 * e + 200.0 * de, -25.0, 25.0))
-                if abs(e) < 0.06 and abs(de) < 0.02:
-                    vyaw_g = 0.0
-                head_g = float(np.clip(-e * 160.0, -45.0, 45.0))  # 连杆比吃掉大半摆角，打满±45才看得见
-                safe_cmd = DriveCommand(0.0 if held else safe_cmd.vx, vyaw_g if not held else 0.0, head_g)
+                h_cmd, vy_cmd, gaze_dbg = self.gaze_servo.step_visual_target(
+                    face_dets[0]["cx"], tel, tel_cur, now_s, dt_s, allow_body_turn=allow_body
+                )
+                safe_cmd = DriveCommand(0.0, vy_cmd, h_cmd)
+            elif scenario == 1:
+                h_cmd, vy_cmd = self.gaze_servo.step_blind(tel_cur, now_s, dt_s, allow_body_scan=allow_body)
+                safe_cmd = DriveCommand(0.0, vy_cmd, h_cmd)
+            else:
+                f39 = EndSideFeatureBuilder.build(tel_cur, detections=feat_dets, target_lock=None, clearance_m=1.0)
+                raw_cmd = self.policy_s1.infer_numpy(f39)
+                safe_cmd = self.shield.apply(raw_cmd, mode=self.mode, remaining_m=0.0, pitch_deg=pitch_in)
         _st["policy"] = (_t() - _t0) * 1e3
 
-        # 找人本能：无脸 >6s 就缓速旋转扫描（真机曾转到面壁全程 IDLE——它不是在不理你，
-        # 是根本不在看你）。舵机扫 ±55°，身体 16°/s 慢转，见脸立即停。
-        self._no_face = 0 if face_dets else getattr(self, "_no_face", 0) + 1
-        if self.mode in (MODE_IDLE, MODE_GAZE_FACE) and self._no_face > 60:
-            sweep = 55.0 * math.sin(self._no_face * 0.04)
-            safe_cmd = DriveCommand(0.0, 16.0, float(sweep))
-
-        # 出口低通：10Hz 更新率下符号拍动就是肉眼可见的前后猛抖（真机实证）。
-        # 悬崖硬停（clearance<=0）旁路不平滑——刹停必须是即时的。
+        # 仅对底盘 vx/vyaw 做轻度防抖平滑（head 已由静摩擦伺服+固件 167Hz LPF 精确阻尼，严禁再叠滞后！）
         if cliff_clear is not None and cliff_clear <= 0.0:
-            self._cmd_f = (safe_cmd.vx, safe_cmd.vyaw, safe_cmd.head)
+            self._cmd_f = (0.0, safe_cmd.vyaw, safe_cmd.head)
+            safe_cmd = DriveCommand(0.0, safe_cmd.vyaw, safe_cmd.head)
         else:
             _p = getattr(self, "_cmd_f", None) or (safe_cmd.vx, safe_cmd.vyaw, safe_cmd.head)
-            safe_cmd = DriveCommand(
-                0.55 * _p[0] + 0.45 * safe_cmd.vx,
-                0.55 * _p[1] + 0.45 * safe_cmd.vyaw,
-                0.15 * _p[2] + 0.85 * safe_cmd.head,  # head 通道轻平滑要响应快
-            )
+            vx_sm = 0.40 * _p[0] + 0.60 * safe_cmd.vx
+            vy_sm = 0.35 * _p[1] + 0.65 * safe_cmd.vyaw
+            if abs(vy_sm) < 2.5:
+                vy_sm = 0.0
+            if abs(vx_sm) < 1.5:
+                vx_sm = 0.0
+            safe_cmd = DriveCommand(vx_sm, vy_sm, safe_cmd.head)
             self._cmd_f = (safe_cmd.vx, safe_cmd.vyaw, safe_cmd.head)
-        # vyaw 死区：±3 以下一律 0——往复摆动若有非零均值会积成净转身（真机实证"前后摆变侧对"）
-        if abs(safe_cmd.vyaw) < 3.0:
-            safe_cmd = DriveCommand(safe_cmd.vx, 0.0, safe_cmd.head)
 
         return {
             "frame": self.frames_seen,
@@ -460,6 +569,9 @@ class UnifiedRobotBrain:
             "static_pts": slam_rec["n_static_map"],
             "dyn_pts": slam_rec["n_dynamic_frame"],
             "est_pose": [round(v, 3) for v in self.est_pose],
+            "yaw_bias_dps": round(yaw_bias_dps, 3),
+            "tel": {"pitch": round(tel_cur.pitch, 2), "roll": round(tel_cur.roll, 2), "yaw": round(tel_cur.yaw, 2), "head_q": round(tel_cur.head_q, 2), "robot_state": int(tel_cur.robot_state)},
+            "gaze": gaze_dbg,
             "target_xy": list(self.target_xy) if self.target_xy else None,
             "rem_m": round(rem_m, 3),
             "reloc": reloc_info,
@@ -480,7 +592,17 @@ class UnifiedRobotBrain:
             cam=cam, w=w, h=h, point_radius_px=1, target_pin_xyz=pin, robot_pose=self.est_pose, path_xy=self.path_xy,
         )
         side = np.full((h, 300, 3), (10, 16, 12), dtype=np.uint8)
-        side[20:260, 30:270] = cv2.resize(bgr, (240, 240), interpolation=cv2.INTER_AREA)
+        thumb = cv2.resize(bgr, (240, 240), interpolation=cv2.INTER_AREA).copy()
+        for fd in step_info.get("faces") or []:
+            fcx, fcy, fw, fh = fd["cx"] * 240.0, fd["cy"] * 240.0, fd["w"] * 240.0, fd["h"] * 240.0
+            cv2.rectangle(thumb, (int(fcx - 0.5 * fw), int(fcy - 0.5 * fh)), (int(fcx + 0.5 * fw), int(fcy + 0.5 * fh)), (255, 220, 60), 1)
+            cv2.circle(thumb, (int(fcx), int(fcy)), 3, (255, 240, 100), -1)
+        fist_d = step_info.get("fist")
+        if fist_d and fist_d.get("box"):
+            bx1, by1, bx2, by2 = [int(v) for v in fist_d["box"]]
+            cv2.rectangle(thumb, (bx1, by1), (bx2, by2), (40, 210, 255), 2)
+        cv2.line(thumb, (120, 0), (120, 240), (45, 95, 60), 1)
+        side[20:260, 30:270] = thumb
         cv2.rectangle(side, (30, 20), (270, 260), (70, 210, 120), 1)
         hud_lines = [
             f"Model: {self.geonet_ckpt.stem}",
@@ -491,8 +613,8 @@ class UnifiedRobotBrain:
             f"       yaw={step_info['est_pose'][2]:.1f} deg",
             f"Knock: p={step_info['knock']['p_double']:.2f} fired={step_info['knock']['fired']}",
             f"Cliff: {step_info['cliff']['dist_to_rim_m']:.2f}m {step_info['cliff']['source']}" if step_info.get("cliff") else "Cliff: clear",
-            f"RL Cmd: vx={step_info['cmd']['vx']:.1f}",
-            f"        vyaw={step_info['cmd']['vyaw']:.1f} h={step_info['cmd']['head']:.1f}",
+            f"Cmd  : vx={step_info['cmd']['vx']:.1f}",
+            f"       vyaw={step_info['cmd']['vyaw']:.1f} h={step_info['cmd']['head']:.1f}",
             "Keys: Shift+Click=Target | 1/2=Scen",
             "      Drag=Orbit | q=Quit",
         ]
@@ -502,119 +624,101 @@ class UnifiedRobotBrain:
 
 
 def _fetch_live_robot(base_url: str) -> tuple[np.ndarray | None, RobotTelemetry]:
-    import urllib.request
+    import requests
+    sess = requests.Session()
+    sess.trust_env = False
     tel = RobotTelemetry()
     try:
-        with urllib.request.urlopen(f"{base_url}/status", timeout=1.5) as r:
-            d = json.loads(r.read().decode("utf-8", errors="ignore"))
-            tel = RobotTelemetry.from_status_json(d)
+        r = sess.get(f"{base_url}/status", timeout=1.5)
+        tel = RobotTelemetry.from_status_json(r.json())
     except Exception:
         pass
     try:
-        with urllib.request.urlopen(f"{base_url}/capture", timeout=2.0) as r:
-            arr = np.frombuffer(r.read(), dtype=np.uint8)
-            bgr = cv2.imdecode(arr, cv2.IMREAD_COLOR)
-            return bgr, tel
+        r = sess.get(f"{base_url}/capture", timeout=2.0)
+        bgr = cv2.imdecode(np.frombuffer(r.content, dtype=np.uint8), cv2.IMREAD_COLOR)
+        return bgr, tel
     except Exception:
         return None, tel
+    finally:
+        sess.close()
 
 
 class _LiveFrameFetcher:
-    """后台取帧线程：/capture + /status 与主计算完全并行（传输链从关键路径摘除）。
+    """后台取帧线程 + ~490Hz UDP 遥测曝光对齐 + 24Hz 原速双敲推流。
 
-    第一性原理：相机帧周期 ~32ms 是地板，串行结构 "fetch(45-70ms) -> compute(~110ms)
-    -> cmd(~10ms)" 把抓取延迟全数加进每帧；改成抓取线程持续拉流、主循环取
-    **最新**帧（丢弃中间旧帧而非排队）—— 控制用的是最新鲜的一帧而不是下一帧。
-    /status 在同线程每 K 帧捎带一次（遥测慢变，无需每帧往返）。
+    1. 订阅机器人 :9001 端口的 TLM1 二进制遥测流（零 httpd 负载），将每帧图像与曝光中点时刻
+       (t_capture) 的精确 head_q / pitch / roll / yaw 对齐；若 UDP 暂未就绪则自动退回 /status。
+    2. 若挂载 knock_stream，抓取到的全部 ~24fps 帧在解码当下立即送入双敲检测流，主控环就算
+       跳帧取最新画面也绝不会丢掉 50ms 触桌脉冲。
     """
 
-    def __init__(self, base_url: str, status_every: int = 5, jpg_q: int = 60) -> None:
+    def __init__(self, base_url: str, status_every: int = 5, jpg_q: int = 60, t0_ref: float | None = None) -> None:
         import threading
+        import urllib.parse
         import requests
-        self._sess = requests.Session()  # keep-alive：urllib 每次新建 TCP=握手+固件 socket 磨损
-        self._sess.trust_env = False  # 机器人是局域网直连：系统 HTTP 代理会把每帧请求绕出去（实测拖慢到 ~6Hz）
+        self._sess = requests.Session()
+        self._sess.trust_env = False
         self.base = base_url.rstrip("/")
+        host = urllib.parse.urlparse(self.base).hostname or "192.168.137.50"
+        self.udp = UdpTelemetryReceiver(host=host, port=9001)
+        self.knock_stream: CameraRateKnockStream | None = None
+        self.t0_ref = time.perf_counter() if t0_ref is None else float(t0_ref)
         self.status_every = max(1, int(status_every))
         self.jpg_q = int(jpg_q)
         self._lock = threading.Lock()
-        self._latest: tuple[np.ndarray, RobotTelemetry, int] | None = None
+        self._latest: tuple[np.ndarray, RobotTelemetry, float, int] | None = None
+        self._http_tel = RobotTelemetry()
         self._consumed = -1
         self._stop = False
         self._th = threading.Thread(target=self._loop, name="live-fetch", daemon=True)
         self._th.start()
 
     def _loop(self) -> None:
-        tel = RobotTelemetry()
         i = 0
         cap_url = f"{self.base}/capture?q={self.jpg_q}"
         while not self._stop:
             try:
-                if i % self.status_every == 0:
+                # 仅在 UDP 流尚未建立时才降频轮询 /status，释放 ESP32 单线程 httpd 给相机抓取
+                if self.udp.latest(max_age_s=0.35) is None and (i % self.status_every == 0):
                     try:
-                        r = self._sess.get(f"{self.base}/status", timeout=1.5)
-                        tel = RobotTelemetry.from_status_json(json.loads(r.content.decode("utf-8", errors="ignore")))
+                        rs = self._sess.get(f"{self.base}/status", timeout=1.2)
+                        self._http_tel = RobotTelemetry.from_status_json(rs.json())
                     except Exception:
                         pass
+                t_req = time.perf_counter()
                 r = self._sess.get(cap_url, timeout=2.0)
+                t_done = time.perf_counter()
+                # GC0308 读出+编码约占往返前段：取请求发出后 8ms 作为传感器曝光近似时刻
+                t_exp = min(t_done, t_req + 0.008)
+                tel_cap = self.udp.at_time(t_exp, max_age_s=0.5) or self._http_tel
                 bgr = cv2.imdecode(np.frombuffer(r.content, dtype=np.uint8), cv2.IMREAD_COLOR)
                 if bgr is not None:
+                    ts_rel = t_done - self.t0_ref
+                    ks = self.knock_stream
+                    if ks is not None:
+                        ks.push_frame(bgr, ts_rel, tel_cap)
                     with self._lock:
-                        self._latest = (bgr, tel, i)
+                        self._latest = (bgr, tel_cap, ts_rel, i)
                 i += 1
             except Exception:
                 time.sleep(0.05)
 
-    def get(self, wait_s: float = 0.2) -> tuple[np.ndarray | None, RobotTelemetry | None]:
-        """取最新一帧；无新帧时短暂等待后返回 (None, None)。"""
+    def get(self, wait_s: float = 0.2) -> tuple[np.ndarray | None, RobotTelemetry | None, RobotTelemetry | None, float | None]:
+        """取最新一帧 (bgr, tel_at_capture, tel_latest_now, ts_s)。"""
         deadline = time.perf_counter() + wait_s
         while time.perf_counter() < deadline:
             with self._lock:
-                if self._latest is not None and self._latest[2] != self._consumed:
-                    self._consumed = self._latest[2]
-                    return self._latest[0], self._latest[1]
-            time.sleep(0.003)
-        return None, None
+                if self._latest is not None and self._latest[3] != self._consumed:
+                    self._consumed = self._latest[3]
+                    bgr, tel_cap, ts_rel, _ = self._latest
+                    tel_now = self.udp.latest(max_age_s=0.35) or tel_cap
+                    return bgr, tel_cap, tel_now, ts_rel
+            time.sleep(0.002)
+        return None, None, None, None
 
     def close(self) -> None:
         self._stop = True
-
-
-class _AsyncCmdSender:
-    """异步指令发送：/cmd GET 不占主循环；只保最新（旧指令直接丢弃）。"""
-
-    def __init__(self) -> None:
-        import threading
-        import requests
-        self._sess = requests.Session()
-        self._sess.trust_env = False  # 与 fetcher 同一原因：系统代理会吞掉发给机器人的指令
-        self._cond = threading.Condition()
-        self._pending: str | None = None
-        self._stop = False
-        self._th = threading.Thread(target=self._loop, name="cmd-send", daemon=True)
-        self._th.start()
-
-    def _loop(self) -> None:
-        while True:
-            with self._cond:
-                while self._pending is None and not self._stop:
-                    self._cond.wait(timeout=0.5)
-                if self._stop:
-                    return
-                url, self._pending = self._pending, None
-            try:
-                self._sess.get(url, timeout=0.5)
-            except Exception:
-                pass
-
-    def send(self, url: str) -> None:
-        with self._cond:
-            self._pending = url  # 覆盖式：只发最新指令
-            self._cond.notify()
-
-    def close(self) -> None:
-        with self._cond:
-            self._stop = True
-            self._cond.notify()
+        self.udp.close()
 
 
 def main() -> None:
@@ -623,21 +727,21 @@ def main() -> None:
     ap.add_argument("--source", type=str, default="frames", choices=["frames", "video", "live"])
     ap.add_argument("--input", type=str, default=str(REPO / "evidence" / "sessions" / "empty_d0.5_front_night_182201" / "frames"))
     ap.add_argument("--base", type=str, default="http://192.168.137.50")
-    ap.add_argument("--send-cmd", action="store_true", help="Live mode only: actually send /cmd to robot")
+    ap.add_argument("--send-cmd", action="store_true", help="Live mode only: actually send commands to robot")
     ap.add_argument("--lite", action="store_true", help="Use 6.5MB MBV3 model instead of ViT-240")
     ap.add_argument("--headless", action="store_true", help="No GUI window (batch/test mode)")
     ap.add_argument("--max-frames", type=int, default=None,
-                    help="默认跑完全部帧（video/live 到 EOF、frames 到目录尾）；仅显式传值时截断。原默认 60 曾致多次全量回放被静默截断。")
+                    help="默认跑完全部帧（video/live 到 EOF、frames 到目录尾）；仅显式传值时截断。")
     ap.add_argument("--click-xy", type=str, default="", help="Optional auto-click target 'x,y' in meters for headless Scenario 2")
     ap.add_argument("--emote", action="store_true", help="Live mode only: mirror brain state onto the robot LCD via POST /emote")
     ap.add_argument("--static-decim", type=int, default=3,
-                    help="静态建图降频：每 N 帧才做 2mm 融合/鬼影雕刻（实测该块占帧耗 ~85%）；1=不降频保最高图质（离线跑图用）")
+                    help="静态建图降频：每 N 帧才做 2mm 融合/鬼影雕刻；1=不降频保最高图质（离线跑图用）")
     ap.add_argument("--reloc-decim", type=int, default=2,
-                    help="视觉重定位降频：APPROACH 时每 N 帧跑一次（~50ms/次）；est_pose 0.75 平滑兜底间隔帧")
+                    help="视觉重定位降频：APPROACH 时每 N 帧跑一次")
     ap.add_argument("--jpg-q", type=int, default=60,
-                    help="Live 模式 /capture?q= 的 JPEG 质量：固件实测编码耗时随质量缩放（80→60 省 ~5ms 编码 + ~3ms 传输）")
+                    help="Live 模式 /capture?q= 的 JPEG 质量")
     ap.add_argument("--dump-dir", type=str, default="",
-                    help="逐帧落盘：bgr240 原图 + info 的 jsonl（失败现场可回放，如'为什么没识别到'）")
+                    help="逐帧落盘：bgr240 原图 + info 的 jsonl")
     ap.add_argument("--dump-every", type=int, default=3, help="每 N 帧存一张图")
     args = ap.parse_args()
 
@@ -645,9 +749,9 @@ def main() -> None:
                               static_decim=args.static_decim, reloc_decim=args.reloc_decim)
     print(f"UnifiedRobotBrain READY | geonet={brain.geonet_ckpt.name} | scenario={args.scenario} | source={args.source}", flush=True)
 
-    # 数据源迭代器
     frames_iter: list[np.ndarray] = []
     cap = None
+    video_fps = 15.0
     if args.source == "frames":
         p = pathlib.Path(args.input)
         jpgs = sorted(p.glob("*.jpg")) + sorted(p.glob("*.png"))
@@ -667,7 +771,6 @@ def main() -> None:
         cv2.namedWindow(win_name, cv2.WINDOW_NORMAL)
         def on_mouse(ev, x, y, flags, _param):
             if ev == cv2.EVENT_LBUTTONDOWN and (flags & cv2.EVENT_FLAG_SHIFTKEY) and x < W3D:
-                # 射线与桌面 Z=0 求交，点击 3D 点云锁定目标！
                 basis = _PROJ.compute_camera_basis(cam)
                 focal = _PROJ.compute_focal_px(cam, float(H3D))
                 nx = (x - W3D * 0.5) / focal
@@ -696,95 +799,130 @@ def main() -> None:
     t0 = time.perf_counter()
     auto_clicked = False
     bridge = None
-    if args.emote and args.source == "live":
+    if (args.emote or args.send_cmd) and args.source == "live":
         from emote_bridge import EmoteBridge
-        bridge = EmoteBridge(args.base, verbose=True)
+        bridge = EmoteBridge(args.base, verbose=args.emote)
     prev_mode = ""
-    fetcher = _LiveFrameFetcher(args.base, jpg_q=args.jpg_q) if args.source == "live" else None
-    cmd_sender = _AsyncCmdSender() if (args.source == "live" and args.send_cmd) else None
+    fetcher = _LiveFrameFetcher(args.base, jpg_q=args.jpg_q, t0_ref=t0) if args.source == "live" else None
+    knock_stream = None
+    if fetcher is not None and brain.knock_det is not None:
+        knock_stream = CameraRateKnockStream(brain.knock_det)
+        fetcher.knock_stream = knock_stream
+    actuator = FirmwareActuatorClient(args.base) if (args.source == "live" and args.send_cmd) else None
+
     dump_dir = None
     dump_jsonl = None
     if args.dump_dir:
         dump_dir = pathlib.Path(args.dump_dir)
         dump_dir.mkdir(parents=True, exist_ok=True)
         dump_jsonl = open(dump_dir / "info.jsonl", "w", encoding="utf-8")
-    frame_ids = range(args.max_frames) if args.max_frames is not None else itertools.count()
-    for idx in frame_ids:
-        if args.source == "frames":
-            if idx >= len(frames_iter):
-                break
-            bgr, tel = frames_iter[idx], None
-        elif args.source == "video":
-            ok, bgr = cap.read()
-            if not ok:
-                # 解码失败≠视频结束：内存压力下 ffmpeg 缓冲分配会偶发失败
-                # （曾致三次回放在 ~f60 被静默截断）。重试 5 次仍失败才按 EOF 处理。
-                for _r in range(5):
-                    time.sleep(0.05)
-                    ok, bgr = cap.read()
-                    if ok:
-                        break
-                if not ok:
-                    print(f"[video] frame {idx} read failed after retries -> treating as EOF", flush=True)
+
+    idx = 0
+    wait_logged_t = 0.0
+    try:
+        while args.max_frames is None or idx < args.max_frames:
+            tel_now = None
+            ext_knock = None
+            if args.source == "frames":
+                if idx >= len(frames_iter):
                     break
-            tel = None
-        else:
-            bgr, tel = fetcher.get()
-            if bgr is None:
-                continue
-
-        if args.click_xy and (not auto_clicked) and idx >= 4:
-            cx_s, cy_s = [float(v) for v in args.click_xy.split(",")]
-            print("[AUTO-CLICK]", brain.set_3d_target(cx_s, cy_s), flush=True)
-            auto_clicked = True
-
-        if args.source == "video":
-            ts = idx / video_fps  # 内容时间轴：与 15fps 采集时间一致，而非解码墙钟
-        else:
-            ts = time.perf_counter() - t0
-        info = brain.step(bgr, telemetry=tel, scenario=scenario, timestamp_s=ts, auto_level=(tel is None))
-
-        if dump_dir is not None:
-            if idx % args.dump_every == 0:
-                cv2.imwrite(str(dump_dir / f"f{idx:05d}.jpg"), bgr)
-            dump_jsonl.write(json.dumps(info, ensure_ascii=False) + "\n")
-
-        if bridge is not None:
-            if info["knock"]["fired"]:
-                bridge.event("knock")
-            elif info.get("cliff_fired"):
-                bridge.event("cliff")
-            elif info["mode"] == "APPROACH" and prev_mode != "APPROACH":
-                bridge.event("lock")
+                bgr, tel = frames_iter[idx], None
+                ts = idx / 15.0
+            elif args.source == "video":
+                ok, bgr = cap.read()
+                if not ok:
+                    for _r in range(5):
+                        time.sleep(0.05)
+                        ok, bgr = cap.read()
+                        if ok:
+                            break
+                    if not ok:
+                        print(f"[video] frame {idx} read failed after retries -> treating as EOF", flush=True)
+                        break
+                tel = None
+                ts = idx / video_fps
             else:
-                bridge.update_mode(info["mode"])
-            prev_mode = info["mode"]
+                bgr, tel, tel_now, ts_cap = fetcher.get()
+                if bgr is None:
+                    now_w = time.perf_counter()
+                    if now_w - wait_logged_t >= 5.0:
+                        print(f"[live] waiting for robot stream at {args.base} ...", flush=True)
+                        wait_logged_t = now_w
+                    continue
+                ts = float(ts_cap) if ts_cap is not None else (time.perf_counter() - t0)
+                if knock_stream is not None:
+                    ext_knock = knock_stream.consume_latest()
 
-        if cmd_sender is not None:
-            c = info["cmd"]
-            cmd_sender.send(f"{args.base}/cmd?vx={c['vx']:.1f}&vyaw={c['vyaw']:.1f}&head={c['head']:.1f}")
+            if args.click_xy and (not auto_clicked) and idx >= 4:
+                cx_s, cy_s = [float(v) for v in args.click_xy.split(",")]
+                print("[AUTO-CLICK]", brain.set_3d_target(cx_s, cy_s), flush=True)
+                auto_clicked = True
 
-        if idx % 10 == 0 or info["knock"]["fired"] or (args.max_frames is not None and idx == args.max_frames - 1):
-            print(json.dumps(info, ensure_ascii=False), flush=True)
+            info = brain.step(
+                bgr, telemetry=tel, scenario=scenario, timestamp_s=ts, auto_level=(tel is None),
+                tel_now=tel_now, ext_knock=ext_knock,
+            )
+            if knock_stream is not None:
+                knock_stream.set_context(brain._last_wrist_box, brain.mode)
 
+            if dump_dir is not None:
+                if idx % args.dump_every == 0:
+                    cv2.imwrite(str(dump_dir / f"f{idx:05d}.jpg"), bgr)
+                dump_jsonl.write(json.dumps(info, ensure_ascii=False) + "\n")
+                if idx % 10 == 0:
+                    dump_jsonl.flush()
+
+            if bridge is not None:
+                if info["knock"]["fired"]:
+                    bridge.event("knock")
+                elif info.get("cliff_fired"):
+                    bridge.event("cliff")
+                elif info["mode"] == "APPROACH" and prev_mode != "APPROACH":
+                    bridge.event("lock")
+                else:
+                    bridge.update_mode(info["mode"])
+                prev_mode = info["mode"]
+
+            if actuator is not None:
+                c = info["cmd"]
+                rstate = int((tel_now or tel).robot_state) if (tel_now or tel) is not None else 1
+                cliff_stop = bool(info.get("cliff_engaged") and info["mode"] == "APPROACH" and c["vx"] <= 0.01)
+                actuator.send_command(
+                    DriveCommand(vx=c["vx"], vyaw=c["vyaw"], head=c["head"]),
+                    robot_state=rstate, mode_id=int(brain.mode), cliff_danger=cliff_stop,
+                    yaw_gyro_bias_dps=float(info.get("yaw_bias_dps", 0.0)),
+                )
+
+            if idx % 10 == 0 or info["knock"]["fired"] or (args.max_frames is not None and idx == args.max_frames - 1):
+                print(json.dumps(info, ensure_ascii=False), flush=True)
+
+            if not args.headless:
+                dash = brain.render_dashboard(bgr, info, cam, w=W3D, h=H3D)
+                cv2.imshow(win_name, dash)
+                key = cv2.waitKey(1) & 0xFF
+                if key in (ord("q"), 27):
+                    break
+                elif key == ord("1"):
+                    scenario = 1
+                elif key == ord("2"):
+                    scenario = 2
+            idx += 1
+    finally:
+        if actuator is not None:
+            actuator.close()
+        if knock_stream is not None:
+            knock_stream.close()
+        if fetcher is not None:
+            fetcher.close()
+        if dump_jsonl is not None:
+            dump_jsonl.close()
+        if cap is not None:
+            cap.release()
+        if bridge is not None:
+            print(f"[emote] sent={bridge.sent} failed={bridge.failed}", flush=True)
+            bridge.close()
         if not args.headless:
-            dash = brain.render_dashboard(bgr, info, cam, w=W3D, h=H3D)
-            cv2.imshow(win_name, dash)
-            key = cv2.waitKey(1) & 0xFF
-            if key in (ord("q"), 27):
-                break
-            elif key == ord("1"):
-                scenario = 1
-            elif key == ord("2"):
-                scenario = 2
-
-    if cap is not None:
-        cap.release()
-    if bridge is not None:
-        print(f"[emote] sent={bridge.sent} failed={bridge.failed}", flush=True)
-        bridge.close()
-    if not args.headless:
-        cv2.destroyAllWindows()
+            cv2.destroyAllWindows()
 
 
 if __name__ == "__main__":

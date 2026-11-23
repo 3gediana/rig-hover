@@ -1,43 +1,143 @@
 {
-  "log": "runs_end_side\\e2e_replay_cb8455_full.log",
-  "n_frames_logged": 246,
+  "log": "runs_end_side\\e2e_replay\\e2e_replay_robot_20261115_151733_cb8455_v25.log",
+  "n_frames_logged": 263,
   "fps_assumed": 15.0,
   "gt_knocks": 12,
-  "fires": 3,
+  "fires": 22,
+  "fires_by_src": {
+    "pair": 17,
+    "sem_confirm": 5
+  },
   "hits": [
+    {
+      "frame": 122,
+      "t_s": 8.13,
+      "gt_idx": 0
+    },
     {
       "frame": 176,
       "t_s": 11.73,
       "gt_idx": 1
     },
     {
-      "frame": 518,
-      "t_s": 34.53,
+      "frame": 484,
+      "t_s": 32.27,
+      "gt_idx": 2
+    },
+    {
+      "frame": 516,
+      "t_s": 34.4,
       "gt_idx": 3
     },
     {
-      "frame": 1136,
-      "t_s": 75.73,
+      "frame": 1134,
+      "t_s": 75.6,
       "gt_idx": 7
+    },
+    {
+      "frame": 1472,
+      "t_s": 98.13,
+      "gt_idx": 8
+    },
+    {
+      "frame": 2364,
+      "t_s": 157.6,
+      "gt_idx": 11
     }
   ],
-  "false_positives": [],
-  "ambiguous_in_other_labels": [],
+  "false_positives": [
+    {
+      "frame": 2394,
+      "t_s": 159.6
+    }
+  ],
+  "ambiguous_in_other_labels": [
+    {
+      "frame": 50,
+      "t_s": 3.33,
+      "inside_label": "伸手但未敲",
+      "label_id": "reach"
+    },
+    {
+      "frame": 435,
+      "t_s": 29.0,
+      "inside_label": "连续敲击",
+      "label_id": "label_1794064784169"
+    },
+    {
+      "frame": 971,
+      "t_s": 64.73,
+      "inside_label": "连续敲击",
+      "label_id": "label_1794064784169"
+    },
+    {
+      "frame": 1059,
+      "t_s": 70.6,
+      "inside_label": "连续敲击",
+      "label_id": "label_1794064784169"
+    },
+    {
+      "frame": 1289,
+      "t_s": 85.93,
+      "inside_label": "连续敲击",
+      "label_id": "label_1794064784169"
+    },
+    {
+      "frame": 1365,
+      "t_s": 91.0,
+      "inside_label": "连续敲击",
+      "label_id": "label_1794064784169"
+    },
+    {
+      "frame": 1402,
+      "t_s": 93.47,
+      "inside_label": "伸手但未敲",
+      "label_id": "reach"
+    },
+    {
+      "frame": 1432,
+      "t_s": 95.47,
+      "inside_label": "伸手但未敲",
+      "label_id": "reach"
+    },
+    {
+      "frame": 1726,
+      "t_s": 115.07,
+      "inside_label": "连续敲击",
+      "label_id": "label_1794064784169"
+    },
+    {
+      "frame": 1784,
+      "t_s": 118.93,
+      "inside_label": "连续敲击",
+      "label_id": "label_1794064784169"
+    },
+    {
+      "frame": 1883,
+      "t_s": 125.53,
+      "inside_label": "连续敲击",
+      "label_id": "label_1794064784169"
+    },
+    {
+      "frame": 2202,
+      "t_s": 146.8,
+      "inside_label": "连续敲击",
+      "label_id": "label_1794064784169"
+    },
+    {
+      "frame": 2234,
+      "t_s": 148.93,
+      "inside_label": "连续敲击",
+      "label_id": "label_1794064784169"
+    },
+    {
+      "frame": 2282,
+      "t_s": 152.13,
+      "inside_label": "连续敲击",
+      "label_id": "label_1794064784169"
+    }
+  ],
   "misses": [
-    {
-      "gt_idx": 0,
-      "gt_s": [
-        7.45,
-        9.12
-      ]
-    },
-    {
-      "gt_idx": 2,
-      "gt_s": [
-        30.85,
-        31.92
-      ]
-    },
     {
       "gt_idx": 4,
       "gt_s": [
@@ -60,13 +160,6 @@
       ]
     },
     {
-      "gt_idx": 8,
-      "gt_s": [
-        97.27,
-        98.94
-      ]
-    },
-    {
       "gt_idx": 9,
       "gt_s": [
         101.68,
@@ -79,18 +172,13 @@
         134.66,
         136.79
       ]
-    },
-    {
-      "gt_idx": 11,
-      "gt_s": [
-        156.54,
-        157.91
-      ]
     }
   ],
   "mode_frame_counts": {
-    "GAZE_FACE": 18,
-    "APPROACH": 228
+    "GAZE_FACE": 19,
+    "APPROACH": 183,
+    "DWELL": 10,
+    "GAZE_FIST": 51
   },
   "mode_transitions": [
     {
@@ -98,15 +186,123 @@
       "mode": "GAZE_FACE"
     },
     {
-      "frame": 176,
+      "frame": 50,
+      "mode": "APPROACH"
+    },
+    {
+      "frame": 281,
+      "mode": "DWELL"
+    },
+    {
+      "frame": 301,
+      "mode": "GAZE_FIST"
+    },
+    {
+      "frame": 331,
+      "mode": "GAZE_FACE"
+    },
+    {
+      "frame": 341,
+      "mode": "GAZE_FIST"
+    },
+    {
+      "frame": 361,
+      "mode": "GAZE_FACE"
+    },
+    {
+      "frame": 371,
+      "mode": "GAZE_FIST"
+    },
+    {
+      "frame": 435,
+      "mode": "APPROACH"
+    },
+    {
+      "frame": 681,
+      "mode": "DWELL"
+    },
+    {
+      "frame": 701,
+      "mode": "GAZE_FIST"
+    },
+    {
+      "frame": 731,
+      "mode": "GAZE_FACE"
+    },
+    {
+      "frame": 751,
+      "mode": "GAZE_FIST"
+    },
+    {
+      "frame": 811,
+      "mode": "GAZE_FACE"
+    },
+    {
+      "frame": 821,
+      "mode": "GAZE_FIST"
+    },
+    {
+      "frame": 901,
+      "mode": "GAZE_FACE"
+    },
+    {
+      "frame": 971,
+      "mode": "APPROACH"
+    },
+    {
+      "frame": 1241,
+      "mode": "DWELL"
+    },
+    {
+      "frame": 1261,
+      "mode": "GAZE_FIST"
+    },
+    {
+      "frame": 1289,
+      "mode": "APPROACH"
+    },
+    {
+      "frame": 1631,
+      "mode": "DWELL"
+    },
+    {
+      "frame": 1651,
+      "mode": "GAZE_FACE"
+    },
+    {
+      "frame": 1661,
+      "mode": "GAZE_FIST"
+    },
+    {
+      "frame": 1691,
+      "mode": "GAZE_FACE"
+    },
+    {
+      "frame": 1701,
+      "mode": "GAZE_FIST"
+    },
+    {
+      "frame": 1726,
+      "mode": "APPROACH"
+    },
+    {
+      "frame": 2061,
+      "mode": "DWELL"
+    },
+    {
+      "frame": 2081,
+      "mode": "GAZE_FIST"
+    },
+    {
+      "frame": 2202,
       "mode": "APPROACH"
     }
   ],
   "geonet_ms": {
-    "median": 13.63,
-    "p90": 19.44
+    "median": 17.39,
+    "p90": 22.55
   },
-  "reloc_inliers_median": 600,
-  "icp_res_mm_median": 3.84,
+  "reloc_inliers_median": 603,
+  "icp_res_mm_median": 3.45,
   "tier": "T2-real-video-replay"
 }

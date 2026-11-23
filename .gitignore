@@ -82,6 +82,10 @@ labelstudio/.ls_token
 
 # ===== 端侧实验产物：权重/点云/帧缓存可由训练脚本重新生成，不入库 =====
 runs_end_side/**/_*/
+runs_end_side/_*
+runs_end_side/live_*/
+runs_end_side/hw_calib/
+runs_end_side/e2e_replay/*.log
 runs_end_side/**/*_fp32.pt
 runs_end_side/**/*_fp16.pt
 runs_end_side/**/*.pth
