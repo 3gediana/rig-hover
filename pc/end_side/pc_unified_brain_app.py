@@ -337,12 +337,12 @@ class UnifiedRobotBrain:
         # GAZE_FIST 是进不去的死代码——真机"不认拳"的直接原因；SLAM 动态分离现成）
         fist_det = None
         dp = self.slam.dyn_pts
-        if len(dp) >= 60:
-            elev = dp[(dp[:, 2] > 0.08) & (dp[:, 0] < 0.95)]
-            if len(elev) >= 40:
+        if len(dp) >= 40:
+            elev = dp[(dp[:, 2] > 0.06) & (dp[:, 0] < 0.95)]
+            if len(elev) >= 25:
                 _c = np.median(elev, axis=0)
                 spread = float(np.median(np.linalg.norm(elev[:, :2] - _c[:2], axis=1)))
-                if spread < 0.16:
+                if spread < 0.25:
                     fist_det = {"bearing_deg": math.degrees(math.atan2(-_c[1], _c[0])), "n": int(len(elev))}
         if fist_det is not None and self.mode in (MODE_IDLE, MODE_GAZE_FACE):
             self.mode = MODE_GAZE_FIST
@@ -413,12 +413,18 @@ class UnifiedRobotBrain:
                 head_g = float(np.clip(fist_det["bearing_deg"] * 2.0, -45.0, 45.0))
                 safe_cmd = DriveCommand(0.0, vyaw_g, head_g)
             elif self.mode == MODE_GAZE_FACE and face_dets:
-                # 舵机云台不带相机——转头动不了脸在画面里的位置（真机实证 head 顶死 +70 而
-                # cx 不变）。居中脸的职责在身体：vyaw 闭环（实测 policy 输出 -10~-32 与
-                # 此式同号），头只做同向表情倾斜，身体到位后自然回零。
-                cx_err = face_dets[0]["cx"] - 0.5
-                vyaw_g = float(np.clip(cx_err * 140.0, -30.0, 30.0)) if abs(cx_err) > 0.04 else 0.0
-                head_g = float(np.clip(-cx_err * 160.0, -45.0, 45.0))  # 连杆比吃掉大半摆角，打满±45才看得见
+                # 舵机云台不带相机——居中脸的职责在身体 vyaw。P 环 140 增益在 10Hz+
+                # 轮上惯量下欠阻尼来回甩（真机实证）→ PD 环：P 收敛居中 + D 阻尼，
+                # cx 三帧中值消框抖，死区放宽到 0.06。
+                self._cx_hist = (getattr(self, "_cx_hist", []) + [face_dets[0]["cx"]])[-3:]
+                cx_f = float(np.median(self._cx_hist))
+                e = cx_f - 0.5
+                de = e - getattr(self, "_cx_prev", e)
+                self._cx_prev = e
+                vyaw_g = float(np.clip(70.0 * e + 200.0 * de, -25.0, 25.0))
+                if abs(e) < 0.06 and abs(de) < 0.02:
+                    vyaw_g = 0.0
+                head_g = float(np.clip(-e * 160.0, -45.0, 45.0))  # 连杆比吃掉大半摆角，打满±45才看得见
                 safe_cmd = DriveCommand(0.0 if held else safe_cmd.vx, vyaw_g if not held else 0.0, head_g)
         _st["policy"] = (_t() - _t0) * 1e3
 
