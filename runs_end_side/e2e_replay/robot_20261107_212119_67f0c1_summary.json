@@ -1,0 +1,160 @@
+{
+  "log": "runs_end_side\\e2e_replay_67f0c1_v8.log",
+  "n_frames_logged": 390,
+  "fps_assumed": 20.0,
+  "gt_knocks": 16,
+  "fires": 9,
+  "fires_by_src": {
+    "pair": 6,
+    "sem_confirm": 3
+  },
+  "hits": [
+    {
+      "frame": 545,
+      "t_s": 27.25,
+      "gt_idx": 1
+    },
+    {
+      "frame": 635,
+      "t_s": 31.75,
+      "gt_idx": 1
+    },
+    {
+      "frame": 740,
+      "t_s": 37.0,
+      "gt_idx": 2
+    },
+    {
+      "frame": 786,
+      "t_s": 39.3,
+      "gt_idx": 2
+    },
+    {
+      "frame": 3173,
+      "t_s": 158.65,
+      "gt_idx": 13
+    },
+    {
+      "frame": 3363,
+      "t_s": 168.15,
+      "gt_idx": 14
+    },
+    {
+      "frame": 3563,
+      "t_s": 178.15,
+      "gt_idx": 14
+    },
+    {
+      "frame": 3627,
+      "t_s": 181.35,
+      "gt_idx": 15
+    }
+  ],
+  "false_positives": [
+    {
+      "frame": 696,
+      "t_s": 34.8
+    }
+  ],
+  "ambiguous_in_other_labels": [],
+  "misses": [
+    {
+      "gt_idx": 0,
+      "gt_s": [
+        14.04,
+        16.2
+      ]
+    },
+    {
+      "gt_idx": 3,
+      "gt_s": [
+        41.58,
+        44.1
+      ]
+    },
+    {
+      "gt_idx": 4,
+      "gt_s": [
+        45.9,
+        47.88
+      ]
+    },
+    {
+      "gt_idx": 5,
+      "gt_s": [
+        52.74,
+        58.68
+      ]
+    },
+    {
+      "gt_idx": 6,
+      "gt_s": [
+        60.12,
+        64.26
+      ]
+    },
+    {
+      "gt_idx": 7,
+      "gt_s": [
+        84.78,
+        89.46
+      ]
+    },
+    {
+      "gt_idx": 8,
+      "gt_s": [
+        90.9,
+        97.57
+      ]
+    },
+    {
+      "gt_idx": 9,
+      "gt_s": [
+        123.49,
+        125.47
+      ]
+    },
+    {
+      "gt_idx": 10,
+      "gt_s": [
+        136.99,
+        138.25
+      ]
+    },
+    {
+      "gt_idx": 11,
+      "gt_s": [
+        140.41,
+        142.39
+      ]
+    },
+    {
+      "gt_idx": 12,
+      "gt_s": [
+        153.01,
+        154.27
+      ]
+    }
+  ],
+  "mode_frame_counts": {
+    "GAZE_FACE": 55,
+    "APPROACH": 335
+  },
+  "mode_transitions": [
+    {
+      "frame": 1,
+      "mode": "GAZE_FACE"
+    },
+    {
+      "frame": 545,
+      "mode": "APPROACH"
+    }
+  ],
+  "geonet_ms": {
+    "median": 19.26,
+    "p90": 33.1
+  },
+  "reloc_inliers_median": 201.0,
+  "icp_res_mm_median": 4.95,
+  "tier": "T2-real-video-replay"
+}

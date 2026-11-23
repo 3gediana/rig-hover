@@ -6,7 +6,7 @@
     "T3": "HIL (ESP32-compatible local loop)",
     "T4": "physical robot"
   },
-  "generated_at": "2026-11-23 10:57:07",
+  "generated_at": "2026-11-23 13:41:06",
   "entries": [
     {
       "id": "knock-3d-v2",
@@ -304,6 +304,27 @@
       "notes": "void-majority line fixed a real blindness: brightness+border conjunction dies when void fills >50% view (last ~12cm). Now refuses ~20-25cm early on all approach angles; refusal envelope is conservative (16cm targets also refused)."
     },
     {
+      "id": "v21-e2e-67f0c1",
+      "name": "v21 full-take real-video E2E replay [67f0c1]",
+      "category": "behavior",
+      "tier": "T2",
+      "source": "runs_end_side/e2e_replay/robot_20261107_212119_67f0c1_summary.json",
+      "metrics": {
+        "frames": 390,
+        "gt_knocks": 16,
+        "fires": 9,
+        "fp_outside_labels": 1,
+        "fires_in_other_labels": 0,
+        "misses": 11,
+        "reloc_inliers_med": 201.0,
+        "geonet_ms_med": 19.26
+      },
+      "artifacts": {
+        "json": "runs_end_side/e2e_replay/robot_20261107_212119_67f0c1_summary.json"
+      },
+      "notes": "pc_unified_brain_app --source video on the full take; replay tier (odometry static)."
+    },
+    {
       "id": "v21-e2e-1f30d1",
       "name": "v21 full-take real-video E2E replay [1f30d1]",
       "category": "behavior",
@@ -381,7 +402,7 @@
       "blocking": "v23 fixed trigger-layer losses (easy take 7->10/14); remaining misses are both-channel-weak - need harder-knock data not tuning"
     },
     {
-      "gap": "physical live E2E run (replays cover cb8455+1f30d1; live still untested)",
+      "gap": "physical live E2E run (replays cover cb8455+1f30d1+65a54d+67f0c1; live still untested)",
       "blocking": "robot offline; needs --source live --send-cmd supervised run"
     },
     {
