@@ -104,8 +104,12 @@ SUITES = [
      ["-m", "pytest", ".", "-x", "-q", "-p", "no:cacheprovider"], True),
     # 2026-11-24 SIM2REAL: controllers on the plant identified from the real robot (overshoot/torque bounds,
     # the fall mechanism as a regression, gaze facing, table projection, click-to-go convergence, fist path).
-    ("s2r", "sim2real controllers on identified plant (7 gates)", rf"{W}\pc\s2r",
-     ["-m", "pytest", "test_s2r.py", "-q", "-p", "no:cacheprovider"], False),
+    # 2026-11-25: plus the guarded real-robot session -- the safety envelope replayed against real
+    # telemetry (every limit must trip; a real false-trip spike must not), the firmware LQR identity on
+    # real logs, and every session stage end to end against mock_robot with no robot present.
+    ("s2r", "sim2real controllers on identified plant + guarded session (33 gates)", rf"{W}\pc\s2r",
+     ["-m", "pytest", "test_s2r.py", "test_guarded_session.py", "test_session_on_mock.py", "-q",
+      "-p", "no:cacheprovider"], False),
 ]
 
 FAIL_LINE_RE = re.compile(r"(?m)^\s*\[?(?:FAIL|FAILED)\b")
