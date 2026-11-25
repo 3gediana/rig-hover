@@ -40,6 +40,10 @@ REPO_ROOT = HERE.parent.parent
 if str(HERE) not in sys.path:
     sys.path.insert(0, str(HERE))
 
+if str(REPO_ROOT / "pc" / "pack") not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT / "pc" / "pack"))
+import sealed  # noqa: E402
+
 from mono_depth_model import (  # noqa: E402
     DEFAULT_FOV_H_DEG,
     DEFAULT_H_CAM_M,
@@ -1172,6 +1176,10 @@ def train_and_export(
     lr: float = 2.6e-3,
     seed: int = 20261118,
 ) -> dict[str, Any]:
+    sealed.require_final_eval(
+        [REPO_ROOT / "dataset" / "takes" / "robot_20261115_151733_cb8455" / "take.mp4"],
+        purpose="train_mono_depth final held-out evaluation",
+    )
     torch.manual_seed(seed)
     np.random.seed(seed)
 

@@ -23,8 +23,12 @@ import cv2
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+_PACK_DIR = Path(__file__).resolve().parents[1] / "pack"
+if str(_PACK_DIR) not in sys.path:
+    sys.path.insert(0, str(_PACK_DIR))
 
 from cut_knock_candidates import contact_sheet  # noqa: E402
+import sealed  # noqa: E402
 from interval_data import (  # noqa: E402
     CLASS_TO_IDX,
     IGNORE,
@@ -270,6 +274,9 @@ def build_window_dataset(
 
     id_to_name = load_labels(ds_path)
     takes = load_takes(ds_path)
+    sealed_paths = [t.video_path for t in takes if sealed.is_sealed_path(t.take_id)]
+    if sealed_paths:
+        sealed.require_final_eval(sealed_paths, purpose="double-knock dataset final held-out evaluation")
     out: dict[str, dict] = {}
 
     if contact_sheet_dir is not None:
@@ -476,6 +483,8 @@ def load_external_stress_clips(max_clips_per_source: int = 10, size: int = 96) -
                 continue
             meta = json.loads(line)
             fdir = sess_dir / meta["dir"] / "frames"
+            if sealed.is_sealed_path(meta["dir"]):
+                sealed.require_final_eval([fdir], purpose="double-knock external stress final evaluation")
             if not fdir.is_dir():
                 continue
             jpgs = sorted(fdir.glob("*.jpg"))

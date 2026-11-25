@@ -41,9 +41,10 @@ from sklearn.metrics import f1_score, roc_auc_score
 HERE = pathlib.Path(__file__).resolve().parent
 REPO = HERE.parent.parent
 TRAIN_DIR = REPO / "pc" / "train"
-for p in (str(HERE), str(TRAIN_DIR)):
+for p in (str(HERE), str(TRAIN_DIR), str(REPO / "pc" / "pack")):
     if p not in sys.path:
         sys.path.insert(0, p)
+import sealed  # noqa: E402
 
 from double_knock_data import (  # noqa: E402
     COUNT_CLASSES,
@@ -966,6 +967,10 @@ def eval_external_stress_3d(
 
 
 def run_breakthrough2(epochs: int = 22, window: int = 48) -> dict[str, Any]:
+    sealed.require_final_eval(
+        [REPO / "dataset" / "takes" / "robot_20261115_151733_cb8455" / "take.mp4"],
+        purpose="train_double_knock_3d_physnet final held-out evaluation",
+    )
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print("=== BREAKTHROUGH #2: DoubleKnock3D-PhysNet (3D Metric Desk-Contact Physics vs 2D Baseline) ===", flush=True)

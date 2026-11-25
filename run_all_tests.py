@@ -116,6 +116,10 @@ SUITES = [
     # camera height under pc/ and the firmware has a disposition (const_scan.py --check exits 0).
     ("truth", "robot truth file + camera-constant scan (16 gates)", rf"{W}",
      ["-m", "pytest", r"pc\tests\test_robot_truth.py", "-q", "-p", "no:cacheprovider"], False),
+    # 2026-11-25 offline sprint O-003: sealed assets have exactly one doorway,
+    # --final-eval is required, the access log is written, and split manifests stay hashed.
+    ("sealed", "sealed-data doorway + hashed split manifests (7 gates)", rf"{W}",
+     ["-m", "pytest", r"pc\tests\test_sealed.py", "-q", "-p", "no:cacheprovider"], False),
 ]
 
 FAIL_LINE_RE = re.compile(r"(?m)^\s*\[?(?:FAIL|FAILED)\b")

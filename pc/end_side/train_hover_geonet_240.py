@@ -40,6 +40,10 @@ REPO = HERE.parent.parent
 if str(HERE) not in sys.path:
     sys.path.insert(0, str(HERE))
 
+if str(REPO / "pc" / "pack") not in sys.path:
+    sys.path.insert(0, str(REPO / "pc" / "pack"))
+import sealed  # noqa: E402
+
 from hd_moge_contour_engine import (  # noqa: E402
     GEONET_CKPT_FOV_H_DEG,
     MoGe2DesktopReconstructor,
@@ -755,6 +759,14 @@ def train_and_evaluate(
         torch.backends.cudnn.benchmark = True
     print(f"=== HoverGeoNet-240 v3 Training Pipeline (arch={arch}, base={base_ch}, bs={batch_size}x{grad_accum}, device={device}, H_cam={REAL_H_CAM_M}m, epochs={epochs}, warm_start={warm_start}) ===", flush=True)
 
+    sealed.require_final_eval(
+        [
+            REPO / "evidence" / "sessions" / "empty_d0.5_front_night_182201" / "frames",
+            REPO / "dataset" / "takes" / "robot_20261115_151733_cb8455" / "take.mp4",
+            CACHE_DIR / "test_heldout_80.npz",
+        ],
+        purpose="train_hover_geonet_240 final held-out evaluation",
+    )
     train_real, train_live, train_synth, val_real, test_heldout = prepare_all_caches(force_rebuild=force_rebuild)
     train_real = _filter_clean_teacher(train_real, "train_real")
     train_live = _filter_clean_teacher(train_live, "train_live")
@@ -960,5 +972,6 @@ if __name__ == "__main__":
     ap.add_argument("--grad-accum", type=int, default=2)
     ap.add_argument("--lr", type=float, default=9.0e-4)
     ap.add_argument("--rebuild-cache", action="store_true")
+    ap.add_argument("--final-eval", action="store_true", help="authorise one registered evaluation on sealed data")
     args = ap.parse_args()
     train_and_evaluate(epochs=args.epochs, batch_size=args.batch_size, grad_accum=args.grad_accum, lr=args.lr, arch=args.arch, force_rebuild=args.rebuild_cache)

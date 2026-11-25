@@ -26,7 +26,7 @@
 |---|---|---|---|---|---|---|
 | O-001 | `BASELINE.md`：资产清单 + 带命令的基线数字 + AUD 缺陷 | `pc/pack/inventory.py` → `BASELINE.md` | 只读脚本，失败即重跑 | E2；`PACK_ROOT\BASELINE.md`、`canon\assets.md`、`findings\raw\*.log` | COMPLETE | 资产清点第三次运行完成（27 组、91,558 文件、46.7 GiB、65,131 帧、802 组完全重复；EXIT_RC=0）；`BASELINE.md` 已写；3 个旧报告数字已从真实入口复现（航向仿真 p90=3.0°、click-to-go 30/30 到点、手势 macro-F1=0.8051）；全仓回归 25/25 原样记录 |
 | O-002 | `robot_truth` 真值文件 + 常量处置清单 | `pc/robot_truth.json`；`python pc/pack/const_scan.py --check`；`run_all_tests.py --only truth` | 只读扫描，新冲突即退出码 1 | E2；提交 `39db690`；`findings\CONST_SCAN.md` | COMPLETE | 真值 44 条事实（各带值/方法/日期/出处/置信/层级）+ `model_artifacts`；扫描 46 处命中，43 处冲突全部处置（保留并说明 30 / 已标注 11 / 休眠 2），0 处未处置；s2r、`real_robot_bridge`、MoGe-2、稠密场景与新训练改读真值；门禁 `truth` 16 项。遗留的不是本项缺口而是 AUD-015/016：已发布权重都要按实测相机重训（D-009） |
-| O-003 | 封存集隔离 + tripwire + `splits\*.json` | （待建） | | E2 | MISSING | 全部 |
+| O-003 | 封存集隔离 + tripwire + `splits\*.json` | `pc/pack/sealed.py`、`make_splits.py`、`pc/tests/test_sealed.py` | 直接改入口参数即可回退 | E2；`sealed/manifest.json`、7 项 pytest | PARTIAL | 已有 copy-only mirror+sha256、唯一入口、访问日志、4 个划分清单、9 个训练入口 tripwire 与 sealed 门禁；未做全量 grep 关闭审计，回归测试读封存集的规矩仍未完全重构 |
 | O-004 | `sensor_domain.json` + 转换函数 + 对抗 AUC | （待建） | | E2 | MISSING | 全部 |
 | O-005 | K-1 / K-2 / K-3 证伪结论 + `FRONTIER1_REPORT.md` | （待建） | | E2 | MISSING | 全部 |
 | O-006 | 真机资产规范库 + 清单 | （待建） | | E4 | MISSING | 全部 |
@@ -156,3 +156,7 @@
 - 15:20 O-001 收尾：`PACK_ROOT\BASELINE.md` 已写（217 行），含 27 组资产清单、封存资产预登记、全仓回归 25/25 原样记录、3 个旧报告数字的真实命令与输出、AUD-001…018 索引、未复现数字清单。三轮复现日志：`repro_sim_plant_2026-11-25.log`、`repro_click_to_go_2026-11-25.log`、`repro_gesture_eval_2026-11-25_utf8.log`。
 - 验证：BASELINE UTF-8 检查通过；`_check_encoding.py` 输出 `all clean`；未触碰封存集、未碰机器人。
 - 下一切片第一动作：实现 O-003 的 `pc/pack/sealed.py`、训练入口 tripwire 和带哈希划分。
+- 15:45 O-003 第一切片落地：`pc/pack/sealed.py` 建立唯一入口；`--materialize` 已复制（不是移动）250 个封存文件到 `PACK_ROOT\sealed\mirror`，`--verify` 输出 `verify ok`；`pc/pack/make_splits.py` 已生成 `take_splits.json`（6 个 take）、`evidence_splits.json`（24 个目录）、`live_session_splits.json`（11 个会话）、`preregistered_rules.json`，逐文件 sha256。
+- tripwire 已加到 9 个训练入口/数据构建入口：`train_hover_geonet_240.py`、`train_dense_splat_student.py`、`train_mono_depth.py`、`train_neural_gaussian_splat.py`、`train_hover_geonet_mv_selfsup_v4.py`、`train_double_knock.py`/`double_knock_data.py`、`train_double_knock_3d_physnet.py`、`train_double_knock_3d_v2_extreme.py`、`train_double_knock_3d_v4_sim2real.py`。无前 `--final-eval` 手动运行前 4 个均 rc=1 并抛 `SealedAccessError`，未写访问日志。
+- 新增 `pc/tests/test_sealed.py` 7 项与 `run_all_tests.py` 的 `sealed` 门禁；验证：`pytest pc/tests/test_sealed.py` 7/7 PASS，`run_all_tests.py --only sealed` PASS，所有改动 `py_compile` 通过，`_check_encoding.py` all clean。
+- 重要限制：O-003 仍为 PARTIAL。还没有做“全仓库所有直接打开封存路径”的关闭式审计；`eval_session.py`、`proto_3d_edl_traversable.py`、`test_robust_contour_slam.py` 等评估/原型入口未逐一改造；旧 `run_pipeline` 在显式 final-eval 后仍按历史 6 折流程处理 `cb8455`，后续必须把“训练 dev、只最终评估 sealed”重构清楚。回归测试究竟是改用非封存夹具还是登记访问，也还没写决策。下一步先补 D-010 决策与关闭式 grep 审计，再继续训练入口重构。

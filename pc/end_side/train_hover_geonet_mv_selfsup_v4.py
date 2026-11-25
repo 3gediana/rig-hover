@@ -38,6 +38,9 @@ HERE = pathlib.Path(__file__).resolve().parent
 REPO = HERE.parent.parent
 if str(HERE) not in sys.path:
     sys.path.insert(0, str(HERE))
+if str(REPO / "pc" / "pack") not in sys.path:
+    sys.path.insert(0, str(REPO / "pc" / "pack"))
+import sealed  # noqa: E402
 
 from hd_dynamic_contour_slam import HoverGeoNet240Frontend, MoGe2Frontend  # noqa: E402
 from hd_moge_contour_engine import REAL_FOV_H_DEG, REAL_H_CAM_M, relocalize_frame_against_3d_map  # noqa: E402
@@ -560,6 +563,10 @@ def eval_objective_real_video_physics(
 
 
 def train_and_benchmark_v4(epochs: int = 5, lr: float = 2.2e-4) -> dict[str, Any]:
+    sealed.require_final_eval(
+        [EMPTY_DIR, CB8455_MP4],
+        purpose="train_hover_geonet_mv_selfsup_v4 final held-out evaluation",
+    )
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     if device.type == "cuda":

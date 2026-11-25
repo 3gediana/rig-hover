@@ -1083,6 +1083,7 @@ def main() -> int:
     ap.add_argument("--device", default="cuda")
     ap.add_argument("--fps-aug", type=float, default=0.0, help="训练时随机模拟低采集帧率的概率（0–1）")
     ap.add_argument("--amp-aug", type=float, default=0.0, help="训练时随机把敲击幅度降级成轻敲的概率（0–1）")
+    ap.add_argument("--final-eval", action="store_true", help="authorise one registered evaluation on sealed takes")
     args = ap.parse_args()
     run_pipeline(
         out_dir=args.out,

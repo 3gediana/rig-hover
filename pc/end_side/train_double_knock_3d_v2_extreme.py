@@ -55,6 +55,7 @@ from interval_data import IGNORE, decode_gray, frame_labels, load_intervals, loa
 from rigorous_audit_knock_ablation import eval_strict_1to1_events  # noqa: E402
 from train_double_knock import CausalConv1d, find_double_knock_triggers, focal_bce_loss  # noqa: E402
 from train_double_knock_3d_physnet import BatchHoverGeoNet3DExtractor, CACHE_DIR, V4_CKPT_FP16  # noqa: E402
+import sealed  # noqa: E402
 
 YUNET_ONNX = REPO / "pc" / "perception" / "assets" / "face_detection_yunet_2023mar.onnx"
 OUT_DIR = REPO / "runs_end_side" / "double_knock_3d_v2_extreme"
@@ -1002,6 +1003,10 @@ def eval_external_v2_head_to_head(
 
 
 def main() -> None:
+    sealed.require_final_eval(
+        [REPO / "dataset" / "takes" / "robot_20261115_151733_cb8455" / "take.mp4"],
+        purpose="train_double_knock_3d_v2_extreme final held-out evaluation",
+    )
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     if device.type == "cuda":

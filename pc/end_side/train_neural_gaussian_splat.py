@@ -39,6 +39,9 @@ HERE = Path(__file__).resolve().parent
 REPO_ROOT = HERE.parent.parent
 if str(HERE) not in sys.path:
     sys.path.insert(0, str(HERE))
+if str(REPO_ROOT / "pc" / "pack") not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT / "pc" / "pack"))
+import sealed  # noqa: E402
 
 from mono_depth_model import (  # noqa: E402
     DEFAULT_FOV_H_DEG,
@@ -1462,6 +1465,10 @@ def train_and_evaluate_neural_3dgs(
     lr: float = 2.5e-3,
     seed: int = 20261118,
 ) -> dict[str, Any]:
+    sealed.require_final_eval(
+        [REPO_ROOT / "dataset" / "takes" / HELDOUT_TAKE_ID / "take.mp4"],
+        purpose="train_neural_gaussian_splat final held-out evaluation",
+    )
     torch.manual_seed(seed)
     np.random.seed(seed)
 

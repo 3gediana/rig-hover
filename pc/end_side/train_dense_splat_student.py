@@ -62,6 +62,10 @@ if str(HERE.parent) not in sys.path:
     sys.path.insert(0, str(HERE.parent))
 import robot_truth  # noqa: E402
 
+if str(REPO / "pc" / "pack") not in sys.path:
+    sys.path.insert(0, str(REPO / "pc" / "pack"))
+import sealed  # noqa: E402
+
 TRAIN_FOV_H_DEG = robot_truth.FOV_H_DEG
 TRAIN_H_CAM_M = robot_truth.CAM_HEIGHT_M
 _CAM_TAG = f"_f{TRAIN_FOV_H_DEG:g}_h{int(round(TRAIN_H_CAM_M * 1000))}"
@@ -427,6 +431,15 @@ def _augment_batch(x: torch.Tensor, inv_d: torch.Tensor, elev: torch.Tensor, rng
 
 
 def train_and_export() -> dict[str, Any]:
+    sealed.require_final_eval(
+        [
+            HELDOUT_CACHE_PATH,
+            REPO / "dataset" / "takes" / HELDOUT_TAKE / "take.mp4",
+            REPO / "evidence" / "sessions" / HELDOUT_SESSION / "frames",
+            REPO / "evidence" / "live" / "fov_sweep",
+        ],
+        purpose="train_dense_splat_student final held-out evaluation",
+    )
     real_tr, ho_cache, synth = build_or_load_caches()
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
