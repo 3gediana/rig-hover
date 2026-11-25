@@ -296,11 +296,12 @@ def main() -> int:
         before = len(hcache)
         walk_group(g, do_hash, hashes, hcache)
         enrich(g)
-        print(f"{g.id} {g.title[:52]:<52} files={g.n_files:>6} frames={g.n_frames:>6} {human(g.bytes()):>12} "
+        print(f"{g.id} {g.title[:52]:<52} files={g.n_files:>6} frames={g.n_frames:>6} {human(g.bytes):>12} "
               f"{'MISSING ' + str(g.missing_paths) if g.missing_paths else ''}[{time.time() - t1:.1f}s]", flush=True)
-    if do_hash:
-        hcache_path.parent.mkdir(parents=True, exist_ok=True)
-        hcache_path.write_text(json.dumps(hcache), encoding="utf-8")
+        if do_hash:
+            # saved after every group: hashing 46 GiB is the slow part and must not be repeated after an interruption
+            hcache_path.parent.mkdir(parents=True, exist_ok=True)
+            hcache_path.write_text(json.dumps(hcache), encoding="utf-8")
     dup_groups = []
     for digest, files in hashes.items():
         if len(files) > 1:
