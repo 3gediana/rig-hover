@@ -29,7 +29,7 @@
 | O-003 | 封存集隔离 + tripwire + `splits\*.json` | `pc/pack/sealed.py`、`make_splits.py`、`pc/tests/test_sealed.py` | 直接改入口参数即可回退 | E2；`sealed/manifest.json`、grep 审计 JSON、7 项 pytest | COMPLETE | mirror+sha256（250 文件 verify ok）、唯一入口+访问日志、4 个划分清单、11 个训练入口 tripwire、关闭式 grep 审计（41 文件四分处置，D-010）、回归测试改非封存夹具、unified app 默认输入改非封存；残留：派生缓存含 cb8455 特征 → F2 重构 |
 | O-004 | `sensor_domain.json` + 转换函数 + 对抗 AUC | `pc/pack/sensor_measure.py`、`sensor_domain.py`、`adversarial_auc.py` | 重跑测量脚本即重建 | E2；`canon/sensor_domain.json`、`adversarial_auc_2026-11-25.json`、7 项 pytest | COMPLETE | 实测噪声/邻像素相关/暗角/色调/JPEG 块效应；转换链 7 步带随机化；对抗 AUC：fist 1.0→0.935、palm 1.0→0.984（转换后仍可分——域差主要在内容/尺度不在噪声）；金丝雀 YuNet：真机人脸召回 1.0 vs 改造公开帧 0.93 |
 | O-005 | K-1 / K-2 / K-3 证伪结论 + `FRONTIER1_REPORT.md` | `k1_fist_transfer.py`、K-2 配对分析、`k3_desk_geometry.py` | 重跑脚本 | E2；`k1/k2/k3` JSON + `findings/FRONTIER1_REPORT.md` | COMPLETE | K-1=UX（公开特写拳全帧不迁移，AUC≈0.48 双臂）；K-2=U0/no-go（弱敲幅度合成剧毒 75.4%→36.9%）；K-3=U1-weak（平面角判决随训练规模翻转=主指标不可靠；平整度 MAD 与暗区比率跨规模一致利好合成；纯真机训越久几何越差=伪 GT 噪声过拟合） |
-| O-006 | 真机资产规范库 + 清单 | （待建） | | E4 | MISSING | 全部 |
+| O-006 | 真机资产规范库 + 清单 | `canon/assets.md/json` + `file_hashes.json` | 重跑 inventory.py | E2 | PARTIAL-strong | 27 组资产逐组登记路径/帧数/来源/许可/隐私/划分归属，逐文件 sha256；802 组重复已识别（Label Studio/早期手部图=字节级副本）未物理去重（防破坏引用）；缺：逐样本反查抽查审计 |
 | O-007 | 公开数据许可台账 + 效用分级 | `canon/public_sources.json`（12 行机器可读）+ 核实报告 | 按 JSON 执行 | E2 | COMPLETE-ledger（未下载） | 每行 URL/许可/门槛/补哪格/效用分级齐；K-1 后全部按裁剪改造重估：P12 YCB-Video（黑物格、零门槛）与 P03 IPN Hand（A2 动作线索、零门槛）优先；P05/P09 不混合条款跳过；consent_needed 行留给用户本人点击 |
 | O-008 | 合成数据生成器族 | （待建） | | E2 | MISSING | 全部 |
 | O-009 | A1 拳头/手部数据集 | （待建） | | E4 | MISSING | 全部；起点缺陷见 AUD-018（idle 类 3,097/3,098 是手势图） |

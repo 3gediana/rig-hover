@@ -524,3 +524,23 @@ D:\robot_work\COLLAB.md 和 D:\robot_work\REQUIREMENTS-FOR-TEAMMATE.md
 - 重训练一律 `pc/pack/benign.py --` 包一层（BelowNormal）
 - 不要并发跑多个 torch 训练（WinError 1455 假崩溃教训）
 - 台账：`HANDOFF-offline-sprint-2026-11-24.md`，镜像 `G:\robot_work_offload\cloud_train\LEDGER.md`，两边都要改
+
+# 2026-11-25 16:00 追加：本轮收尾状态
+
+## 本轮完成（commits → 26e3415）
+- F1 全关：O-001..O-005 COMPLETE，FRONTIER1_REPORT.md 落地
+- F2 A3 切片闭环：a3_depth_v1 足量排练 PASS（112s，synth abs_rel 0.0486，MAD 33.3mm），F2_SLICE_A3.md 落地
+- O-007 许可台账 COMPLETE-ledger：canon/public_sources.json 12 行，优先级 P12 YCB-Video（黑物格零门槛）→ P03 IPN Hand（A2 动作零门槛）
+- O-006 PARTIAL-strong：60768 条文件哈希已登记，802 重复组识别未物理去重
+- 门禁验证：sealed 1/1 PASS，sensor_domain 7/7 PASS
+
+## 下一步精确指示（按序）
+1. **GeoNet 重训（D-009）**：job 定义在 jobs/geonet_retrain_measured_cam/job.json，含 4 步改造清单——评估硬编码在封存集且 test_heldout_80.npz 缓存本身是封存派生物，必须先按 D-010 清理重设计。训练源本身已 dev-only + 实测相机合规。
+2. **A2 双敲 dev-only 重构**：旧 LOO 把 cb8455 当训练折，必须重构；弱敲走接触级标注（K-2 已判死幅度合成）。
+3. **公开数据下载**（需用户决策存储）：YCB-Video 84GiB 黑物格最优先；IPN Hand 其次。consent_needed 行必须用户本人点击。
+4. F3 Sim2Real（O-014..016）未动；渲染器深渊/光照/材质扩展（O-008）是 A3 下一增值点。
+
+## 关键教训（新）
+- K-3 平面角指标在高误差区退化——判决随训练规模翻转的教训：评估指标本身要先证可靠再当判决依据
+- 真机伪 GT（背景减除启发式）几何是错的，纯靠它训练越久越差——合成精确 GT 是当前唯一可靠监督
+- GPU 常被用户其他进程占用，训练时长估计要放宽；jobrun receipt 的 wall_s 是实测真话
