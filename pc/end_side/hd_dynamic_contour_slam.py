@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 """hd_dynamic_contour_slam.py — 统一 2.0 mm 超密纯绿色轮廓建图 + Dynablox 零残影动态分离引擎。
 
-同时支持两套可插拔 3D 几何前端（统一物理尺度 `H_cam = 0.135 m / 13.5 cm`, `FOV_H = 65.0°`）：
-1. **`HoverGeoNet240Frontend`**（本地化轻量专用网络：FP16 ~3.87 MB，RTX 5060 ~7 ms/帧，原生 240×240 不缩图）；
-2. **`MoGe2Frontend`**（微软开源大模型参考前端：419 MB，RTX 5060 ~163 ms/帧）。
+同时支持两套可插拔 3D 几何前端（相机高度 0.135 m / 13.5 cm；视场角各前端按自己的来源取）：
+1. **`HoverGeoNet240Frontend`**（本地化轻量专用网络：FP16 ~3.87 MB，RTX 5060 ~7 ms/帧，原生 240×240 不缩图；
+   相机 = 该 checkpoint 的训练相机，已发布权重为 65°，见 `GEONET_CKPT_FOV_H_DEG`）；
+2. **`MoGe2Frontend`**（微软开源大模型参考前端：419 MB，RTX 5060 ~163 ms/帧；相机 = `pc/robot_truth.json` 实测 75.5°）。
 
 核心抗残影与抗 1.16 Hz 自平衡摇摆机制（彻底解决 v6 中 `cb8455` 挥手多帧拖影问题）：
 - **Dynablox Occupied-Protected `Ever-Free` 3D 空域网格**：进入历史空域的手/人体即使悬停静止也直通实时动态层；
@@ -34,6 +35,8 @@ if str(HERE) not in sys.path:
 
 from dense_scene_pipeline import TraversabilityGrid2D  # noqa: E402
 from hd_moge_contour_engine import (  # noqa: E402
+    GEONET_CKPT_FOV_H_DEG,
+    GEONET_CKPT_H_CAM_M,
     REAL_FOV_H_DEG,
     REAL_H_CAM_M,
     MoGe2DesktopReconstructor,
@@ -67,22 +70,49 @@ _PROJ = PersistentGaussianMemoryMap(max_splats=8)
 
 
 class HoverGeoNet240Frontend:
-    """本地化 3.87 MB FP16 物理条件几何前端（支持真实 IMU 与无 IMU 自动配平双模式）。"""
+    """本地化 3.87 MB FP16 物理条件几何前端（支持真实 IMU 与无 IMU 自动配平双模式）。
+
+    相机以 checkpoint 里记录的训练相机为准（训练脚本把 `h_cam_m` / `fov_h_deg` 存进了每个权重；
+    没有这两个字段的旧权重按 0.135 m / 65° 处理）。射线栅格和桌面逆深度先验是这个模型的输入通道，
+    换一组相机参数就不再是它训练时见过的输入，所以已部署的 65° 权重必须继续按 65° 喂，
+    哪怕实测相机是 75.5°——代价是地面距离被拉伸约 21%，要消掉它只能用实测相机重训。
+    显式传入 `h_cam_m` / `fov_h_deg` 会覆盖，但与训练相机不一致时会给出警告并置 `camera_mismatch`。
+    """
 
     def __init__(
         self,
         ckpt_path: pathlib.Path | str,
         use_fp16: bool = True,
-        h_cam_m: float = REAL_H_CAM_M,
-        fov_h_deg: float = REAL_FOV_H_DEG,
+        h_cam_m: float | None = None,
+        fov_h_deg: float | None = None,
     ) -> None:
         self.ckpt_path = pathlib.Path(ckpt_path)
-        self.h_cam_m = float(h_cam_m)
-        self.fov_h_deg = float(fov_h_deg)
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.use_fp16 = bool(use_fp16 and self.device.type == "cuda")
 
         blob = torch.load(self.ckpt_path, map_location=self.device, weights_only=False)
+        ck_h, ck_f = blob.get("h_cam_m"), blob.get("fov_h_deg")
+        self.camera_source = (f"checkpoint ({self.ckpt_path.name})" if ck_f is not None
+                              else "legacy default (weights saved without a camera: 0.135 m / 65 deg)")
+        train_h = float(ck_h) if ck_h is not None else GEONET_CKPT_H_CAM_M
+        train_f = float(ck_f) if ck_f is not None else GEONET_CKPT_FOV_H_DEG
+        self.train_camera = {"h_cam_m": train_h, "fov_h_deg": train_f}
+        self.h_cam_m = float(h_cam_m) if h_cam_m is not None else train_h
+        self.fov_h_deg = float(fov_h_deg) if fov_h_deg is not None else train_f
+        self.camera_mismatch = (abs(self.h_cam_m - train_h) > 1e-6 or abs(self.fov_h_deg - train_f) > 1e-6)
+        if self.camera_mismatch:
+            print(f"WARNING HoverGeoNet240Frontend: called with camera {self.h_cam_m:.3f} m / {self.fov_h_deg:.1f} deg "
+                  f"but {self.ckpt_path.name} was trained for {train_h:.3f} m / {train_f:.1f} deg "
+                  f"({self.camera_source}); its ray and table-prior inputs no longer match its training.", flush=True)
+        # 与实体相机的差距：按 f = W / (2 tan(fov/2)) 算出的地面距离拉伸系数
+        self.robot_camera_match = (abs(self.fov_h_deg - REAL_FOV_H_DEG) < 0.5 and abs(self.h_cam_m - REAL_H_CAM_M) < 0.002)
+        self.ground_range_stretch = (math.tan(math.radians(REAL_FOV_H_DEG) / 2.0) /
+                                     math.tan(math.radians(self.fov_h_deg) / 2.0))
+        if not self.robot_camera_match:
+            print(f"WARNING HoverGeoNet240Frontend: {self.ckpt_path.name} was trained for a {self.fov_h_deg:.1f} deg camera; "
+                  f"the robot's camera measures {REAL_FOV_H_DEG:.1f} deg. Its ground ranges are off by about "
+                  f"{(self.ground_range_stretch - 1.0) * 100.0:+.0f} % on the real robot. Retrain to retire this.",
+                  flush=True)
         arch = str(blob.get("arch", "mbv3"))
         base = int(blob.get("base", 32 if arch == "vit_b1" else 24))
         in_ch = int(blob.get("in_ch", GEO_IN_CH))
@@ -157,7 +187,11 @@ class HoverGeoNet240Frontend:
 
 
 class MoGe2Frontend:
-    """微软开源 MoGe-2-ViT-B-Normal 参考前端（严格对齐 H_cam=0.135m 与 FOV=65.0°）。"""
+    """微软开源 MoGe-2-ViT-B-Normal 参考前端（相机取 pc/robot_truth.json 的实测值：H_cam=0.135 m、FOV=75.5°）。
+
+    MoGe-2 的视场角是它的输入：给定多少度，它就按多少度恢复度量尺度。所以这里必须是实测值，
+    不能沿用某个已训模型自带的相机。
+    """
 
     def __init__(self, infer_hw: int = 480, h_cam_m: float = REAL_H_CAM_M, fov_h_deg: float = REAL_FOV_H_DEG) -> None:
         self.h_cam_m = float(h_cam_m)

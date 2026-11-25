@@ -29,8 +29,8 @@ for p in (HERE, REPO / "pc" / "end_side", REPO / "pc" / "train", REPO / "pc" / "
     if str(p) not in sys.path:
         sys.path.insert(0, str(p))
 
-from link import F_PX_PER_DEG, Robot  # noqa: E402
-from controllers import GotoPoint, HeadServo, HeadingServo, HybridGaze, HybridGazeV2, pixel_to_table, wrap  # noqa: E402
+from link import Robot  # noqa: E402
+from controllers import GotoPoint, HeadServo, HeadingServo, HybridGaze, HybridGazeV2, pixel_to_table, px_to_deg, wrap  # noqa: E402
 from fist import FistDetector  # noqa: E402
 
 YUNET = REPO / "pc" / "perception" / "assets" / "face_detection_yunet_2023mar.onnx"
@@ -245,13 +245,14 @@ def main():
     # summary
     L = [json.loads(l) for l in open(out / "frames.jsonl", encoding="utf-8")]
     fx = np.array([r["face_cx"] for r in L if r["face_cx"] is not None and r["mode"] == "FACE"], dtype=float)
+    fe = np.array([px_to_deg(x - 120.0) for x in fx])   # face offset from the image centre, in degrees
     lat = np.array([r["lat_ms"] for r in L]) if L else np.array([0.0])
     summ = {"mode": a.mode, "gaze": a.gaze, "frames": len(L), "fps": round(len(L) / max(1e-3, (L[-1]["t"] if L else 1)), 1),
             "loop_latency_ms_p50": round(float(np.median(lat)), 1), "loop_latency_ms_p90": round(float(np.percentile(lat, 90)), 1),
             "face_frames": int(len(fx)), "abort": stats["abort"], "knock_fired": stats["knock"],
-            "face_err_deg_med": round(float(np.median(abs(fx - 120) / F_PX_PER_DEG)), 2) if len(fx) else None,
-            "face_err_deg_p90": round(float(np.percentile(abs(fx - 120) / F_PX_PER_DEG, 90)), 2) if len(fx) else None,
-            "face_within5deg_pct": round(float(np.mean(abs(fx - 120) / F_PX_PER_DEG < 5) * 100), 1) if len(fx) else None,
+            "face_err_deg_med": round(float(np.median(abs(fe))), 2) if len(fx) else None,
+            "face_err_deg_p90": round(float(np.percentile(abs(fe), 90)), 2) if len(fx) else None,
+            "face_within5deg_pct": round(float(np.mean(abs(fe) < 5) * 100), 1) if len(fx) else None,
             "body_travel_m": round(float(max((math.hypot(*r["odo"]) for r in L), default=0.0)), 3)}
     json.dump(summ, open(out / "summary.json", "w"), indent=1)
     print("SUMMARY", json.dumps(summ), flush=True)

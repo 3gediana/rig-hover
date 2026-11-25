@@ -35,7 +35,7 @@ if str(HERE) not in sys.path:
     sys.path.insert(0, str(HERE))
 
 from hd_dynamic_contour_slam import HoverGeoNet240Frontend  # noqa: E402
-from hd_moge_contour_engine import REAL_FOV_H_DEG, REAL_H_CAM_M  # noqa: E402
+from hd_moge_contour_engine import GEONET_CKPT_FOV_H_DEG, REAL_H_CAM_M  # noqa: E402
 from holo_contour_3dgs_engine import (  # noqa: E402
     _PROJ,
     build_holo_contour_3d_cloud,
@@ -281,11 +281,11 @@ def render_ar_robot_eye_hud(
     ar[..., 1] = np.clip(sq * 0.92 + edge * 145.0, 0, 255).astype(np.uint8)
     ar[..., 2] = np.clip(sq * 0.76 + edge * 85.0, 0, 255).astype(np.uint8)
 
-    # 使用精确相机内参 (FOV=65°, H_cam=13.5cm, pitch_deg) 将 3D 世界坐标投影回第一人称图像！
+    # 使用 checkpoint 的训练相机 (FOV=GEONET_CKPT_FOV_H_DEG, H_cam=13.5cm, pitch_deg) 将 3D 世界坐标投影回第一人称图像！
     pr = math.radians(pitch_deg)
     cp, sp = math.cos(pr), math.sin(pr)
     # 世界系 -> 相机系 (pitch 绕 Y 轴向下俯倾)
-    tan_h = math.tan(math.radians(REAL_FOV_H_DEG * 0.5))
+    tan_h = math.tan(math.radians(GEONET_CKPT_FOV_H_DEG * 0.5))
 
     def proj_cam(wx: float, wy: float, wz: float) -> tuple[int, int] | None:
         dx = wx
@@ -365,7 +365,7 @@ def render_ar_robot_eye_hud(
     cv2.rectangle(ov, (0, height - 24), (width, height), (4, 14, 8), -1)
     ar = cv2.addWeighted(ov, 0.76, ar, 0.24, 0)
     cv2.putText(ar, title, (8, 21), cv2.FONT_HERSHEY_SIMPLEX, 0.42, (200, 255, 220), 1, cv2.LINE_AA)
-    cv2.putText(ar, f"AR Projection: H_cam=13.5cm | FOV=65.0deg | Pitch={pitch_deg:+.1f}deg | Zero-Shot 3D OBB + Neural-CBF", (8, height - 8), cv2.FONT_HERSHEY_SIMPLEX, 0.36, (165, 240, 195), 1, cv2.LINE_AA)
+    cv2.putText(ar, f"AR Projection: H_cam={REAL_H_CAM_M * 100:.1f}cm | FOV={GEONET_CKPT_FOV_H_DEG:.1f}deg | Pitch={pitch_deg:+.1f}deg | Zero-Shot 3D OBB + Neural-CBF", (8, height - 8), cv2.FONT_HERSHEY_SIMPLEX, 0.36, (165, 240, 195), 1, cv2.LINE_AA)
     return ar
 
 
@@ -392,7 +392,7 @@ def build_real_4d_cb8455_memory(frontend: HoverGeoNet240Frontend) -> dict[str, A
     med_gray = np.median(stack_g, axis=0).astype(np.uint8)
     bgr_static = cv2.cvtColor(med_gray, cv2.COLOR_GRAY2BGR)
     pred_static = frontend.infer_frame(bgr_static, frames_bgr[0], pitch_deg=2.9, roll_deg=0.0, auto_level=False)
-    holo_static = build_holo_contour_3d_cloud(bgr_static, pred_static, upscale=3, h_cam_m=REAL_H_CAM_M, fov_h_deg=REAL_FOV_H_DEG, sfs_relief_mm=4.5)
+    holo_static = build_holo_contour_3d_cloud(bgr_static, pred_static, upscale=3, h_cam_m=REAL_H_CAM_M, fov_h_deg=GEONET_CKPT_FOV_H_DEG, sfs_relief_mm=4.5)
 
     # 2) 对 14 帧真实连续画面逐帧运行自研 HoverGeoNet-ViT-HD v3，抽取真实移动的 3D 手臂/拳头动态高斯层！
     dyn_frames: list[dict[str, Any]] = []
@@ -459,14 +459,14 @@ def run_jarvis_v10_surprise() -> dict[str, Any]:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     t_all = time.perf_counter()
     print("=== LAUNCHING RIG-Hover JARVIS 4D Spatial Intelligence Engine (v10) ===", flush=True)
-    frontend = HoverGeoNet240Frontend(VIT_CKPT, use_fp16=True, h_cam_m=REAL_H_CAM_M, fov_h_deg=REAL_FOV_H_DEG)
+    frontend = HoverGeoNet240Frontend(VIT_CKPT, use_fp16=True, h_cam_m=REAL_H_CAM_M, fov_h_deg=GEONET_CKPT_FOV_H_DEG)
 
     # ---- Step 1: Scene A (真实留出 empty_d0.5 桌面) ----
     jpgs = sorted(EMPTY_DIR.glob("*.jpg"))
     bgr_empty = cv2.imread(str(jpgs[45]))
     bgr_empty_prev = cv2.imread(str(jpgs[43]))
     pr_empty = frontend.infer_frame(bgr_empty, bgr_empty_prev, pitch_deg=3.0, roll_deg=0.0, auto_level=False)
-    holo_empty = build_holo_contour_3d_cloud(bgr_empty, pr_empty, upscale=3, h_cam_m=REAL_H_CAM_M, fov_h_deg=REAL_FOV_H_DEG, sfs_relief_mm=4.6)
+    holo_empty = build_holo_contour_3d_cloud(bgr_empty, pr_empty, upscale=3, h_cam_m=REAL_H_CAM_M, fov_h_deg=GEONET_CKPT_FOV_H_DEG, sfs_relief_mm=4.6)
     obbs_empty = extract_3d_metric_obbs(holo_empty["pts"], z_min_obj=0.011, z_max_obj=0.18, x_range=(0.18, 0.98), y_range=(-0.45, 0.45), max_objects=5)
     print(f"  [Scene A: empty_d0.5] {holo_empty['n_valid']:,} 3D Gaussians | Auto-detected {len(obbs_empty)} 3D OBBs (ZERO manual label):", flush=True)
     for o in obbs_empty:
@@ -486,7 +486,7 @@ def run_jarvis_v10_surprise() -> dict[str, Any]:
     print(f"  [HoverSDF-Net cb8455] MAE={sdf_cb['sdf_mae_mm']}mm, Eikonal={sdf_cb['eikonal_err']} | Neural-CBF max_turn={traj_cb['max_step_turn_deg']}deg, safe={traj_cb['safe']}", flush=True)
 
     # ---- Step 3: 模型级规划对比实测 (Neural-CBF vs Grid A* 90° Staircase on DesktopArena3D) ----
-    arena = DesktopArena3D(h_cam_m=REAL_H_CAM_M, fov_h_deg=REAL_FOV_H_DEG)
+    arena = DesktopArena3D(h_cam_m=REAL_H_CAM_M, fov_h_deg=GEONET_CKPT_FOV_H_DEG)
     pts_arena_list = []
     prev_a = None
     for si, syaw in enumerate([0.0, -18.0, -32.0, 16.0]):

@@ -169,14 +169,26 @@ class TestNeuralGaussianSplatSuite(unittest.TestCase):
         self.assertEqual(tfl_path.read_bytes(), and_tfl.read_bytes())
         self.assertEqual(jsn_path.read_bytes(), and_jsn.read_bytes())
 
+        # 相机取这个模型包自己的 model.json（已发布的 v2：0.115 m / 60°）。实测相机是 0.135 m / 75.5°
+        # （pc/robot_truth.json），但这组权重不是用它训的：在别的相机下量出的精度不是发布时那个数。
         arena = build_benchmark_exploration_arena()
-        pose = RobotCameraPose(x_m=0.0, y_m=0.0, yaw_deg=5.0, pitch_deg=3.0)
+        manifest = json.loads(jsn_path.read_text(encoding="utf-8"))
+        pose = RobotCameraPose(
+            x_m=0.0,
+            y_m=0.0,
+            z_cam_m=float(manifest["camera"]["heightM"]),
+            yaw_deg=5.0,
+            pitch_deg=3.0,
+            fov_h_deg=float(manifest["camera"]["fovHDeg"]),
+        )
         scene = render_posed_desktop_scene(arena, pose, rng=np.random.default_rng(99), grayscale=False)
         pred = infer_neural_splat_tflite(tfl_path, scene["rgb_nhwc"])
 
         gt_d = scene["depth_m"]
         gt_e = scene["elev_01"]
         abs_rel = float(np.mean(np.abs(pred["depth_m"] - gt_d) / np.maximum(gt_d, 1e-4)))
+        print(f"[INFO] hover_gaussian_splat_v2 at its training camera "
+              f"({manifest['camera']['fovHDeg']:g} deg / {manifest['camera']['heightM']:.3f} m): AbsRel {abs_rel:.4f}", flush=True)
         self.assertLess(abs_rel, 0.16, f"Expected AbsRel < 0.16, got {abs_rel:.4f}")
 
         # 验证各向异性学习：平坦桌面预测为水平宽、垂直薄的扁圆盘；立体水杯预测为高垂直半径竖椭球

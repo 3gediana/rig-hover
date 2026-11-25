@@ -45,7 +45,7 @@ from hd_dynamic_contour_slam import (  # noqa: E402
     render_hd_dual_layer_green,
 )
 from hd_moge_contour_engine import (  # noqa: E402
-    REAL_FOV_H_DEG,
+    GEONET_CKPT_FOV_H_DEG,
     REAL_H_CAM_M,
     export_ply_and_interactive_html,
     relocalize_frame_against_3d_map,
@@ -297,7 +297,7 @@ def run_part_a_and_b_real_heldout(
 def run_part_c_closed_loop_with_own_models(vit_fe: HoverGeoNet240Frontend, policy_nav: EndSidePolicyNet, policy_v3: Any = None) -> dict[str, Any]:
     """Part C: 100% 自研 HoverGeoNet-ViT-240 + 自研 PPO RL 策略 `ping_point_nav_v1` 完整闭环点击导航！"""
     print("\n=== Part C: Scenario 2 Closed-Loop Click-Nav (100% Own HoverGeoNet-ViT-240 + Own PPO RL Policy!) ===", flush=True)
-    arena = DesktopArena3D(h_cam_m=REAL_H_CAM_M, fov_h_deg=REAL_FOV_H_DEG)
+    arena = DesktopArena3D(h_cam_m=REAL_H_CAM_M, fov_h_deg=GEONET_CKPT_FOV_H_DEG)
     slam = HdDynamicContourSlamEngine(vox_size_m=0.0020, h_cam_m=REAL_H_CAM_M, obs_radius_m=0.105)
 
     # Phase 1: 4 帧起扫建图 (100% 自研 HoverGeoNet-ViT-240)
@@ -558,9 +558,9 @@ def run_part_c_closed_loop_with_own_models(vit_fe: HoverGeoNet240Frontend, polic
 def main() -> None:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     assert VIT_CKPT.exists(), f"Missing trained HoverGeoNet-ViT-240 checkpoint: {VIT_CKPT}"
-    vit_fe = HoverGeoNet240Frontend(VIT_CKPT, use_fp16=True, h_cam_m=REAL_H_CAM_M, fov_h_deg=REAL_FOV_H_DEG)
-    mbv3_fe = HoverGeoNet240Frontend(MBV3_CKPT, use_fp16=True, h_cam_m=REAL_H_CAM_M, fov_h_deg=REAL_FOV_H_DEG)
-    moge_fe = MoGe2Frontend(infer_hw=480, h_cam_m=REAL_H_CAM_M, fov_h_deg=REAL_FOV_H_DEG)
+    vit_fe = HoverGeoNet240Frontend(VIT_CKPT, use_fp16=True, h_cam_m=REAL_H_CAM_M, fov_h_deg=GEONET_CKPT_FOV_H_DEG)
+    mbv3_fe = HoverGeoNet240Frontend(MBV3_CKPT, use_fp16=True, h_cam_m=REAL_H_CAM_M, fov_h_deg=GEONET_CKPT_FOV_H_DEG)
+    moge_fe = MoGe2Frontend(infer_hw=480, h_cam_m=REAL_H_CAM_M, fov_h_deg=GEONET_CKPT_FOV_H_DEG)
     policy_nav = load_rl_policy(POLICY_NAV_CKPT)
     policy_v3 = load_fine_motion_policy_v3("cpu")
 

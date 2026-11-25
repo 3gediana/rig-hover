@@ -34,7 +34,7 @@ from hd_dynamic_contour_slam import (  # noqa: E402
     render_hd_dual_layer_green,
 )
 from hd_moge_contour_engine import (  # noqa: E402
-    REAL_FOV_H_DEG,
+    GEONET_CKPT_FOV_H_DEG,
     REAL_H_CAM_M,
     UltraDenseSurfelCloud,
     export_ply_and_interactive_html,
@@ -106,8 +106,8 @@ def measure_roi_bump(pts: np.ndarray, x_r: tuple[float, float], y_r: tuple[float
 def main() -> None:
     geo_mb = GEONET_CKPT.stat().st_size / 1048576.0
     print(f"=== HoverGeoNet-240 ({geo_mb:.2f}MB) vs MoGe-2-ViT-B (419MB) + Dynablox Zero-Ghost Benchmark ===", flush=True)
-    geo_fe = HoverGeoNet240Frontend(GEONET_CKPT, use_fp16=True, h_cam_m=REAL_H_CAM_M, fov_h_deg=REAL_FOV_H_DEG)
-    moge_fe = MoGe2Frontend(infer_hw=480, h_cam_m=REAL_H_CAM_M, fov_h_deg=REAL_FOV_H_DEG)
+    geo_fe = HoverGeoNet240Frontend(GEONET_CKPT, use_fp16=True, h_cam_m=REAL_H_CAM_M, fov_h_deg=GEONET_CKPT_FOV_H_DEG)
+    moge_fe = MoGe2Frontend(infer_hw=480, h_cam_m=REAL_H_CAM_M, fov_h_deg=GEONET_CKPT_FOV_H_DEG)
 
     scenes = [
         {
@@ -140,7 +140,7 @@ def main() -> None:
 
     W, H = 440, 330
     rows_main = []
-    metrics_all: dict[str, Any] = {"h_cam_m": REAL_H_CAM_M, "fov_h_deg": REAL_FOV_H_DEG, "scenes": {}}
+    metrics_all: dict[str, Any] = {"h_cam_m": REAL_H_CAM_M, "fov_h_deg": GEONET_CKPT_FOV_H_DEG, "scenes": {}}
     ablation_cb_panels: list[np.ndarray] = []
 
     for sc in scenes:

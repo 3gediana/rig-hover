@@ -36,7 +36,7 @@ REPO_ROOT = HERE.parent.parent
 if str(HERE) not in sys.path:
     sys.path.insert(0, str(HERE))
 
-from mono_depth_model import DEFAULT_H_CAM_M, DEPTH_MAX_M, DEPTH_MIN_M  # noqa: E402
+from mono_depth_model import RELEASED_V1_FOV_H_DEG, RELEASED_V1_H_CAM_M, DEPTH_MAX_M, DEPTH_MIN_M  # noqa: E402
 from neural_gaussian_splat_model import (  # noqa: E402
     GlobalMemoryNavigator,
     OrbitCamera3D,
@@ -320,7 +320,7 @@ def _render_3dgs_canvas(
         p_ground = mem_map.project_world_point(rx, ry, 0.005, cam, float(w), float(h))
         # 60° 视锥扇面 (0.65m)
         frust_pts = []
-        p_cam = mem_map.project_world_point(rx, ry, DEFAULT_H_CAM_M, cam, float(w), float(h))
+        p_cam = mem_map.project_world_point(rx, ry, RELEASED_V1_H_CAM_M, cam, float(w), float(h))
         if p_cam is not None:
             frust_pts.append([int(p_cam[0]), int(p_cam[1])])
             for a_off in (-30.0, -15.0, 0.0, 15.0, 30.0):
@@ -549,7 +549,7 @@ def generate_demo_video(out_mp4: Path = OUT_MP4) -> dict[str, Any]:
             # 第 1 幕：从区域 A 边走边看拓展至区域 B
             rx, ry, byaw, hq = act1_poses[f_idx]
             pitch_sim = 2.8 + 1.4 * math.sin(f_idx * 0.12)
-            pose = RobotCameraPose(x_m=rx, y_m=ry, z_cam_m=DEFAULT_H_CAM_M, yaw_deg=byaw + hq, pitch_deg=pitch_sim)
+            pose = RobotCameraPose(x_m=rx, y_m=ry, z_cam_m=RELEASED_V1_H_CAM_M, fov_h_deg=RELEASED_V1_FOV_H_DEG, yaw_deg=byaw + hq, pitch_deg=pitch_sim)
             # 每 3 帧注入一次新观测帧（等效 10Hz 深度流 + 30fps 丝滑渲染）
             if f_idx % 3 == 0 or not last_pred:
                 rendered = render_posed_desktop_scene(arena, pose, rng=rng_obs, grayscale=False, noise_std=0.007)
@@ -709,7 +709,7 @@ def generate_demo_video(out_mp4: Path = OUT_MP4) -> dict[str, Any]:
 
                     nav_out = nav_planner.navigate_closed_loop(
                         plan_map,
-                        start_pose=RobotCameraPose(x_m=rx, y_m=ry, z_cam_m=DEFAULT_H_CAM_M, yaw_deg=byaw, pitch_deg=2.5),
+                        start_pose=RobotCameraPose(x_m=rx, y_m=ry, z_cam_m=RELEASED_V1_H_CAM_M, fov_h_deg=RELEASED_V1_FOV_H_DEG, yaw_deg=byaw, pitch_deg=2.5),
                         goal_xy=ping_goal_a,
                         dt=0.045,
                         max_steps=260,
@@ -738,7 +738,7 @@ def generate_demo_video(out_mp4: Path = OUT_MP4) -> dict[str, Any]:
             hq = 0.0
             cur_pose_tuple = (rx, ry, byaw, hq)
             pitch_sim = 3.2 * math.sin(k3 * 0.16) * (1.0 if t_idx < len(act3_traj) - 8 else 0.15)
-            pose = RobotCameraPose(x_m=rx, y_m=ry, z_cam_m=DEFAULT_H_CAM_M, yaw_deg=byaw, pitch_deg=pitch_sim)
+            pose = RobotCameraPose(x_m=rx, y_m=ry, z_cam_m=RELEASED_V1_H_CAM_M, fov_h_deg=RELEASED_V1_FOV_H_DEG, yaw_deg=byaw, pitch_deg=pitch_sim)
 
             if k3 % 4 == 0:
                 rendered = render_posed_desktop_scene(arena, pose, rng=rng_obs, grayscale=False, noise_std=0.007)
@@ -796,7 +796,7 @@ def generate_demo_video(out_mp4: Path = OUT_MP4) -> dict[str, Any]:
             rgb96_real = real_frames_96[rf_idx]
             last_rgb_96 = rgb96_real
             scan_yaw = -12.0 + 24.0 * math.sin(2.0 * math.pi * k4 / max(1, n_act4))
-            pose_real = RobotCameraPose(x_m=0.003 * k4, y_m=0.0, z_cam_m=DEFAULT_H_CAM_M, yaw_deg=scan_yaw, pitch_deg=2.0)
+            pose_real = RobotCameraPose(x_m=0.003 * k4, y_m=0.0, z_cam_m=RELEASED_V1_H_CAM_M, fov_h_deg=RELEASED_V1_FOV_H_DEG, yaw_deg=scan_yaw, pitch_deg=2.0)
 
             if k4 % 2 == 0 or real_mem_map.count == 0:
                 pred, dt_ms = _infer_96(rgb96_real)

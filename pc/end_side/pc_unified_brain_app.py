@@ -53,7 +53,6 @@ from hd_dynamic_contour_slam import (  # noqa: E402
     render_hd_dual_layer_green,
 )
 from cliff_detect import detect_visual_cliff_zero_oracle  # noqa: E402
-from hd_moge_contour_engine import REAL_FOV_H_DEG, REAL_H_CAM_M  # noqa: E402
 from hover_geonet_240 import GEO_H, GEO_W  # noqa: E402
 from mono_depth_model import make_camera_ray_grid  # noqa: E402
 from neural_gaussian_splat_model import OrbitCamera3D, PersistentGaussianMemoryMap  # noqa: E402
@@ -139,8 +138,10 @@ class UnifiedRobotBrain:
                  reloc_decim: int = 2) -> None:
         ckpt = MBV3_CKPT if (use_lite_geonet or not VIT_CKPT.exists()) else VIT_CKPT
         self.geonet_ckpt = ckpt
-        self.geo_fe = HoverGeoNet240Frontend(ckpt, use_fp16=True, h_cam_m=REAL_H_CAM_M, fov_h_deg=REAL_FOV_H_DEG)
-        self.slam = HdDynamicContourSlamEngine(vox_size_m=0.0020, h_cam_m=REAL_H_CAM_M, obs_radius_m=0.095,
+        # 几何前端的相机以权重为准（checkpoint 里记录了训练相机）。射线栅格和桌面先验是这个模型的输入，
+        # 不能拿实测相机去喂按别的相机训练的权重；下方 SLAM 与悬崖射线都用前端自己解析出的相机。
+        self.geo_fe = HoverGeoNet240Frontend(ckpt, use_fp16=True)
+        self.slam = HdDynamicContourSlamEngine(vox_size_m=0.0020, h_cam_m=self.geo_fe.h_cam_m, obs_radius_m=0.095,
                                                static_decim=static_decim, async_static=True)
         self.policy_s1: EndSidePolicyNet = load_rl_policy(POLICY_S1_CKPT)
         self.policy_nav: EndSidePolicyNet = load_rl_policy(POLICY_NAV_CKPT)
@@ -200,7 +201,7 @@ class UnifiedRobotBrain:
         self._cliff_standoff_cnt: int = 0
         # 视觉悬崖本能（与 living_desktop_brain_v15 共用的零开挂检测器）：
         # APPROACH 巡航中 dist_to_rim_m < hold_m 时通过 Shield clearance=0 硬刹停 vx。
-        self.rays_cam = make_camera_ray_grid(GEO_H, GEO_W, fov_h_deg=REAL_FOV_H_DEG, pitch_deg=0.0, roll_deg=0.0)
+        self.rays_cam = make_camera_ray_grid(GEO_H, GEO_W, fov_h_deg=self.geo_fe.fov_h_deg, pitch_deg=0.0, roll_deg=0.0)
         self.cliff_hold_m: float = 0.25
         self.cliff_cone_deg: float = 45.0
         self._cliff_active: bool = False

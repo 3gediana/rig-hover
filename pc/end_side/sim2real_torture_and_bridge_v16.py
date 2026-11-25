@@ -65,7 +65,7 @@ from embodied_brain_extreme_v14 import (  # noqa: E402
 from end_side_controller import EndSideFeatureBuilder, EndSideSafetyShield  # noqa: E402
 from end_side_protocol import DriveCommand, HttpRobotClient, RobotTelemetry  # noqa: E402
 from hd_dynamic_contour_slam import HoverGeoNet240Frontend  # noqa: E402
-from hd_moge_contour_engine import REAL_FOV_H_DEG, REAL_H_CAM_M  # noqa: E402
+from hd_moge_contour_engine import GEONET_CKPT_FOV_H_DEG, REAL_H_CAM_M  # noqa: E402
 from hover_fine_motion_policy_v3 import load_fine_motion_policy_v3  # noqa: E402
 from hover_geonet_240 import GEO_H, GEO_W  # noqa: E402
 from hover_neural_sdf_cbf import plan_smooth_neural_cbf_trajectory  # noqa: E402
@@ -92,7 +92,7 @@ OUT_DIR = REPO / "runs_end_side" / "sim2real_v16"
 @dataclass
 class Sim2RealRealityCfg:
     """一组完整覆盖真实文文硬件差距的物理退化参数。"""
-    true_fov_deg: float = REAL_FOV_H_DEG  # 真实未标定 FOV (名义 65.0°)
+    true_fov_deg: float = GEONET_CKPT_FOV_H_DEG  # 真实未标定 FOV (名义 65.0°)
     pitch_mount_bias_deg: float = 0.0     # 相机相对 IMU 的机械俯仰安装偏置
     jpeg_quality: int = 85                # GC0308 JPEG 压缩质量 (真实常在 28..48)
     iso_noise_std: float = 1.5            # 夜间高 ISO 颗粒噪点标准差
@@ -118,7 +118,7 @@ class RealWorldDesktopArena3D(CliffDesktopArena3D):
     def __init__(
         self,
         h_cam_m: float = REAL_H_CAM_M,
-        true_fov_deg: float = REAL_FOV_H_DEG,
+        true_fov_deg: float = GEONET_CKPT_FOV_H_DEG,
         cliff_y_min: float | None = None,
         black_mat_rect: tuple[float, float, float, float] | None = None,
     ) -> None:
@@ -231,7 +231,7 @@ def detect_cliff_with_parallax_v16(
         g0[roi_v0:roi_v1, 16:224], g1[roi_v0:roi_v1, 16:224],
         None, pyr_scale=0.5, levels=2, winsize=11, iterations=2, poly_n=5, poly_sigma=1.1, flags=0,
     )
-    fx = (GEO_W * 0.5) / math.tan(math.radians(REAL_FOV_H_DEG * 0.5))
+    fx = (GEO_W * 0.5) / math.tan(math.radians(GEONET_CKPT_FOV_H_DEG * 0.5))
     # 减去纯相机旋转引起的刚性像素偏移，只保留纯 3D 平移深度视差！
     u_rot = -fx * dyaw_rad
     v_rot = fx * dpitch_rad
@@ -309,7 +309,7 @@ def _apply_metric3d_focal_scale_nondesk(
 ) -> np.ndarray:
     """Metric3D 焦距-深度光学不变律：对非桌面单目神经深度乘以 `f_true / f_train = tan(FOV_train/2) / tan(FOV_est/2)`，
     同时严格保持桌面像素 `z≈0` 不变，确保 `add_keyframe` 继续对 100% 桌面像素执行解析 H_cam 射线锚定！"""
-    s_f = math.tan(math.radians(REAL_FOV_H_DEG * 0.5)) / math.tan(math.radians(float(fov_used_deg) * 0.5))
+    s_f = math.tan(math.radians(GEONET_CKPT_FOV_H_DEG * 0.5)) / math.tan(math.radians(float(fov_used_deg) * 0.5))
     if abs(s_f - 1.0) <= 0.015:
         return pts_world
     is_desk_approx = (nrm_world[..., 2] > 0.78) & (np.abs(pts_world[..., 2]) < 0.030)
@@ -363,7 +363,7 @@ def autocalib_fov_and_pitch_from_yaw_sweep(
             pairs_data.append((np.asarray(p1_l, dtype=np.float64), np.asarray(p2_l, dtype=np.float64), BOOT_SCAN_YAWS[i], dyaw_meas))
 
     if not pairs_data:
-        return REAL_FOV_H_DEG, 0.0
+        return GEONET_CKPT_FOV_H_DEG, 0.0
 
     cx, cy = GEO_W * 0.5 - 0.5, GEO_H * 0.5 - 0.5
     tau2 = 2.0 * 2.0  # MSAC 截断阈值：> 2.0 px 的反光/噪声误匹配贡献恒定上界，绝不拉偏焦距与俯仰！
@@ -390,7 +390,7 @@ def autocalib_fov_and_pitch_from_yaw_sweep(
         return float(np.mean(np.concatenate(all_sq)))
 
     # 粗到细 2D 联合寻优（~30 ms，覆盖 50°..76° 宽域未标定镜头！）
-    best = (1e9, REAL_FOV_H_DEG, 0.0)
+    best = (1e9, GEONET_CKPT_FOV_H_DEG, 0.0)
     for fov_c in np.linspace(52.0, 74.0, 45):
         for pb_c in np.linspace(-4.0, 4.0, 33):
             err = _eval_candidate(float(fov_c), float(pb_c))
@@ -478,10 +478,10 @@ def run_sim2real_mission(
     if sim2real_hardened:
         fov_used, pitch_bias_boot = autocalib_fov_and_pitch_from_yaw_sweep(arena, rcfg, seed=seed + 301)
     else:
-        fov_used, pitch_bias_boot = REAL_FOV_H_DEG, 0.0
+        fov_used, pitch_bias_boot = GEONET_CKPT_FOV_H_DEG, 0.0
 
     need_own_boot = (
-        abs(rcfg.true_fov_deg - REAL_FOV_H_DEG) > 0.2
+        abs(rcfg.true_fov_deg - GEONET_CKPT_FOV_H_DEG) > 0.2
         or abs(rcfg.pitch_mount_bias_deg) > 0.2
         or abs(rcfg.light_gain - 1.0) > 0.15
         or rcfg.jpeg_quality < 50
@@ -1005,7 +1005,7 @@ def run_s5_live_esp32_http_hil(arena: RealWorldDesktopArena3D, map_pack: dict[st
     srv_t = threading.Thread(target=httpd.serve_forever, daemon=True)
     srv_t.start()
 
-    reloc = PlanarManifoldBundleRelocalizer(h_cam_m=REAL_H_CAM_M, fov_h_deg=REAL_FOV_H_DEG)
+    reloc = PlanarManifoldBundleRelocalizer(h_cam_m=REAL_H_CAM_M, fov_h_deg=GEONET_CKPT_FOV_H_DEG)
     for bk, pwk, nwk, vgk, pk in map_pack["init_kfs_v11"]:
         reloc.add_keyframe(_clahe_preprocess(bk), pwk, nwk, vgk, pk)
 
@@ -1213,17 +1213,17 @@ def main() -> None:
     torch.manual_seed(20261122); np.random.seed(20261122)
     print("=== RIG-HOVER v16 SIM2REAL REALITY TORTURE SUITE & ESP32-S3 HTTP HIL BRIDGE ===", flush=True)
 
-    geo_fe = HoverGeoNet240Frontend(V4_CKPT, use_fp16=True, h_cam_m=REAL_H_CAM_M, fov_h_deg=REAL_FOV_H_DEG)
+    geo_fe = HoverGeoNet240Frontend(V4_CKPT, use_fp16=True, h_cam_m=REAL_H_CAM_M, fov_h_deg=GEONET_CKPT_FOV_H_DEG)
     policy_v3 = load_fine_motion_policy_v3("cpu")
 
     # 初始建图使用名义桌面（标准开机 1 秒扫桌建图）
-    arena_nom = RealWorldDesktopArena3D(h_cam_m=REAL_H_CAM_M, true_fov_deg=REAL_FOV_H_DEG)
+    arena_nom = RealWorldDesktopArena3D(h_cam_m=REAL_H_CAM_M, true_fov_deg=GEONET_CKPT_FOV_H_DEG)
     map_pack = build_initial_map_and_sdf(arena_nom, geo_fe, seed=20, build_sdf=True)
 
     # --- S1: Pitch-Black Mousepad Decoy (Z=0, gray=24) + Real 72cm Cliff (Y=-0.36m) ---
     print("\n--- S1: Pitch-Black Mousepad Decoy (Z=0) vs Real 72cm Cliff (Y=-0.36m) ---", flush=True)
     mat_rect = (0.14, 0.30, -0.22, -0.02)
-    arena_s1 = RealWorldDesktopArena3D(h_cam_m=REAL_H_CAM_M, true_fov_deg=REAL_FOV_H_DEG, cliff_y_min=-0.36, black_mat_rect=mat_rect)
+    arena_s1 = RealWorldDesktopArena3D(h_cam_m=REAL_H_CAM_M, true_fov_deg=GEONET_CKPT_FOV_H_DEG, cliff_y_min=-0.36, black_mat_rect=mat_rect)
     cfg_s1 = Sim2RealRealityCfg(jpeg_quality=42, iso_noise_std=3.0, light_gain=0.92, black_mat_rect=mat_rect, cliff_y_min=-0.36)
     s1_naive = run_sim2real_mission(arena_s1, map_pack, geo_fe, policy_v3, (0.48, -0.44), cfg_s1, sim2real_hardened=False, enable_cliff_sense=True, seed=16101)
     s1_v16 = run_sim2real_mission(arena_s1, map_pack, geo_fe, policy_v3, (0.48, -0.44), cfg_s1, sim2real_hardened=True, enable_cliff_sense=True, record_frames=True, seed=16101)
@@ -1335,7 +1335,7 @@ def run_live_esp32_bridge(
     port: int = 80,
     max_steps: int = 80,
     dry_run: bool = True,
-    fov_deg: float = REAL_FOV_H_DEG,
+    fov_deg: float = GEONET_CKPT_FOV_H_DEG,
 ) -> None:
     """真机直连桥接入口（严格遵循 AGENTS.md / PROTOCOL.md：GET /status -> GET /capture -> 安全屏障 -> GET /cmd）。
     默认 `--dry-run` 只拉遥测与画面并跑视差悬崖/定位检测、不下发前进速度；确认环境安全后再加 `--arm` 上轮执行！"""

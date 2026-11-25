@@ -33,7 +33,7 @@ from hd_dynamic_contour_slam import (  # noqa: E402
     render_hd_dual_layer_green,
 )
 from hd_moge_contour_engine import (  # noqa: E402
-    REAL_FOV_H_DEG,
+    GEONET_CKPT_FOV_H_DEG,
     REAL_H_CAM_M,
     relocalize_frame_against_3d_map,
 )
@@ -53,7 +53,7 @@ FFMPEG_EXE = pathlib.Path(r"D:\claude code\ffmpeg\ffmpeg-8.0.1-essentials_build\
 class DesktopArena3D:
     """支持任意 6-DoF 相机位姿渲染逼真 240×240 GC0308 灰度画面与解析 3D 真值的桌面测试场。"""
 
-    def __init__(self, h_cam_m: float = REAL_H_CAM_M, fov_h_deg: float = REAL_FOV_H_DEG) -> None:
+    def __init__(self, h_cam_m: float = REAL_H_CAM_M, fov_h_deg: float = GEONET_CKPT_FOV_H_DEG) -> None:
         self.h_cam_m = float(h_cam_m)
         self.fov_h_deg = float(fov_h_deg)
         self.rays_cam = make_camera_ray_grid(GEO_H, GEO_W, fov_h_deg=self.fov_h_deg, pitch_deg=0.0, roll_deg=0.0)
@@ -280,12 +280,12 @@ class Visual3DLandmarkRelocalizer:
     """保存建图阶段的 3D 关键帧记忆库，在机器人任意晃动/打滑后通过 2D-3D PnP-RANSAC + KISS-ICP 锁回真实 6-DoF 位姿。
 
     关键优势（对齐生产级视觉重定位 COLMAP / ORB-SLAM3 范式）：
-    - 使用精确标定内参 (FOV=65.0°) 执行 2D 实时像素 ↔ 3D 静态地图路标 PnP-RANSAC + LM 精化，
+    - 使用 checkpoint 的训练相机内参 (FOV=GEONET_CKPT_FOV_H_DEG，已发布权重为 65°；实测相机 75.5°，见 pc/robot_truth.json) 执行 2D 实时像素 ↔ 3D 静态地图路标 PnP-RANSAC + LM 精化，
       直接由视角几何反解位姿，免疫单帧深度尺度抖动且绝不产生链式漂移；
     - 叠加物理门控 (Z_cam ∈ [0.08, 0.19]m, 单步位移连续性) 与 KISS-ICP 点到面微调。
     """
 
-    def __init__(self, static_pts: np.ndarray, static_nrms: np.ndarray, fov_h_deg: float = REAL_FOV_H_DEG) -> None:
+    def __init__(self, static_pts: np.ndarray, static_nrms: np.ndarray, fov_h_deg: float = GEONET_CKPT_FOV_H_DEG) -> None:
         self.static_pts = static_pts
         self.static_nrms = static_nrms
         self.fov_h_deg = float(fov_h_deg)
@@ -503,8 +503,8 @@ def run_scenario2_closed_loop_demo(
     out_dir.mkdir(parents=True, exist_ok=True)
 
     print(f"=== Scenario 2 Closed-Loop Visual-3D Relocalization Demo (HoverGeoNet-240: {ckpt_path.name}) ===", flush=True)
-    frontend = HoverGeoNet240Frontend(ckpt_path, use_fp16=True, h_cam_m=REAL_H_CAM_M, fov_h_deg=REAL_FOV_H_DEG)
-    arena = DesktopArena3D(h_cam_m=REAL_H_CAM_M, fov_h_deg=REAL_FOV_H_DEG)
+    frontend = HoverGeoNet240Frontend(ckpt_path, use_fp16=True, h_cam_m=REAL_H_CAM_M, fov_h_deg=GEONET_CKPT_FOV_H_DEG)
+    arena = DesktopArena3D(h_cam_m=REAL_H_CAM_M, fov_h_deg=GEONET_CKPT_FOV_H_DEG)
     slam = HdDynamicContourSlamEngine(vox_size_m=0.0020, h_cam_m=REAL_H_CAM_M, obs_radius_m=0.105)
 
     # ---------- Phase 1: 机器人起点的 4 帧小幅环视扫描构建 2.0 mm 超密纯绿色 3D 场景 ----------

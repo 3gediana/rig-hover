@@ -27,9 +27,11 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 HERE = Path(__file__).resolve().parent
-if str(HERE) not in sys.path:
-    sys.path.insert(0, str(HERE))
+for _p in (HERE, HERE.parent):
+    if str(_p) not in sys.path:
+        sys.path.insert(0, str(_p))
 
+import robot_truth  # noqa: E402  (imported for the DEFAULT_* it backs; see the note below)
 from export_tflite_bundle import (  # noqa: E402
     ACT_NONE,
     ACT_RELU6,
@@ -46,6 +48,13 @@ from mono_depth_model import (  # noqa: E402
     INV_DEPTH_MIN,
     INV_DEPTH_SPAN,
 )
+
+# 相机参数属于模型工件。v3 学生模型（runs_end_side/dense_splat_v3/model.tflite）是在 72° 视场角、
+# 0.115 m 相机高度下蒸馏出来的——当时这两个数都还是设计初值，不是实测（实测是 75.5° / 0.135 m，
+# 见 pc/robot_truth.json）。它的输入输出是按那组相机学的：处理这份权重必须用同一组参数。
+# 新训练一律用实测相机（DEFAULT_*），并把实际用到的相机随工件写进 model.json。
+STUDENT_V3_FOV_H_DEG: float = 72.0
+STUDENT_V3_H_CAM_M: float = 0.115
 
 DENSE_IN_H: int = 96
 DENSE_IN_W: int = 96
@@ -314,11 +323,17 @@ def build_dense_splat_tflite(model: HoverDenseSplatNet) -> bytes:
 def export_dense_splat_bundle(
     model: HoverDenseSplatNet,
     out_dir: str | Path,
-    fov_h_deg: float = 72.0,
+    fov_h_deg: float = DEFAULT_FOV_H_DEG,
     model_name: str = "hover-dense-splat-v3",
     version: str = "2026.11.18",
     notes: str = "Distilled 96x96->96x96x6 MobileNetV2-UNet 3D Gaussian student (<1MB, CPU real-time)",
+    h_cam_m: float | None = None,
 ) -> dict[str, Any]:
+    """导出 TFLite + model.json。
+
+    `fov_h_deg` / `h_cam_m` 必须是这份权重训练时用的相机：默认取实测值，也就是新训练所用的相机；
+    重新打包旧权重时要显式传入旧值（v3 用 `STUDENT_V3_FOV_H_DEG` / `STUDENT_V3_H_CAM_M`）。
+    """
     out_path = Path(out_dir)
     out_path.mkdir(parents=True, exist_ok=True)
     tfl_bytes = build_dense_splat_tflite(model)
@@ -341,7 +356,7 @@ def export_dense_splat_bundle(
             "invDepthSpan": DENSE_INV_DEPTH_SPAN,
             "elevThresholdM": ELEV_THRESHOLD_M,
         },
-        "camera": {"heightM": DEFAULT_H_CAM_M, "fovHDeg": float(fov_h_deg)},
+        "camera": {"heightM": DEFAULT_H_CAM_M if h_cam_m is None else float(h_cam_m), "fovHDeg": float(fov_h_deg)},
         "sha256": sha,
         "notes": notes,
     }

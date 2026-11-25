@@ -32,7 +32,7 @@ for p in (HERE, REPO / "pc" / "train", REPO / "pc" / "perception"):
     if sp not in sys.path:
         sys.path.insert(0, sp)
 
-from hd_moge_contour_engine import REAL_FOV_H_DEG, REAL_H_CAM_M  # noqa: E402
+from hd_moge_contour_engine import GEONET_CKPT_FOV_H_DEG, REAL_H_CAM_M  # noqa: E402
 from hd_dynamic_contour_slam import HoverGeoNet240Frontend  # noqa: E402
 from hover_fine_motion_policy_v3 import load_fine_motion_policy_v3  # noqa: E402
 from living_desktop_brain_v15 import (  # noqa: E402
@@ -72,9 +72,9 @@ def main() -> None:
     np.random.seed(20261123)
     print("=== v18 PURSUIT: chase & escort the runaway cup ===", flush=True)
 
-    geo_fe = HoverGeoNet240Frontend(V4_CKPT, use_fp16=True, h_cam_m=REAL_H_CAM_M, fov_h_deg=REAL_FOV_H_DEG)
+    geo_fe = HoverGeoNet240Frontend(V4_CKPT, use_fp16=True, h_cam_m=REAL_H_CAM_M, fov_h_deg=GEONET_CKPT_FOV_H_DEG)
     policy_v3 = load_fine_motion_policy_v3("cpu")
-    arena_std = CliffDesktopArena3D(h_cam_m=REAL_H_CAM_M, fov_h_deg=REAL_FOV_H_DEG, cliff_y_min=None)
+    arena_std = CliffDesktopArena3D(h_cam_m=REAL_H_CAM_M, fov_h_deg=GEONET_CKPT_FOV_H_DEG, cliff_y_min=None)
     map_pack = build_initial_map_and_sdf(arena_std, geo_fe, seed=20, build_sdf=True)
 
     results: dict[str, dict] = {}

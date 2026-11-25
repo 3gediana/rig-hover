@@ -46,7 +46,7 @@ if str(HERE) not in sys.path:
 from end_side_controller import EndSideFeatureBuilder, EndSideSafetyShield  # noqa: E402
 from end_side_protocol import DriveCommand, RobotTelemetry  # noqa: E402
 from hd_dynamic_contour_slam import HdDynamicContourSlamEngine, HoverGeoNet240Frontend  # noqa: E402
-from hd_moge_contour_engine import REAL_FOV_H_DEG, REAL_H_CAM_M  # noqa: E402
+from hd_moge_contour_engine import GEONET_CKPT_FOV_H_DEG, REAL_H_CAM_M  # noqa: E402
 from hover_fine_motion_policy_v3 import load_fine_motion_policy_v3  # noqa: E402
 from hover_geonet_240 import GEO_H, GEO_W  # noqa: E402
 from hover_neural_sdf_cbf import plan_smooth_neural_cbf_trajectory, train_hover_sdf_from_cloud  # noqa: E402
@@ -98,7 +98,7 @@ class PlanarManifoldBundleRelocalizer:
     def __init__(
         self,
         h_cam_m: float = REAL_H_CAM_M,
-        fov_h_deg: float = REAL_FOV_H_DEG,
+        fov_h_deg: float = GEONET_CKPT_FOV_H_DEG,
         img_hw: tuple[int, int] = (GEO_H, GEO_W),
     ) -> None:
         self.h_cam_m = float(h_cam_m)
@@ -572,7 +572,7 @@ def run_closed_loop_episode(
         for bk, pwk, vgk, pk in map_pack["init_kfs_v9"]:
             reloc_v9.add_keyframe(bk, pwk, vgk, pk)
     elif mode == "v11_subcm":
-        reloc_v11 = PlanarManifoldBundleRelocalizer(h_cam_m=REAL_H_CAM_M, fov_h_deg=REAL_FOV_H_DEG)
+        reloc_v11 = PlanarManifoldBundleRelocalizer(h_cam_m=REAL_H_CAM_M, fov_h_deg=GEONET_CKPT_FOV_H_DEG)
         for bk, pwk, nwk, vgk, pk in map_pack["init_kfs_v11"]:
             reloc_v11.add_keyframe(bk, pwk, nwk, vgk, pk)
 
@@ -840,11 +840,11 @@ def run_breakthrough3() -> dict[str, Any]:
     ckpt = V4_CKPT if V4_CKPT.exists() else V3_CKPT
     print(f"=== BREAKTHROUGH #3: Sub-Centimeter (<1.0cm) Zero-Odom Visual Closed-Loop Navigation ({ckpt.name}) ===", flush=True)
 
-    geo_fe = HoverGeoNet240Frontend(ckpt, use_fp16=True, h_cam_m=REAL_H_CAM_M, fov_h_deg=REAL_FOV_H_DEG)
+    geo_fe = HoverGeoNet240Frontend(ckpt, use_fp16=True, h_cam_m=REAL_H_CAM_M, fov_h_deg=GEONET_CKPT_FOV_H_DEG)
     policy_nav = load_rl_policy(POLICY_NAV_CKPT)
     policy_v3 = load_fine_motion_policy_v3("cpu")
 
-    arena = DesktopArena3D(h_cam_m=REAL_H_CAM_M, fov_h_deg=REAL_FOV_H_DEG)
+    arena = DesktopArena3D(h_cam_m=REAL_H_CAM_M, fov_h_deg=GEONET_CKPT_FOV_H_DEG)
     t0 = time.perf_counter()
     map_pack = build_initial_map_and_sdf(arena, geo_fe, seed=20, build_sdf=True)
     print(

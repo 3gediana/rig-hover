@@ -9,10 +9,11 @@
    - 站立平衡态 (`robot_state == 1`) 自动切入固件 `POST /mode?src=teacher` + 16B `/feat` 保活，
      由 167Hz 硬件控制环积分 `stable_pos += vx_mps*dt`、`stable_yaw += vyaw_dps*dt` 并锁死机身航向；
    - 手持/横放台架态 (`robot_state == 0`) 自动回退 `manual` `/cmd?stop=1&head=..`，轮子零力矩静音而头部照常平滑追随。
-2. **EM3 头部舵机 ±10.5° 库仑静摩擦死区消除 (`CalibratedGazeServo`)**：
-   - 真机实测开环 `cmd = q_des` 存在 ±10° 回差死区（MAE 5.22°）；利用 ~490Hz UDP `q_head` 实时反馈构建
+2. **EM3 头部舵机静摩擦死区消除 (`CalibratedGazeServo`)**：
+   - 真机实测开环 `cmd = q_des` 存在回差死区（站立时约 ±7°，侧躺台架上量到 ±10.2°；MAE 5.22°）；利用 ~490Hz UDP `q_head` 实时反馈构建
      带速度阻尼与方向反转泄放的条件抗饱和静摩擦预载外环，实测稳态误差降至 **1.2°**、中位超调 **0.7°**；
-   - 捕获时刻同步：`q_goal = q_head(t_capture) + s_roll * (cx - 0.5) * FOV_H`（实测 `FOV_H = 62.5°`、
+   - 捕获时刻同步：`q_goal = q_head(t_capture) + s_roll * (cx - 0.5) * FOV_H`（`FOV_H` 取 `pc/robot_truth.json` 的实测值 75.5°；
+     62.5° 是侧躺台架上的旧估计，2026-11-23 站立标定后作废。
      正立时 `+head` = 向右转头、`+cx` = 画面右侧），彻底消除通信/推理延迟引起的左右来回修正过头。
 3. **全距离人脸 + 拳头融合感知 (`FusedHandFacePerception`)**：
    - 人脸：`YuNet` 正脸主检 + `YOLO26n-pose` 鼻/眼/耳关键点兜底（侧倾/仰头/1.5m 远距不丢锁）+ 350ms 短时记忆防抖；
@@ -30,6 +31,7 @@ import collections
 import math
 import pathlib
 import struct
+import sys
 import threading
 import time
 from typing import Any
@@ -38,12 +40,19 @@ import cv2
 import numpy as np
 import requests
 
+_PC_DIR = pathlib.Path(__file__).resolve().parent.parent
+if str(_PC_DIR) not in sys.path:
+    sys.path.insert(0, str(_PC_DIR))
+
+import robot_truth  # noqa: E402
 from end_side_protocol import DriveCommand, RobotTelemetry, _clamp
 from mono_depth_model import camera_rotation_matrix
 from scenario_v2 import MODE_APPROACH, MODE_DWELL, MODE_GAZE_FACE, MODE_GAZE_FIST, MODE_IDLE
 
-CALIB_FOV_H_DEG: float = 75.5  # s2r 2026-11-23: measured upright (2.705 px/IMU-deg); 62.5 was a lying-bench estimate
-CALIB_H_CAM_M: float = 0.135
+# 机器人的实测相机，唯一来源是 pc/robot_truth.json。
+# 2026-11-23 站立标定之前这里是 62.5°（侧躺台架上的估计，偏小 17%）。
+CALIB_FOV_H_DEG: float = robot_truth.FOV_H_DEG
+CALIB_H_CAM_M: float = robot_truth.CAM_HEIGHT_M
 FEAT_HEARTBEAT_PKT: bytes = struct.pack("<HHIHHf", 0xFE01, 0, 100, 0, 0, 1.0 / 32767.0)
 
 

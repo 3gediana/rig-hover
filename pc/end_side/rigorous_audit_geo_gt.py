@@ -28,7 +28,7 @@ if str(HERE) not in sys.path:
     sys.path.insert(0, str(HERE))
 
 from hd_dynamic_contour_slam import HoverGeoNet240Frontend, MoGe2Frontend  # noqa: E402
-from hd_moge_contour_engine import REAL_FOV_H_DEG, REAL_H_CAM_M  # noqa: E402
+from hd_moge_contour_engine import GEONET_CKPT_FOV_H_DEG, REAL_H_CAM_M  # noqa: E402
 from hover_geonet_240 import GEO_H, GEO_W  # noqa: E402
 from scenario2_visual_nav_closed_loop import DesktopArena3D  # noqa: E402
 
@@ -112,10 +112,10 @@ def eval_on_exact_gt_arena(name: str, fe: Any, arena: DesktopArena3D) -> dict[st
 
 def main() -> None:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    arena = DesktopArena3D(h_cam_m=REAL_H_CAM_M, fov_h_deg=REAL_FOV_H_DEG)
+    arena = DesktopArena3D(h_cam_m=REAL_H_CAM_M, fov_h_deg=GEONET_CKPT_FOV_H_DEG)
     print("=== RIGOROUS AUDIT STAGE 4: EXACT MILLIMETER 3D GROUND-TRUTH STRUCTURE BENCHMARK ===", flush=True)
     cands = [
-        ("MoGe-2-ViT-B (419MB Teacher)", lambda: MoGe2Frontend(infer_hw=480, h_cam_m=REAL_H_CAM_M, fov_h_deg=REAL_FOV_H_DEG)),
+        ("MoGe-2-ViT-B (419MB Teacher)", lambda: MoGe2Frontend(infer_hw=480, h_cam_m=REAL_H_CAM_M, fov_h_deg=GEONET_CKPT_FOV_H_DEG)),
         ("HoverGeoNet-v3 (27MB Distilled)", lambda: HoverGeoNet240Frontend(V3_CKPT, use_fp16=True)),
         ("HoverGeoNet-MV-SelfSup v4 (27MB)", lambda: HoverGeoNet240Frontend(V4_CKPT, use_fp16=True)),
     ]

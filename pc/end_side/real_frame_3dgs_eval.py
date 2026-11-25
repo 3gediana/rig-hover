@@ -40,8 +40,8 @@ for _p in (str(HERE), str(PERCEPTION_DIR)):
 from end_side_controller import DriveCommand, EndSideSafetyShield, MODE_APPROACH  # noqa: E402
 from export_tflite_bundle import run_tflite_flatbuffer_cpu  # noqa: E402
 from mono_depth_model import (  # noqa: E402
-    DEFAULT_FOV_H_DEG,
-    DEFAULT_H_CAM_M,
+    RELEASED_V1_FOV_H_DEG,
+    RELEASED_V1_H_CAM_M,
     INPUT_C,
     INPUT_H,
     INPUT_W,
@@ -220,8 +220,10 @@ class DepthGeometryFuserPy:
     GRID_W: int = 48
     GRID_H: int = 48
     GRID_CELLS: int = 48 * 48
-    H_CAM_M: float = DEFAULT_H_CAM_M  # 0.115 m
-    FOV_DEG: float = DEFAULT_FOV_H_DEG  # 60.0 deg
+    # 相机 = 被评测的已发布 v1 模型包的训练相机（model.json: 0.115 m / 60°），Android 端用的也是这一组；
+    # 不是实测相机（pc/robot_truth.json: 0.135 m / 75.5°）。
+    H_CAM_M: float = RELEASED_V1_H_CAM_M
+    FOV_DEG: float = RELEASED_V1_FOV_H_DEG
     MIN_DEPTH_M: float = 0.20
     MAX_DEPTH_M: float = 2.40
 
@@ -509,7 +511,7 @@ class RealGaussianCloudEngine:
 
     GRID_W: int = 48
     GRID_H: int = 48
-    H_CAM_M: float = DEFAULT_H_CAM_M
+    H_CAM_M: float = RELEASED_V1_H_CAM_M
     NUM_BUCKETS: int = 256
     VOXEL_BIAS: int = 524_288
     VOXEL_MASK_20: int = 0xFFFFF
@@ -2060,7 +2062,7 @@ def run_real_dataset_3dgs_evaluation(
             d48 = fused["depth_m"]
             e48 = fused["obj_prob"]
             rz48 = fused["rays_leveled"][..., 2]
-            wz48 = DEFAULT_H_CAM_M + d48 * rz48
+            wz48 = RELEASED_V1_H_CAM_M + d48 * rz48
 
             scales.append(float(fused["median_scale"]))
             tvs.append(compute_depth_smoothness_tv(d48, e48))

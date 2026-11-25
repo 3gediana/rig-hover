@@ -67,7 +67,7 @@ from hover_geonet_240 import (  # noqa: E402
     build_robot_physics_input,
     create_hover_geonet,
 )
-from hd_moge_contour_engine import REAL_FOV_H_DEG, REAL_H_CAM_M  # noqa: E402
+from hd_moge_contour_engine import GEONET_CKPT_FOV_H_DEG, REAL_H_CAM_M  # noqa: E402
 from interval_data import IGNORE, decode_gray, frame_labels, load_intervals, load_labels, load_takes  # noqa: E402
 from train_double_knock import (  # noqa: E402
     CausalConv1d,
@@ -113,7 +113,7 @@ class BatchHoverGeoNet3DExtractor:
         # 预计算名义前倾 3.0° 射线网格与 13.5 cm 桌面先验（单次构建，全视频复用）
         dummy_g = np.zeros((GEO_H, GEO_W), dtype=np.uint8)
         x7_0, rays_0, inv_0 = build_robot_physics_input(
-            dummy_g, dummy_g, pitch_deg=3.0, roll_deg=0.0, fov_h_deg=REAL_FOV_H_DEG, h_cam_m=REAL_H_CAM_M
+            dummy_g, dummy_g, pitch_deg=3.0, roll_deg=0.0, fov_h_deg=GEONET_CKPT_FOV_H_DEG, h_cam_m=REAL_H_CAM_M
         )
         self.static_ch2_6 = x7_0[2:].copy()          # [5, H, W] (rays + inv_prior + mask)
         self.rays_t = torch.from_numpy(rays_0.transpose(2, 0, 1)).to(self.device)  # [3, H, W]

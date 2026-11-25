@@ -9,7 +9,6 @@ import numpy as np
 sys.path.insert(0, __file__.rsplit("\\", 1)[0])
 import controllers as C
 
-F = C.F_PX_PER_DEG
 
 class Plant:
     def __init__(s, Fs=15, Fk=12, b=2, J=0.1, kd=0.8, drift=-3.7, ff_err=0.0, lead_max=16.0, head_db=7.0):
@@ -46,7 +45,8 @@ def run_gaze(controller, face, Tend=16.0, plant_kw=None, seed=0, fps=14.0, lat=0
     while P.t < Tend:
         t = P.t
         if t >= next_frame:
-            cx = 120 + F * (face(t) - (P.psi + P.q)) + rng.normal(0, noise_px)
+            # pinhole camera with the robot's measured focal length, the same model the controllers invert
+            cx = 120 + C.deg_to_px(face(t) - (P.psi + P.q)) + rng.normal(0, noise_px)
             dets.append((t + lat, cx if 0 <= cx <= 240 else None, P.psi, P.q)); next_frame += 1.0 / fps
         if t >= next_cmd:
             avail = [d for d in dets if d[0] <= t]; det = max(avail, key=lambda d: d[0]) if avail else None
@@ -75,7 +75,9 @@ def make_s2r():
     return ctrl
 
 def make_devin_v25():
-    """Faithful port of real_robot_bridge.CalibratedGazeServo (FOV 62.5, head-first, body only past 34 deg)."""
+    """Faithful port of real_robot_bridge.CalibratedGazeServo as it was written for the A/B on 2026-11-23: a 62.5 deg
+    field of view, which was a guess (measured: 75.5 deg, see pc/robot_truth.json). Kept unchanged so it stays the
+    baseline it was; it is not on the real-robot path."""
     s = {"gh": [], "qf": None, "qi": 0.0, "ls": 0, "hold": 0.0, "qp": None, "tp": None, "dq": 0.0, "used": None, "vy": 0.0, "hc": 0.0}
     def ctrl(t, det, P, rng):
         if s["qp"] is not None and t - s["tp"] >= 0.004:

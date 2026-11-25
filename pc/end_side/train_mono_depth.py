@@ -3,7 +3,9 @@
 
 核心流程：
 1. 解析光线追踪 3D 桌面场景生成器 (`render_analytical_desktop_scene`)：
-   - 相机位于 `(0, 0, h_cam)`，`h_cam ~ U(0.095, 0.135) m`，`pitch ~ U(-12°, +12°)`，`roll ~ U(-6°, +6°)`；
+   - 相机位于 `(0, 0, h_cam)`，`h_cam ~ U(DEFAULT_H_CAM_M − 0.02, DEFAULT_H_CAM_M + 0.02) m`（实测相机高度 ±2 cm），
+     `pitch ~ U(-12°, +12°)`，`roll ~ U(-6°, +6°)`，视场角 = `DEFAULT_FOV_H_DEG`（两者取 `pc/robot_truth.json` 的实测值；
+     已发布的 `hover_mono_depth_v1` 是用设计初值 0.115 m / 60° 训练的，记录在它的 `model.json` 里）；
    - 带木纹/网格/桌垫/高光与接触软阴影的桌面平面 `Z = 0` + 远端背景墙 `1.6 .. 2.6 m`；
    - 1~5 个随机桌面三维前景目标：圆柱体（水杯/瓶子 `r=0.03..0.08m, h=0.08..0.20m`）、旋转长方体（书本/积木）、
      球体以及人体躯干/头部/伸手握拳三维轮廓（`0.25 .. 1.80 m`）；
@@ -238,12 +240,17 @@ def render_analytical_desktop_scene(
     force_grayscale: bool | None = None,
     fixed_pose: tuple[float, float, float] | None = None,
     custom_objects: list[dict[str, Any]] | None = None,
+    fov_h_deg: float = DEFAULT_FOV_H_DEG,
 ) -> dict[str, Any]:
-    """生成单帧 `96x96` 光线追踪桌面 RGB 图像与精确 `48x48` 物理深度 (`depth_m`) 及高程掩膜 (`elev_mask`)。"""
+    """生成单帧 `96x96` 光线追踪桌面 RGB 图像与精确 `48x48` 物理深度 (`depth_m`) 及高程掩膜 (`elev_mask`)。
+
+    `fov_h_deg` 是这台合成相机的主视场角。评测一个已训模型时要传它 `model.json` 里记录的相机
+    （`camera.fovHDeg` / `camera.heightM`）：在别的视场角下渲染的画面不是它训练时见过的画面。
+    """
     if fixed_pose is not None:
         h_cam, pitch_deg, roll_deg = float(fixed_pose[0]), float(fixed_pose[1]), float(fixed_pose[2])
     else:
-        h_cam = float(rng.uniform(0.095, 0.135))
+        h_cam = float(rng.uniform(DEFAULT_H_CAM_M - 0.02, DEFAULT_H_CAM_M + 0.02))
         pitch_deg = float(rng.uniform(-12.0, 12.0))
         roll_deg = float(rng.uniform(-6.0, 6.0))
 
@@ -339,7 +346,7 @@ def render_analytical_desktop_scene(
         rays = make_camera_ray_grid(
             height=h_px,
             width=w_px,
-            fov_h_deg=DEFAULT_FOV_H_DEG,
+            fov_h_deg=fov_h_deg,
             pitch_deg=pitch_deg,
             roll_deg=roll_deg,
         )
@@ -896,7 +903,7 @@ def render_fig6_showcase(
         real_pick = max(heldout_real_scenes, key=lambda s: float(np.sum(s["elev_mask"])))
     else:
         rng_fb = np.random.default_rng(77)
-        real_pick = render_analytical_desktop_scene(rng_fb, force_grayscale=True, fixed_pose=(0.115, 2.0, 0.0))
+        real_pick = render_analytical_desktop_scene(rng_fb, force_grayscale=True, fixed_pose=(DEFAULT_H_CAM_M, 2.0, 0.0))
 
     synth_candidates = [
         s

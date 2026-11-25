@@ -46,7 +46,7 @@ from hd_dynamic_contour_slam import (  # noqa: E402
     HoverGeoNet240Frontend,
     render_hd_dual_layer_green,
 )
-from hd_moge_contour_engine import REAL_FOV_H_DEG, REAL_H_CAM_M  # noqa: E402
+from hd_moge_contour_engine import GEONET_CKPT_FOV_H_DEG, REAL_H_CAM_M  # noqa: E402
 from holo_contour_3dgs_engine import build_holo_contour_3d_cloud, render_holo_contour_3dgs  # noqa: E402
 from hover_fine_motion_policy_v3 import load_fine_motion_policy_v3  # noqa: E402
 from interval_data import frame_labels, load_intervals, load_labels, load_takes  # noqa: E402
@@ -298,7 +298,7 @@ def run_part_b_closed_loop_scenario1(
     policy_v3: Any = None,
 ) -> dict[str, Any]:
     print("\n=== Part B: Full 5-Phase Closed-Loop Scenario 1 (100% Own Models + 1.16Hz Rocking + 22% Slip) ===", flush=True)
-    arena = DesktopArena3D(h_cam_m=REAL_H_CAM_M, fov_h_deg=REAL_FOV_H_DEG)
+    arena = DesktopArena3D(h_cam_m=REAL_H_CAM_M, fov_h_deg=GEONET_CKPT_FOV_H_DEG)
     # 场景一人脸位置（桌后方站立）与双敲目标点（桌面上鼠标右侧，绕杯可达）
     face_world = (1.12, 0.08, 0.34)
     knock_gt_xy = (0.60, -0.24)  # 真实拳头在桌上敲两下的物理坐标
@@ -325,7 +325,7 @@ def run_part_b_closed_loop_scenario1(
     cf0 = arena.render_camera(0.0, 0.0, 0.0, 3.0, -4.37, noise_seed=20)
     pr0 = geo_fe.infer_frame(cf0["bgr"], None, pitch_deg=3.0, roll_deg=-4.37, auto_level=False)
     p_k_cam = (np.array([knock_gt_xy[0], knock_gt_xy[1], 0.0], dtype=np.float32) - cf0["cam_o"]) @ cf0["R_c2w"]
-    tan_h = math.tan(math.radians(REAL_FOV_H_DEG * 0.5))
+    tan_h = math.tan(math.radians(GEONET_CKPT_FOV_H_DEG * 0.5))
     uk = int(np.clip(round((p_k_cam[1] / (p_k_cam[0] * tan_h) + 1.0) * 0.5 * 240.0), 4, 235))
     vk = int(np.clip(round((1.0 - p_k_cam[2] / (p_k_cam[0] * tan_h)) * 0.5 * 240.0), 4, 235))
     # 将手腕敲击像素与自研 HoverGeoNet-ViT-240 预测的 3D 桌面高程耦合：若该像素预测贴近桌面 (|z| < 2.5cm)，
@@ -565,7 +565,7 @@ def main() -> None:
     geo_mb = geo_ckpt.stat().st_size / 1048576.0
     print(f"=== SCENARIO 1 END-TO-END (100% OWN TRAINED MODELS | GeoNet={geo_ckpt.name} {geo_mb:.1f}MB) ===", flush=True)
 
-    geo_fe = HoverGeoNet240Frontend(geo_ckpt, use_fp16=True, h_cam_m=REAL_H_CAM_M, fov_h_deg=REAL_FOV_H_DEG)
+    geo_fe = HoverGeoNet240Frontend(geo_ckpt, use_fp16=True, h_cam_m=REAL_H_CAM_M, fov_h_deg=GEONET_CKPT_FOV_H_DEG)
     policy_s1 = load_rl_policy(POLICY_S1_CKPT)
     policy_nav = load_rl_policy(POLICY_NAV_CKPT)
     policy_v3 = load_fine_motion_policy_v3("cpu")
@@ -630,7 +630,7 @@ def main() -> None:
 
     # Panel 2: 真实 cb8455 自研 HoverGeoNet-ViT-HD v3 + HoloContour-3DGS 51.8万点照片级轮廓 3D 点云 + 真实 3D 敲击落针！
     pr_trig = geo_fe.infer_frame(va["bgr_trig"], None, pitch_deg=2.8, roll_deg=0.0, auto_level=False)
-    holo_cb = build_holo_contour_3d_cloud(va["bgr_trig"], pr_trig, upscale=3, h_cam_m=REAL_H_CAM_M, fov_h_deg=REAL_FOV_H_DEG, sfs_relief_mm=4.5)
+    holo_cb = build_holo_contour_3d_cloud(va["bgr_trig"], pr_trig, upscale=3, h_cam_m=REAL_H_CAM_M, fov_h_deg=GEONET_CKPT_FOV_H_DEG, sfs_relief_mm=4.5)
     cam_cb = OrbitCamera3D(azimuth_deg=176.0, elevation_deg=21.0, distance_m=0.60, target_x=0.45, target_y=0.00, target_z=0.05)
     callouts_cb = [
         {"xyz": tuple(part_a["knock_3d_xyz"]), "label": f"3D Knock Pin ({part_a['knock_3d_xyz'][0]:.2f},{part_a['knock_3d_xyz'][1]:.2f}m)", "offset_px": (-60, -32)},

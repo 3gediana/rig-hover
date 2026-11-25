@@ -46,7 +46,7 @@ from double_knock_data import _resample_frames_to_fps, extract_kinematics_and_en
 from end_side_controller import EndSideFeatureBuilder, EndSideSafetyShield  # noqa: E402
 from end_side_protocol import DriveCommand, RobotTelemetry  # noqa: E402
 from hd_dynamic_contour_slam import HoverGeoNet240Frontend  # noqa: E402
-from hd_moge_contour_engine import REAL_FOV_H_DEG, REAL_H_CAM_M  # noqa: E402
+from hd_moge_contour_engine import GEONET_CKPT_FOV_H_DEG, REAL_H_CAM_M  # noqa: E402
 from hover_fine_motion_policy_v3 import load_fine_motion_policy_v3  # noqa: E402
 from hover_geonet_240 import GEO_H  # noqa: E402
 from hover_neural_sdf_cbf import plan_smooth_neural_cbf_trajectory  # noqa: E402
@@ -281,7 +281,7 @@ def run_mission3_reknock_preemption(
     rng = np.random.default_rng(20261133)
     shield = EndSideSafetyShield()
     policy_v3.reset_state()
-    reloc = PlanarManifoldBundleRelocalizer(h_cam_m=REAL_H_CAM_M, fov_h_deg=REAL_FOV_H_DEG)
+    reloc = PlanarManifoldBundleRelocalizer(h_cam_m=REAL_H_CAM_M, fov_h_deg=GEONET_CKPT_FOV_H_DEG)
     for bk, pwk, nwk, vgk, pk in map_pack["init_kfs_v11"]:
         reloc.add_keyframe(bk, pwk, nwk, vgk, pk)
 
@@ -501,7 +501,7 @@ def run_mission4_sudden_obstacle_reflex(
     rng = np.random.default_rng(20261144)
     shield = EndSideSafetyShield()
     policy_v3.reset_state()
-    reloc = PlanarManifoldBundleRelocalizer(h_cam_m=REAL_H_CAM_M, fov_h_deg=REAL_FOV_H_DEG)
+    reloc = PlanarManifoldBundleRelocalizer(h_cam_m=REAL_H_CAM_M, fov_h_deg=GEONET_CKPT_FOV_H_DEG)
     for bk, pwk, nwk, vgk, pk in map_pack["init_kfs_v11"]:
         reloc.add_keyframe(bk, pwk, nwk, vgk, pk)
 
@@ -866,9 +866,9 @@ def main() -> dict[str, Any]:
 
     torch.manual_seed(20261122)
     np.random.seed(20261122)
-    geo_fe = HoverGeoNet240Frontend(V4_CKPT, use_fp16=True, h_cam_m=REAL_H_CAM_M, fov_h_deg=REAL_FOV_H_DEG)
+    geo_fe = HoverGeoNet240Frontend(V4_CKPT, use_fp16=True, h_cam_m=REAL_H_CAM_M, fov_h_deg=GEONET_CKPT_FOV_H_DEG)
     policy_v3 = load_fine_motion_policy_v3("cpu")
-    arena = DesktopArena3D(h_cam_m=REAL_H_CAM_M, fov_h_deg=REAL_FOV_H_DEG)
+    arena = DesktopArena3D(h_cam_m=REAL_H_CAM_M, fov_h_deg=GEONET_CKPT_FOV_H_DEG)
     map_pack = build_initial_map_and_sdf(arena, geo_fe, seed=20, build_sdf=True)
 
     m3 = run_mission3_reknock_preemption(arena, map_pack, geo_fe, policy_v3)

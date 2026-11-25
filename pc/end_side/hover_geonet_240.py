@@ -35,10 +35,18 @@ HERE = pathlib.Path(__file__).resolve().parent
 if str(HERE) not in sys.path:
     sys.path.insert(0, str(HERE))
 
+if str(HERE.parent) not in sys.path:
+    sys.path.insert(0, str(HERE.parent))
+
+import robot_truth  # noqa: E402
 from mono_depth_model import camera_rotation_matrix, make_camera_ray_grid  # noqa: E402
 
 # ---------------------------------------------------------------------------
-# 物理常量（按用户实测 13.5 cm 摄像头离地高度 + MoGe-2 实测 ~65° FOV 标定）
+# 物理常量：机器人相机的实测值，来自 pc/robot_truth.json（13.5 cm 相机高度、75.5° 水平视场角）。
+# 这里的值是各函数的默认值，也就是新一次训练所用的相机。
+# 已部署的权重是按旧值 65° 训练的（65° 是 MoGe-2 从画面内容猜的，不是量出来的）：加载旧权重的前端
+# 以 checkpoint 里记录的相机为准（见 hd_dynamic_contour_slam.HoverGeoNet240Frontend），不要把这里的
+# 默认值喂给旧权重——射线和桌面先验是模型的输入，换了相机就不再是它学过的输入。
 # ---------------------------------------------------------------------------
 
 GEO_H: int = 240
@@ -46,8 +54,8 @@ GEO_W: int = 240
 GEO_IN_CH: int = 7
 GEO_OUT_CH: int = 5
 
-REAL_H_CAM_M: float = 0.135       # 用户实测摄像头光心到桌面高度 = 13.5 cm
-REAL_FOV_H_DEG: float = 65.0      # MoGe-2 跨多场景反推实测均值 ~64.5°
+REAL_H_CAM_M: float = robot_truth.CAM_HEIGHT_M   # 用户实测摄像头光心到桌面高度 = 13.5 cm
+REAL_FOV_H_DEG: float = robot_truth.FOV_H_DEG    # 实测水平视场角 = 75.5°（2026-11-23 转头标定）
 DEPTH_MIN_M: float = 0.12         # 最近有效距离 12 cm
 DEPTH_MAX_M: float = 3.00         # 最远有效距离 3.0 m
 INV_D_MIN: float = 1.0 / DEPTH_MAX_M   # 0.3333 m^-1

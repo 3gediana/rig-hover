@@ -2,7 +2,7 @@
 """mono_depth_model.py — RIG-Hover 单目尺度深度与桌面凸起障碍物联合估计网络及 TFLite 导出器。
 
 针对桌面自平衡机器人 RIG-Hover 单目头部相机（240x240 采集 -> 96x96 归一化输入，
-相机离桌面高度 h_cam = 0.115 m，水平视场角 FOV_H = 60°）设计：
+相机离桌面高度与水平视场角取 pc/robot_truth.json 的实测值）设计：
 1. 输入张量 (`rgb_in`): `[1, 96, 96, 3]` float32，值域 `[0.0, 1.0]`（兼容彩色与 GC0308 三通道灰度流）。
 2. 输出张量 (`depth_elev_out`): `[1, 48, 48, 2]` float32，值域 `(0.0, 1.0)`（末端 Sigmoid / LOGISTIC）：
    - 通道 0 (`inv_depth_01`)：归一化逆深度，映射为物理尺度深度（米）：
@@ -31,9 +31,11 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 HERE = Path(__file__).resolve().parent
-if str(HERE) not in sys.path:
-    sys.path.insert(0, str(HERE))
+for _p in (HERE, HERE.parent):
+    if str(_p) not in sys.path:
+        sys.path.insert(0, str(_p))
 
+import robot_truth  # noqa: E402
 from export_tflite_bundle import (  # noqa: E402
     ACT_NONE,
     ACT_RELU,
@@ -66,9 +68,18 @@ INV_DEPTH_MAX: float = INV_DEPTH_MIN + INV_DEPTH_SPAN  # 4.50 m^-1
 DEPTH_MIN_M: float = 1.0 / INV_DEPTH_MAX  # ~0.222222 m
 DEPTH_MAX_M: float = 1.0 / INV_DEPTH_MIN  # ~2.857143 m
 
-DEFAULT_H_CAM_M: float = 0.115
-DEFAULT_FOV_H_DEG: float = 60.0
+# 机器人的实测相机（pc/robot_truth.json）。2026-11-25 之前这里是设计初值 0.115 m / 60°：
+# 按旧初值训出来的权重要用旧初值加载，新训练一律用这里的值。
+DEFAULT_H_CAM_M: float = robot_truth.CAM_HEIGHT_M
+DEFAULT_FOV_H_DEG: float = robot_truth.FOV_H_DEG
 ELEV_THRESHOLD_M: float = 0.03
+
+# Camera the released v1 bundles were trained with: runs_end_side/mono_depth/hover_mono_depth_v1 (also copied into
+# the Android assets) and runs_end_side/neural_3dgs/hover_gaussian_splat_v2. Both record it in their model.json.
+# Code that loads those bundles uses this pair, never DEFAULT_*: at the measured camera they are a different model
+# from the one whose accuracy was reported (2026-11-25: mono depth v1 AbsRel 0.234 at 75.5 deg / 0.135 m, from < 0.15).
+RELEASED_V1_H_CAM_M: float = 0.115
+RELEASED_V1_FOV_H_DEG: float = 60.0
 
 
 def inv_depth_01_to_metric_m(inv_depth_01: torch.Tensor | np.ndarray | float) -> Any:

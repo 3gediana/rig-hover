@@ -9,8 +9,11 @@
    - **严格留出测试集 (Held-Out Test, 80 帧)**：`empty_d0.5_front_night_182201`（40 帧，鼠标+键盘+显示器+暗光桌面）与
      `robot_20261115_151733_cb8455`（40 帧，水杯+笔记本+挥动手臂），**全程绝不参与梯度更新或模型挑选**！
 2. **精确物理尺度对齐**：
-   - 使用用户实测相机离桌高度 `REAL_H_CAM_M = 0.135 m (13.5 cm)` + 锁定 `MoGe-2` `fov_x = 65.0°`，
+   - 使用用户实测相机离桌高度 `REAL_H_CAM_M = 0.135 m (13.5 cm)` + 相机视场角 `REAL_FOV_H_DEG`（取 `pc/robot_truth.json`），
      已验证 `MoGe-2` 与 `HoverGeoNet-240` 射线反投影误差 `median = 0.000 mm, max = 0.001 mm`！
+   - **2026-11-25 起 `REAL_FOV_H_DEG` 是实测值 75.5°**（此前这里写的是 MoGe-2 按画面内容猜的 65.0°，不是测量值）。
+     `runs_end_side` 里已发布的权重（v3 / ViT-B）是用 65° 蒸馏的，记录在各 `.pt` 的 `fov_h_deg` 字段里，
+     评测脚本改用 `GEONET_CKPT_FOV_H_DEG`；本脚本重训会得到 75.5° 的新权重，缓存目录名带相机参数，不会混用。
 3. **微凸起与 90° 折痕定向加权蒸馏**：
    - 对高度 `8 mm ~ 16 cm` 的桌面微物体（鼠标、手机、键盘）及法向折痕处施加重权重，
      结合多尺度深度梯度损失 + 法向余弦/折痕梯度损失 + 几何法向一致性约束 + 真机 1.16 Hz IMU 噪声鲁棒增强。
@@ -38,6 +41,7 @@ if str(HERE) not in sys.path:
     sys.path.insert(0, str(HERE))
 
 from hd_moge_contour_engine import (  # noqa: E402
+    GEONET_CKPT_FOV_H_DEG,
     MoGe2DesktopReconstructor,
     level_and_scale_desktop_cloud,
 )
@@ -62,8 +66,14 @@ from hover_geonet_240 import (  # noqa: E402
 )
 from mono_depth_model import camera_rotation_matrix, make_camera_ray_grid  # noqa: E402
 
-CACHE_DIR = REPO / "pc" / "bench" / "_teacher_cache" / "geonet240_h135"
-OUT_DIR = REPO / "runs_end_side" / "hover_geonet_240"
+# Teacher caches depend on the camera (MoGe is told the field of view, synthetic scenes are rendered through it),
+# so the folder name carries it. `geonet240_h135_f65` holds the caches of the released 65 deg weights.
+_CAM_TAG = f"h{int(round(REAL_H_CAM_M * 1000))}_f{REAL_FOV_H_DEG:g}"
+CACHE_DIR = REPO / "pc" / "bench" / "_teacher_cache" / f"geonet240_{_CAM_TAG}"
+# Weights trained with another camera go to their own folder: the released ones in runs_end_side/hover_geonet_240
+# are the 65 deg weights that the experiment scripts and the gates load by name.
+_OUT_NAME = "hover_geonet_240" if abs(REAL_FOV_H_DEG - GEONET_CKPT_FOV_H_DEG) < 1e-6 else f"hover_geonet_240_{_CAM_TAG}"
+OUT_DIR = REPO / "runs_end_side" / _OUT_NAME
 
 
 # ---------------------------------------------------------------------------

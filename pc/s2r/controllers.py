@@ -16,10 +16,30 @@ Design rules here:
 from __future__ import annotations
 
 import math
+import sys
+from pathlib import Path
 
 import numpy as np
 
-F_PX_PER_DEG = 2.705
+_PC = Path(__file__).resolve().parents[1]
+if str(_PC) not in sys.path:
+    sys.path.insert(0, str(_PC))
+import robot_truth  # noqa: E402
+
+# Camera geometry of the real robot, from pc/robot_truth.json: 240 px across a 75.5 deg field of view.
+F_PX_PER_DEG = robot_truth.PX_PER_DEG   # px per degree at the image centre (the small-angle scale)
+F_PX = robot_truth.F_PX                 # focal length in px - the scale that is valid across the whole image
+
+
+def px_to_deg(px: float) -> float:
+    """Offset from the image centre (px) -> camera angle (deg). Pinhole form: equals px / F_PX_PER_DEG near the
+    centre and stays right out to the edge, where the linear scale is 17 % off."""
+    return math.degrees(math.atan2(float(px), F_PX))
+
+
+def deg_to_px(deg: float) -> float:
+    """Camera angle (deg) -> offset from the image centre (px). Inverse of px_to_deg."""
+    return F_PX * math.tan(math.radians(float(deg)))
 
 
 def wrap(a: float) -> float:
@@ -87,7 +107,7 @@ class BodyGaze:
     def update(self, t: float, cx_px: float | None, psi_wheel_cap: float, q_cap: float, q_now: float,
                psi_wheel_now: float) -> float | None:
         if cx_px is not None:
-            err = (float(cx_px) - 120.0) / F_PX_PER_DEG
+            err = px_to_deg(float(cx_px) - 120.0)
             face_dir = psi_wheel_cap + q_cap + err          # camera = body + head
             self.hist = (self.hist + [face_dir])[-3:]
             fd = float(np.median(self.hist))
@@ -149,7 +169,7 @@ class GotoPoint:
         return vx, vy, {"phase": "drive", "dist": round(dist, 3), "along": round(along, 3), "vx": round(vx, 4)}
 
 
-def pixel_to_table(u: float, v: float, pitch_cam_deg: float, h_cam: float = 0.135, f_px: float = F_PX_PER_DEG * 57.2958,
+def pixel_to_table(u: float, v: float, pitch_cam_deg: float, h_cam: float = robot_truth.CAM_HEIGHT_M, f_px: float = F_PX,
                    cx: float = 120.0, cy: float = 120.0) -> tuple[float, float] | None:
     """Flat-table projection (camera frame: x fwd, y left). Returns None above the horizon/too far.
     pitch_cam_deg: optical-axis tilt below horizontal (positive = looking down)."""
@@ -163,10 +183,10 @@ def pixel_to_table(u: float, v: float, pitch_cam_deg: float, h_cam: float = 0.13
 
 class HeadServo:
     """Port of real_robot_bridge.CalibratedGazeServo head path (stiction preload + absolute exposure-time goal),
-    with the measured FOV (75.5 deg, not 62.5). Body turning is delegated to HybridGaze."""
+    with the measured camera geometry from pc/robot_truth.json. Body turning is delegated to HybridGaze."""
 
-    def __init__(self, fov_h_deg: float = 240.0 / F_PX_PER_DEG, head_max: float = 30.0, center_tol: float = 0.022):
-        self.fov, self.head_max, self.center_tol = fov_h_deg, head_max, center_tol
+    def __init__(self, head_max: float = 30.0, center_tol: float = 0.022):
+        self.fov, self.head_max, self.center_tol = robot_truth.FOV_H_DEG, head_max, center_tol
         self.gh: list[float] = []; self.qf = None; self.qi = 0.0; self.ls = 0; self.hold = 0.0
         self.qp = None; self.tp = None; self.dq = 0.0
 
@@ -179,7 +199,7 @@ class HeadServo:
     def step(self, t: float, cx_px: float, q_cap: float, q_now: float, dt: float) -> float:
         self.vel(q_now, t)
         cx_err = cx_px / 240.0 - 0.5
-        qg = q_cap + cx_err * self.fov
+        qg = q_cap + px_to_deg(cx_px - 120.0)
         self.gh = (self.gh + [qg])[-3:]; qm = float(np.median(self.gh))
         a = 0.62 if (self.qf is not None and abs(qm - self.qf) > 6) else 0.34
         self.qf = qm if self.qf is None else (1 - a) * self.qf + a * qm
@@ -215,7 +235,7 @@ class HybridGaze:
         if det is not None and det[0] is not None and new_det:
             cx, psi_cap, q_cap = det
             self.head_cmd = self.head.step(t, cx, q_cap, q_now, dt)
-            cam_dir = psi_cap + q_cap + (cx - 120.0) / F_PX_PER_DEG
+            cam_dir = psi_cap + q_cap + px_to_deg(cx - 120.0)
             want_body = cam_dir                           # face the person with head at 0
             if self.body_target is None:
                 self.body_target = psi_w
@@ -244,7 +264,7 @@ class HybridGazeV2(HybridGaze):
             cx, psi_cap, q_cap = det
             self._base_head = self.head.step(t, cx, q_cap, q_now, dt)
             self.psi_at_cmd = psi_cap
-            cam_dir = psi_cap + q_cap + (cx - 120.0) / F_PX_PER_DEG
+            cam_dir = psi_cap + q_cap + px_to_deg(cx - 120.0)
             head_reach = 28.0   # measured upright reach +32.7/-36.9 deg, keep margin
             settled = (abs(self.head.dq) < 6.0 and abs(cx - 120.0) < 14.0) or abs(q_cap) >= head_reach or abs(wrap(cam_dir - psi_cap)) > head_reach
             if self.body_target is None:

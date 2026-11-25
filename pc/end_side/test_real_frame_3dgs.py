@@ -100,7 +100,7 @@ class TestRealFrame3DGSSuite(unittest.TestCase):
         uu, vv = np.meshgrid(u_1d, v_1d)
         rays = DepthGeometryFuserPy.camera_ray_to_leveled_frame(uu, vv, pitch_deg=0.0, roll_deg=0.0)
         rz = rays[..., 2]
-        true_plane = np.where(rz < -1e-3, np.clip(-0.115 / np.where(rz < -1e-3, rz, -1.0), 0.20, 2.40), 2.40)
+        true_plane = np.where(rz < -1e-3, np.clip(-DepthGeometryFuserPy.H_CAM_M / np.where(rz < -1e-3, rz, -1.0), 0.20, 2.40), 2.40)
 
         for scale_bias in (1.45, 0.74):
             unscaled_d = true_plane / scale_bias
@@ -125,7 +125,7 @@ class TestRealFrame3DGSSuite(unittest.TestCase):
                 pred = self.runner.infer_rgb96(rgb96)
                 fused = DepthGeometryFuserPy.fuse_frame_to_48x48(r48, pred["inv_depth_01"], pred["elev_prob_01"])
                 scales.append(fused["median_scale"])
-                wz = 0.115 + fused["depth_m"] * fused["rays_leveled"][..., 2]
+                wz = DepthGeometryFuserPy.H_CAM_M + fused["depth_m"] * fused["rays_leveled"][..., 2]
                 fg_z = float(np.median(wz[fused["obj_prob"] >= 0.50]))
                 bg_z = float(np.median(wz[(fused["obj_prob"] < 0.25) & (np.arange(48)[:, None] >= 26)]))
                 lifts.append(fg_z - bg_z)

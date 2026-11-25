@@ -110,6 +110,12 @@ SUITES = [
     ("s2r", "sim2real controllers on identified plant + guarded session (33 gates)", rf"{W}\pc\s2r",
      ["-m", "pytest", "test_s2r.py", "test_guarded_session.py", "test_session_on_mock.py", "-q",
       "-p", "no:cacheprovider"], False),
+    # 2026-11-25 takeover audit (frontier 1): the robot's measured numbers in pc/robot_truth.json are the single
+    # source. Every fact is attributed; the s2r runtime's constants equal the file; released weights are loaded with
+    # the camera recorded in them; no trainer starts from a released model's camera; and every field of view or
+    # camera height under pc/ and the firmware has a disposition (const_scan.py --check exits 0).
+    ("truth", "robot truth file + camera-constant scan (16 gates)", rf"{W}",
+     ["-m", "pytest", r"pc\tests\test_robot_truth.py", "-q", "-p", "no:cacheprovider"], False),
 ]
 
 FAIL_LINE_RE = re.compile(r"(?m)^\s*\[?(?:FAIL|FAILED)\b")

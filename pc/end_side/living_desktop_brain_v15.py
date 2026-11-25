@@ -74,7 +74,7 @@ from embodied_brain_extreme_v14 import (  # noqa: E402
 from end_side_controller import EndSideFeatureBuilder, EndSideSafetyShield  # noqa: E402
 from end_side_protocol import DriveCommand, RobotTelemetry  # noqa: E402
 from hd_dynamic_contour_slam import HoverGeoNet240Frontend  # noqa: E402
-from hd_moge_contour_engine import REAL_FOV_H_DEG, REAL_H_CAM_M  # noqa: E402
+from hd_moge_contour_engine import GEONET_CKPT_FOV_H_DEG, REAL_H_CAM_M  # noqa: E402
 from hover_fine_motion_policy_v3 import load_fine_motion_policy_v3  # noqa: E402
 from hover_geonet_240 import GEO_H, GEO_W  # noqa: E402
 from hover_neural_sdf_cbf import plan_smooth_neural_cbf_trajectory  # noqa: E402
@@ -97,7 +97,7 @@ OUT_DIR = REPO / "runs_end_side" / "living_brain_v15"
 class CliffDesktopArena3D(DesktopArena3D):
     """在标准桌面测试场右侧 (`y < cliff_y_min`) 增加真实 72cm 悬崖落差（光线越过桌沿直接照向暗色地面！）。"""
 
-    def __init__(self, h_cam_m: float = REAL_H_CAM_M, fov_h_deg: float = REAL_FOV_H_DEG, cliff_y_min: float | None = None) -> None:
+    def __init__(self, h_cam_m: float = REAL_H_CAM_M, fov_h_deg: float = GEONET_CKPT_FOV_H_DEG, cliff_y_min: float | None = None) -> None:
         super().__init__(h_cam_m=h_cam_m, fov_h_deg=fov_h_deg)
         self.cliff_y_min = cliff_y_min
 
@@ -400,7 +400,7 @@ def run_living_brain_episode(
     rng = np.random.default_rng(seed)
     shield = EndSideSafetyShield()
     policy_v3.reset_state()
-    reloc = PlanarManifoldBundleRelocalizer(h_cam_m=REAL_H_CAM_M, fov_h_deg=REAL_FOV_H_DEG)
+    reloc = PlanarManifoldBundleRelocalizer(h_cam_m=REAL_H_CAM_M, fov_h_deg=GEONET_CKPT_FOV_H_DEG)
     for bk, pwk, nwk, vgk, pk in map_pack["init_kfs_v11"]:
         reloc.add_keyframe(bk, pwk, nwk, vgk, pk)
 
@@ -1480,16 +1480,16 @@ def main() -> None:
     np.random.seed(20261122)
     print("=== HOVER LIVING MIND v15: 4 EXTREME ZERO-ORACLE LIVING DESKTOP PET BEHAVIORS ===", flush=True)
 
-    geo_fe = HoverGeoNet240Frontend(V4_CKPT, use_fp16=True, h_cam_m=REAL_H_CAM_M, fov_h_deg=REAL_FOV_H_DEG)
+    geo_fe = HoverGeoNet240Frontend(V4_CKPT, use_fp16=True, h_cam_m=REAL_H_CAM_M, fov_h_deg=GEONET_CKPT_FOV_H_DEG)
     policy_v3 = load_fine_motion_policy_v3("cpu")
 
     # 标准无悬崖桌面 + 悬崖桌面共享相同桌面初始路标与静态 SDF
-    arena_std = CliffDesktopArena3D(h_cam_m=REAL_H_CAM_M, fov_h_deg=REAL_FOV_H_DEG, cliff_y_min=None)
+    arena_std = CliffDesktopArena3D(h_cam_m=REAL_H_CAM_M, fov_h_deg=GEONET_CKPT_FOV_H_DEG, cliff_y_min=None)
     map_pack = build_initial_map_and_sdf(arena_std, geo_fe, seed=20, build_sdf=True)
 
     # --- L1: Visual Cliff Survival & Edge-Refusal Head-Shake ---
     print("\n--- L1: Visual Cliff Survival & Edge-Refusal Head-Shake (Suicidal Knock Past Y=-0.36m!) ---", flush=True)
-    arena_cliff = CliffDesktopArena3D(h_cam_m=REAL_H_CAM_M, fov_h_deg=REAL_FOV_H_DEG, cliff_y_min=-0.36)
+    arena_cliff = CliffDesktopArena3D(h_cam_m=REAL_H_CAM_M, fov_h_deg=GEONET_CKPT_FOV_H_DEG, cliff_y_min=-0.36)
     l1_base = run_living_brain_episode(arena_cliff, map_pack, geo_fe, policy_v3, (0.46, -0.44), enable_cliff_instinct=False, record_frames=False, seed=15101)
     l1_v15 = run_living_brain_episode(arena_cliff, map_pack, geo_fe, policy_v3, (0.46, -0.44), enable_cliff_instinct=True, record_frames=True, seed=15101)
     print(f"  [No Cliff Sense] fell={l1_base['fell_off_cliff']} | min_margin={l1_base['min_cliff_margin_cm']}cm", flush=True)

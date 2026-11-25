@@ -55,6 +55,17 @@ from neural_gaussian_splat_model import (  # noqa: E402
 )
 from train_mono_depth import render_analytical_desktop_scene  # noqa: E402
 
+# 新训练用机器人的实测相机（pc/robot_truth.json）。v3 学生模型是用 72° / 0.115 m 蒸馏的——当时这两个数
+# 还是设计初值；那份权重的缓存文件名不带相机后缀，保持原样留给它。缓存文件名带相机标签，
+# 所以换相机后不会误用旧几何下算出的教师标签。
+if str(HERE.parent) not in sys.path:
+    sys.path.insert(0, str(HERE.parent))
+import robot_truth  # noqa: E402
+
+TRAIN_FOV_H_DEG = robot_truth.FOV_H_DEG
+TRAIN_H_CAM_M = robot_truth.CAM_HEIGHT_M
+_CAM_TAG = f"_f{TRAIN_FOV_H_DEG:g}_h{int(round(TRAIN_H_CAM_M * 1000))}"
+
 TRAIN_TAKES = [
     "robot_20261107_204337_5ca36d",
     "robot_20261107_212119_67f0c1",
@@ -68,16 +79,16 @@ EXTRA_TRAIN_VIDEOS = [
 HELDOUT_TAKE = "robot_20261115_151733_cb8455"
 HELDOUT_SESSION = "empty_d0.5_front_night_182201"
 
-TEACHER_CACHE_PATH = CACHE_DIR / "real_distill_train_v3.npz"
-HELDOUT_CACHE_PATH = CACHE_DIR / "real_distill_heldout_v3.npz"
-SYNTH_CACHE_PATH = CACHE_DIR / "synth_96x96_cache_v3.npz"
+TEACHER_CACHE_PATH = CACHE_DIR / f"real_distill_train_v3{_CAM_TAG}.npz"
+HELDOUT_CACHE_PATH = CACHE_DIR / f"real_distill_heldout_v3{_CAM_TAG}.npz"
+SYNTH_CACHE_PATH = CACHE_DIR / f"synth_96x96_cache_v3{_CAM_TAG}.npz"
 RUN_DIR = REPO / "runs_end_side" / "dense_splat_v3"
 
 
 class OfflineCalibratedTeacher:
     """PC 端离线标注教师：Depth-Anything-V2-Small + YOLOE Z=0 桌面 RANSAC 尺度校准。"""
 
-    def __init__(self, fov_est_deg: float = 72.0):
+    def __init__(self, fov_est_deg: float = TRAIN_FOV_H_DEG):
         sys.path.insert(0, str(CACHE_DIR / "Depth-Anything-V2-main"))
         from depth_anything_v2.dpt import DepthAnythingV2
         from ultralytics import YOLOE
@@ -274,7 +285,7 @@ def build_or_load_caches() -> tuple[dict[str, np.ndarray], dict[str, np.ndarray]
 
     t0 = time.perf_counter()
     print("正在使用 Depth-Anything-V2-Small + YOLOE Z=0 标定离线生成真实蒸馏缓存（仅在 PC 运行）...", flush=True)
-    teacher = OfflineCalibratedTeacher(fov_est_deg=72.0)
+    teacher = OfflineCalibratedTeacher(fov_est_deg=TRAIN_FOV_H_DEG)
 
     tr_rgb, tr_inv, tr_elev, tr_src = [], [], [], []
     # 1) 训练 takes
@@ -541,7 +552,7 @@ def train_and_export() -> dict[str, Any]:
 
     # 导出部署包
     RUN_DIR.mkdir(parents=True, exist_ok=True)
-    bundle_res = export_dense_splat_bundle(model, RUN_DIR, fov_h_deg=72.0)
+    bundle_res = export_dense_splat_bundle(model, RUN_DIR, fov_h_deg=TRAIN_FOV_H_DEG, h_cam_m=TRAIN_H_CAM_M)
     torch.save({
         "model_name": "hover-dense-splat-v3",
         "version": "2026.11.18",

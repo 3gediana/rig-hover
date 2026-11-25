@@ -36,18 +36,31 @@ import torch
 HERE = pathlib.Path(__file__).resolve().parent
 REPO = HERE.parent.parent
 CACHE_DIR = REPO / "pc" / "bench" / "_teacher_cache"
-for p in (HERE, CACHE_DIR / "utils3d-moge", CACHE_DIR / "MoGe"):
+for p in (HERE, REPO / "pc", CACHE_DIR / "utils3d-moge", CACHE_DIR / "MoGe"):
     sp = str(p)
     if sp not in sys.path:
         sys.path.insert(0, sp)
 
+import robot_truth  # noqa: E402
 from mono_depth_model import DEFAULT_H_CAM_M  # noqa: E402
 from neural_gaussian_splat_model import OrbitCamera3D, PersistentGaussianMemoryMap  # noqa: E402
 from robust_contour_slam import KissIcpStaticAligner  # noqa: E402
 
-# 用户实测物理真值：机器人摄像头光心到桌面高度 = 13.5 cm (0.135 m)
-REAL_H_CAM_M = 0.135
-REAL_FOV_H_DEG = 65.0
+# The physical robot's camera, read from pc/robot_truth.json: height measured standing on the desk, field of
+# view measured by turning the head and the body against the IMU.
+# Until 2026-11-25 the field of view here was 65.0: the value MoGe-2 guesses from image content, not a
+# measurement. With a 65 deg hint MoGe's metric scale comes out about 21 % too large on this camera, so every
+# ground distance this chain produced on the real robot was stretched by about that factor.
+REAL_H_CAM_M = robot_truth.CAM_HEIGHT_M
+REAL_FOV_H_DEG = robot_truth.FOV_H_DEG
+
+# Camera the released GeoNet checkpoints were trained with (v3, MV-v4 and ViT-B under runs_end_side; each .pt
+# records it and HoverGeoNet240Frontend reads it back). This is NOT the measured camera: fed real frames, those
+# weights put the ground about 21 % too far (AUD-015) until they are retrained with the measured one. The experiment
+# scripts built around the released checkpoints use this pair, so that they keep measuring what they measured;
+# training scripts use REAL_* above.
+GEONET_CKPT_H_CAM_M: float = 0.135
+GEONET_CKPT_FOV_H_DEG: float = 65.0
 
 _PROJ = PersistentGaussianMemoryMap(max_splats=8)
 

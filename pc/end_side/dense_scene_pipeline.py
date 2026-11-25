@@ -26,7 +26,14 @@ HERE = pathlib.Path(__file__).resolve().parent
 if str(HERE) not in sys.path:
     sys.path.insert(0, str(HERE))
 
-from dense_splat_student import dense_inv_depth_01_to_metric_m, joint_bilateral_upsample_depth  # noqa: E402
+# 本管线处理的是 dense splat 学生模型的输出，所以各函数的相机默认值取该模型工件训练时的相机
+# （v3：72°，见 dense_splat_student.STUDENT_V3_*），而不是机器人的实测相机：换了相机，学生模型
+# 输出的逆深度就不再对应它学过的几何。用实测相机重训学生模型之后，这里要跟着改成新工件的相机。
+from dense_splat_student import (  # noqa: E402
+    STUDENT_V3_FOV_H_DEG,
+    dense_inv_depth_01_to_metric_m,
+    joint_bilateral_upsample_depth,
+)
 from export_tflite_bundle import run_tflite_flatbuffer_cpu  # noqa: E402
 from mono_depth_model import (  # noqa: E402
     DEFAULT_H_CAM_M,
@@ -48,7 +55,7 @@ def run_student_tflite_frame(tflite_path: pathlib.Path | str, bgr_or_rgb_240: np
 def solve_table_plane_from_student(
     inv01_lr: np.ndarray,
     elev_lr: np.ndarray,
-    fov_h_deg: float = 72.0,
+    fov_h_deg: float = STUDENT_V3_FOV_H_DEG,
     prev_r_level: np.ndarray | None = None,
     prev_z_bias: float = 0.0,
 ) -> tuple[np.ndarray, float, float]:
@@ -139,7 +146,7 @@ def reconstruct_dense_frame_3d(
     splats_96: np.ndarray,
     r_level: np.ndarray,
     z_bias: float = 0.0,
-    fov_h_deg: float = 72.0,
+    fov_h_deg: float = STUDENT_V3_FOV_H_DEG,
     yaw_deg: float = 0.0,
     cam_x: float = 0.0,
     cam_y: float = 0.0,
@@ -216,7 +223,7 @@ class DynamicSceneVoxelMap:
       随时随地构建完整的共享公共空间地图。
     """
 
-    def __init__(self, vox_size: float = 0.0085, fov_h_deg: float = 72.0):
+    def __init__(self, vox_size: float = 0.0085, fov_h_deg: float = STUDENT_V3_FOV_H_DEG):
         self.vox_size = float(vox_size)
         self.fov_h_deg = float(fov_h_deg)
         self.pos = np.zeros((0, 3), dtype=np.float32)

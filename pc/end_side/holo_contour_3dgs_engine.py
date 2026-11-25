@@ -42,7 +42,7 @@ if str(HERE) not in sys.path:
     sys.path.insert(0, str(HERE))
 
 from hd_dynamic_contour_slam import HoverGeoNet240Frontend  # noqa: E402
-from hd_moge_contour_engine import REAL_FOV_H_DEG, REAL_H_CAM_M  # noqa: E402
+from hd_moge_contour_engine import GEONET_CKPT_FOV_H_DEG, REAL_H_CAM_M  # noqa: E402
 from mono_depth_model import camera_rotation_matrix, make_camera_ray_grid  # noqa: E402
 from neural_gaussian_splat_model import OrbitCamera3D, PersistentGaussianMemoryMap  # noqa: E402
 
@@ -97,7 +97,7 @@ def build_holo_contour_3d_cloud(
     pred_240: dict[str, Any],
     upscale: int = 3,
     h_cam_m: float = REAL_H_CAM_M,
-    fov_h_deg: float = REAL_FOV_H_DEG,
+    fov_h_deg: float = GEONET_CKPT_FOV_H_DEG,
     sfs_relief_mm: float = 4.2,
 ) -> dict[str, Any]:
     """将 `HoverGeoNet-ViT-240` 的 `240×240` 输出超分辨重构为 `720×720` (~50万点) 照片级全息轮廓 3D 点云。"""

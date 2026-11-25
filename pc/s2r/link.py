@@ -15,20 +15,29 @@ import collections
 import math
 import socket
 import struct
+import sys
 import threading
 import time
+from pathlib import Path
 
 import cv2
 import numpy as np
 import requests
 
+_PC = Path(__file__).resolve().parents[1]
+if str(_PC) not in sys.path:
+    sys.path.insert(0, str(_PC))
+import robot_truth  # noqa: E402
+
 # ---------------- measured hardware profile ----------------
-F_PX_PER_DEG = 2.705          # image px per IMU-degree of camera yaw (teacher-mode body turns + head steps, 6 pairs)
-IMG_W = 240
-TICK_M = math.pi * 0.06 / 1024.0   # firmware's own wheel_x scale (stable_pos/vx use the same unit)
-DEG_PER_WDIFF_M = 1190.0      # body yaw (deg) per metre of (wheel1_x - wheel2_x) in TICK_M units; sign: yaw = -k*wdiff
-HEAD_DEADBAND_DEG = 7.0       # EM3 servo backlash/stiction measured upright (cmd 12 -> q 5.3, cmd 0 -> q 4.0)
-H_CAM_M = 0.135
+# Read from pc/robot_truth.json, where each number carries its method, date and evidence. None of them is typed
+# in here: this runtime went on the real robot with exactly these values and must keep using them.
+F_PX_PER_DEG = robot_truth.PX_PER_DEG   # image px per IMU-degree of camera yaw at the image centre (teacher-mode body turns + head steps)
+IMG_W = robot_truth.IMG_W
+TICK_M = robot_truth.TICK_M             # firmware's own wheel_x scale (stable_pos/vx use the same unit)
+DEG_PER_WDIFF_M = -robot_truth.DEG_PER_WDIFF_M   # body yaw (deg) per metre of (wheel1_x - wheel2_x) in TICK_M units; sign: yaw = -k*wdiff
+HEAD_DEADBAND_DEG = robot_truth.HEAD_DEADBAND_DEG   # EM3 servo backlash/stiction measured upright (cmd 12 -> q 5.3, cmd 0 -> q 4.0)
+H_CAM_M = robot_truth.CAM_HEIGHT_M
 
 TLM_MAGIC = 0x314D4C54
 TLM_BYTES = 152

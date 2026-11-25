@@ -16,6 +16,7 @@ REPO = HERE.parent.parent
 if str(HERE) not in sys.path:
     sys.path.insert(0, str(HERE))
 
+from hd_moge_contour_engine import GEONET_CKPT_FOV_H_DEG  # noqa: E402
 from hd_dynamic_contour_slam import (  # noqa: E402
     HdDynamicContourSlamEngine,
     HoverGeoNet240Frontend,
@@ -23,12 +24,16 @@ from hd_dynamic_contour_slam import (  # noqa: E402
 from hover_geonet_240 import (  # noqa: E402
     GEO_H,
     GEO_W,
-    REAL_FOV_H_DEG,
     REAL_H_CAM_M,
     compute_desk_prior_from_rays,
     decode_geonet_to_world_cloud,
 )
 from mono_depth_model import make_camera_ray_grid  # noqa: E402
+
+# These gates exercise the released checkpoints, so they use the camera those weights were trained with
+# (65 deg, recorded in each .pt), not the measured camera (75.5 deg, pc/robot_truth.json): the ray grid and the
+# table prior are inputs of the network, and synthetic scenes must be rendered with the camera it was trained on.
+FOV = GEONET_CKPT_FOV_H_DEG
 
 CKPT_FP16 = REPO / "runs_end_side" / "hover_geonet_240" / "hover_geonet_240_fp16.pt"
 TRAIN_REPORT = REPO / "runs_end_side" / "hover_geonet_240" / "train_eval_report.json"
@@ -45,7 +50,7 @@ def test_1_footprint_latency_and_desk_prior_identity() -> None:
     assert mb < 7.5, f"FP16 model too large: {mb:.2f} MB (expected < 7.5 MB)"
 
     # 解析桌面先验 Z=0 精确恒等验证 (H_cam = 0.135m)
-    rays = make_camera_ray_grid(GEO_H, GEO_W, fov_h_deg=REAL_FOV_H_DEG, pitch_deg=4.2, roll_deg=-3.8)
+    rays = make_camera_ray_grid(GEO_H, GEO_W, fov_h_deg=FOV, pitch_deg=4.2, roll_deg=-3.8)
     inv_p = compute_desk_prior_from_rays(rays, h_cam_m=REAL_H_CAM_M)
     out5_zero = np.zeros((5, GEO_H, GEO_W), dtype=np.float32)
     out5_zero[3] = 1.0  # nz = +1
@@ -55,8 +60,9 @@ def test_1_footprint_latency_and_desk_prior_identity() -> None:
     max_z_err_mm = float(np.max(np.abs(dec["pts_grid"][desk_rays, 2])) * 1000.0)
     assert max_z_err_mm < 0.05, f"Desk prior identity violated: max |Z| = {max_z_err_mm:.4f} mm"
 
-    # 实测推理速度与实景输出有效性
-    fe = HoverGeoNet240Frontend(CKPT_FP16, use_fp16=True, h_cam_m=REAL_H_CAM_M, fov_h_deg=REAL_FOV_H_DEG)
+    # 实测推理速度与实景输出有效性（相机 = 该 checkpoint 记录的训练相机）
+    fe = HoverGeoNet240Frontend(CKPT_FP16, use_fp16=True, h_cam_m=REAL_H_CAM_M, fov_h_deg=FOV)
+    assert fe.train_camera == {"h_cam_m": REAL_H_CAM_M, "fov_h_deg": FOV} and not fe.camera_mismatch, fe.train_camera
     jpgs = sorted(EMPTY_DIR.glob("*.jpg"))
     bgr0 = cv2.imread(str(jpgs[10]))
     bgr1 = cv2.imread(str(jpgs[12]))
@@ -90,7 +96,7 @@ def test_2_strictly_heldout_zero_shot_metrics() -> None:
 def test_3_hd_dynablox_zero_ghost_and_static_preservation() -> None:
     """验证 2.0 mm 超密建图 + Dynablox Occupied-Protected Ever-Free 在入侵物移动与短暂停留时 0 静态残留，同时保护静态水杯。"""
     slam = HdDynamicContourSlamEngine(vox_size_m=0.0020, h_cam_m=REAL_H_CAM_M)
-    rays = make_camera_ray_grid(120, 120, fov_h_deg=REAL_FOV_H_DEG, pitch_deg=6.0, roll_deg=0.0)
+    rays = make_camera_ray_grid(120, 120, fov_h_deg=FOV, pitch_deg=6.0, roll_deg=0.0)
     cam_o = np.array([0.0, 0.0, REAL_H_CAM_M], dtype=np.float32)
 
     def make_scene(intruder_y: float | None) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:

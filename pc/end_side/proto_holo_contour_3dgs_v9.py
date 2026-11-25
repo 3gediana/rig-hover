@@ -27,7 +27,7 @@ if str(HERE) not in sys.path:
 
 from PIL import Image, ImageDraw, ImageFont  # noqa: E402
 from hd_dynamic_contour_slam import HoverGeoNet240Frontend, render_hd_dual_layer_green  # noqa: E402
-from hd_moge_contour_engine import REAL_FOV_H_DEG, REAL_H_CAM_M  # noqa: E402
+from hd_moge_contour_engine import GEONET_CKPT_FOV_H_DEG, REAL_H_CAM_M  # noqa: E402
 from holo_contour_3dgs_engine import (  # noqa: E402
     build_holo_contour_3d_cloud,
     export_holo_webgl_html,
@@ -210,7 +210,7 @@ def _load_frame_pair(src_path: pathlib.Path, frame_idx: int) -> tuple[np.ndarray
 def run_holo_contour_v9_showcase() -> dict[str, Any]:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     print(f"=== Running HoloContour-3DGS v9 Showcase with HoverGeoNet-ViT-HD v3 ({VIT_CKPT.name}) ===", flush=True)
-    frontend = HoverGeoNet240Frontend(VIT_CKPT, use_fp16=True, h_cam_m=REAL_H_CAM_M, fov_h_deg=REAL_FOV_H_DEG)
+    frontend = HoverGeoNet240Frontend(VIT_CKPT, use_fp16=True, h_cam_m=REAL_H_CAM_M, fov_h_deg=GEONET_CKPT_FOV_H_DEG)
 
     scenes = [
         {
@@ -310,7 +310,7 @@ def run_holo_contour_v9_showcase() -> dict[str, Any]:
             pred_240,
             upscale=3,
             h_cam_m=REAL_H_CAM_M,
-            fov_h_deg=REAL_FOV_H_DEG,
+            fov_h_deg=GEONET_CKPT_FOV_H_DEG,
             sfs_relief_mm=4.5,
         )
         build_ms = (time.perf_counter() - t0) * 1000.0
