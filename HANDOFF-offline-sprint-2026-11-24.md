@@ -34,9 +34,9 @@
 | O-008 | 合成数据生成器族 | （待建） | | E2 | MISSING | 全部 |
 | O-009 | A1 拳头/手部数据集 | （待建） | | E4 | MISSING | 全部；起点缺陷见 AUD-018（idle 类 3,097/3,098 是手势图） |
 | O-010 | A2 双敲数据集 | （待建） | | E4 | MISSING | 全部 |
-| O-011 | A3 桌面几何数据集 | （待建） | | E4 | MISSING | 全部 |
+| O-011 | A3 桌面几何数据集 | `pc/end_side/train_mono_depth_pack.py` + 数据卡 | 重跑 job | E2；job 包 `jobs/a3_depth_v1` 足量排练 PASS（synth abs_rel 0.0486、MAD 33.3mm）、`findings/F2_SLICE_A3.md` | PARTIAL（切片级闭环） | 矩阵覆盖 pitch×3、桌沿近/远、强制黑物 35%、薄负样本 25%；缺口诚实登记（深渊不可表达、光照/材质未控、真机无日光格）；评测 MAD/暗区比可信、平面角存疑、桌沿距离留 T4 |
 | O-012 | 三条赛道学习曲线 | （待建） | | E4 | MISSING | 全部 |
-| O-013 | 数据卡 + 建包流水线 + 采集套件 | （待建） | | E4 | MISSING | 全部 |
+| O-013 | 数据卡 + 建包流水线 + 采集套件 | `pc/pack/jobrun.py`、A3 数据卡范本 | | E2 | PARTIAL | job 包格式 + 本地排练 harness 落地（冒烟 PASS、receipt 自动回流 findings/raw）；采集套件未动 |
 | O-014 | `CLAIMS_LEDGER.md` | 断言提取：`findings\CLAIMS_extracted.md`（子代理，只读） | | E2 | PARTIAL | 提取停在 1,266 行 / C866，末尾仍有 `<!-- CONTINUE -->`；续做子代理已被用户停掉；`CLAIMS_LEDGER.md` 未建 |
 | O-015 | 数字孪生 v2 + 留出验证误差表 | （待建） | | T0–T3 | MISSING | 全部 |
 | O-016 | 末次验收离线取证 | `pc/s2r/session_analyze.py <session_dir>` | | T1/T3 | PARTIAL | 证据已采：`runs_end_side/s2r_live/session_*`（rest / head / heading / pulse / ramp，500 Hz × 34 列）与 `probe_*`，结论在 AUD-002…011、017。缺：11-24 早上 −12.6°/s 自旋的根因仍未知（当时没有任何遥测，AUD-005）；取证报告未成文 |

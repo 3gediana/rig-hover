@@ -488,3 +488,39 @@ D:\robot_work\COLLAB.md 和 D:\robot_work\REQUIREMENTS-FOR-TEAMMATE.md
 7. 重训后的模型要用户本人同步进 Android 工程。
 
 （完）
+
+---
+
+# 2026-11-25 15:40 追加：F1 已关闭，F2 进行中
+
+## F1 完成状态（commits 0fd8d6d → f7c7432 → 57f2772 → 27e35e4 → ea2322b）
+
+- O-001..O-005 全部 COMPLETE，证据在 `G:\robot_work_offload\cloud_train\findings\FRONTIER1_REPORT.md`
+- 关键证伪结论：
+  - K-1 UX：公开特写拳/掌数据全帧不迁移到真机 10-20px 小拳头（AUC≈0.48 双臂，传感器域契约救不回来——尺度/构图差主导）
+  - K-2 U0/no-go：弱敲幅度+帧率合成剧毒（dev 召回 75.4%→36.9%，最难 take 10/19→0/19）
+  - K-3 U1-weak：平面角指标在高误差区退化（判决随训练规模翻转！），可信副指标 MAD/暗区比跨规模一致利好合成混合训练；纯真机训越久几何越差=伪 GT 噪声过拟合
+  - 对抗 AUC：域转换后 fist 0.935/palm 0.984，离不可分 0.5 很远——域差在内容不在噪声；金丝雀 YuNet 1.0 vs 0.93 任务信息保留
+- O-003 封存：250 文件镜像 verify ok、11 入口 tripwire、零访问日志、回归测试已改非封存夹具
+
+## F2 进行中：A3 几何赛道纵向切片（选它因为 K-3 是唯一非死结果）
+
+已落地：
+- `pc/end_side/train_mono_depth_pack.py`：覆盖矩阵采样 + dev-only（显式 take 列表，无 glob，零封存接触）+ 自带物理评测 + 数据卡
+- `pc/pack/jobrun.py`：云端 job 包格式 + 本地排练 harness，receipt 自动回流 findings/raw
+- job 包：`G:\robot_work_offload\cloud_train\jobs\a3_depth_smoke`（PASS）和 `a3_depth_v1`（足量，正在跑 3200 步）
+
+## 下一步（按优先级）
+
+1. 收 a3_depth_v1 足量结果（rehearsals/20261125_153442/），对比冒烟与足量，写回台账
+2. GeoNet 实测相机重训 job 包（D-009 已解禁）——注意 train_hover_geonet_240.py 的封存 tripwire，需要 dev-only 化
+3. A2 双敲赛道重构为 dev-only（堵 cb8455 泄漏面，D-010）+ 接触级标注（O-010）
+4. A1 拳头赛道走"手部检测/裁剪+尺度匹配"改造路线（K-1 已判死全帧迁移）
+5. F3 Sim2Real（O-014..016）未动
+
+## 环境事实
+
+- Python：`D:\smartcar\.venv\Scripts\python.exe`
+- 重训练一律 `pc/pack/benign.py --` 包一层（BelowNormal）
+- 不要并发跑多个 torch 训练（WinError 1455 假崩溃教训）
+- 台账：`HANDOFF-offline-sprint-2026-11-24.md`，镜像 `G:\robot_work_offload\cloud_train\LEDGER.md`，两边都要改
