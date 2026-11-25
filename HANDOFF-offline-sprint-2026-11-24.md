@@ -30,7 +30,7 @@
 | O-004 | `sensor_domain.json` + 转换函数 + 对抗 AUC | `pc/pack/sensor_measure.py`、`sensor_domain.py`、`adversarial_auc.py` | 重跑测量脚本即重建 | E2；`canon/sensor_domain.json`、`adversarial_auc_2026-11-25.json`、7 项 pytest | COMPLETE | 实测噪声/邻像素相关/暗角/色调/JPEG 块效应；转换链 7 步带随机化；对抗 AUC：fist 1.0→0.935、palm 1.0→0.984（转换后仍可分——域差主要在内容/尺度不在噪声）；金丝雀 YuNet：真机人脸召回 1.0 vs 改造公开帧 0.93 |
 | O-005 | K-1 / K-2 / K-3 证伪结论 + `FRONTIER1_REPORT.md` | `k1_fist_transfer.py`、K-2 配对分析、`k3_desk_geometry.py` | 重跑脚本 | E2；`k1/k2/k3` JSON + `findings/FRONTIER1_REPORT.md` | COMPLETE | K-1=UX（公开特写拳全帧不迁移，AUC≈0.48 双臂）；K-2=U0/no-go（弱敲幅度合成剧毒 75.4%→36.9%）；K-3=U1-weak（平面角判决随训练规模翻转=主指标不可靠；平整度 MAD 与暗区比率跨规模一致利好合成；纯真机训越久几何越差=伪 GT 噪声过拟合） |
 | O-006 | 真机资产规范库 + 清单 | （待建） | | E4 | MISSING | 全部 |
-| O-007 | 公开数据许可台账 + 效用分级 | 许可核实：`findings\PUBLIC_LICENSES_research.md` | | E2/E4 | PARTIAL | 核实报告已完成（12 个数据集有完整小节并各带置信行；需用户本人同意 8 项；无需同意即可下载 6 项；未能从一手来源核实 4 组）。缺：O-007 的台账文件本身、效用分级 |
+| O-007 | 公开数据许可台账 + 效用分级 | `canon/public_sources.json`（12 行机器可读）+ 核实报告 | 按 JSON 执行 | E2 | COMPLETE-ledger（未下载） | 每行 URL/许可/门槛/补哪格/效用分级齐；K-1 后全部按裁剪改造重估：P12 YCB-Video（黑物格、零门槛）与 P03 IPN Hand（A2 动作线索、零门槛）优先；P05/P09 不混合条款跳过；consent_needed 行留给用户本人点击 |
 | O-008 | 合成数据生成器族 | （待建） | | E2 | MISSING | 全部 |
 | O-009 | A1 拳头/手部数据集 | （待建） | | E4 | MISSING | 全部；起点缺陷见 AUD-018（idle 类 3,097/3,098 是手势图） |
 | O-010 | A2 双敲数据集 | （待建） | | E4 | MISSING | 全部 |
