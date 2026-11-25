@@ -77,7 +77,7 @@ def sample_dev_real(frames_per_take: int = 40):
     return out
 
 
-def train_arm(samples, device, epochs=6, batch=32, seed=0, lr=2.6e-3):
+def train_arm(samples, device, epochs=60, batch=32, seed=0, lr=2.6e-3):
     import torch
     from mono_depth_model import HoverMonoDepthNet, inv_depth_01_to_metric_m
     from train_mono_depth import compute_multiscale_grad_loss
@@ -95,7 +95,8 @@ def train_arm(samples, device, epochs=6, batch=32, seed=0, lr=2.6e-3):
         elv = torch.from_numpy(np.stack([rows[i]["elev_mask"] for i in idx]))[:, None].float().to(device)
         return rgb, inv, dep, elv
 
-    steps = epochs * max(1, len(samples) // batch)
+    steps = int(epochs * max(1, -(-len(samples) // batch)))
+    print(f'  {steps} steps', flush=True)
     for _st in range(steps):
         rgb, inv, dep, elv = batch_xy(samples)
         logits = model.forward_logits(rgb)
@@ -217,7 +218,7 @@ def main() -> int:
     np.random.default_rng(0).shuffle(mix)
     for name, rows in (("A_real_only", real_tr), ("B_synth_plus_real", mix)):
         print(f"training {name} on {len(rows)} samples...", flush=True)
-        model = train_arm(rows, device, epochs=6, batch=32)
+        model = train_arm(rows, device, batch=32)
         ev = eval_real_geometry(model, real_te, device)
         report["arms"][name] = {"n_train": len(rows), "eval": ev}
         print(f"{name}: {ev}", flush=True)

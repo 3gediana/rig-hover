@@ -8,7 +8,7 @@
 
 ```text
 整体状态: IN PROGRESS
-当前前沿: F1 / O-003（封存与划分）；O-001、O-002 已完成
+当前前沿：F2（A3 几何赛道纵向切片——K-3 是唯一非死的证伪结果）
 下一动作: 1) 建 pc/pack/sealed.py 唯一入口与训练入口 tripwire；
           2) 生成 splits\*.json（带哈希）与预注册划分规则；
           3) 回归测试改用非封存夹具或登记访问；
@@ -28,7 +28,7 @@
 | O-002 | `robot_truth` 真值文件 + 常量处置清单 | `pc/robot_truth.json`；`python pc/pack/const_scan.py --check`；`run_all_tests.py --only truth` | 只读扫描，新冲突即退出码 1 | E2；提交 `39db690`；`findings\CONST_SCAN.md` | COMPLETE | 真值 44 条事实（各带值/方法/日期/出处/置信/层级）+ `model_artifacts`；扫描 46 处命中，43 处冲突全部处置（保留并说明 30 / 已标注 11 / 休眠 2），0 处未处置；s2r、`real_robot_bridge`、MoGe-2、稠密场景与新训练改读真值；门禁 `truth` 16 项。遗留的不是本项缺口而是 AUD-015/016：已发布权重都要按实测相机重训（D-009） |
 | O-003 | 封存集隔离 + tripwire + `splits\*.json` | `pc/pack/sealed.py`、`make_splits.py`、`pc/tests/test_sealed.py` | 直接改入口参数即可回退 | E2；`sealed/manifest.json`、grep 审计 JSON、7 项 pytest | COMPLETE | mirror+sha256（250 文件 verify ok）、唯一入口+访问日志、4 个划分清单、11 个训练入口 tripwire、关闭式 grep 审计（41 文件四分处置，D-010）、回归测试改非封存夹具、unified app 默认输入改非封存；残留：派生缓存含 cb8455 特征 → F2 重构 |
 | O-004 | `sensor_domain.json` + 转换函数 + 对抗 AUC | `pc/pack/sensor_measure.py`、`sensor_domain.py`、`adversarial_auc.py` | 重跑测量脚本即重建 | E2；`canon/sensor_domain.json`、`adversarial_auc_2026-11-25.json`、7 项 pytest | COMPLETE | 实测噪声/邻像素相关/暗角/色调/JPEG 块效应；转换链 7 步带随机化；对抗 AUC：fist 1.0→0.935、palm 1.0→0.984（转换后仍可分——域差主要在内容/尺度不在噪声）；金丝雀 YuNet：真机人脸召回 1.0 vs 改造公开帧 0.93 |
-| O-005 | K-1 / K-2 / K-3 证伪结论 + `FRONTIER1_REPORT.md` | `k1_fist_transfer.py`、K-2 配对分析、`k3_desk_geometry.py` | 重跑脚本 | E2；`k1/k2/k3` JSON | PARTIAL | K-1=UX（公开特写拳数据双臂都不迁移到真机 10-20px 小拳头，AUC≈0.48）；K-2=U0/no-go（弱敲幅度+帧率合成严重伤害 dev 召回 75.4%→36.9%，最难 take 10/19→0/19）；K-3 训练中；FRONTIER1_REPORT 待写 |
+| O-005 | K-1 / K-2 / K-3 证伪结论 + `FRONTIER1_REPORT.md` | `k1_fist_transfer.py`、K-2 配对分析、`k3_desk_geometry.py` | 重跑脚本 | E2；`k1/k2/k3` JSON + `findings/FRONTIER1_REPORT.md` | COMPLETE | K-1=UX（公开特写拳全帧不迁移，AUC≈0.48 双臂）；K-2=U0/no-go（弱敲幅度合成剧毒 75.4%→36.9%）；K-3=U1-weak（平面角判决随训练规模翻转=主指标不可靠；平整度 MAD 与暗区比率跨规模一致利好合成；纯真机训越久几何越差=伪 GT 噪声过拟合） |
 | O-006 | 真机资产规范库 + 清单 | （待建） | | E4 | MISSING | 全部 |
 | O-007 | 公开数据许可台账 + 效用分级 | 许可核实：`findings\PUBLIC_LICENSES_research.md` | | E2/E4 | PARTIAL | 核实报告已完成（12 个数据集有完整小节并各带置信行；需用户本人同意 8 项；无需同意即可下载 6 项；未能从一手来源核实 4 组）。缺：O-007 的台账文件本身、效用分级 |
 | O-008 | 合成数据生成器族 | （待建） | | E2 | MISSING | 全部 |
