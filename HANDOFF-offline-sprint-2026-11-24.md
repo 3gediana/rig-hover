@@ -8,12 +8,12 @@
 
 ```text
 整体状态: IN PROGRESS
-当前前沿: F1 / O-001（接管审计）：资产清点第三次运行已完成；O-002 已完成。下一步写 BASELINE.md，然后 O-003（封存与划分）
-下一动作: 1) 读清点结果与 canon\assets.* → 复现 ≥3 个旧报告数字并把命令/输出存 findings\raw\；
-          2) 写 PACK_ROOT\BASELINE.md；
-          3) O-003：封存集物理隔离 + 训练入口 tripwire + splits\*.json 带哈希 + 预注册划分规则；
-          4) 之后才允许按实测相机重训 GeoNet / 单目深度（见 D-009）
-最后更新: 2026-11-25 15:02
+当前前沿: F1 / O-003（封存与划分）；O-001、O-002 已完成
+下一动作: 1) 建 pc/pack/sealed.py 唯一入口与训练入口 tripwire；
+          2) 生成 splits\*.json（带哈希）与预注册划分规则；
+          3) 回归测试改用非封存夹具或登记访问；
+          4) O-003 完成后才允许按实测相机重训 GeoNet / 单目深度（见 D-009）
+最后更新: 2026-11-25 15:22
 机器人:   R4 没有碰。最后一次只读探测 2026-11-25 00:19：站立、手动模式、/cfg 为开机默认、
           imu_zero = −2°。现在是否仍在线未知；下次用之前先跑 pc/s2r/readonly_probe.py。
 ```
@@ -24,7 +24,7 @@
 
 | 编号 | 用户可见结果 | 正常入口 | 失败/恢复路径 | 证据级别与链接 | 状态 | 缺口 |
 |---|---|---|---|---|---|---|
-| O-001 | `BASELINE.md`：资产清单 + 带命令的基线数字 + AUD 缺陷 | `pc/pack/inventory.py` → `BASELINE.md` | 只读脚本，失败即重跑 | E2；`PACK_ROOT\canon\assets.md`、`findings\raw\*.log` | PARTIAL | 资产清点第三次运行已完成（27 组、91,558 文件、46.7 GiB、65,131 帧、802 组完全重复；`inventory_run3_2026-11-25.log` EXIT_RC=0）；`BASELINE.md` 未写；≥3 个旧报告数字未复现；全仓回归 25/25 已存 `run_all_tests_2026-11-25_post_O002.log` |
+| O-001 | `BASELINE.md`：资产清单 + 带命令的基线数字 + AUD 缺陷 | `pc/pack/inventory.py` → `BASELINE.md` | 只读脚本，失败即重跑 | E2；`PACK_ROOT\BASELINE.md`、`canon\assets.md`、`findings\raw\*.log` | COMPLETE | 资产清点第三次运行完成（27 组、91,558 文件、46.7 GiB、65,131 帧、802 组完全重复；EXIT_RC=0）；`BASELINE.md` 已写；3 个旧报告数字已从真实入口复现（航向仿真 p90=3.0°、click-to-go 30/30 到点、手势 macro-F1=0.8051）；全仓回归 25/25 原样记录 |
 | O-002 | `robot_truth` 真值文件 + 常量处置清单 | `pc/robot_truth.json`；`python pc/pack/const_scan.py --check`；`run_all_tests.py --only truth` | 只读扫描，新冲突即退出码 1 | E2；提交 `39db690`；`findings\CONST_SCAN.md` | COMPLETE | 真值 44 条事实（各带值/方法/日期/出处/置信/层级）+ `model_artifacts`；扫描 46 处命中，43 处冲突全部处置（保留并说明 30 / 已标注 11 / 休眠 2），0 处未处置；s2r、`real_robot_bridge`、MoGe-2、稠密场景与新训练改读真值；门禁 `truth` 16 项。遗留的不是本项缺口而是 AUD-015/016：已发布权重都要按实测相机重训（D-009） |
 | O-003 | 封存集隔离 + tripwire + `splits\*.json` | （待建） | | E2 | MISSING | 全部 |
 | O-004 | `sensor_domain.json` + 转换函数 + 对抗 AUC | （待建） | | E2 | MISSING | 全部 |
@@ -153,3 +153,6 @@
 - 资产清点第三次运行已完成：`inventory_run3_2026-11-25.log` EXIT_RC=0；27 组、91,558 文件、46.7 GiB、65,131 帧、802 组完全重复，耗时 560.2 s；`canon\assets.json` 已写出。
 - 断言提取文件当前 1,266 行、到 C866，末尾仍是 `<!-- CONTINUE -->`；续做子代理被用户停掉后没有可见续写。
 - 接手第一件事已执行：修正 R3 两条过时状态并落盘本条。随后读 `canon\assets.*`、选择 ≥3 个不碰封存集的旧报告数字复现，运行真实命令并写 `PACK_ROOT\BASELINE.md`。
+- 15:20 O-001 收尾：`PACK_ROOT\BASELINE.md` 已写（217 行），含 27 组资产清单、封存资产预登记、全仓回归 25/25 原样记录、3 个旧报告数字的真实命令与输出、AUD-001…018 索引、未复现数字清单。三轮复现日志：`repro_sim_plant_2026-11-25.log`、`repro_click_to_go_2026-11-25.log`、`repro_gesture_eval_2026-11-25_utf8.log`。
+- 验证：BASELINE UTF-8 检查通过；`_check_encoding.py` 输出 `all clean`；未触碰封存集、未碰机器人。
+- 下一切片第一动作：实现 O-003 的 `pc/pack/sealed.py`、训练入口 tripwire 和带哈希划分。
