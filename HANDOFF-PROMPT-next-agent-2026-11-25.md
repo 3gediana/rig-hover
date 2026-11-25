@@ -558,3 +558,11 @@ d13c14c handoff closeout / 26e3415 O-007 license ledger / 4fe7c74 F2 slice close
 1. 收割 a3_learning_curve JSON，更新 O-012 行，写云端加量结论
 2. GeoNet dev-eval 重构（job.json 里 4 步清单）——这是 D-009 重训的唯一障碍
 3. 之后才是 A2 双敲重构 / 公开数据下载（问用户存储）/ F3
+
+# 2026-11-25 16:20 用户在玩游戏——GPU 禁令
+
+**用户明确指示：玩游戏期间不得启动任何训练。** 学习曲线跑到一半被手动终止（n=1200 进行中杀死）。
+已收割：n=400 → abs_rel 0.109 / mad 31.1mm / dark 1.216（报告在 jobs/a3_learning_curve/n400_e20/train_eval_report.json）。
+参照点：n=2400/e40 足量跑（早前完成）→ abs_rel 0.0486 / mad 33.3mm。
+恢复方法：用户说可以之后，重跑 `python pc/pack/benign.py -- python pc/pack/a3_learning_curve.py`（几分钟级）。
+初步观察：abs_rel 随合成规模减半以上（0.109→0.0486），但真机 MAD 几乎不变（31.1 vs 33.3）——**合成量改善的是合成域精度，真机物理几何收益已饱和**，若证实则"云端加量"对 A3 赛道预期收益低，这是重要的省钱结论。
