@@ -544,3 +544,17 @@ D:\robot_work\COLLAB.md 和 D:\robot_work\REQUIREMENTS-FOR-TEAMMATE.md
 - K-3 平面角指标在高误差区退化——判决随训练规模翻转的教训：评估指标本身要先证可靠再当判决依据
 - 真机伪 GT（背景减除启发式）几何是错的，纯靠它训练越久越差——合成精确 GT 是当前唯一可靠监督
 - GPU 常被用户其他进程占用，训练时长估计要放宽；jobrun receipt 的 wall_s 是实测真话
+
+# 2026-11-25 16:10 最终追加：在途实验
+
+## 在途（下一个窗口先收割）
+- **A3 学习曲线**（O-012 第一块）：`pc/pack/a3_learning_curve.py` 正在后台跑（benign 包裹），3 个规模 n=400/1200/2400 synth（epochs 20/30/40），产物落 `jobs/a3_learning_curve/n*_e*/train_eval_report.json` + `findings/raw/a3_learning_curve_2026-11-25.json`。日志 `/tmp/curve.log`（注意 /tmp 重启丢失，以 JSON 产物为准）。收割后：更新 O-012 台账行 + 回答"云端加量预期收益"——若 abs_rel/mad 随规模显著改善则云端加量有理，若饱和则加量无益。
+- 若曲线进程死了：直接重跑 `python pc/pack/benign.py -- python pc/pack/a3_learning_curve.py`，几分钟级别。
+
+## 本轮新增提交（倒序）
+d13c14c handoff closeout / 26e3415 O-007 license ledger / 4fe7c74 F2 slice close / ea2322b A3 infra / 27e35e4 F1 close
+
+## 给下一个窗口的第一动作清单
+1. 收割 a3_learning_curve JSON，更新 O-012 行，写云端加量结论
+2. GeoNet dev-eval 重构（job.json 里 4 步清单）——这是 D-009 重训的唯一障碍
+3. 之后才是 A2 双敲重构 / 公开数据下载（问用户存储）/ F3
