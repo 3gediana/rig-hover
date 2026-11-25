@@ -26,7 +26,7 @@
 |---|---|---|---|---|---|---|
 | O-001 | `BASELINE.md`：资产清单 + 带命令的基线数字 + AUD 缺陷 | `pc/pack/inventory.py` → `BASELINE.md` | 只读脚本，失败即重跑 | E2；`PACK_ROOT\BASELINE.md`、`canon\assets.md`、`findings\raw\*.log` | COMPLETE | 资产清点第三次运行完成（27 组、91,558 文件、46.7 GiB、65,131 帧、802 组完全重复；EXIT_RC=0）；`BASELINE.md` 已写；3 个旧报告数字已从真实入口复现（航向仿真 p90=3.0°、click-to-go 30/30 到点、手势 macro-F1=0.8051）；全仓回归 25/25 原样记录 |
 | O-002 | `robot_truth` 真值文件 + 常量处置清单 | `pc/robot_truth.json`；`python pc/pack/const_scan.py --check`；`run_all_tests.py --only truth` | 只读扫描，新冲突即退出码 1 | E2；提交 `39db690`；`findings\CONST_SCAN.md` | COMPLETE | 真值 44 条事实（各带值/方法/日期/出处/置信/层级）+ `model_artifacts`；扫描 46 处命中，43 处冲突全部处置（保留并说明 30 / 已标注 11 / 休眠 2），0 处未处置；s2r、`real_robot_bridge`、MoGe-2、稠密场景与新训练改读真值；门禁 `truth` 16 项。遗留的不是本项缺口而是 AUD-015/016：已发布权重都要按实测相机重训（D-009） |
-| O-003 | 封存集隔离 + tripwire + `splits\*.json` | `pc/pack/sealed.py`、`make_splits.py`、`pc/tests/test_sealed.py` | 直接改入口参数即可回退 | E2；`sealed/manifest.json`、7 项 pytest | PARTIAL | 已有 copy-only mirror+sha256、唯一入口、访问日志、4 个划分清单、9 个训练入口 tripwire 与 sealed 门禁；未做全量 grep 关闭审计，回归测试读封存集的规矩仍未完全重构 |
+| O-003 | 封存集隔离 + tripwire + `splits\*.json` | `pc/pack/sealed.py`、`make_splits.py`、`pc/tests/test_sealed.py` | 直接改入口参数即可回退 | E2；`sealed/manifest.json`、grep 审计 JSON、7 项 pytest | COMPLETE | mirror+sha256（250 文件 verify ok）、唯一入口+访问日志、4 个划分清单、11 个训练入口 tripwire、关闭式 grep 审计（41 文件四分处置，D-010）、回归测试改非封存夹具、unified app 默认输入改非封存；残留：派生缓存含 cb8455 特征 → F2 重构 |
 | O-004 | `sensor_domain.json` + 转换函数 + 对抗 AUC | （待建） | | E2 | MISSING | 全部 |
 | O-005 | K-1 / K-2 / K-3 证伪结论 + `FRONTIER1_REPORT.md` | （待建） | | E2 | MISSING | 全部 |
 | O-006 | 真机资产规范库 + 清单 | （待建） | | E4 | MISSING | 全部 |
@@ -70,6 +70,12 @@
 - **D-007（2026-11-24）测试期望的 HaGRID 路径用目录联接补上**：`pc\gesture\data\raw\hagrid\hagrid-sample-30k-384p` → `G:\stream_memory_data\gesture_raw\hagrid\hagrid-sample-30k-384p`（与既有 `synth` 联接同样做法；`pc\gesture\data\` 被 gitignore）。没有改任何测试。
 - **D-008（2026-11-25）仓库里有三种相机，不许混用**：(1) **实测相机**——`pc/robot_truth.json`（75.5° / 0.135 m），给真机链路、把相机当输入的通用模型（MoGe-2）和所有新训练；(2) **已发布权重的训练相机**——记录在权重或 `model.json` 里（GeoNet 65°、单目深度 v1 与高斯溅射 v2 60°/0.115 m、稠密溅射 v3 72°/0.115 m），加载它的代码必须用它；(3) **合成或虚拟相机**——某个渲染器或某个模型的输入定义，标注清楚即可。起因：名为 `REAL_FOV_H_DEG` 的 65° 其实是 MoGe-2 从画面内容猜的。把它改成真值以后，端侧套件立刻暴露出混用——16 个 GeoNet 实验脚本会把 75.5° 塞给 65° 的权重（Dynablox 门禁里水杯点数 209→148），已发布的单目深度 v1 在实测相机下 AbsRel 从 0.046 变成 0.234。处置：这 16 个脚本改用 `GEONET_CKPT_FOV_H_DEG`（含义自述的名字），v1 模型包用 `RELEASED_V1_*`，门禁从它加载的权重/`model.json` 里读相机；测试 `test_robot_truth.py` 把这条规则钉住（已发布权重不得被喂实测相机、训练脚本不得从已发布相机的常量起步）。代价：这些已发布权重在真机上的精度不是文档里那个数（AUD-015/016）。
 - **D-009（2026-11-25）按实测相机重训排在 O-003 之后**：GeoNet-240 本机重训约 40 分钟（11-22 的日志），规模上算"本机小规模"；但 `train_hover_geonet_240.py` 结尾会直接在两个封存集上评估，而封存集的访问日志和 tripwire 还没有。顺序：O-003 → 重训 → 经登记的 `--final-eval` 路径评估一次。在那之前已发布权重照旧，警告照打。
+- **D-010（2026-11-25）封存访问规矩（关闭式审计后的裁定）**：全仓 grep 审计（`findingsaw\sealed_grep_audit_2026-11-25.json`，41 个文件含封存标记）分四类处置：
+  (1) **训练入口 11 个**全部有 tripwire——不带 `--final-eval` 直接 `SealedAccessError` 退出，通过则写一行 `sealed_access.log`（含脚本、参数、目的、git HEAD）；
+  (2) **回归测试一律改用非封存夹具**：`test_robust_contour_slam` test_5 从 cb8455 改 65a54d，`test_hover_geonet_240` 延迟冒烟从 empty_d0.5 改 none_d0.5；只读历史报告 JSON（冻结数字）不算访问封存集， grandfathered；
+  (3) **活跃应用 `pc_unified_brain_app` 默认输入从封存的 empty_d0.5 改为 none_d0.5**，`--input` 指向封存路径时必须显式 `--final-eval`，文档示例同步改；
+  (4) **其余约 20 个一次性 proto/showcase 脚本宣布冻结**：它们不再运行；将来任何人要跑，必须先经 `sealed.py` 登记。强制执行靠 (1)-(3) 的入口守卫 + 审计 JSON + 完成门禁的干净访问日志，而不是逐个改写冻结脚本。
+  已知残留泄漏面（后续切片处理，不是借口）：`_knock3d_cache_v4` 等派生缓存含 cb8455 特征，旧 6 折 LOO 把 cb8455 当训练折——F2 重构双敲赛道时必须改成"dev 训练、sealed 只终评"。
 
 ## 已确认的审计发现
 

@@ -25,7 +25,8 @@ from robust_contour_slam import (  # noqa: E402
 )
 
 TFLITE_PATH = REPO / "runs_end_side" / "dense_splat_v3" / "model.tflite"
-HELDOUT_CB8455 = REPO / "dataset" / "takes" / "robot_20261115_151733_cb8455" / "take.mp4"
+# O-003/D-010: regression gates must not burn the sealed set; use the non-sealed dev take 65a54d.
+DEV_65A54D = REPO / "dataset" / "takes" / "robot_20261115_150045_65a54d" / "take.mp4"
 
 
 def _make_sharp_texture(h: int = 160, w: int = 160) -> np.ndarray:
@@ -266,20 +267,20 @@ def test_4_green_contour_reveals_pitch_black_object() -> dict:
     }
 
 
-def test_5_real_heldout_cb8455_end_to_end() -> dict:
-    """真机严格留出视频 cb8455 端到端压测（纯 .tflite 学生推理 + 开源双层建图）。"""
+def test_5_real_dev_65a54d_end_to_end() -> dict:
+    """真机开发集视频 65a54d 端到端压测（纯 .tflite 学生推理 + 开源双层建图）。"""
     assert TFLITE_PATH.exists(), f"missing tflite: {TFLITE_PATH}"
-    assert HELDOUT_CB8455.exists(), f"missing video: {HELDOUT_CB8455}"
+    assert DEV_65A54D.exists(), f"missing video: {DEV_65A54D}"
 
-    cap = cv2.VideoCapture(str(HELDOUT_CB8455))
-    cap.set(cv2.CAP_PROP_POS_FRAMES, 595)
+    cap = cv2.VideoCapture(str(DEV_65A54D))
+    cap.set(cv2.CAP_PROP_POS_FRAMES, 100)
     frames = []
     for _ in range(10):
         ok, bgr = cap.read()
         if ok:
             frames.append(bgr)
     cap.release()
-    assert len(frames) == 10, f"failed to read 10 frames from {HELDOUT_CB8455}"
+    assert len(frames) == 10, f"failed to read 10 frames from {DEV_65A54D}"
 
     pipe = RobustContourSlamPipeline(TFLITE_PATH)
     t0 = time.perf_counter()
@@ -308,7 +309,7 @@ def main() -> None:
         ("2. KISS-ICP Geman-McClure recovers 6-DoF pose under 25% outliers", test_2_kiss_icp_recovers_pose_under_outliers),
         ("3. Unblur-SLAM gate blocks motion blur & pitch shock", test_3_disturbance_gate_blocks_blur_and_shock),
         ("4. Potree EDL all-green contour reveals pitch-black geometry", test_4_green_contour_reveals_pitch_black_object),
-        ("5. Real held-out cb8455 end-to-end .tflite SLAM", test_5_real_heldout_cb8455_end_to_end),
+        ("5. Real dev 65a54d end-to-end .tflite SLAM", test_5_real_dev_65a54d_end_to_end),
     ]
     print("=== test_robust_contour_slam ===", flush=True)
     failed = False

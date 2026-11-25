@@ -11,10 +11,10 @@
 
 示例命令：
   # 1) 离线回放场景二（带交互式 3D 窗口，左键旋转、滚轮缩放、Shift+左键点击桌面目标）
-  python pc_unified_brain_app.py --scenario 2 --source frames --input D:\\robot_work\\evidence\\sessions\\empty_d0.5_front_night_182201\\frames
+  python pc_unified_brain_app.py --scenario 2 --source frames --input D:\\robot_work\\evidence\\sessions\\none_d0.5_front_night_181841\\frames
 
-  # 2) 离线回放场景一（真实双敲录像 cb8455，headless 输出状态与 3D 敲击落针日志）
-  python pc_unified_brain_app.py --scenario 1 --source video --input D:\\robot_work\\dataset\\takes\\robot_20261115_151733_cb8455\\take.mp4 --headless --max-frames 120
+  # 2) 离线回放场景一（开发集双敲录像 65a54d（封存集须显式 --final-eval），headless 输出状态与 3D 敲击落针日志）
+  python pc_unified_brain_app.py --scenario 1 --source video --input D:\\robot_work\\dataset\\takes\\robot_20261115_150045_65a54d\\take.mp4 --headless --max-frames 120
 
   # 3) 真机连网只读预览（绝不下发控制，确认 3D 点云与重定位正常后再加 --send-cmd）
   python pc_unified_brain_app.py --scenario 2 --source live --base http://192.168.137.50
@@ -36,7 +36,7 @@ import torch
 
 HERE = pathlib.Path(__file__).resolve().parent
 REPO = HERE.parent.parent
-for p in (HERE, REPO / "pc" / "train", REPO / "pc" / "perception"):
+for p in (HERE, REPO / "pc" / "train", REPO / "pc" / "perception", REPO / "pc" / "pack"):
     sp = str(p)
     if sp not in sys.path:
         sys.path.insert(0, sp)
@@ -47,6 +47,7 @@ from end_side_controller import (  # noqa: E402
     EndSideSafetyShield,
 )
 from end_side_protocol import DriveCommand, RobotTelemetry, UdpTelemetryReceiver  # noqa: E402
+import sealed  # noqa: E402
 from hd_dynamic_contour_slam import (  # noqa: E402
     HdDynamicContourSlamEngine,
     HoverGeoNet240Frontend,
@@ -726,7 +727,7 @@ def main() -> None:
     ap = argparse.ArgumentParser(description="RIG-Hover PC Unified Embodied Brain (100% Own Models)")
     ap.add_argument("--scenario", type=int, default=2, choices=[1, 2])
     ap.add_argument("--source", type=str, default="frames", choices=["frames", "video", "live"])
-    ap.add_argument("--input", type=str, default=str(REPO / "evidence" / "sessions" / "empty_d0.5_front_night_182201" / "frames"))
+    ap.add_argument("--input", type=str, default=str(REPO / "evidence" / "sessions" / "none_d0.5_front_night_181841" / "frames"))
     ap.add_argument("--base", type=str, default="http://192.168.137.50")
     ap.add_argument("--send-cmd", action="store_true", help="Live mode only: actually send commands to robot")
     ap.add_argument("--lite", action="store_true", help="Use 6.5MB MBV3 model instead of ViT-240")
@@ -744,7 +745,11 @@ def main() -> None:
     ap.add_argument("--dump-dir", type=str, default="",
                     help="逐帧落盘：bgr240 原图 + info 的 jsonl")
     ap.add_argument("--dump-every", type=int, default=3, help="每 N 帧存一张图")
+    ap.add_argument("--final-eval", action="store_true", help="authorise one registered replay on sealed input")
     args = ap.parse_args()
+
+    if args.source in ("frames", "video"):
+        sealed.require_final_eval([args.input], purpose="pc_unified_brain_app replay input")
 
     brain = UnifiedRobotBrain(use_lite_geonet=args.lite, enable_knock=(args.scenario == 1),
                               static_decim=args.static_decim, reloc_decim=args.reloc_decim)

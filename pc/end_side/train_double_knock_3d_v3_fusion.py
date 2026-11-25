@@ -51,6 +51,7 @@ from train_double_knock_3d_v2_extreme import (  # noqa: E402
     load_v2_dataset,
     predict_seq_fast_exact,
 )
+import sealed  # noqa: E402
 
 V4_CKPT = REPO / "runs_end_side" / "hover_geonet_mv_v4" / "hover_geonet_mv_v4_fp16.pt"
 
@@ -592,6 +593,10 @@ def eval_external_v3_real_yolo(
 
 
 def main() -> None:
+    sealed.require_final_eval(
+        [REPO / "dataset" / "takes" / "robot_20261115_151733_cb8455" / "take.mp4"],
+        purpose="train_double_knock_3d_v3_fusion final held-out evaluation",
+    )
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     if device.type == "cuda":

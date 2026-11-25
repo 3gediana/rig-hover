@@ -41,7 +41,7 @@ SCEN2_SUMMARY = REPO / "runs_end_side" / "scenario2_closed_loop_v7" / "scenario2
 SCEN1_E2E_REPORT = REPO / "runs_end_side" / "scenario1_own_models_e2e" / "scenario1_e2e_report.json"
 SCEN2_OWN_REPORT = REPO / "runs_end_side" / "scenario2_own_models_e2e" / "scenario2_own_models_report.json"
 VIT_CKPT = REPO / "runs_end_side" / "hover_geonet_vit_240" / "hover_geonet_vit_b1_fp16.pt"
-EMPTY_DIR = REPO / "evidence" / "sessions" / "empty_d0.5_front_night_182201" / "frames"
+EMPTY_DIR = REPO / "evidence" / "sessions" / "none_d0.5_front_night_181841" / "frames"  # D-010: non-sealed fixture
 
 
 def test_1_footprint_latency_and_desk_prior_identity() -> None:
