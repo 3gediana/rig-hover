@@ -51,14 +51,14 @@ from double_knock_data import (  # noqa: E402
     make_impulse_heatmap,
 )
 from hover_geonet_240 import GEO_H  # noqa: E402
-from interval_data import IGNORE, decode_gray, frame_labels, load_intervals, load_labels, load_takes  # noqa: E402
+from interval_data import IGNORE, decode_gray, frame_labels, load_intervals, load_labels  # noqa: E402
+from take_split import load_takes_for_split  # noqa: E402
 from rigorous_audit_knock_ablation import eval_strict_1to1_events  # noqa: E402
 from train_double_knock import CausalConv1d, find_double_knock_triggers, focal_bce_loss  # noqa: E402
 from train_double_knock_3d_physnet import BatchHoverGeoNet3DExtractor, CACHE_DIR, V4_CKPT_FP16  # noqa: E402
-import sealed  # noqa: E402
 
 YUNET_ONNX = REPO / "pc" / "perception" / "assets" / "face_detection_yunet_2023mar.onnx"
-OUT_DIR = REPO / "runs_end_side" / "double_knock_3d_v2_extreme"
+OUT_DIR = REPO / "runs_end_side" / "double_knock_3d_v2_extreme_devonly_v1"
 
 
 # ---------------------------------------------------------------------------
@@ -534,7 +534,7 @@ def load_v2_dataset(window: int = 48, stride: int = 4, size: int = 96) -> dict[s
     ds_path = REPO / "dataset"
     roi_path = REPO / "runs_knock" / "pose_roi"
     id_to_name = load_labels(ds_path)
-    takes = load_takes(ds_path)
+    takes = load_takes_for_split(ds_path, split="dev")
     out: dict[str, dict[str, Any]] = {}
 
     for take in takes:
@@ -1003,10 +1003,6 @@ def eval_external_v2_head_to_head(
 
 
 def main() -> None:
-    sealed.require_final_eval(
-        [REPO / "dataset" / "takes" / "robot_20261115_151733_cb8455" / "take.mp4"],
-        purpose="train_double_knock_3d_v2_extreme final held-out evaluation",
-    )
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     if device.type == "cuda":
@@ -1016,12 +1012,12 @@ def main() -> None:
     dataset = load_v2_dataset(window=48, stride=4, size=96)
     yunet = cv2.FaceDetectorYN.create(str(YUNET_ONNX), "", (240, 240), score_threshold=0.45) if YUNET_ONNX.exists() else None
 
-    print("\n--- Controlled 6-Fold LOO (Nested Inner-OOF Calib): SameArch-2D-v2 ---", flush=True)
+    print("\n--- Controlled 5-Fold Dev LOO (Nested Inner-OOF Calib): SameArch-2D-v2 ---", flush=True)
     r2 = run_v2_controlled_loo("SameArch-2D-v2", dataset, use_3d=False, window=48, epochs=16, device=device)
     m2, c2w, c2s = r2.pop("_deploy")
     m2 = m2.cpu()
 
-    print("\n--- Controlled 6-Fold LOO (Nested Inner-OOF Calib): SameArch-3D-v2 (Invariant 3D + ModDrop + Co-Local) ---", flush=True)
+    print("\n--- Controlled 5-Fold Dev LOO (Nested Inner-OOF Calib): SameArch-3D-v2 (Invariant 3D + ModDrop + Co-Local) ---", flush=True)
     r3 = run_v2_controlled_loo("SameArch-3D-v2", dataset, use_3d=True, window=48, epochs=16, device=device)
     m3, c3w, c3s = r3.pop("_deploy")
     for d in dataset.values():

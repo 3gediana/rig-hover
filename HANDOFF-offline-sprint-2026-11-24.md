@@ -8,11 +8,11 @@
 
 ```text
 整体状态: IN PROGRESS
-当前前沿：A2 双敲 dev-only 重构（纯 CPU/代码）；D-009 GeoNet 重训 job 已 READY，等待 GPU 禁令解除
-下一动作: 1) 读 train_double_knock/double_knock_data 的 LOO 数据流，移除 cb8455 训练折；
-          2) 设计弱敲接触级标注方案；
-          3) GPU 禁令解除后运行 jobs/geonet_retrain_measured_cam/job.json（不得提前启动）
-最后更新: 2026-11-26 14:51
+当前前沿：A2 双敲 dev-only 重构已完成（纯 CPU/代码）；两个重训 job 均 READY，等待 GPU 禁令解除
+下一动作: 1) 用户复核 runs_knock/contact_review_impact_dev_v1/review_queue.jsonl（368 条 pending 接触候选）；
+          2) GPU 禁令解除后运行 jobs/geonet_retrain_measured_cam/job.json 与 jobs/double_knock_retrain_devonly/job.json；
+          3) 清洁重训完成前，旧 double_knock_fpsaug2 权重只按 legacy contaminated 演示权重对待
+最后更新: 2026-11-26 15:15
 机器人:   R4 没有碰。最后一次只读探测 2026-11-25 00:19：站立、手动模式、/cfg 为开机默认、
           imu_zero = −2°。现在是否仍在线未知；下次用之前先跑 pc/s2r/readonly_probe.py。
 ```
@@ -25,14 +25,14 @@
 |---|---|---|---|---|---|---|
 | O-001 | `BASELINE.md`：资产清单 + 带命令的基线数字 + AUD 缺陷 | `pc/pack/inventory.py` → `BASELINE.md` | 只读脚本，失败即重跑 | E2；`PACK_ROOT\BASELINE.md`、`canon\assets.md`、`findings\raw\*.log` | COMPLETE | 资产清点第三次运行完成（27 组、91,558 文件、46.7 GiB、65,131 帧、802 组完全重复；EXIT_RC=0）；`BASELINE.md` 已写；3 个旧报告数字已从真实入口复现（航向仿真 p90=3.0°、click-to-go 30/30 到点、手势 macro-F1=0.8051）；全仓回归 25/25 原样记录 |
 | O-002 | `robot_truth` 真值文件 + 常量处置清单 | `pc/robot_truth.json`；`python pc/pack/const_scan.py --check`；`run_all_tests.py --only truth` | 只读扫描，新冲突即退出码 1 | E2；提交 `39db690`；`findings\CONST_SCAN.md` | COMPLETE | 真值 44 条事实（各带值/方法/日期/出处/置信/层级）+ `model_artifacts`；扫描 46 处命中，43 处冲突全部处置（保留并说明 30 / 已标注 11 / 休眠 2），0 处未处置；s2r、`real_robot_bridge`、MoGe-2、稠密场景与新训练改读真值；门禁 `truth` 16 项。遗留的不是本项缺口而是 AUD-015/016：已发布权重都要按实测相机重训（D-009） |
-| O-003 | 封存集隔离 + tripwire + `splits\*.json` | `pc/pack/sealed.py`、`make_splits.py`、`pc/tests/test_sealed.py` | 直接改入口参数即可回退 | E2；`sealed/manifest.json`、grep 审计 JSON、12 项 pytest | COMPLETE | mirror+sha256（250 文件 verify ok）、唯一入口+访问日志、4 个划分清单、11 个训练入口 tripwire、关闭式 grep 审计（41 文件四分处置，D-010）、回归测试改非封存夹具、unified app 默认输入改非封存；残留：其他训练入口/派生缓存仍按 F2 逐项重构；GeoNet 旧 sealed-derived 缓存已隔离 |
+| O-003 | 封存集隔离 + tripwire + `splits\*.json` | `pc/pack/sealed.py`、`make_splits.py`、`pc/tests/test_sealed.py` | 直接改入口参数即可回退 | E2；`sealed/manifest.json`、grep 审计 JSON、15 项 pytest | COMPLETE | mirror+sha256（250 文件 verify ok）、唯一入口+访问日志、4 个划分清单、关闭式 grep 审计（41 文件四分处置，D-010）、回归测试改非封存夹具、unified app 默认输入改非封存；GeoNet 与双敲主训练路径均已重构为 dev-only，GeoNet 旧缓存与 cb8455 3D 特征缓存已隔离；一次性 proto/showcase 仍按 D-010 冻结 |
 | O-004 | `sensor_domain.json` + 转换函数 + 对抗 AUC | `pc/pack/sensor_measure.py`、`sensor_domain.py`、`adversarial_auc.py` | 重跑测量脚本即重建 | E2；`canon/sensor_domain.json`、`adversarial_auc_2026-11-25.json`、7 项 pytest | COMPLETE | 实测噪声/邻像素相关/暗角/色调/JPEG 块效应；转换链 7 步带随机化；对抗 AUC：fist 1.0→0.935、palm 1.0→0.984（转换后仍可分——域差主要在内容/尺度不在噪声）；金丝雀 YuNet：真机人脸召回 1.0 vs 改造公开帧 0.93 |
 | O-005 | K-1 / K-2 / K-3 证伪结论 + `FRONTIER1_REPORT.md` | `k1_fist_transfer.py`、K-2 配对分析、`k3_desk_geometry.py` | 重跑脚本 | E2；`k1/k2/k3` JSON + `findings/FRONTIER1_REPORT.md` | COMPLETE | K-1=UX（公开特写拳全帧不迁移，AUC≈0.48 双臂）；K-2=U0/no-go（弱敲幅度合成剧毒 75.4%→36.9%）；K-3=U1-weak（平面角判决随训练规模翻转=主指标不可靠；平整度 MAD 与暗区比率跨规模一致利好合成；纯真机训越久几何越差=伪 GT 噪声过拟合） |
 | O-006 | 真机资产规范库 + 清单 | `canon/assets.md/json` + `file_hashes.json` | 重跑 inventory.py | E2 | PARTIAL-strong | 27 组资产逐组登记路径/帧数/来源/许可/隐私/划分归属，逐文件 sha256；802 组重复已识别（Label Studio/早期手部图=字节级副本）未物理去重（防破坏引用）；缺：逐样本反查抽查审计 |
 | O-007 | 公开数据许可台账 + 效用分级 | `canon/public_sources.json`（12 行机器可读）+ 核实报告 | 按 JSON 执行 | E2 | COMPLETE-ledger（未下载） | 每行 URL/许可/门槛/补哪格/效用分级齐；K-1 后全部按裁剪改造重估：P12 YCB-Video（黑物格、零门槛）与 P03 IPN Hand（A2 动作线索、零门槛）优先；P05/P09 不混合条款跳过；consent_needed 行留给用户本人点击 |
 | O-008 | 合成数据生成器族 | （待建） | | E2 | MISSING | 全部 |
 | O-009 | A1 拳头/手部数据集 | （待建） | | E4 | MISSING | 全部；起点缺陷见 AUD-018（idle 类 3,097/3,098 是手势图） |
-| O-010 | A2 双敲数据集 | （待建） | | E4 | MISSING | 全部 |
+| O-010 | A2 双敲数据集 | `pc/train/export_contact_review_pack.py` → `runs_knock/contact_review_impact_dev_v1/` | 重跑导出脚本即重建候选包；用户复核后再建数据集卡 | E2；`review_queue.jsonl` 368 条 pending | PARTIAL | dev-only 训练/评估重构完成；接触级候选包已导出（5 条 dev take、368 条候选，未触封存）；缺口：用户尚未复核 strong/weak/accept，数据集卡与正式建包未做，清洁重训未运行 |
 | O-011 | A3 桌面几何数据集 | `pc/end_side/train_mono_depth_pack.py` + 数据卡 | 重跑 job | E2；job 包 `jobs/a3_depth_v1` 足量排练 PASS（synth abs_rel 0.0486、MAD 33.3mm）、`findings/F2_SLICE_A3.md` | PARTIAL（切片级闭环） | 矩阵覆盖 pitch×3、桌沿近/远、强制黑物 35%、薄负样本 25%；缺口诚实登记（深渊不可表达、光照/材质未控、真机无日光格）；评测 MAD/暗区比可信、平面角存疑、桌沿距离留 T4 |
 | O-012 | 三条赛道学习曲线 | （待建） | | E4 | MISSING | 全部 |
 | O-013 | 数据卡 + 建包流水线 + 采集套件 | `pc/pack/jobrun.py`、A3 数据卡范本 | | E2 | PARTIAL | job 包格式 + 本地排练 harness 落地（冒烟 PASS、receipt 自动回流 findings/raw）；采集套件未动 |
@@ -74,7 +74,7 @@
   (2) **回归测试一律改用非封存夹具**：`test_robust_contour_slam` test_5 从 cb8455 改 65a54d，`test_hover_geonet_240` 延迟冒烟从 empty_d0.5 改 none_d0.5；只读历史报告 JSON（冻结数字）不算访问封存集， grandfathered；
   (3) **活跃应用 `pc_unified_brain_app` 默认输入从封存的 empty_d0.5 改为 none_d0.5**，`--input` 指向封存路径时必须显式 `--final-eval`，文档示例同步改；
   (4) **其余约 20 个一次性 proto/showcase 脚本宣布冻结**：它们不再运行；将来任何人要跑，必须先经 `sealed.py` 登记。强制执行靠 (1)-(3) 的入口守卫 + 审计 JSON + 完成门禁的干净访问日志，而不是逐个改写冻结脚本。
-  已知残留泄漏面（后续切片处理，不是借口）：`_knock3d_cache_v4` 等派生缓存含 cb8455 特征，旧 6 折 LOO 把 cb8455 当训练折——F2 重构双敲赛道时必须改成"dev 训练、sealed 只终评"。
+  已知残留泄漏面（2026-11-26 已处理主训练路径）：`_knock3d_cache_v4` 中 cb8455 特征缓存已移动隔离，双敲 2D/3D 训练入口已改成"dev 训练、sealed 只终评"；其余一次性 proto/showcase 仍冻结，若要运行必须先重新分类并登记。
 
 ## 已确认的审计发现
 
@@ -184,3 +184,20 @@
 - 验证（全部 CPU/静态/小文件测试）：`py_compile` 通过；`pytest pc/tests/test_sealed.py` 12/12 PASS（7.75 s）；`pytest pc/tests/test_robot_truth.py` 16/16 PASS（10.50 s）；`run_all_tests.py --only sealed` PASS（12.3 s）；`run_all_tests.py --only truth` PASS（15.1 s）；job JSON 语法有效；`_check_encoding.py` all clean。没有跑训练、没有跑 GPU 任务、没有访问机器人。
 - 顺手修复台账 D-010 中一处既有断行损坏（`findings` / `aw` → `findings\raw`），不涉及代码行为。
 - 下一切片第一动作：A2 双敲 dev-only 重构——先读 `pc/train/train_double_knock.py` 与 `pc/train/double_knock_data.py` 的 LOO/缓存数据流，列出 cb8455 作为训练折的所有入口，再决定最小外科方案；弱敲接触级标注仍属 O-010，不得用封存集参与训练或调参。
+
+### R6 · 2026-11-26 15:15 · 切片：A2 双敲 dev-only 重构 + 接触级复核包
+
+- 15:00 继续 R5 尾部任务；未碰机器人、未开串口、未烧录、未启动训练/GPU。先确认 `D:\robot_work\HANDOFF-offline-sprint-2026-11-24.md` 与 `PACK_ROOT\LEDGER.md` 字节一致。
+- 2D 主训练路径已重构：
+  - 新增 `pc/train/take_split.py`：take 元数据加载只支持 `dev` / `sealed` 两个命名划分；`dev` 在读取 `take.json` 前就跳过 cb8455 目录，`sealed` 必须显式 final-eval 授权，且不再提供容易误用的 `all` 训练混合划分。
+  - `build_window_dataset()` 默认 `split="dev"`；`train_double_knock.py` 的 LOO 从旧 6 折改为 5 条 dev take 留一，训练、合成增强、阈值标定、部署模型训练全部只吃 dev。
+  - 默认输出改为 `runs_knock/double_knock_devonly_v1/`，避免覆盖历史权重；新 checkpoint 写入 `train_split=dev` 与 `train_takes`。
+  - `--final-eval` 现在只是在训练与标定全部完成后登记评估：先评估 sealed take cb8455，再评估 sealed `empty_d0.5` 外部负样本；它不再是“允许把封存集放进训练折”的开关。
+  - `stream_eval.py` 增加 `--split dev|sealed` 与显式 `--final-eval`；普通流式评估默认 dev-only。
+  - 外部 stress loader 默认跳过 sealed `empty_d0.5`；先按划分过滤 manifest 再应用 max_clips，避免“请求 1 条而没扫到 sealed 行”绕过授权。`split="sealed"` 不再混入 Charades/UCF 公共负样本。
+- 3D 原型训练入口也已堵住同类泄漏：`train_double_knock_3d_physnet.py` 与 `train_double_knock_3d_v2_extreme.py` 的数据集加载改用 dev-only；v2/v3/v4/physnet 不再用 `--final-eval` 作为继续训练 cb8455 的许可证，输出目录改到 `*_devonly_v1`，避免覆盖历史 `double_knock_3d_v11` / v2 / v3 / v4 结果。`_knock3d_cache_v4/robot_20261115_151733_cb8455_3d.npz` 已移动到 `pc/bench/_teacher_cache/_quarantine_d010/robot_20261115_151733_cb8455_3d_npz_quarantined.bin`（移动隔离，不是删除）。
+- 运行时诚实标注：`pc_unified_brain_app.py` 与 `pc/s2r/live.py` 加载旧 `double_knock_fpsaug2_20261115` 权重时会警告它是 dev-only 重构前的 legacy contaminated checkpoint。没有禁用旧演示链路，但不得再把它的指标当清洁证据。
+- O-010 第一块数据工作落地：`cut_knock_candidates.py` 改成只允许 dev 输入并输出复核队列；新增 `export_contact_review_pack.py`，已生成 `runs_knock/contact_review_impact_dev_v1/`：5 条 dev take、368 条 pending 接触候选（`review_queue.jsonl` + 分块 sheet + schema）。分 take 候选数：5ca36d=39、67f0c1=81、5c0158=139、1f30d1=69、65a54d=40。该包是待用户复核的候选，不是已确认标签；弱敲补标必须来自人工复核，不得再回到幅度合成。
+- 新增 `jobs/double_knock_retrain_devonly/job.json`：`READY-waiting-gpu-ban-lift`，命令带 `--final-eval`；GPU/训练禁令解除前不得运行。
+- 验证（全部 CPU/静态/小测试）：`py_compile` 覆盖所有改动文件通过；`pytest pc/train/test_double_knock_data.py pc/train/test_double_knock_model.py` 9/9 PASS（10.42 s）；`pytest pc/tests/test_sealed.py` 15/15 PASS（7.08 s）；`run_all_tests.py --only sealed` PASS（9.8 s）；`run_all_tests.py --only truth` PASS（13.7 s）；`run_all_tests.py --only train` PASS（34.4 s）；完整 dev `build_window_dataset` 实测 5/5 条、无 cb8455、用时 11.11 s；`sealed_access.log` 不存在/未新增；job JSON 语法有效；`_check_encoding.py` all clean。
+- 未做且明确不做：没有训练、没有 GPU、没有读取 sealed 原始帧/视频、没有碰机器人。公开数据下载仍需用户先拍板存储位置； contact review 的 368 条候选需要用户人工复核后才能变成弱敲标签。

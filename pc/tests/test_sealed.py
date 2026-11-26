@@ -66,7 +66,8 @@ def test_training_entry_points_have_sealed_tripwires():
         ROOT / "pc" / "end_side" / "train_hover_geonet_240.py": "train_hover_geonet_240 final held-out evaluation",
         ROOT / "pc" / "end_side" / "train_dense_splat_student.py": "train_dense_splat_student final held-out evaluation",
         ROOT / "pc" / "end_side" / "train_mono_depth.py": "train_mono_depth final held-out evaluation",
-        ROOT / "pc" / "train" / "double_knock_data.py": "double-knock dataset final held-out evaluation",
+        ROOT / "pc" / "train" / "take_split.py": "double-knock dataset final held-out evaluation",
+        ROOT / "pc" / "train" / "double_knock_data.py": "double-knock external stress final evaluation",
     }
     for path, marker in expected.items():
         src = path.read_text(encoding="utf-8")
@@ -151,3 +152,49 @@ def test_legacy_geonet_heldout_cache_is_not_active():
     cache_root = ROOT / "pc" / "bench" / "_teacher_cache"
     active = list(cache_root.glob("geonet240_h*/test_heldout_80.npz"))
     assert active == []
+
+
+def _double_knock_data_module():
+    train_dir = ROOT / "pc" / "train"
+    if str(train_dir) not in sys.path:
+        sys.path.insert(0, str(train_dir))
+    import double_knock_data as mod  # noqa: PLC0415
+    return mod
+
+
+def test_double_knock_take_loader_defaults_to_five_dev_takes():
+    mod = _double_knock_data_module()
+    takes = mod.load_takes_for_split(ROOT / "dataset", split="dev")
+    ids = [t.take_id for t in takes]
+    assert len(ids) == 5
+    assert "robot_20261115_151733_cb8455" not in ids
+    assert all(not sealed.is_sealed_path(t.take_id) for t in takes)
+
+
+def test_double_knock_training_contract_is_dev_only_with_optional_final_eval():
+    src = (ROOT / "pc" / "train" / "train_double_knock.py").read_text(encoding="utf-8")
+    data_src = (ROOT / "pc" / "train" / "double_knock_data.py").read_text(encoding="utf-8")
+    assert 'out_dir: str | Path = "runs_knock/double_knock_devonly_v1"' in src
+    assert 'split="sealed"' in src
+    assert 'final_eval=args.final_eval' in src
+    assert 'split: str = "dev"' in data_src
+    assert 'if is_sealed and split == "dev":' in data_src
+    for name in (
+        "train_double_knock_3d_physnet.py",
+        "train_double_knock_3d_v2_extreme.py",
+        "train_double_knock_3d_v3_fusion.py",
+        "train_double_knock_3d_v4_sim2real.py",
+    ):
+        src3d = (ROOT / "pc" / "end_side" / name).read_text(encoding="utf-8")
+        assert "sealed.require_final_eval" not in src3d, name
+        assert "_devonly_v1" in src3d, name
+    for name in ("train_double_knock_3d_physnet.py", "train_double_knock_3d_v2_extreme.py"):
+        src3d = (ROOT / "pc" / "end_side" / name).read_text(encoding="utf-8")
+        assert 'load_takes_for_split(ds_path, split="dev")' in src3d, name
+
+
+def test_legacy_knock3d_sealed_feature_cache_is_quarantined():
+    active = ROOT / "pc" / "bench" / "_knock3d_cache_v4" / "robot_20261115_151733_cb8455_3d.npz"
+    quarantined = ROOT / "pc" / "bench" / "_teacher_cache" / "_quarantine_d010" / "robot_20261115_151733_cb8455_3d_npz_quarantined.bin"
+    assert not active.exists()
+    assert quarantined.exists()

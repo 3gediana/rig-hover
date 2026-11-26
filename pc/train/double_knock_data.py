@@ -29,6 +29,7 @@ if str(_PACK_DIR) not in sys.path:
 
 from cut_knock_candidates import contact_sheet  # noqa: E402
 import sealed  # noqa: E402
+from take_split import load_takes_for_split  # noqa: E402
 from interval_data import (  # noqa: E402
     CLASS_TO_IDX,
     IGNORE,
@@ -37,7 +38,6 @@ from interval_data import (  # noqa: E402
     frame_labels,
     load_intervals,
     load_labels,
-    load_takes,
 )
 
 COUNT_CLASSES = ("non_knock", "single_knock", "double_knock", "multi_knock")
@@ -266,17 +266,16 @@ def build_window_dataset(
     stride: int = 4,
     size: int = 96,
     contact_sheet_dir: str | Path | None = None,
+    split: str = "dev",
+    final_eval: bool = False,
 ) -> dict[str, dict]:
-    """构建全部已标 take 的双流窗口数据集，并提取单次脉冲供训练折合成增强使用。"""
+    """构建指定划分已标 take 的双流窗口数据集；默认只用 dev take，绝不打开封存文件。"""
     repo_root = Path(__file__).resolve().parents[2]
     ds_path = Path(dataset_dir) if Path(dataset_dir).is_absolute() else repo_root / dataset_dir
     roi_path = Path(pose_roi_dir) if Path(pose_roi_dir).is_absolute() else repo_root / pose_roi_dir
 
     id_to_name = load_labels(ds_path)
-    takes = load_takes(ds_path)
-    sealed_paths = [t.video_path for t in takes if sealed.is_sealed_path(t.take_id)]
-    if sealed_paths:
-        sealed.require_final_eval(sealed_paths, purpose="double-knock dataset final held-out evaluation")
+    takes = load_takes_for_split(ds_path, split=split, final_eval=final_eval)
     out: dict[str, dict] = {}
 
     if contact_sheet_dir is not None:
@@ -464,12 +463,15 @@ def _decode_video_bytes_to_gray(video_path: Path, size: int = 96, max_frames: in
     return np.stack(frames) if frames else np.zeros((0, size, size), dtype=np.uint8)
 
 
-def load_external_stress_clips(max_clips_per_source: int = 10, size: int = 96) -> list[dict]:
-    """加载多源外部验证集：
-    1) D:/robot_work/evidence/sessions: 真机 0.5m 录制（1 条双敲正样本 + 9 条手势/空镜硬负样本）
-    2) G:/stream_memory_data/videos/charades/Charades_v1_480.zip: 真实室内桌面交互负样本
-    3) G:/stream_memory_data/videos/ucf101/UCF-101.zip: 真实人类动作/节律干扰负样本
-    """
+def load_external_stress_clips(
+    max_clips_per_source: int = 10,
+    size: int = 96,
+    split: str = "dev",
+    final_eval: bool = False,
+) -> list[dict]:
+    """加载多源外部验证集；默认跳过封存 session，只有显式 final-eval 才读取它们。"""
+    if split not in {"dev", "sealed"}:
+        raise ValueError(f"unknown external stress split: {split}")
     repo_root = Path(__file__).resolve().parents[2]
     clips: list[dict] = []
 
@@ -478,13 +480,25 @@ def load_external_stress_clips(max_clips_per_source: int = 10, size: int = 96) -
     manifest_path = sess_dir / "manifest.jsonl"
     if manifest_path.exists():
         lines = manifest_path.read_text(encoding="utf-8").splitlines()
-        for line in lines[: max_clips_per_source + 2]:
+        selected_meta = []
+        for line in lines:
             if not line.strip():
                 continue
             meta = json.loads(line)
+            is_sealed = sealed.is_sealed_path(meta["dir"])
+            if is_sealed and split == "dev":
+                continue
+            if (not is_sealed) and split == "sealed":
+                continue
+            selected_meta.append((meta, is_sealed))
+        for meta, is_sealed in selected_meta[:max_clips_per_source]:
             fdir = sess_dir / meta["dir"] / "frames"
-            if sealed.is_sealed_path(meta["dir"]):
-                sealed.require_final_eval([fdir], purpose="double-knock external stress final evaluation")
+            if is_sealed:
+                sealed.require_final_eval(
+                    [fdir],
+                    purpose="double-knock external stress final evaluation",
+                    argv=["--final-eval"] if final_eval else [],
+                )
             if not fdir.is_dir():
                 continue
             jpgs = sorted(fdir.glob("*.jpg"))
@@ -509,7 +523,7 @@ def load_external_stress_clips(max_clips_per_source: int = 10, size: int = 96) -
     # 2. Charades 室内桌面动作 (c009, c011, c012, c014, c109)
     char_zip = Path("G:/stream_memory_data/videos/charades/Charades_v1_480.zip")
     char_csv = Path("G:/stream_memory_data/videos/charades/ann/Charades/Charades_v1_train.csv")
-    if char_zip.exists() and char_csv.exists():
+    if split != "sealed" and char_zip.exists() and char_csv.exists():
         table_classes = {"c009", "c011", "c012", "c013", "c014", "c109", "c116"}
         selected_ids = []
         with char_csv.open("r", encoding="utf-8", errors="ignore") as f:
@@ -549,7 +563,7 @@ def load_external_stress_clips(max_clips_per_source: int = 10, size: int = 96) -
 
     # 3. UCF-101 节律与桌面/手部干扰动作
     ucf_zip = Path("G:/stream_memory_data/videos/ucf101/UCF-101.zip")
-    if ucf_zip.exists():
+    if split != "sealed" and ucf_zip.exists():
         target_ucf = ("Typing", "WritingOnBoard", "CuttingInKitchen", "TableTennisShot", "Drumming", "Hammering")
         with zipfile.ZipFile(ucf_zip, "r") as zf:
             avi_list = [
@@ -582,7 +596,7 @@ def load_external_stress_clips(max_clips_per_source: int = 10, size: int = 96) -
 
 
 if __name__ == "__main__":
-    data = build_window_dataset(contact_sheet_dir="runs_knock/double_knock_20261115/contact_sheets")
+    data = build_window_dataset(contact_sheet_dir="runs_knock/double_knock_dev_check/contact_sheets")
     for tid, d in data.items():
         vals, cnts = np.unique(d["y_cnt"], return_counts=True)
         dist = {COUNT_CLASSES[int(k)]: int(v) for k, v in zip(vals, cnts)}

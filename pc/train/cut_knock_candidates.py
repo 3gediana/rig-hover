@@ -21,7 +21,8 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from interval_data import decode_gray, load_intervals, load_labels, load_takes  # noqa: E402
+from interval_data import decode_gray, load_intervals, load_labels  # noqa: E402
+from take_split import load_takes_for_split  # noqa: E402
 
 KNOCK_LABELS = {"knock", "连续敲击", "敲击"}
 
@@ -91,10 +92,22 @@ def main() -> int:
     out_dir.mkdir(parents=True, exist_ok=True)
 
     id_to_name = load_labels(dataset_dir)
-    takes = load_takes(dataset_dir)
+    takes = load_takes_for_split(dataset_dir, split="dev")
     if args.take:
         takes = [t for t in takes if t.take_id == args.take]
-    report = {"takes": []}
+        if not takes:
+            raise ValueError(f"requested take is missing or outside the dev split: {args.take}")
+    report = {
+        "split": "dev",
+        "review_schema": {
+            "contact_accepted": "true/false；候选峰是否真是手指接触桌面",
+            "contact_strength": "strong/weak/uncertain；weak 用于补弱敲样本",
+            "reviewer": "复核人",
+            "notes": "自由备注",
+        },
+        "takes": [],
+    }
+    review_rows = []
     for take in takes:
         if take.annotation_path is None:
             continue
@@ -110,16 +123,35 @@ def main() -> int:
             b = min(len(energy), int(iv.end_s * take.fps))
             local = segment_peaks(energy[a:b], take.fps, args.min_gap_s)
             times = [round((a + p) / take.fps, 2) for p in local]
+            peak_energy = [round(float(energy[a + p]), 4) for p in local]
             sheet = out_dir / f"{take.take_id}_{idx:02d}.png"
             contact_sheet(frames, times, take.fps, sheet)
             rows.append({"interval_index": idx, "start_s": iv.start_s, "end_s": iv.end_s,
                          "label": label, "n_candidates": len(times), "candidates_s": times,
-                         "sheet": str(sheet)})
+                         "peak_frame_energy": peak_energy, "sheet": str(sheet)})
+            for cand_i, (t_s, e_val) in enumerate(zip(times, peak_energy), start=1):
+                review_rows.append({
+                    "review_status": "pending",
+                    "take_id": take.take_id,
+                    "interval_index": idx,
+                    "candidate_index": cand_i,
+                    "candidate_time_s": t_s,
+                    "peak_frame_energy": e_val,
+                    "sheet": str(sheet),
+                    "contact_accepted": None,
+                    "contact_strength": None,
+                    "reviewer": "",
+                    "notes": "",
+                })
         report["takes"].append({"take_id": take.take_id, "rows": rows})
         print(f"{take.take_id}: {len(rows)} knock intervals, "
               f"{sum(r['n_candidates'] for r in rows)} candidates")
     (out_dir / "candidates.json").write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    with (out_dir / "review_queue.jsonl").open("w", encoding="utf-8", newline="\n") as f:
+        for row in review_rows:
+            f.write(json.dumps(row, ensure_ascii=False) + "\n")
     print(f"-> {out_dir / 'candidates.json'}")
+    print(f"-> {out_dir / 'review_queue.jsonl'} ({len(review_rows)} pending contact candidates)")
     return 0
 
 

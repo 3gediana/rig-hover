@@ -61,11 +61,10 @@ from train_double_knock_3d_v2_extreme import (  # noqa: E402
     load_v2_dataset,
     predict_seq_fast_exact,
 )
-import sealed  # noqa: E402
 
 V4_GEO_CKPT = REPO / "runs_end_side" / "hover_geonet_mv_v4" / "hover_geonet_mv_v4_fp16.pt"
 YOLO_POSE_PT = REPO / "pc" / "perception" / "assets" / "yolo26n-pose.pt"
-OUT_DIR = REPO / "runs_end_side" / "double_knock_3d_v4_sim2real"
+OUT_DIR = REPO / "runs_end_side" / "double_knock_3d_v4_sim2real_devonly_v1"
 
 
 class DoubleKnock3DSim2RealNetV4(nn.Module):
@@ -667,10 +666,6 @@ def eval_external_v4_both_modes(
 
 
 def main() -> None:
-    sealed.require_final_eval(
-        [REPO / "dataset" / "takes" / "robot_20261115_151733_cb8455" / "take.mp4"],
-        purpose="train_double_knock_3d_v4_sim2real final held-out evaluation",
-    )
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     if device.type == "cuda":

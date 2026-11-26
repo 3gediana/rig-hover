@@ -69,6 +69,8 @@ def build_knock():
     import torch
     from train_double_knock import DoubleKnockDetector, DoubleKnockNet
     kb = torch.load(KNOCK, map_location="cpu", weights_only=False)
+    if kb.get("train_split") != "dev":
+        print("[Knock][WARN] legacy checkpoint predates dev-only training; treat metrics as contaminated until retrained", flush=True)
     km = DoubleKnockNet(in_ch=2, kin_dim=8, hidden_dim=64, num_classes=4).eval()
     km.load_state_dict(kb["state_dict"])
     return DoubleKnockDetector(model=km, device="cpu", window=int(kb.get("window", 48)), size=int(kb.get("size", 96)),

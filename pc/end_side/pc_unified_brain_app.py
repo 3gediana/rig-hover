@@ -170,6 +170,8 @@ class UnifiedRobotBrain:
             # 且注入真实 YOLO 手腕运动学框后恢复 42% 校准门限（召回 ~90%+ 且压低误报）。
             dev = "cpu"
             kb = torch.load(KNOCK_DEPLOY_CKPT, map_location=dev, weights_only=False)
+            if kb.get("train_split") != "dev":
+                print("[Knock][WARN] legacy checkpoint predates dev-only training; treat metrics as contaminated until retrained", flush=True)
             km = DoubleKnockNet(in_ch=2, kin_dim=8, hidden_dim=64, num_classes=4).to(dev).eval()
             km.load_state_dict(kb["state_dict"])
             self.knock_det = DoubleKnockDetector(

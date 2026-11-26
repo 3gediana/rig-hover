@@ -2,7 +2,9 @@
 """test_double_knock_data.py — 多源接触脉冲与“敲击两下”窗口数据集单测。"""
 from __future__ import annotations
 
+import json
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -16,9 +18,11 @@ from double_knock_data import (  # noqa: E402
     detect_contact_impulses,
     extract_kinematics_and_energy,
     load_external_stress_clips,
+    load_takes_for_split,
     synthesize_training_windows,
 )
 from interval_data import Interval  # noqa: E402
+import sealed  # noqa: E402
 
 
 class TestDoubleKnockData(unittest.TestCase):
@@ -105,9 +109,36 @@ class TestDoubleKnockData(unittest.TestCase):
         self.assertGreaterEqual(len(clips), 4)
         sources = {c["source"] for c in clips}
         self.assertIn("evidence_sessions", sources)
+        self.assertFalse(any("empty_d0.5" in c["id"] or "cb8455" in c["id"] for c in clips))
         for c in clips:
             self.assertEqual(c["frames"].ndim, 3)
             self.assertEqual(c["frames"].shape[1:], (96, 96))
+
+    def test_external_stress_sealed_split_requires_final_eval_before_frame_reads(self):
+        """即便只请求 1 条 sealed session，也必须先显式 final-eval 授权。"""
+        with self.assertRaises(sealed.SealedAccessError):
+            load_external_stress_clips(max_clips_per_source=1, size=32, split="sealed", final_eval=False)
+
+    def test_take_split_loader_defaults_to_dev_and_guards_sealed_metadata(self):
+        """dev 加载必须在读取 take.json 前跳过 cb8455；sealed 划分无 final-eval 必须拒绝。"""
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            for tid in ("robot_20261115_150045_65a54d", "robot_20261115_151733_cb8455"):
+                tdir = root / "takes" / tid
+                tdir.mkdir(parents=True)
+                (tdir / "take.json").write_text(
+                    json.dumps({"take_id": tid, "fps": 15.0, "duration_s": 1.0, "video_frames": 15}),
+                    encoding="utf-8",
+                )
+                (tdir / "annotation.json").write_text(json.dumps({"annotations": []}), encoding="utf-8")
+                (tdir / "take.mp4").write_bytes(b"")
+
+            dev = load_takes_for_split(root, split="dev")
+            self.assertEqual([t.take_id for t in dev], ["robot_20261115_150045_65a54d"])
+            with self.assertRaises(sealed.SealedAccessError):
+                load_takes_for_split(root, split="sealed", final_eval=False)
+            with self.assertRaises(ValueError):
+                load_takes_for_split(root, split="all", final_eval=False)
 
 
 if __name__ == "__main__":

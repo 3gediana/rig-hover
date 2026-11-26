@@ -44,8 +44,6 @@ TRAIN_DIR = REPO / "pc" / "train"
 for p in (str(HERE), str(TRAIN_DIR), str(REPO / "pc" / "pack")):
     if p not in sys.path:
         sys.path.insert(0, p)
-import sealed  # noqa: E402
-
 from double_knock_data import (  # noqa: E402
     COUNT_CLASSES,
     KNOCK_IDX,
@@ -69,7 +67,8 @@ from hover_geonet_240 import (  # noqa: E402
     create_hover_geonet,
 )
 from hd_moge_contour_engine import GEONET_CKPT_FOV_H_DEG, REAL_H_CAM_M  # noqa: E402
-from interval_data import IGNORE, decode_gray, frame_labels, load_intervals, load_labels, load_takes  # noqa: E402
+from interval_data import IGNORE, decode_gray, frame_labels, load_intervals, load_labels  # noqa: E402
+from take_split import load_takes_for_split  # noqa: E402
 from train_double_knock import (  # noqa: E402
     CausalConv1d,
     eval_triggers_on_take,
@@ -80,7 +79,7 @@ from train_double_knock import (  # noqa: E402
 V4_CKPT_FP16 = REPO / "runs_end_side" / "hover_geonet_mv_v4" / "hover_geonet_mv_v4_fp16.pt"
 V3_CKPT_FP16 = REPO / "runs_end_side" / "hover_geonet_vit_240" / "hover_geonet_vit_b1_fp16.pt"
 CACHE_DIR = REPO / "pc" / "bench" / "_knock3d_cache_v4"
-OUT_DIR = REPO / "runs_end_side" / "double_knock_3d_v11"
+OUT_DIR = REPO / "runs_end_side" / "double_knock_3d_physnet_devonly_v1"
 BASELINE_2D_METRICS = REPO / "runs_knock" / "double_knock_fpsaug2_20261115" / "metrics.json"
 BASELINE_2D_STREAM = REPO / "runs_knock" / "double_knock_fpsaug2_20261115" / "stream_eval.json"
 
@@ -428,7 +427,7 @@ def build_3d_dataset(
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
     id_to_name = load_labels(ds_path)
-    takes = load_takes(ds_path)
+    takes = load_takes_for_split(ds_path, split="dev")
     out: dict[str, dict[str, Any]] = {}
 
     for take in takes:
@@ -967,10 +966,6 @@ def eval_external_stress_3d(
 
 
 def run_breakthrough2(epochs: int = 22, window: int = 48) -> dict[str, Any]:
-    sealed.require_final_eval(
-        [REPO / "dataset" / "takes" / "robot_20261115_151733_cb8455" / "take.mp4"],
-        purpose="train_double_knock_3d_physnet final held-out evaluation",
-    )
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print("=== BREAKTHROUGH #2: DoubleKnock3D-PhysNet (3D Metric Desk-Contact Physics vs 2D Baseline) ===", flush=True)

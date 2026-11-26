@@ -276,6 +276,8 @@ def main() -> None:
     ap.add_argument("--size", type=int, default=96)
     ap.add_argument("--device", type=str, default="cuda")
     ap.add_argument("--out-json", type=str, required=True)
+    ap.add_argument("--split", choices=("dev", "sealed"), default="dev")
+    ap.add_argument("--final-eval", action="store_true", help="authorise registered sealed evaluation")
     args = ap.parse_args()
 
     repo_root = Path(__file__).resolve().parents[2]
@@ -290,8 +292,10 @@ def main() -> None:
         window=args.window,
         stride=args.stride,
         size=args.size,
+        split=args.split,
+        final_eval=args.final_eval,
     )
-    result: dict = {"device": str(device), "window": args.window, "takes": sorted(data.keys())}
+    result: dict = {"device": str(device), "window": args.window, "split": args.split, "takes": sorted(data.keys())}
     if args.deploy_ckpt:
         result["deploy"] = run_deploy(Path(args.deploy_ckpt), data, args.window, device)
         print("deploy:", json.dumps(result["deploy"], ensure_ascii=False, indent=1)[:1500])

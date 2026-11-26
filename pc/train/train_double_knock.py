@@ -7,7 +7,7 @@
 3. 双监督头：
    - Head 1 (logit_imp): 逐帧桌面接触脉冲检测 (B, T)
    - Head 2 (logit_cnt): 窗口动作四分类 (B, 4) -> {0:non_knock, 1:single, 2:double_knock, 3:multi}
-4. 诚实留一协议：合成增强、平滑窗口、触发阈值 100% 仅在 3 条训练 take 上确定，严禁触碰留出 take。
+4. 诚实 dev-only 留一协议：合成增强、平滑窗口、触发阈值 100% 仅在 4 条 dev 训练 take 上确定，严禁触碰留出 take 或封存 take。
 """
 from __future__ import annotations
 
@@ -830,13 +830,64 @@ def calibrate_on_train_takes(
     return best
 
 
+def evaluate_model_on_take(
+    model: DoubleKnockNet,
+    calib: dict,
+    val_d: dict,
+    window: int,
+    device: torch.device,
+) -> dict:
+    """Evaluate one already-trained, already-calibrated model on one annotated take."""
+    imp_p, cls_p = predict_full_sequence(model, val_d["vis_full"], val_d["kin_full"], window, device)
+
+    p_cnt_chunks = []
+    with torch.no_grad():
+        for s_idx in range(0, len(val_d["x_vis"]), 64):
+            xv = torch.from_numpy(val_d["x_vis"][s_idx : s_idx + 64]).float().div_(255.0).to(device)
+            xk = torch.from_numpy(val_d["x_kin"][s_idx : s_idx + 64]).to(device)
+            _, l_cnt = model(xv, xk)
+            p_cnt_chunks.append(torch.softmax(l_cnt, dim=-1).cpu().numpy())
+    p_cnt_win = np.concatenate(p_cnt_chunks, axis=0) if p_cnt_chunks else np.zeros((0, 4), dtype=np.float32)
+    y_cnt_val = val_d["y_cnt"]
+    y_is_knock_win = (y_cnt_val > 0).astype(np.int32)
+    p_is_knock_win = 1.0 - p_cnt_win[:, 0]
+    win_knock_auroc = float(roc_auc_score(y_is_knock_win, p_is_knock_win)) if len(np.unique(y_is_knock_win)) > 1 else 0.0
+    win_knock_f1 = float(f1_score(y_is_knock_win, (p_is_knock_win >= 0.5).astype(np.int32)))
+    y_is_double = (y_cnt_val >= 2).astype(np.int32)
+    p_double_win = p_cnt_win[:, 2] + p_cnt_win[:, 3]
+    double_auroc = float(roc_auc_score(y_is_double, p_double_win)) if len(np.unique(y_is_double)) > 1 else 0.0
+
+    triggers_raw = find_double_knock_triggers(
+        imp_p,
+        cls_p,
+        val_d["fps"],
+        smooth_frames=calib["smooth_frames"],
+        imp_thr=calib["imp_thr"],
+        double_thr=calib["double_thr"],
+    )
+    ev_ungated = eval_triggers_on_take(
+        triggers_raw, val_d["labels_full"], val_d["intervals"], val_d["fps"], val_d["duration_s"], gated_by_fist_window=False
+    )
+    ev_gated = eval_triggers_on_take(
+        triggers_raw, val_d["labels_full"], val_d["intervals"], val_d["fps"], val_d["duration_s"], gated_by_fist_window=True
+    )
+    return {
+        "window_knock_auroc": round(win_knock_auroc, 4),
+        "window_knock_f1": round(win_knock_f1, 4),
+        "window_double_knock_auroc": round(double_auroc, 4),
+        "ungated_event": ev_ungated,
+        "gated_event": ev_gated,
+    }
+
+
 def run_pipeline(
-    out_dir: str | Path = "runs_knock/double_knock_20261115",
+    out_dir: str | Path = "runs_knock/double_knock_devonly_v1",
     window: int = 48,
     epochs: int = 16,
     device_str: str = "cuda",
     fps_aug_p: float = 0.0,
     amp_aug_p: float = 0.0,
+    final_eval: bool = False,
 ) -> dict:
     repo_root = Path(__file__).resolve().parents[2]
     out_path = Path(out_dir) if Path(out_dir).is_absolute() else repo_root / out_dir
@@ -871,45 +922,13 @@ def run_pipeline(
         )
         calib = calibrate_on_train_takes(model, train_sub, window=window, device=device)
 
-        # 在留出 take 上做零泄漏测试
-        imp_p, cls_p = predict_full_sequence(model, val_d["vis_full"], val_d["kin_full"], window, device)
-
-        # 1. 窗口级双敲动作识别 AUROC & F1（分块前向避免大数组分配）
-        p_cnt_chunks = []
-        with torch.no_grad():
-            for s_idx in range(0, len(val_d["x_vis"]), 64):
-                xv = torch.from_numpy(val_d["x_vis"][s_idx : s_idx + 64]).float().div_(255.0).to(device)
-                xk = torch.from_numpy(val_d["x_kin"][s_idx : s_idx + 64]).to(device)
-                _, l_cnt = model(xv, xk)
-                p_cnt_chunks.append(torch.softmax(l_cnt, dim=-1).cpu().numpy())
-        p_cnt_win = np.concatenate(p_cnt_chunks, axis=0)
-        y_cnt_val = val_d["y_cnt"]
-        # 敲击动作（single/double/multi）vs non_knock 的窗口级判别
-        y_is_knock_win = (y_cnt_val > 0).astype(np.int32)
-        p_is_knock_win = 1.0 - p_cnt_win[:, 0]
-        win_knock_auroc = float(roc_auc_score(y_is_knock_win, p_is_knock_win)) if len(np.unique(y_is_knock_win)) > 1 else 0.0
-        win_knock_f1 = float(f1_score(y_is_knock_win, (p_is_knock_win >= 0.5).astype(np.int32)))
-
-        # 敲击两下（double_knock 或含双敲脉冲的窗口）专项判别 AUROC
-        y_is_double = (y_cnt_val >= 2).astype(np.int32)
-        p_double_win = p_cnt_win[:, 2] + p_cnt_win[:, 3]
-        double_auroc = float(roc_auc_score(y_is_double, p_double_win)) if len(np.unique(y_is_double)) > 1 else 0.0
-
-        # 2. 留出 take 上的两敲事件触发指标（仅用训练折选出的 calib 参数）
-        triggers_raw = find_double_knock_triggers(
-            imp_p,
-            cls_p,
-            val_d["fps"],
-            smooth_frames=calib["smooth_frames"],
-            imp_thr=calib["imp_thr"],
-            double_thr=calib["double_thr"],
-        )
-        ev_ungated = eval_triggers_on_take(
-            triggers_raw, val_d["labels_full"], val_d["intervals"], val_d["fps"], val_d["duration_s"], gated_by_fist_window=False
-        )
-        ev_gated = eval_triggers_on_take(
-            triggers_raw, val_d["labels_full"], val_d["intervals"], val_d["fps"], val_d["duration_s"], gated_by_fist_window=True
-        )
+        # 在 dev 留出 take 上做零泄漏测试
+        eval_pack = evaluate_model_on_take(model, calib, val_d, window, device)
+        win_knock_auroc = float(eval_pack["window_knock_auroc"])
+        win_knock_f1 = float(eval_pack["window_knock_f1"])
+        double_auroc = float(eval_pack["window_double_knock_auroc"])
+        ev_ungated = eval_pack["ungated_event"]
+        ev_gated = eval_pack["gated_event"]
 
         # 3. 帧率鲁棒性：把留出 take 的 20 fps 序列模拟成低采集帧率后重测（只做评估，不选参）
         fps_rob: dict[str, dict] = {}
@@ -984,10 +1003,12 @@ def run_pipeline(
         "window": window,
         "size": 96,
         "calib": deploy_calib,
+        "train_split": "dev",
+        "train_takes": sorted(data.keys()),
         "state_dict": deploy_model.state_dict(),
     }, deploy_ckpt)
 
-    ext_clips = load_external_stress_clips(max_clips_per_source=8, size=96)
+    ext_clips = load_external_stress_clips(max_clips_per_source=8, size=96, split="dev")
     stress_results = []
     neg_total_dur_min = 0.0
     neg_ungated_fp = 0
@@ -1041,11 +1062,74 @@ def run_pipeline(
             ),
         }
 
+    sealed_final_eval = None
+    if final_eval:
+        sealed_data = build_window_dataset(
+            window=window,
+            stride=4,
+            size=96,
+            contact_sheet_dir=None,
+            split="sealed",
+            final_eval=True,
+        )
+        sealed_ext_clips = load_external_stress_clips(max_clips_per_source=8, size=96, split="sealed", final_eval=True)
+        sealed_ext_rows = []
+        sealed_neg_min = 0.0
+        sealed_neg_fp = 0
+        for clip in sealed_ext_clips:
+            frames = clip["frames"]
+            fps = clip["fps"]
+            kin, _ = extract_kinematics_and_energy(frames, clip.get("kps_path"), fps=fps)
+            g = frames.astype(np.float32) / 255.0
+            ddiff = np.zeros_like(g)
+            if len(g) > 1:
+                ddiff[1:] = np.abs(frames[1:].astype(np.int16) - frames[:-1].astype(np.int16)).astype(np.float32) / 255.0
+            vis = np.stack([g, ddiff], axis=1)
+            imp_p, cls_p = predict_full_sequence(deploy_model, vis, kin, window, device)
+            tr = find_double_knock_triggers(
+                imp_p,
+                cls_p,
+                fps,
+                smooth_frames=deploy_calib["smooth_frames"],
+                imp_thr=deploy_calib["imp_thr"],
+                double_thr=deploy_calib["double_thr"],
+            )
+            dur_s = len(frames) / max(fps, 1.0)
+            if not clip["is_positive_double_knock"]:
+                sealed_neg_min += dur_s / 60.0
+                sealed_neg_fp += len(tr)
+            sealed_ext_rows.append({
+                "id": clip["id"],
+                "source": clip["source"],
+                "task": clip["task"],
+                "is_positive": clip["is_positive_double_knock"],
+                "duration_s": round(dur_s, 2),
+                "triggers_ungated": len(tr),
+            })
+
+        sealed_final_eval = {
+            "split": "sealed_take_final_v1",
+            "takes": {
+                tid: evaluate_model_on_take(deploy_model, deploy_calib, d, window, device)
+                for tid, d in sorted(sealed_data.items())
+            },
+            "external_stress": {
+                "num_clips": len(sealed_ext_clips),
+                "negative_total_minutes": round(sealed_neg_min, 2),
+                "negative_ungated_fp": sealed_neg_fp,
+                "negative_ungated_fa_per_min": round(sealed_neg_fp / max(sealed_neg_min, 1e-3), 3),
+                "clips": sealed_ext_rows,
+            },
+        }
+
     summary = {
         "window": window,
         "epochs": epochs,
         "fps_aug_p": fps_aug_p,
         "amp_aug_p": amp_aug_p,
+        "train_split": "dev",
+        "train_takes": sorted(data.keys()),
+        "protocol": "5-take dev leave-one-take-out; sealed take excluded from training/calibration",
         "fps_robustness_ungated": fps_rob_summary,
         "mean_window_knock_auroc": round(float(np.mean([f["window_knock_auroc"] for f in fold_reports])), 4),
         "mean_window_knock_f1": round(float(np.mean([f["window_knock_f1"] for f in fold_reports])), 4),
@@ -1070,6 +1154,8 @@ def run_pipeline(
             "clips": stress_results,
         },
     }
+    if sealed_final_eval is not None:
+        summary["sealed_final_eval"] = sealed_final_eval
     (out_path / "metrics.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"[DoubleKnockNet] Saved metrics to {out_path / 'metrics.json'}")
     return summary
@@ -1077,7 +1163,7 @@ def run_pipeline(
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--out", default="runs_knock/double_knock_20261115")
+    ap.add_argument("--out", default="runs_knock/double_knock_devonly_v1")
     ap.add_argument("--window", type=int, default=48)
     ap.add_argument("--epochs", type=int, default=16)
     ap.add_argument("--device", default="cuda")
@@ -1092,6 +1178,7 @@ def main() -> int:
         device_str=args.device,
         fps_aug_p=max(0.0, min(1.0, args.fps_aug)),
         amp_aug_p=max(0.0, min(1.0, args.amp_aug)),
+        final_eval=args.final_eval,
     )
     return 0
 
