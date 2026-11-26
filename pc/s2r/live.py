@@ -36,7 +36,7 @@ from fist import FistDetector  # noqa: E402
 YUNET = REPO / "pc" / "perception" / "assets" / "face_detection_yunet_2023mar.onnx"
 POSE = REPO / "pc" / "perception" / "assets" / "yolo26n-pose.pt"
 YOLOE = REPO / "pc" / "perception" / "assets" / "yoloe-26n-seg.pt"
-KNOCK = REPO / "runs_knock" / "double_knock_devonly_v1" / "double_knock_deploy.pt"
+KNOCK = REPO / "runs_knock" / "double_knock_devonly_fpsaug_v1" / "double_knock_deploy.pt"
 CAM_TILT_DEG = float(os.environ.get("S2R_CAM_TILT_DEG", "nan"))   # optical axis below horizon; nan -> use IMU pitch (unverified)
 
 

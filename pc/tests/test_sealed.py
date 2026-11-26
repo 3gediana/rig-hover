@@ -217,5 +217,5 @@ def test_active_runtime_consumers_use_devonly_knock_checkpoint():
     app_src = (ROOT / "pc" / "end_side" / "pc_unified_brain_app.py").read_text(encoding="utf-8")
     live_src = (ROOT / "pc" / "s2r" / "live.py").read_text(encoding="utf-8")
     for src in (app_src, live_src):
-        assert "double_knock_devonly_v1" in src
+        assert "double_knock_devonly_fpsaug_v1" in src
         assert "double_knock_fpsaug2" not in src

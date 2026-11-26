@@ -8,13 +8,14 @@
 
 ```text
 整体状态: IN PROGRESS
-当前前沿：两个重训 job 已完成（R7）。双敲 dev-only 清洁重训完成且运行时已切换到清洁权重；GeoNet-240 已按实测相机
-          (75.5°/0.135m) 重训，dev/sealed 评估均为首次无泄漏数字。GPU 禁令已被用户解除（2026-11-26 下午）。
+当前前沿：双敲 fps-aug dev-only 重训完成（R8），运行时双敲权重已是清洁且低帧率鲁棒的版本；
+          GeoNet-240 实测相机重训完成（R7）但运行时未切换（待链路兼容验证）。
+          机器人在线状态未知、目前不在线（17:10 探测无响应）；T4 差距评估已交付用户。
 下一动作: 1) 用户复核 runs_knock/contact_review_impact_dev_v1/review_queue.jsonl（368 条 pending 接触候选）——
-             双敲 sealed 召回 62.5% 的主要缺口就是弱敲标注；
+             双敲 sealed 召回 75% 的剩余缺口主要是弱敲标注；
           2) 决定运行时是否切换到 hover_geonet_240_h135_f75.5 新权重（需先验证稠密场景/轮廓 SLAM 链路兼容）；
-          3) 旧 double_knock_fpsaug2 与旧 geonet 权重仍保留作对照，不得再当清洁证据引用
-最后更新: 2026-11-26 16:35
+          3) T4 真机验收需用户在场，分阶段入口 pc/s2r/morning_check.py
+最后更新: 2026-11-26 17:15
 机器人:   R4 没有碰。最后一次只读探测 2026-11-25 00:19：站立、手动模式、/cfg 为开机默认、
           imu_zero = −2°。现在是否仍在线未知；下次用之前先跑 pc/s2r/readonly_probe.py。
 ```
@@ -222,3 +223,17 @@
 - 验证：`pytest pc/tests/test_sealed.py` 17/17 PASS（10.5 s）；`run_all_tests.py --only sealed` PASS（12.5 s）、`--only truth` PASS（20.8 s）、`--only train` PASS（26.4 s）；**全仓回归 26/26 PASS**（`findings/raw/run_all_tests_post_retrain_2026-11-26.log`，诊断项 obsdomain 按设计为红）；`py_compile` 通过；`_check_encoding.py` all clean；`sealed_access.log` 恰含 3 条登记且全部为本次 final-eval 授权路径。
 - 旧 `double_knock_fpsaug2_20261115` 与旧 geonet 权重保留原位作对照；`scenario1_own_models_e2e.py`、`knock_trigger_autopsy_v23.py`、`make_v11_breakthrough_poster.py`、3D 原型训练器仍引用旧产物，属 D-010 冻结一次性脚本，不随主线更新。
 - 下一切片第一动作：等用户复核 368 条接触候选后做弱敲补标与 A2 数据集卡；或先做 GeoNet 新权重的链路兼容验证（稠密场景/轮廓 SLAM 烟测）再决定运行时切换。
+
+
+### R8 · 2026-11-26 16:40–17:15 · 切片：fps-aug dev-only 重训决策 + T4 差距评估
+
+- 用户授权自主决策。分析 baseline（无增强）模型 fps 鲁棒性证据后判断：旧 fpsaug2 模型在 15fps 下命中 76% 主要靠 40% 帧率退化增强，而 baseline 清洁模型在同协议下只有 23%——帧率增强不是泄漏路径（K-2 证伪的是幅度合成，不是帧率退化），部署端 13–24fps 抖动是物理现实，因此决定重训 `--fps-aug 0.4` 的 dev-only 版本。未碰机器人、未开串口、未烧录。
+- **重训 DONE**（16:44–17:08，24 min，EXIT_RC=0，日志 `findings/raw/train_double_knock_fpsaug_devonly_2026-11-26.log`，输出 `runs_knock/double_knock_devonly_fpsaug_v1/`）。与 baseline 同协议对比，**全维度严格更优**：
+  - fps 鲁棒性（ungated 命中/65）：15fps **50** vs 15；13.5fps **49** vs 11；11fps **47** vs 12——低帧率命中翻三倍，问题解决。
+  - dev LOO：window AUROC 0.820 vs 0.809；gated **50/65** F1 **0.861** FA/m **0.233** vs 48/65 F1 0.852 FA/m 0.413——命中率与误报同时改善。分折看 5c0158 5→7/7、1f30d1 13→17/19，5ca36d 4→3/4、65a54d 10→7/19 略降。
+  - sealed 终评（`sealed_access.log` 第 4–5 条登记）：cb8455 gated hit **18/24**、precision **1.000**、recall **0.750**、F1 **0.857**、FA/m **0.000** vs baseline 15/24、P 0.944、R 0.625——召回 +12.5 个点且零误报。empty_d0.5 零触发。
+  - 外部压力 24 clip 零误报保持。
+- **流式口径验证**：`stream_eval.py`（App 实际概率空间触发语义）deploy 自测 hit 59/65、fp 1、train F1 0.948，标定阈值 imp 0.35 / double 0.35；产物 `stream_eval.json`。5ca36d/67f0c1/5c0158 流式满分。
+- **运行时切换**：`pc_unified_brain_app.py` 与 `pc/s2r/live.py` 双敲权重路径改指 `double_knock_devonly_fpsaug_v1`；冒烟 24fps 喂帧 60 帧推理通过；`test_sealed.py` 断言同步更新，17/17 PASS；`_check_encoding.py` all clean。baseline `double_knock_devonly_v1` 保留原位作对照。
+- **T4 差距评估**（已交付用户，要点存档）：感知/决策侧约八成就绪，运动侧是长杆——前进运动真机未验证且物理上困难（AUD-007 振荡、−12.6°/s 自旋根因未明）、统一大脑从未 live 跑过、拳头识别是最弱感知环节（67%/3 样本、O-009 数据集未建）；T4 属用户在场物理迭代循环，流程入口 `morning_check.py` 与相机倾角标定。
+- 下一切片第一动作：用户复核 368 条接触候选后做弱敲补标与 A2 数据集卡；或 GeoNet 新权重链路兼容验证；机器人上线后先跑 `readonly_probe.py`。

@@ -87,7 +87,7 @@ from train_double_knock import DoubleKnockDetector, DoubleKnockNet  # noqa: E402
 
 VIT_CKPT = REPO / "runs_end_side" / "hover_geonet_vit_240" / "hover_geonet_vit_b1_fp16.pt"
 MBV3_CKPT = REPO / "runs_end_side" / "hover_geonet_240" / "hover_geonet_240_fp16.pt"
-KNOCK_DEPLOY_CKPT = REPO / "runs_knock" / "double_knock_devonly_v1" / "double_knock_deploy.pt"
+KNOCK_DEPLOY_CKPT = REPO / "runs_knock" / "double_knock_devonly_fpsaug_v1" / "double_knock_deploy.pt"
 YOLOE_SEG_PT = REPO / "pc" / "perception" / "assets" / "yoloe-26n-seg.pt"
 
 _PROJ = PersistentGaussianMemoryMap(max_splats=8)
