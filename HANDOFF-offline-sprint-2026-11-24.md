@@ -8,12 +8,11 @@
 
 ```text
 整体状态: IN PROGRESS
-当前前沿：F2（A3 几何赛道纵向切片——K-3 是唯一非死的证伪结果）
-下一动作: 1) 建 pc/pack/sealed.py 唯一入口与训练入口 tripwire；
-          2) 生成 splits\*.json（带哈希）与预注册划分规则；
-          3) 回归测试改用非封存夹具或登记访问；
-          4) O-003 完成后才允许按实测相机重训 GeoNet / 单目深度（见 D-009）
-最后更新: 2026-11-25 15:22
+当前前沿：A2 双敲 dev-only 重构（纯 CPU/代码）；D-009 GeoNet 重训 job 已 READY，等待 GPU 禁令解除
+下一动作: 1) 读 train_double_knock/double_knock_data 的 LOO 数据流，移除 cb8455 训练折；
+          2) 设计弱敲接触级标注方案；
+          3) GPU 禁令解除后运行 jobs/geonet_retrain_measured_cam/job.json（不得提前启动）
+最后更新: 2026-11-26 14:51
 机器人:   R4 没有碰。最后一次只读探测 2026-11-25 00:19：站立、手动模式、/cfg 为开机默认、
           imu_zero = −2°。现在是否仍在线未知；下次用之前先跑 pc/s2r/readonly_probe.py。
 ```
@@ -26,7 +25,7 @@
 |---|---|---|---|---|---|---|
 | O-001 | `BASELINE.md`：资产清单 + 带命令的基线数字 + AUD 缺陷 | `pc/pack/inventory.py` → `BASELINE.md` | 只读脚本，失败即重跑 | E2；`PACK_ROOT\BASELINE.md`、`canon\assets.md`、`findings\raw\*.log` | COMPLETE | 资产清点第三次运行完成（27 组、91,558 文件、46.7 GiB、65,131 帧、802 组完全重复；EXIT_RC=0）；`BASELINE.md` 已写；3 个旧报告数字已从真实入口复现（航向仿真 p90=3.0°、click-to-go 30/30 到点、手势 macro-F1=0.8051）；全仓回归 25/25 原样记录 |
 | O-002 | `robot_truth` 真值文件 + 常量处置清单 | `pc/robot_truth.json`；`python pc/pack/const_scan.py --check`；`run_all_tests.py --only truth` | 只读扫描，新冲突即退出码 1 | E2；提交 `39db690`；`findings\CONST_SCAN.md` | COMPLETE | 真值 44 条事实（各带值/方法/日期/出处/置信/层级）+ `model_artifacts`；扫描 46 处命中，43 处冲突全部处置（保留并说明 30 / 已标注 11 / 休眠 2），0 处未处置；s2r、`real_robot_bridge`、MoGe-2、稠密场景与新训练改读真值；门禁 `truth` 16 项。遗留的不是本项缺口而是 AUD-015/016：已发布权重都要按实测相机重训（D-009） |
-| O-003 | 封存集隔离 + tripwire + `splits\*.json` | `pc/pack/sealed.py`、`make_splits.py`、`pc/tests/test_sealed.py` | 直接改入口参数即可回退 | E2；`sealed/manifest.json`、grep 审计 JSON、7 项 pytest | COMPLETE | mirror+sha256（250 文件 verify ok）、唯一入口+访问日志、4 个划分清单、11 个训练入口 tripwire、关闭式 grep 审计（41 文件四分处置，D-010）、回归测试改非封存夹具、unified app 默认输入改非封存；残留：派生缓存含 cb8455 特征 → F2 重构 |
+| O-003 | 封存集隔离 + tripwire + `splits\*.json` | `pc/pack/sealed.py`、`make_splits.py`、`pc/tests/test_sealed.py` | 直接改入口参数即可回退 | E2；`sealed/manifest.json`、grep 审计 JSON、12 项 pytest | COMPLETE | mirror+sha256（250 文件 verify ok）、唯一入口+访问日志、4 个划分清单、11 个训练入口 tripwire、关闭式 grep 审计（41 文件四分处置，D-010）、回归测试改非封存夹具、unified app 默认输入改非封存；残留：其他训练入口/派生缓存仍按 F2 逐项重构；GeoNet 旧 sealed-derived 缓存已隔离 |
 | O-004 | `sensor_domain.json` + 转换函数 + 对抗 AUC | `pc/pack/sensor_measure.py`、`sensor_domain.py`、`adversarial_auc.py` | 重跑测量脚本即重建 | E2；`canon/sensor_domain.json`、`adversarial_auc_2026-11-25.json`、7 项 pytest | COMPLETE | 实测噪声/邻像素相关/暗角/色调/JPEG 块效应；转换链 7 步带随机化；对抗 AUC：fist 1.0→0.935、palm 1.0→0.984（转换后仍可分——域差主要在内容/尺度不在噪声）；金丝雀 YuNet：真机人脸召回 1.0 vs 改造公开帧 0.93 |
 | O-005 | K-1 / K-2 / K-3 证伪结论 + `FRONTIER1_REPORT.md` | `k1_fist_transfer.py`、K-2 配对分析、`k3_desk_geometry.py` | 重跑脚本 | E2；`k1/k2/k3` JSON + `findings/FRONTIER1_REPORT.md` | COMPLETE | K-1=UX（公开特写拳全帧不迁移，AUC≈0.48 双臂）；K-2=U0/no-go（弱敲幅度合成剧毒 75.4%→36.9%）；K-3=U1-weak（平面角判决随训练规模翻转=主指标不可靠；平整度 MAD 与暗区比率跨规模一致利好合成；纯真机训越久几何越差=伪 GT 噪声过拟合） |
 | O-006 | 真机资产规范库 + 清单 | `canon/assets.md/json` + `file_hashes.json` | 重跑 inventory.py | E2 | PARTIAL-strong | 27 组资产逐组登记路径/帧数/来源/许可/隐私/划分归属，逐文件 sha256；802 组重复已识别（Label Studio/早期手部图=字节级副本）未物理去重（防破坏引用）；缺：逐样本反查抽查审计 |
@@ -69,9 +68,8 @@
 - **D-006（2026-11-25 00:15）今晚不做大幅平移**：桌面右侧近处有大物体、前方有笔，而且 2 cm 的位置阶跃已经证明会激起前后摇摆（俯仰到 6.8°）。平移类实验留到清空桌面、有人在旁边的 T4 会话。
 - **D-007（2026-11-24）测试期望的 HaGRID 路径用目录联接补上**：`pc\gesture\data\raw\hagrid\hagrid-sample-30k-384p` → `G:\stream_memory_data\gesture_raw\hagrid\hagrid-sample-30k-384p`（与既有 `synth` 联接同样做法；`pc\gesture\data\` 被 gitignore）。没有改任何测试。
 - **D-008（2026-11-25）仓库里有三种相机，不许混用**：(1) **实测相机**——`pc/robot_truth.json`（75.5° / 0.135 m），给真机链路、把相机当输入的通用模型（MoGe-2）和所有新训练；(2) **已发布权重的训练相机**——记录在权重或 `model.json` 里（GeoNet 65°、单目深度 v1 与高斯溅射 v2 60°/0.115 m、稠密溅射 v3 72°/0.115 m），加载它的代码必须用它；(3) **合成或虚拟相机**——某个渲染器或某个模型的输入定义，标注清楚即可。起因：名为 `REAL_FOV_H_DEG` 的 65° 其实是 MoGe-2 从画面内容猜的。把它改成真值以后，端侧套件立刻暴露出混用——16 个 GeoNet 实验脚本会把 75.5° 塞给 65° 的权重（Dynablox 门禁里水杯点数 209→148），已发布的单目深度 v1 在实测相机下 AbsRel 从 0.046 变成 0.234。处置：这 16 个脚本改用 `GEONET_CKPT_FOV_H_DEG`（含义自述的名字），v1 模型包用 `RELEASED_V1_*`，门禁从它加载的权重/`model.json` 里读相机；测试 `test_robot_truth.py` 把这条规则钉住（已发布权重不得被喂实测相机、训练脚本不得从已发布相机的常量起步）。代价：这些已发布权重在真机上的精度不是文档里那个数（AUD-015/016）。
-- **D-009（2026-11-25）按实测相机重训排在 O-003 之后**：GeoNet-240 本机重训约 40 分钟（11-22 的日志），规模上算"本机小规模"；但 `train_hover_geonet_240.py` 结尾会直接在两个封存集上评估，而封存集的访问日志和 tripwire 还没有。顺序：O-003 → 重训 → 经登记的 `--final-eval` 路径评估一次。在那之前已发布权重照旧，警告照打。
-- **D-010（2026-11-25）封存访问规矩（关闭式审计后的裁定）**：全仓 grep 审计（`findings
-aw\sealed_grep_audit_2026-11-25.json`，41 个文件含封存标记）分四类处置：
+- **D-009（2026-11-25）按实测相机重训排在 O-003 之后**：GeoNet-240 本机重训约 40 分钟（11-22 的日志），规模上算"本机小规模"；但 `train_hover_geonet_240.py` 结尾会直接在两个封存集上评估，而封存集的访问日志和 tripwire 还没有。顺序：O-003 → 重训 → 经登记的 `--final-eval` 路径评估一次。在那之前已发布权重照旧，警告照打。**2026-11-26 更新**：dev-only 评估重构已完成，`jobs/geonet_retrain_measured_cam/job.json` 状态改为 `READY-waiting-gpu-ban-lift`；命令末尾带 `--final-eval`，但该 job 只能在用户解除 GPU 禁令后运行。
+- **D-010（2026-11-25）封存访问规矩（关闭式审计后的裁定）**：全仓 grep 审计（`findings\raw\sealed_grep_audit_2026-11-25.json`，41 个文件含封存标记）分四类处置：
   (1) **训练入口 11 个**全部有 tripwire——不带 `--final-eval` 直接 `SealedAccessError` 退出，通过则写一行 `sealed_access.log`（含脚本、参数、目的、git HEAD）；
   (2) **回归测试一律改用非封存夹具**：`test_robust_contour_slam` test_5 从 cb8455 改 65a54d，`test_hover_geonet_240` 延迟冒烟从 empty_d0.5 改 none_d0.5；只读历史报告 JSON（冻结数字）不算访问封存集， grandfathered；
   (3) **活跃应用 `pc_unified_brain_app` 默认输入从封存的 empty_d0.5 改为 none_d0.5**，`--input` 指向封存路径时必须显式 `--final-eval`，文档示例同步改；
@@ -167,3 +165,22 @@ aw\sealed_grep_audit_2026-11-25.json`，41 个文件含封存标记）分四类�
 - tripwire 已加到 9 个训练入口/数据构建入口：`train_hover_geonet_240.py`、`train_dense_splat_student.py`、`train_mono_depth.py`、`train_neural_gaussian_splat.py`、`train_hover_geonet_mv_selfsup_v4.py`、`train_double_knock.py`/`double_knock_data.py`、`train_double_knock_3d_physnet.py`、`train_double_knock_3d_v2_extreme.py`、`train_double_knock_3d_v4_sim2real.py`。无前 `--final-eval` 手动运行前 4 个均 rc=1 并抛 `SealedAccessError`，未写访问日志。
 - 新增 `pc/tests/test_sealed.py` 7 项与 `run_all_tests.py` 的 `sealed` 门禁；验证：`pytest pc/tests/test_sealed.py` 7/7 PASS，`run_all_tests.py --only sealed` PASS，所有改动 `py_compile` 通过，`_check_encoding.py` all clean。
 - 重要限制：O-003 仍为 PARTIAL。还没有做“全仓库所有直接打开封存路径”的关闭式审计；`eval_session.py`、`proto_3d_edl_traversable.py`、`test_robust_contour_slam.py` 等评估/原型入口未逐一改造；旧 `run_pipeline` 在显式 final-eval 后仍按历史 6 折流程处理 `cb8455`，后续必须把“训练 dev、只最终评估 sealed”重构清楚。回归测试究竟是改用非封存夹具还是登记访问，也还没写决策。下一步先补 D-010 决策与关闭式 grep 审计，再继续训练入口重构。
+
+### R5 · 2026-11-26 14:35 · 切片：接手上个会话 → GeoNet dev-only 评估重构
+
+- 14:35 从 Devin 会话 `canary-limpet` 接手。已读交接提示全文、契约全文、台账状态头与 R4、`AGENTS.md` §8，以及 2026-11-25 追加的 GPU 禁令；未碰机器人、未开串口、未烧录、未启动训练。
+- 上个会话结束点：A3 学习曲线已有两个数据点并形成“云端加量对 A3 真机物理几何收益疑似饱和”的初步结论；随后刚开始精读 `train_hover_geonet_240.py` 的评估数据流，尚未改代码。
+- 当前约束：用户在游戏中明确说过不得启动训练；在新许可出现前只做纯 CPU / 代码 / 小测试，不跑任何训练或 GPU 任务。
+- 本切片目标：完成 `jobs/geonet_retrain_measured_cam/job.json` 列出的 dev-eval 前置重构，使以后重训时模型挑选不接触封存集或其派生缓存；只在显式 `--final-eval` 时走登记路径。
+- 第一动作：精读 `train_hover_geonet_240.py` 的 cache/eval/report 结构和 `pc/pack/sealed.py` 的登记接口，做最小外科改造。
+- 14:51 GeoNet dev-only 评估重构完成（仍未训练、未触碰封存原始数据）：
+  - `train_hover_geonet_240.py` 新增命名评估划分：`dev_geometry_v1`（`65a54d` 后段 40 帧 + 非封存 `none_d0.5_front_night_181841` 40 帧）为默认 dev 评估；`sealed_final_v1`（`empty_d0.5_front_night_182201` + `cb8455` 各 40 帧）只在显式 `--final-eval` 时经 `sealed.require_final_eval` 登记后构建/读取。
+  - 采样器支持显式帧窗；`65a54d` 前段 `(0.0,0.55)` 给 val 诊断，后段 `(0.60,1.0)` 给 dev，实测样例索引 val max=847 < dev min=923，窗口不重叠。
+  - 模型挑选指标已从 val/旧报告路径改为 `dev_geometry_v1` 的复合分数；最佳 checkpoint 记录 `selection_split=dev_geometry_v1`；`val_internal` 只作为训练期辅助诊断。报告包含 `model_selection` 与 `dev_eval`，只有 final eval 才追加 `sealed_final_eval`。
+  - 评估缓存键参数化并带划分名；缓存目录继续带实测相机参数（`geonet240_h135_f75.5`）。训练输出固定为 `runs_end_side/hover_geonet_240_h135_f75.5/`，修复了 `--arch vit_b1` 会写回旧发布目录 `runs_end_side/hover_geonet_vit_240/` 的覆盖风险。
+  - 旧 sealed-derived 缓存 `pc/bench/_teacher_cache/geonet240_h135_f65/test_heldout_80.npz` 已按 D-010 隔离为 `pc/bench/_teacher_cache/_quarantine_d010/test_heldout_80_npz_quarantined.bin`（旁边有 README；是移动隔离，不是删除）。
+  - `pc/tests/test_sealed.py` 从 7 项扩到 12 项：dev 划分不含封存路径、sealed 划分无 `--final-eval` 必拒绝、val/dev 帧窗不重叠、训练脚本无旧缓存引用、输出目录正确、旧缓存不在活跃位置。
+  - `jobs/geonet_retrain_measured_cam/job.json` 已改为 `READY-waiting-gpu-ban-lift`；正式命令末尾带 `--final-eval`，因为这就是预定的最终重训 job。GPU 禁令未解除前不得运行。
+- 验证（全部 CPU/静态/小文件测试）：`py_compile` 通过；`pytest pc/tests/test_sealed.py` 12/12 PASS（7.75 s）；`pytest pc/tests/test_robot_truth.py` 16/16 PASS（10.50 s）；`run_all_tests.py --only sealed` PASS（12.3 s）；`run_all_tests.py --only truth` PASS（15.1 s）；job JSON 语法有效；`_check_encoding.py` all clean。没有跑训练、没有跑 GPU 任务、没有访问机器人。
+- 顺手修复台账 D-010 中一处既有断行损坏（`findings` / `aw` → `findings\raw`），不涉及代码行为。
+- 下一切片第一动作：A2 双敲 dev-only 重构——先读 `pc/train/train_double_knock.py` 与 `pc/train/double_knock_data.py` 的 LOO/缓存数据流，列出 cb8455 作为训练折的所有入口，再决定最小外科方案；弱敲接触级标注仍属 O-010，不得用封存集参与训练或调参。

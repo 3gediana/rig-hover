@@ -96,3 +96,58 @@ def test_split_manifests_exist_and_never_mix_units():
 def test_materialized_mirror_manifest_matches_current_tree():
     ok, problems = sealed.verify_sealed()
     assert ok, problems
+
+
+def _geonet_trainer():
+    endside = ROOT / "pc" / "end_side"
+    if str(endside) not in sys.path:
+        sys.path.insert(0, str(endside))
+    import train_hover_geonet_240 as mod  # noqa: PLC0415
+    return mod
+
+
+def test_geonet_dev_eval_split_is_dev_only_and_named():
+    mod = _geonet_trainer()
+    spec = mod.HELDOUT_SPLIT_SPECS["dev_geometry_v1"]
+    assert not spec["sealed"]
+    assert "dev_geometry_v1" in spec["cache_file"]
+    assert all(not sealed.is_sealed_path(src[1]) for src in spec["sources"])
+    assert not sealed.is_sealed_path(mod._heldout_cache_path("dev_geometry_v1"))
+
+
+def test_geonet_sealed_final_split_is_guarded_and_named():
+    mod = _geonet_trainer()
+    spec = mod.HELDOUT_SPLIT_SPECS["sealed_final_v1"]
+    assert spec["sealed"]
+    assert "sealed_final_v1" in spec["cache_file"]
+    assert sealed.is_sealed_path(mod._heldout_cache_path("sealed_final_v1"))
+    with pytest.raises(sealed.SealedAccessError):
+        mod.load_heldout_split("sealed_final_v1", final_eval=False)
+
+
+def test_geonet_validation_and_dev_eval_video_windows_are_disjoint():
+    mod = _geonet_trainer()
+    take = ROOT / "dataset" / "takes" / "robot_20261115_150045_65a54d" / "take.mp4"
+    assert take.exists()
+    val = mod._sample_video_pairs(take, 8, start_frac=mod.VAL_TAKE_WINDOW[0], end_frac=mod.VAL_TAKE_WINDOW[1])
+    dev = mod._sample_video_pairs(take, 6, start_frac=mod.DEV_TAKE_WINDOW[0], end_frac=mod.DEV_TAKE_WINDOW[1])
+    val_idx = [int(x[2].rsplit(":", 1)[1]) for x in val]
+    dev_idx = [int(x[2].rsplit(":", 1)[1]) for x in dev]
+    assert val_idx and dev_idx
+    assert max(val_idx) < min(dev_idx)
+
+
+def test_geonet_trainer_drops_legacy_cache_and_writes_measured_camera_dir():
+    mod = _geonet_trainer()
+    src = (ROOT / "pc" / "end_side" / "train_hover_geonet_240.py").read_text(encoding="utf-8")
+    assert "test_heldout_80.npz" not in src
+    assert "out_dir = OUT_DIR" in src
+    assert 'score = dev_m["abs_rel"]' in src
+    assert '"selection_split": "dev_geometry_v1"' in src
+    assert mod.OUT_DIR.name == "hover_geonet_240_h135_f75.5"
+
+
+def test_legacy_geonet_heldout_cache_is_not_active():
+    cache_root = ROOT / "pc" / "bench" / "_teacher_cache"
+    active = list(cache_root.glob("geonet240_h*/test_heldout_80.npz"))
+    assert active == []

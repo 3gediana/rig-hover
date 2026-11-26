@@ -118,7 +118,7 @@ SUITES = [
      ["-m", "pytest", r"pc\tests\test_robot_truth.py", "-q", "-p", "no:cacheprovider"], False),
     # 2026-11-25 offline sprint O-003: sealed assets have exactly one doorway,
     # --final-eval is required, the access log is written, and split manifests stay hashed.
-    ("sealed", "sealed-data doorway + hashed split manifests (7 gates)", rf"{W}",
+    ("sealed", "sealed-data doorway + hashed split manifests (12 gates)", rf"{W}",
      ["-m", "pytest", r"pc\tests\test_sealed.py", "-q", "-p", "no:cacheprovider"], False),
 ]
 

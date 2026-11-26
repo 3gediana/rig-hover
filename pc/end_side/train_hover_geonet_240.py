@@ -2,12 +2,12 @@
 """train_hover_geonet_240.py — `HoverGeoNet-240` 端到端离线 MoGe-2 蒸馏 + 解析微物体训练与零泄漏评测脚本。
 
 严格科研与工程标准：
-1. **100% 零数据泄漏划分（跨天、跨桌面零样本泛化评测）**：
+1. **零数据泄漏划分（跨天、跨桌面泛化评测）**：
    - **训练集 (Real, 900 帧)**：仅取自 2026-11-05 与 2026-11-07 的 6 段独立录像（含桌面、手机、键盘、人手等）；
-   - **训练集 (Exact Analytical Synth, 450 帧)**：精确解析射线追踪生成的 3.5 cm 弧顶鼠标、1.2 cm 手机、斜坡键盘、水杯与 90° 盒子（物理真值 `H_cam = 13.5 cm`）；
-   - **内部验证集 (Val, 100 帧)**：仅用于早停与最优权重挑选 (`65a54d` 60 帧 + `lean_out_d0.5` 40 帧)；
-   - **严格留出测试集 (Held-Out Test, 80 帧)**：`empty_d0.5_front_night_182201`（40 帧，鼠标+键盘+显示器+暗光桌面）与
-     `robot_20261115_151733_cb8455`（40 帧，水杯+笔记本+挥动手臂），**全程绝不参与梯度更新或模型挑选**！
+   - **训练集 (Exact Analytical Synth, 600 帧)**：精确解析射线追踪生成的 3.5 cm 弧顶鼠标、1.2 cm 手机、斜坡键盘、水杯与 90° 盒子（物理真值 `H_cam = 13.5 cm`）；
+   - **内部验证集 (Val, 100 帧)**：训练期辅助诊断 (`65a54d` 前段 60 帧 + `lean_out_d0.5` 40 帧)，不作为最优权重挑选依据；
+   - **dev 几何评估集 (`dev_geometry_v1`, 80 帧)**：`65a54d` 后段 40 帧 + 非封存的 `none_d0.5` 40 帧；这是默认训练期的模型挑选与报告评估集，不接触封存集；
+   - **封存最终评估 (`sealed_final_v1`, 80 帧)**：`empty_d0.5_front_night_182201` 与 `robot_20261115_151733_cb8455` 各 40 帧，只有显式 `--final-eval` 才会经 `pc/pack/sealed.py` 登记并构建/读取。
 2. **精确物理尺度对齐**：
    - 使用用户实测相机离桌高度 `REAL_H_CAM_M = 0.135 m (13.5 cm)` + 相机视场角 `REAL_FOV_H_DEG`（取 `pc/robot_truth.json`），
      已验证 `MoGe-2` 与 `HoverGeoNet-240` 射线反投影误差 `median = 0.000 mm, max = 0.001 mm`！
@@ -85,13 +85,28 @@ OUT_DIR = REPO / "runs_end_side" / _OUT_NAME
 # ---------------------------------------------------------------------------
 
 
-def _sample_video_pairs(mp4_path: pathlib.Path, n_samples: int, margin: int = 12) -> list[tuple[np.ndarray, np.ndarray, str]]:
+def _check_window(start_frac: float, end_frac: float) -> None:
+    if not (0.0 <= start_frac < end_frac <= 1.0):
+        raise ValueError(f"invalid sampling window: {start_frac}..{end_frac}")
+
+
+def _sample_video_pairs(
+    mp4_path: pathlib.Path,
+    n_samples: int,
+    margin: int = 12,
+    start_frac: float = 0.0,
+    end_frac: float = 1.0,
+) -> list[tuple[np.ndarray, np.ndarray, str]]:
+    _check_window(start_frac, end_frac)
     cap = cv2.VideoCapture(str(mp4_path))
     total = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     if total <= margin * 2 + 4:
         cap.release()
         return []
-    idxs = np.linspace(margin, total - margin - 1, int(n_samples), dtype=np.int32)
+    span = total - margin * 2 - 1
+    lo = margin + int(round(span * start_frac))
+    hi = margin + int(round(span * end_frac))
+    idxs = np.linspace(lo, hi, int(n_samples), dtype=np.int32)
     idxs = np.unique(idxs)
     out: list[tuple[np.ndarray, np.ndarray, str]] = []
     for idx in idxs:
@@ -108,11 +123,20 @@ def _sample_video_pairs(mp4_path: pathlib.Path, n_samples: int, margin: int = 12
     return out
 
 
-def _sample_session_pairs(frames_dir: pathlib.Path, n_samples: int) -> list[tuple[np.ndarray, np.ndarray, str]]:
+def _sample_session_pairs(
+    frames_dir: pathlib.Path,
+    n_samples: int,
+    start_frac: float = 0.0,
+    end_frac: float = 1.0,
+) -> list[tuple[np.ndarray, np.ndarray, str]]:
+    _check_window(start_frac, end_frac)
     files = sorted(frames_dir.glob("*.jpg")) + sorted(frames_dir.glob("*.png"))
     if len(files) < 5:
         return []
-    idxs = np.unique(np.linspace(3, len(files) - 2, int(n_samples), dtype=np.int32))
+    span = len(files) - 5
+    lo = 3 + int(round(span * start_frac))
+    hi = 3 + int(round(span * end_frac))
+    idxs = np.unique(np.linspace(lo, hi, int(n_samples), dtype=np.int32))
     out: list[tuple[np.ndarray, np.ndarray, str]] = []
     for idx in idxs:
         bgr_c = cv2.imread(str(files[int(idx)]))
@@ -266,19 +290,127 @@ def _build_synth_split(n_synth: int, cache_path: pathlib.Path) -> dict[str, np.n
     return payload
 
 
-def prepare_all_caches(force_rebuild: bool = False) -> tuple[dict[str, np.ndarray], dict[str, np.ndarray], dict[str, np.ndarray], dict[str, np.ndarray], dict[str, np.ndarray]]:
+VAL_TAKE_WINDOW = (0.0, 0.55)
+DEV_TAKE_WINDOW = (0.60, 1.0)
+
+HELDOUT_SPLIT_SPECS: dict[str, dict[str, Any]] = {
+    "dev_geometry_v1": {
+        "cache_file": "dev_geometry_v1_80.npz",
+        "sealed": False,
+        "sources": (
+            ("video", REPO / "dataset" / "takes" / "robot_20261115_150045_65a54d" / "take.mp4", 40, DEV_TAKE_WINDOW[0], DEV_TAKE_WINDOW[1]),
+            ("session", REPO / "evidence" / "sessions" / "none_d0.5_front_night_181841" / "frames", 40, 0.0, 1.0),
+        ),
+        "groups": {
+            "take_65a54d_tail": "65a54d",
+            "none_d0_5": "none_d0.5",
+        },
+    },
+    "sealed_final_v1": {
+        "cache_file": "sealed_final_v1_empty_d05_cb8455_80.npz",
+        "sealed": True,
+        "sources": (
+            ("session", REPO / "evidence" / "sessions" / "empty_d0.5_front_night_182201" / "frames", 40, 0.0, 1.0),
+            ("video", REPO / "dataset" / "takes" / "robot_20261115_151733_cb8455" / "take.mp4", 40, 0.0, 1.0),
+        ),
+        "groups": {
+            "empty_d0_5": "empty_d0.5",
+            "cb8455": "cb8455",
+        },
+    },
+}
+
+
+def _heldout_cache_path(split_name: str) -> pathlib.Path:
+    if split_name not in HELDOUT_SPLIT_SPECS:
+        raise KeyError(f"unknown heldout split: {split_name}")
+    return CACHE_DIR / str(HELDOUT_SPLIT_SPECS[split_name]["cache_file"])
+
+
+def _validate_heldout_split(split_name: str) -> None:
+    spec = HELDOUT_SPLIT_SPECS[split_name]
+    source_flags = [sealed.is_sealed_path(src[1]) for src in spec["sources"]]
+    cache_is_sealed = sealed.is_sealed_path(_heldout_cache_path(split_name))
+    if spec["sealed"]:
+        if not any(source_flags) or not cache_is_sealed:
+            raise RuntimeError(f"sealed split is not recognised by the guard: {split_name}")
+    elif any(source_flags) or cache_is_sealed:
+        raise RuntimeError(f"dev heldout split touches sealed material: {split_name}")
+
+
+def build_heldout_split(
+    rec: MoGe2DesktopReconstructor | None,
+    split_name: str,
+    force_rebuild: bool = False,
+) -> dict[str, np.ndarray]:
+    """Build or load one named heldout cache. Dev splits never contain sealed paths."""
+    _validate_heldout_split(split_name)
+    spec = HELDOUT_SPLIT_SPECS[split_name]
+    cache_path = _heldout_cache_path(split_name)
+    if force_rebuild and cache_path.exists():
+        cache_path.unlink()
+    if cache_path.exists():
+        return dict(np.load(cache_path, allow_pickle=False))
+    if rec is None:
+        raise ValueError(f"teacher required to build heldout split {split_name}")
+
+    pairs: list[tuple[np.ndarray, np.ndarray, str]] = []
+    for kind, path, n_samples, start_frac, end_frac in spec["sources"]:
+        if kind == "video":
+            pairs.extend(_sample_video_pairs(path, n_samples, start_frac=start_frac, end_frac=end_frac))
+        elif kind == "session":
+            pairs.extend(_sample_session_pairs(path, n_samples, start_frac=start_frac, end_frac=end_frac))
+        else:
+            raise ValueError(f"unknown heldout source kind: {kind}")
+    return _extract_teacher_split(rec, pairs, cache_path, split_name)
+
+
+def load_heldout_split(
+    split_name: str,
+    force_rebuild: bool = False,
+    final_eval: bool = False,
+) -> dict[str, np.ndarray]:
+    """Load a named heldout split; sealed splits are authorised and logged before any cache access."""
+    _validate_heldout_split(split_name)
+    spec = HELDOUT_SPLIT_SPECS[split_name]
+    cache_path = _heldout_cache_path(split_name)
+    if spec["sealed"]:
+        sealed.require_final_eval(
+            [cache_path] + [src[1] for src in spec["sources"]],
+            purpose="train_hover_geonet_240 final held-out evaluation",
+            argv=["--final-eval"] if final_eval else [],
+        )
+    need_moge = force_rebuild or not cache_path.exists()
+    rec = MoGe2DesktopReconstructor(infer_hw=480, fov_x_deg=REAL_FOV_H_DEG) if need_moge else None
+    try:
+        return build_heldout_split(rec, split_name, force_rebuild=force_rebuild)
+    finally:
+        if rec is not None:
+            del rec
+            if torch.cuda.is_available():
+                torch.cuda.empty_cache()
+
+
+def prepare_all_caches(
+    force_rebuild: bool = False,
+    dev_split: str = "dev_geometry_v1",
+) -> tuple[dict[str, np.ndarray], dict[str, np.ndarray], dict[str, np.ndarray], dict[str, np.ndarray], dict[str, np.ndarray]]:
     p_train_real = CACHE_DIR / "train_real_900.npz"
     p_train_live = CACHE_DIR / "train_live_480.npz"
     p_train_synth = CACHE_DIR / "train_synth_600.npz"
     p_val_real = CACHE_DIR / "val_internal_100.npz"
-    p_test_heldout = CACHE_DIR / "test_heldout_80.npz"
+    p_dev_heldout = _heldout_cache_path(dev_split)
+    _validate_heldout_split(dev_split)
+    if HELDOUT_SPLIT_SPECS[dev_split]["sealed"]:
+        raise ValueError("the default training evaluation split must be dev-only")
 
+    cache_files = (p_train_real, p_train_live, p_train_synth, p_val_real, p_dev_heldout)
     if force_rebuild:
-        for p in (p_train_real, p_train_live, p_train_synth, p_val_real, p_test_heldout):
+        for p in cache_files:
             if p.exists():
                 p.unlink()
 
-    need_moge = not (p_train_real.exists() and p_train_live.exists() and p_val_real.exists() and p_test_heldout.exists())
+    need_moge = any(not p.exists() for p in cache_files)
     rec = MoGe2DesktopReconstructor(infer_hw=480, fov_x_deg=REAL_FOV_H_DEG) if need_moge else None
     if rec is not None:
         print(f"MoGe-2-ViT-B teacher loaded in {rec.load_s:.2f}s on {rec.device} (H_cam={REAL_H_CAM_M}m, fov={REAL_FOV_H_DEG}°)", flush=True)
@@ -320,32 +452,31 @@ def prepare_all_caches(force_rebuild: bool = False) -> tuple[dict[str, np.ndarra
     # 2) Train Synth: 600 exact analytical desktop micro-object scenes (H_cam = 0.135m)
     train_synth = _build_synth_split(600, p_train_synth)
 
-    # 3) Val Internal: 65a54d (60) + lean_out_d0.5 (40) — checkpoint selection only
+    # 3) Val Internal: 65a54d front segment (60) + lean_out_d0.5 (40) — checkpoint selection only
     if not p_val_real.exists():
         val_pairs = (
-            _sample_video_pairs(REPO / "dataset" / "takes" / "robot_20261115_150045_65a54d" / "take.mp4", 60)
+            _sample_video_pairs(
+                REPO / "dataset" / "takes" / "robot_20261115_150045_65a54d" / "take.mp4",
+                60,
+                start_frac=VAL_TAKE_WINDOW[0],
+                end_frac=VAL_TAKE_WINDOW[1],
+            )
             + _sample_session_pairs(REPO / "evidence" / "sessions" / "lean_out_d0.5_front_night_182257" / "frames", 40)
         )
         val_real = _extract_teacher_split(rec, val_pairs, p_val_real, "val_internal")
     else:
         val_real = dict(np.load(p_val_real, allow_pickle=False))
 
-    # 4) Strictly Held-Out Test: empty_d0.5 (40) + cb8455 (40) — ZERO touching during train/val!
-    if not p_test_heldout.exists():
-        test_pairs = (
-            _sample_session_pairs(REPO / "evidence" / "sessions" / "empty_d0.5_front_night_182201" / "frames", 40)
-            + _sample_video_pairs(REPO / "dataset" / "takes" / "robot_20261115_151733_cb8455" / "take.mp4", 40)
-        )
-        test_heldout = _extract_teacher_split(rec, test_pairs, p_test_heldout, "test_heldout")
-    else:
-        test_heldout = dict(np.load(p_test_heldout, allow_pickle=False))
+    # 4) Default dev-only geometry evaluation. Its cache name carries the split name;
+    # the sealed final cache is never built or read unless --final-eval is explicit.
+    dev_heldout = build_heldout_split(rec, dev_split, force_rebuild=False)
 
     if rec is not None:
         del rec
         if torch.cuda.is_available():
             torch.cuda.empty_cache()
 
-    return train_real, train_live, train_synth, val_real, test_heldout
+    return train_real, train_live, train_synth, val_real, dev_heldout
 
 
 # ---------------------------------------------------------------------------
@@ -742,6 +873,39 @@ def _filter_clean_teacher(sp: dict[str, np.ndarray], tag: str) -> dict[str, np.n
     return {k: v[keep] for k, v in sp.items()}
 
 
+def _slice_split(sp: dict[str, np.ndarray], idxs: list[int]) -> dict[str, np.ndarray]:
+    return {k: v[idxs] for k, v in sp.items()}
+
+
+def evaluate_named_heldout(
+    model: nn.Module,
+    split: dict[str, np.ndarray],
+    split_name: str,
+    device: torch.device,
+) -> dict[str, Any]:
+    """Evaluate a named heldout cache as a whole and per source group."""
+    spec = HELDOUT_SPLIT_SPECS[split_name]
+    names = [str(x) for x in split["names"]]
+    groups: dict[str, Any] = {}
+    for label, needle in spec["groups"].items():
+        idxs = [i for i, nm in enumerate(names) if needle in nm]
+        if not idxs:
+            continue
+        sub = _slice_split(split, idxs)
+        groups[label] = {
+            "with_imu": evaluate_split(model, sub, device, use_gt_imu=True),
+            "no_imu_autolevel": evaluate_split(model, sub, device, use_gt_imu=False),
+        }
+    return {
+        "split_name": split_name,
+        "cache_file": str(_heldout_cache_path(split_name)),
+        "sealed": bool(spec["sealed"]),
+        "all_with_imu": evaluate_split(model, split, device, use_gt_imu=True),
+        "all_no_imu_autolevel": evaluate_split(model, split, device, use_gt_imu=False),
+        "groups": groups,
+    }
+
+
 def train_and_evaluate(
     epochs: int = 16,
     batch_size: int = 8,
@@ -750,29 +914,23 @@ def train_and_evaluate(
     arch: str = "vit_b1",
     force_rebuild: bool = False,
     warm_start: bool = True,
+    final_eval: bool = False,
 ) -> dict[str, Any]:
-    out_dir = (REPO / "runs_end_side" / "hover_geonet_vit_240") if arch == "vit_b1" else OUT_DIR
+    # The measured-camera retrain must never overwrite released weights trained with another camera.
+    out_dir = OUT_DIR
     out_dir.mkdir(parents=True, exist_ok=True)
     base_ch = 24
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     if device.type == "cuda":
         torch.backends.cudnn.benchmark = True
-    print(f"=== HoverGeoNet-240 v3 Training Pipeline (arch={arch}, base={base_ch}, bs={batch_size}x{grad_accum}, device={device}, H_cam={REAL_H_CAM_M}m, epochs={epochs}, warm_start={warm_start}) ===", flush=True)
+    print(f"=== HoverGeoNet-240 v3 Training Pipeline (arch={arch}, base={base_ch}, bs={batch_size}x{grad_accum}, device={device}, H_cam={REAL_H_CAM_M}m, epochs={epochs}, warm_start={warm_start}, final_eval={final_eval}) ===", flush=True)
 
-    sealed.require_final_eval(
-        [
-            REPO / "evidence" / "sessions" / "empty_d0.5_front_night_182201" / "frames",
-            REPO / "dataset" / "takes" / "robot_20261115_151733_cb8455" / "take.mp4",
-            CACHE_DIR / "test_heldout_80.npz",
-        ],
-        purpose="train_hover_geonet_240 final held-out evaluation",
-    )
-    train_real, train_live, train_synth, val_real, test_heldout = prepare_all_caches(force_rebuild=force_rebuild)
+    train_real, train_live, train_synth, val_real, dev_heldout = prepare_all_caches(force_rebuild=force_rebuild)
     train_real = _filter_clean_teacher(train_real, "train_real")
     train_live = _filter_clean_teacher(train_live, "train_live")
     print(
         f"Dataset sizes: train_real={len(train_real['gray_cur'])}, train_live={len(train_live['gray_cur'])}, "
-        f"train_synth={len(train_synth['gray_cur'])}, val_internal={len(val_real['gray_cur'])}, test_heldout={len(test_heldout['gray_cur'])}",
+        f"train_synth={len(train_synth['gray_cur'])}, val_internal={len(val_real['gray_cur'])}, dev_heldout={len(dev_heldout['gray_cur'])}",
         flush=True,
     )
 
@@ -814,7 +972,8 @@ def train_and_evaluate(
 
     best_score = 1e9
     best_epoch = 0
-    best_val_metrics: dict[str, float] = {}
+    best_dev_metrics: dict[str, float] = {}
+    last_val_metrics: dict[str, float] = {}
     history: list[dict[str, Any]] = []
 
     if device.type == "cuda":
@@ -853,13 +1012,14 @@ def train_and_evaluate(
         ep_nrm /= max(1, steps)
 
         val_m = evaluate_split(model, val_real, device, use_gt_imu=True)
-        # 均衡深度 + 微物体高程 + 表面法向锐利度的复合选优指标（绝不碰 held-out test!）
-        score = val_m["abs_rel"] * 90.0 + val_m["micro_obj_z_mae_mm"] * 1.4 + val_m["normal_angle_deg"] * 0.8 + val_m["desk_z_mad_mm"] * 1.0
+        dev_m = evaluate_split(model, dev_heldout, device, use_gt_imu=True)
+        # 均衡深度 + 微物体高程 + 表面法向锐利度的复合选优指标；只在 dev_geometry_v1 上挑选，绝不碰封存集。
+        score = dev_m["abs_rel"] * 90.0 + dev_m["micro_obj_z_mae_mm"] * 1.4 + dev_m["normal_angle_deg"] * 0.8 + dev_m["desk_z_mad_mm"] * 1.0
         is_best = score < best_score
         if is_best:
             best_score = score
             best_epoch = ep
-            best_val_metrics = dict(val_m)
+            best_dev_metrics = dict(dev_m)
             torch.save(
                 {
                     "state_dict": {k: v.detach().cpu() for k, v in model.state_dict().items()},
@@ -869,25 +1029,28 @@ def train_and_evaluate(
                     "h_cam_m": REAL_H_CAM_M,
                     "fov_h_deg": REAL_FOV_H_DEG,
                     "epoch": ep,
-                    "val_metrics": val_m,
+                    "selection_split": "dev_geometry_v1",
+                    "dev_metrics": dev_m,
                 },
                 ckpt_fp32,
             )
-        history.append({"epoch": ep, "train_loss": round(ep_loss, 4), "train_z_mm": round(ep_z_mm, 2), "val": val_m})
+        last_val_metrics = dict(val_m)
+        history.append({"epoch": ep, "train_loss": round(ep_loss, 4), "train_z_mm": round(ep_z_mm, 2), "val": val_m, "dev": dev_m})
         vram_gb = (torch.cuda.max_memory_allocated() / 1e9) if device.type == "cuda" else 0.0
         print(
             f"Ep {ep:02d}/{epochs} ({time.perf_counter()-t_ep:.1f}s, VRAM={vram_gb:.2f}GB) | "
             f"tr_loss={ep_loss:.3f} tr_z={ep_z_mm:.1f}mm | "
-            f"VAL absRel={val_m['abs_rel']:.4f} zMAE={val_m['z_mae_mm']:.1f}mm "
-            f"deskMAD={val_m['desk_z_mad_mm']:.1f}mm microZ={val_m['micro_obj_z_mae_mm']:.1f}mm "
-            f"nrm={val_m['normal_angle_deg']:.1f}° (cos={val_m['normal_cos']:.3f})"
+            f"DEV absRel={dev_m['abs_rel']:.4f} zMAE={dev_m['z_mae_mm']:.1f}mm "
+            f"deskMAD={dev_m['desk_z_mad_mm']:.1f}mm microZ={dev_m['micro_obj_z_mae_mm']:.1f}mm "
+            f"nrm={dev_m['normal_angle_deg']:.1f}° (cos={dev_m['normal_cos']:.3f}) | "
+            f"VAL absRel={val_m['abs_rel']:.4f}"
             f"{'  <-- BEST' if is_best else ''}",
             flush=True,
         )
 
     train_s = time.perf_counter() - t_start
 
-    # 加载验证集最优模型，导出 FP16 紧凑权重并在严格留出集上评测
+    # 加载 dev_geometry_v1 最优模型，导出 FP16 紧凑权重并做默认 dev 报告；封存集仅在 --final-eval 下登记评测。
     best_blob = torch.load(ckpt_fp32, map_location=device, weights_only=False)
     model.load_state_dict(best_blob["state_dict"])
     model.eval()
@@ -906,17 +1069,11 @@ def train_and_evaluate(
         ckpt_fp16,
     )
 
-    names_test = [str(x) for x in test_heldout["names"]]
-    idx_empty = [i for i, nm in enumerate(names_test) if "empty_d0.5" in nm]
-    idx_cb = [i for i, nm in enumerate(names_test) if "cb8455" in nm]
-
-    def _slice(sp: dict[str, np.ndarray], idxs: list[int]) -> dict[str, np.ndarray]:
-        return {k: v[idxs] for k, v in sp.items()}
-
-    heldout_empty_imu = evaluate_split(model, _slice(test_heldout, idx_empty), device, use_gt_imu=True)
-    heldout_empty_noimu = evaluate_split(model, _slice(test_heldout, idx_empty), device, use_gt_imu=False)
-    heldout_cb_imu = evaluate_split(model, _slice(test_heldout, idx_cb), device, use_gt_imu=True)
-    heldout_cb_noimu = evaluate_split(model, _slice(test_heldout, idx_cb), device, use_gt_imu=False)
+    dev_eval = evaluate_named_heldout(model, dev_heldout, "dev_geometry_v1", device)
+    sealed_eval = None
+    if final_eval:
+        sealed_final = load_heldout_split("sealed_final_v1", force_rebuild=force_rebuild, final_eval=True)
+        sealed_eval = evaluate_named_heldout(model, sealed_final, "sealed_final_v1", device)
 
     m_fp16 = create_hover_geonet(arch=arch, in_ch=GEO_IN_CH, base=base_ch, pretrained_backbone=False).to(device).half().eval()
     m_fp16.load_state_dict({k: v.to(device) for k, v in fp16_sd.items()})
@@ -946,21 +1103,33 @@ def train_and_evaluate(
         "gpu_fp16_fps": round(1000.0 / max(gpu_fp16_ms, 1e-3), 1),
         "best_epoch": int(best_epoch),
         "train_seconds": round(train_s, 1),
-        "val_internal": best_val_metrics,
-        "heldout_empty_d05_with_imu": heldout_empty_imu,
-        "heldout_empty_d05_no_imu_autolevel": heldout_empty_noimu,
-        "heldout_cb8455_with_imu": heldout_cb_imu,
-        "heldout_cb8455_no_imu_autolevel": heldout_cb_noimu,
+        "model_selection": {
+            "split": "dev_geometry_v1",
+            "score": round(float(best_score), 4),
+            "metrics": best_dev_metrics,
+        },
+        "val_internal_last_epoch": last_val_metrics,
+        "dev_eval": dev_eval,
         "history": history,
     }
+    if sealed_eval is not None:
+        report["sealed_final_eval"] = sealed_eval
     (out_dir / "train_eval_report.json").write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
 
-    print(f"\n=== FINAL HELD-OUT ZERO-SHOT REPORT (HoverGeoNet-{arch}) ===", flush=True)
+    def _print_eval(title: str, ev: dict[str, Any]) -> None:
+        print(title, flush=True)
+        print("  all (IMU)     :", ev["all_with_imu"], flush=True)
+        print("  all (No-IMU)  :", ev["all_no_imu_autolevel"], flush=True)
+        for group_name, group_metrics in ev["groups"].items():
+            print(f"  {group_name} (IMU)    :", group_metrics["with_imu"], flush=True)
+            print(f"  {group_name} (No-IMU) :", group_metrics["no_imu_autolevel"], flush=True)
+
+    print(f"\n=== FINAL DEV GEOMETRY REPORT (HoverGeoNet-{arch}) ===", flush=True)
     print(f"FP16 Size: {report['ckpt_fp16_mb']} MB | GPU FP16 Latency: {report['gpu_fp16_ms']} ms ({report['gpu_fp16_fps']} FPS)", flush=True)
-    print("Held-out empty_d0.5 (IMU)     :", heldout_empty_imu, flush=True)
-    print("Held-out empty_d0.5 (No-IMU)  :", heldout_empty_noimu, flush=True)
-    print("Held-out cb8455     (IMU)     :", heldout_cb_imu, flush=True)
-    print("Held-out cb8455     (No-IMU)  :", heldout_cb_noimu, flush=True)
+    _print_eval("dev_geometry_v1:", dev_eval)
+    if sealed_eval is not None:
+        print("\n=== REGISTERED SEALED FINAL EVALUATION ===", flush=True)
+        _print_eval("sealed_final_v1:", sealed_eval)
     return report
 
 
@@ -974,4 +1143,12 @@ if __name__ == "__main__":
     ap.add_argument("--rebuild-cache", action="store_true")
     ap.add_argument("--final-eval", action="store_true", help="authorise one registered evaluation on sealed data")
     args = ap.parse_args()
-    train_and_evaluate(epochs=args.epochs, batch_size=args.batch_size, grad_accum=args.grad_accum, lr=args.lr, arch=args.arch, force_rebuild=args.rebuild_cache)
+    train_and_evaluate(
+        epochs=args.epochs,
+        batch_size=args.batch_size,
+        grad_accum=args.grad_accum,
+        lr=args.lr,
+        arch=args.arch,
+        force_rebuild=args.rebuild_cache,
+        final_eval=args.final_eval,
+    )
