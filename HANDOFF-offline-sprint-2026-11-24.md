@@ -219,6 +219,6 @@
   - 产物：`runs_end_side/hover_geonet_240_h135_f75.5/`（fp32 + fp16 + train_eval_report.json），未覆盖任何已发布权重。
 - **运行时切换**：`pc_unified_brain_app.py` 与 `pc/s2r/live.py` 的双敲权重路径已切到 `double_knock_devonly_v1`（`train_split=dev` 元数据使 legacy 警告自动消失）；冒烟测试 60 帧推理通过。**GeoNet 运行时未切换**——新权重在 `hover_geonet_240_h135_f75.5/`，切换前需验证稠密场景/轮廓 SLAM 链路兼容，留作下一切片决策。
 - **残留隔离收尾**：`runs_knock/pose_roi/robot_20261115_151733_cb8455.{json,npz,sheet.png}` 已移动隔离到 `_quarantine_d010/pose_roi_cb8455/`（dev 路径本就不读它，但活性输入目录不应存放封存派生物）；`test_sealed.py` 新增 2 项（pose_roi 隔离断言 + 活跃运行时引用 dev-only 权重断言），现 17 项。
-- 验证：`pytest pc/tests/test_sealed.py` 17/17 PASS（10.5 s）；`run_all_tests.py --only sealed` PASS（12.5 s）、`--only truth` PASS（20.8 s）、`--only train` PASS（26.4 s）；`py_compile` 通过；`_check_encoding.py` all clean；`sealed_access.log` 恰含 3 条登记且全部为本次 final-eval 授权路径。
+- 验证：`pytest pc/tests/test_sealed.py` 17/17 PASS（10.5 s）；`run_all_tests.py --only sealed` PASS（12.5 s）、`--only truth` PASS（20.8 s）、`--only train` PASS（26.4 s）；**全仓回归 26/26 PASS**（`findings/raw/run_all_tests_post_retrain_2026-11-26.log`，诊断项 obsdomain 按设计为红）；`py_compile` 通过；`_check_encoding.py` all clean；`sealed_access.log` 恰含 3 条登记且全部为本次 final-eval 授权路径。
 - 旧 `double_knock_fpsaug2_20261115` 与旧 geonet 权重保留原位作对照；`scenario1_own_models_e2e.py`、`knock_trigger_autopsy_v23.py`、`make_v11_breakthrough_poster.py`、3D 原型训练器仍引用旧产物，属 D-010 冻结一次性脚本，不随主线更新。
 - 下一切片第一动作：等用户复核 368 条接触候选后做弱敲补标与 A2 数据集卡；或先做 GeoNet 新权重的链路兼容验证（稠密场景/轮廓 SLAM 烟测）再决定运行时切换。
