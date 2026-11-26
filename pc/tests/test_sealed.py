@@ -198,3 +198,24 @@ def test_legacy_knock3d_sealed_feature_cache_is_quarantined():
     quarantined = ROOT / "pc" / "bench" / "_teacher_cache" / "_quarantine_d010" / "robot_20261115_151733_cb8455_3d_npz_quarantined.bin"
     assert not active.exists()
     assert quarantined.exists()
+
+
+def test_sealed_pose_roi_artifacts_are_quarantined():
+    active_dir = ROOT / "runs_knock" / "pose_roi"
+    for suffix in (".json", ".npz", "_sheet.png"):
+        assert not (active_dir / f"robot_20261115_151733_cb8455{suffix}").exists(), suffix
+    quarantine_dir = ROOT / "pc" / "bench" / "_teacher_cache" / "_quarantine_d010" / "pose_roi_cb8455"
+    for suffix in (".json", ".npz", "_sheet.png"):
+        assert (quarantine_dir / f"robot_20261115_151733_cb8455{suffix}").exists(), suffix
+    dev_ids = ("robot_20261107_204337_5ca36d", "robot_20261107_212119_67f0c1", "robot_20261107_213314_5c0158",
+               "robot_20261107_214950_1f30d1", "robot_20261115_150045_65a54d")
+    for tid in dev_ids:
+        assert (active_dir / f"{tid}.npz").exists(), tid
+
+
+def test_active_runtime_consumers_use_devonly_knock_checkpoint():
+    app_src = (ROOT / "pc" / "end_side" / "pc_unified_brain_app.py").read_text(encoding="utf-8")
+    live_src = (ROOT / "pc" / "s2r" / "live.py").read_text(encoding="utf-8")
+    for src in (app_src, live_src):
+        assert "double_knock_devonly_v1" in src
+        assert "double_knock_fpsaug2" not in src

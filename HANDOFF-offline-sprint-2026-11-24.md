@@ -8,11 +8,13 @@
 
 ```text
 整体状态: IN PROGRESS
-当前前沿：A2 双敲 dev-only 重构已完成（纯 CPU/代码）；两个重训 job 均 READY，等待 GPU 禁令解除
-下一动作: 1) 用户复核 runs_knock/contact_review_impact_dev_v1/review_queue.jsonl（368 条 pending 接触候选）；
-          2) GPU 禁令解除后运行 jobs/geonet_retrain_measured_cam/job.json 与 jobs/double_knock_retrain_devonly/job.json；
-          3) 清洁重训完成前，旧 double_knock_fpsaug2 权重只按 legacy contaminated 演示权重对待
-最后更新: 2026-11-26 15:15
+当前前沿：两个重训 job 已完成（R7）。双敲 dev-only 清洁重训完成且运行时已切换到清洁权重；GeoNet-240 已按实测相机
+          (75.5°/0.135m) 重训，dev/sealed 评估均为首次无泄漏数字。GPU 禁令已被用户解除（2026-11-26 下午）。
+下一动作: 1) 用户复核 runs_knock/contact_review_impact_dev_v1/review_queue.jsonl（368 条 pending 接触候选）——
+             双敲 sealed 召回 62.5% 的主要缺口就是弱敲标注；
+          2) 决定运行时是否切换到 hover_geonet_240_h135_f75.5 新权重（需先验证稠密场景/轮廓 SLAM 链路兼容）；
+          3) 旧 double_knock_fpsaug2 与旧 geonet 权重仍保留作对照，不得再当清洁证据引用
+最后更新: 2026-11-26 16:35
 机器人:   R4 没有碰。最后一次只读探测 2026-11-25 00:19：站立、手动模式、/cfg 为开机默认、
           imu_zero = −2°。现在是否仍在线未知；下次用之前先跑 pc/s2r/readonly_probe.py。
 ```
@@ -32,7 +34,7 @@
 | O-007 | 公开数据许可台账 + 效用分级 | `canon/public_sources.json`（12 行机器可读）+ 核实报告 | 按 JSON 执行 | E2 | COMPLETE-ledger（未下载） | 每行 URL/许可/门槛/补哪格/效用分级齐；K-1 后全部按裁剪改造重估：P12 YCB-Video（黑物格、零门槛）与 P03 IPN Hand（A2 动作线索、零门槛）优先；P05/P09 不混合条款跳过；consent_needed 行留给用户本人点击 |
 | O-008 | 合成数据生成器族 | （待建） | | E2 | MISSING | 全部 |
 | O-009 | A1 拳头/手部数据集 | （待建） | | E4 | MISSING | 全部；起点缺陷见 AUD-018（idle 类 3,097/3,098 是手势图） |
-| O-010 | A2 双敲数据集 | `pc/train/export_contact_review_pack.py` → `runs_knock/contact_review_impact_dev_v1/` | 重跑导出脚本即重建候选包；用户复核后再建数据集卡 | E2；`review_queue.jsonl` 368 条 pending | PARTIAL | dev-only 训练/评估重构完成；接触级候选包已导出（5 条 dev take、368 条候选，未触封存）；缺口：用户尚未复核 strong/weak/accept，数据集卡与正式建包未做，清洁重训未运行 |
+| O-010 | A2 双敲数据集 | `pc/train/export_contact_review_pack.py` → `runs_knock/contact_review_impact_dev_v1/` | 重跑导出脚本即重建候选包；用户复核后再建数据集卡 | E2；`review_queue.jsonl` 368 条 pending；`runs_knock/double_knock_devonly_v1/metrics.json` | PARTIAL | dev-only 清洁重训完成（R7：dev LOO 平均 window AUROC 0.809、gated 48/65 F1 0.852 FA/m 0.413、外部压力 24 clip 零误报；sealed 终评 cb8455 gated 15/24 precision 0.944 recall 0.625）；运行时双敲权重已切换到 dev-only 版。缺口：用户尚未复核 strong/weak/accept 368 条候选（recall 62.5% 的主因是弱敲标注缺口），数据集卡与正式建包未做 |
 | O-011 | A3 桌面几何数据集 | `pc/end_side/train_mono_depth_pack.py` + 数据卡 | 重跑 job | E2；job 包 `jobs/a3_depth_v1` 足量排练 PASS（synth abs_rel 0.0486、MAD 33.3mm）、`findings/F2_SLICE_A3.md` | PARTIAL（切片级闭环） | 矩阵覆盖 pitch×3、桌沿近/远、强制黑物 35%、薄负样本 25%；缺口诚实登记（深渊不可表达、光照/材质未控、真机无日光格）；评测 MAD/暗区比可信、平面角存疑、桌沿距离留 T4 |
 | O-012 | 三条赛道学习曲线 | （待建） | | E4 | MISSING | 全部 |
 | O-013 | 数据卡 + 建包流水线 + 采集套件 | `pc/pack/jobrun.py`、A3 数据卡范本 | | E2 | PARTIAL | job 包格式 + 本地排练 harness 落地（冒烟 PASS、receipt 自动回流 findings/raw）；采集套件未动 |
@@ -201,3 +203,22 @@
 - 新增 `jobs/double_knock_retrain_devonly/job.json`：`READY-waiting-gpu-ban-lift`，命令带 `--final-eval`；GPU/训练禁令解除前不得运行。
 - 验证（全部 CPU/静态/小测试）：`py_compile` 覆盖所有改动文件通过；`pytest pc/train/test_double_knock_data.py pc/train/test_double_knock_model.py` 9/9 PASS（10.42 s）；`pytest pc/tests/test_sealed.py` 15/15 PASS（7.08 s）；`run_all_tests.py --only sealed` PASS（9.8 s）；`run_all_tests.py --only truth` PASS（13.7 s）；`run_all_tests.py --only train` PASS（34.4 s）；完整 dev `build_window_dataset` 实测 5/5 条、无 cb8455、用时 11.11 s；`sealed_access.log` 不存在/未新增；job JSON 语法有效；`_check_encoding.py` all clean。
 - 未做且明确不做：没有训练、没有 GPU、没有读取 sealed 原始帧/视频、没有碰机器人。公开数据下载仍需用户先拍板存储位置； contact review 的 368 条候选需要用户人工复核后才能变成弱敲标签。
+
+
+### R7 · 2026-11-26 15:30–16:35 · 切片：GPU 禁令解除——两个重训 job 执行 + 运行时切换清洁权重
+
+- 15:30 用户解除 GPU/训练禁令（原话："你现在其实可以启动训练的"）。未碰机器人、未开串口、未烧录。全程在 RTX 5060 Laptop（8 GB）上顺序执行两个 job，峰值显存约 6.1 GB（含桌面占用），系统内存未超 85%。
+- **job 1 `double_knock_retrain_devonly` DONE**（15:33–15:51，18 min，EXIT_RC=0，日志 `findings\raw\train_double_knock_devonly_2026-11-26.log`）：
+  - dev 留一（5 折，全部首次无泄漏）：5ca36d AUROC 0.977 hit 4/4 F1 1.0；67f0c1 0.843 hit 16/16 gated F1 0.984 FA/m 0.32；5c0158 0.886 hit 5/7 gated F1 0.833 FA/m 0；1f30d1 0.859 hit 13/19 gated F1 0.812 FA/m 0；**65a54d 0.483 hit 10/19——最弱折，正是弱敲标注缺口所在（O-010）**。平均 window AUROC 0.8094、double AUROC 0.8268、gated 48/65 F1 0.852 FA/m 0.413；外部压力 24 clip / 4.45 min 零误报。
+  - sealed 终评（训练与标定全部完成后才登记执行，`sealed_access.log` 2 条）：cb8455 gated hit 15/24、precision 0.944、recall 0.625、F1 0.752、FA/m 0.373；empty_d0.5 20.1 s 零触发。**这是双敲模型首次在从未参与训练/标定的封存数据上的诚实数字**。
+  - 产物：`runs_knock/double_knock_devonly_v1/double_knock_deploy.pt`（带 `train_split=dev` + 5 条 train_takes）、5 个 fold checkpoint、`metrics.json`。
+- **job 2 `geonet_retrain_measured_cam` DONE**（15:53–16:18，26 min，EXIT_RC=0，日志 `findings\raw\train_geonet_measured_cam_2026-11-26.log`）：
+  - 教师缓存全部按实测相机新建（`geonet240_h135_f75.5/`：train_real 890 + train_live 460 + synth 600 + val 100 + dev 80），未复用 65° 旧缓存；MoGe-2 抽取约 7 min，训练 14 epoch 933 s。
+  - 模型选择完全由 dev_geometry_v1 驱动：best_epoch=13，dev absRel 0.1372、zMAE 30.7 mm、deskMAD 3.16 mm、micro 6.8 mm、法向 14.25°；fp16 27.01 MB、18.49 ms（54.1 FPS）。
+  - sealed 终评（`sealed_access.log` 1 条）：absRel 0.1754、zMAE 41.4 mm、deskMAD 2.76 mm、micro 9.7 mm、法向 17.3°；sealed 对 dev 的 +0.038 absRel 差距是诚实的泛化差，不是泄漏。**这是 GeoNet 首次在正确相机参数下的无泄漏评估**。
+  - 产物：`runs_end_side/hover_geonet_240_h135_f75.5/`（fp32 + fp16 + train_eval_report.json），未覆盖任何已发布权重。
+- **运行时切换**：`pc_unified_brain_app.py` 与 `pc/s2r/live.py` 的双敲权重路径已切到 `double_knock_devonly_v1`（`train_split=dev` 元数据使 legacy 警告自动消失）；冒烟测试 60 帧推理通过。**GeoNet 运行时未切换**——新权重在 `hover_geonet_240_h135_f75.5/`，切换前需验证稠密场景/轮廓 SLAM 链路兼容，留作下一切片决策。
+- **残留隔离收尾**：`runs_knock/pose_roi/robot_20261115_151733_cb8455.{json,npz,sheet.png}` 已移动隔离到 `_quarantine_d010/pose_roi_cb8455/`（dev 路径本就不读它，但活性输入目录不应存放封存派生物）；`test_sealed.py` 新增 2 项（pose_roi 隔离断言 + 活跃运行时引用 dev-only 权重断言），现 17 项。
+- 验证：`pytest pc/tests/test_sealed.py` 17/17 PASS（10.5 s）；`run_all_tests.py --only sealed` PASS（12.5 s）、`--only truth` PASS（20.8 s）、`--only train` PASS（26.4 s）；`py_compile` 通过；`_check_encoding.py` all clean；`sealed_access.log` 恰含 3 条登记且全部为本次 final-eval 授权路径。
+- 旧 `double_knock_fpsaug2_20261115` 与旧 geonet 权重保留原位作对照；`scenario1_own_models_e2e.py`、`knock_trigger_autopsy_v23.py`、`make_v11_breakthrough_poster.py`、3D 原型训练器仍引用旧产物，属 D-010 冻结一次性脚本，不随主线更新。
+- 下一切片第一动作：等用户复核 368 条接触候选后做弱敲补标与 A2 数据集卡；或先做 GeoNet 新权重的链路兼容验证（稠密场景/轮廓 SLAM 烟测）再决定运行时切换。
