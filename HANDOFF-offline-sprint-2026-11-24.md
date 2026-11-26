@@ -237,3 +237,11 @@
 - **运行时切换**：`pc_unified_brain_app.py` 与 `pc/s2r/live.py` 双敲权重路径改指 `double_knock_devonly_fpsaug_v1`；冒烟 24fps 喂帧 60 帧推理通过；`test_sealed.py` 断言同步更新，17/17 PASS；`_check_encoding.py` all clean。baseline `double_knock_devonly_v1` 保留原位作对照。
 - **T4 差距评估**（已交付用户，要点存档）：感知/决策侧约八成就绪，运动侧是长杆——前进运动真机未验证且物理上困难（AUD-007 振荡、−12.6°/s 自旋根因未明）、统一大脑从未 live 跑过、拳头识别是最弱感知环节（67%/3 样本、O-009 数据集未建）；T4 属用户在场物理迭代循环，流程入口 `morning_check.py` 与相机倾角标定。
 - 下一切片第一动作：用户复核 368 条接触候选后做弱敲补标与 A2 数据集卡；或 GeoNet 新权重链路兼容验证；机器人上线后先跑 `readonly_probe.py`。
+
+### R9 · 2026-11-26 17:30–18:10 · 切片：T4 真机现场测试指导 + 首次推送 GitHub
+
+- 用户决定由另一开发者执行真机测试，要求为其 AI 写详细指导并推送。核实全部入口精确命令/参数/字段名（`live.py` summary 字段、`morning_check` report 字段、`readonly_probe` 输出、`--click-xy` 米制语义、Shift+左键交互、`FirmwareActuatorClient` 安全壳与固件超前量上限 yaw 18°/pos 5 cm）后写成 **`T4-FIELD-TEST-GUIDE.md`**（306 行）。
+- 内容：五条铁律（人在场手在旁、禁烧录/禁开 COM3、严格按阶段 GO/NO-GO、小幅度先行、日志必留）；两运行时栈区分（`s2r/live.py` 精简已验证 vs 统一大脑从未 live）；危害目录（AUD-007 振荡、−12.6°/s 自旋谜团、17 cm 盲区、弱敲/拳头漏检、GeoNet 旧 65° 权重 21% 高估）；7 阶段协议（只读冒烟 → morning_check → 相机倾角标定 → 点击导航精简 → 场景一精简 → 大脑只读预览 → 大脑场景一/二 `--send-cmd`），每阶段有精确命令、✅ 判据、⛔ 中止条件；应急流程与报告模板。
+- 发现并引用现成操作员入口 `pc/s2r/2_自动验收.bat`、`3_点击导航.bat`。
+- **首次推送 GitHub**：`git push origin feat/embodied-skills-v3`（c840c99..c98faf9，23 个本地提交全部上去，含 A2 重构、两轮重训、运行时切换、T4 指南）。`_check_encoding.py` all clean。`uu_monitor*.ps1` 仍未跟踪未提交（按既定）。
+- 下一切片第一动作不变：用户复核 368 条接触候选；或 GeoNet 新权重链路兼容验证；机器人上线后先 `readonly_probe.py`。
